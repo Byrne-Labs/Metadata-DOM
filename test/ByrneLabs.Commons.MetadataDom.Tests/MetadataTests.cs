@@ -127,7 +127,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         private void SmokeTestOnDotNetFramework(bool prefetch)
         {
-            var assemblyFiles = GetGacAssemblies().Take(50);
+            var assemblyFiles = GetGacAssemblies().Take(10);
             var startTime = DateTime.Now;
             var exceptions = new ConcurrentDictionary<FileInfo, Exception>();
             Parallel.ForEach(assemblyFiles, assemblyFile =>

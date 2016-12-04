@@ -1,5 +1,0 @@
-C:\dev\code\Byrne-Labs\Metadata-DOM\src\ByrneLabs.Commons.MetadataDom\bin\Debug\netstandard1.6\ByrneLabs.Commons.MetadataDom.dll
-C:\dev\code\Byrne-Labs\Metadata-DOM\src\ByrneLabs.Commons.MetadataDom\bin\Debug\netstandard1.6\ByrneLabs.Commons.MetadataDom.pdb
-C:\dev\code\Byrne-Labs\Metadata-DOM\src\ByrneLabs.Commons.MetadataDom\obj\Debug\netstandard1.6\ByrneLabs.Commons.MetadataDom.AssemblyInfo.cs
-C:\dev\code\Byrne-Labs\Metadata-DOM\src\ByrneLabs.Commons.MetadataDom\obj\Debug\netstandard1.6\ByrneLabs.Commons.MetadataDom.dll
-C:\dev\code\Byrne-Labs\Metadata-DOM\src\ByrneLabs.Commons.MetadataDom\obj\Debug\netstandard1.6\ByrneLabs.Commons.MetadataDom.pdb
