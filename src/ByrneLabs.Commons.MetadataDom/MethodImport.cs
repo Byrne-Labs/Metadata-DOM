@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class MethodImport : CodeElementWithoutHandle
     {
         private readonly Lazy<ModuleReference> _module;

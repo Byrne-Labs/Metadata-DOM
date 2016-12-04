@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class ImportDefinition : DebugCodeElementWithoutHandle
     {
         private readonly Lazy<Blob> _alias;

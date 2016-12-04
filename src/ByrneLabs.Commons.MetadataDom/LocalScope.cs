@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class LocalScope : DebugCodeElementWithHandle
     {
         private readonly Lazy<IReadOnlyList<LocalScope>> _children;

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class NamespaceDefinition : CodeElementWithHandle
     {
         private readonly Lazy<IReadOnlyList<ExportedType>> _exportedTypes;

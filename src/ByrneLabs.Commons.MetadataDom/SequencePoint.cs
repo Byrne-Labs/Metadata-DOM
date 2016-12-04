@@ -1,9 +1,7 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class SequencePoint : CodeElementWithoutHandle
     {
         private readonly Lazy<Document> _document;

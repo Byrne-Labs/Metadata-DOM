@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
+
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
+    
     public class AssemblyDefinition : CodeElementWithHandle
     {
         private readonly Lazy<string> _culture;

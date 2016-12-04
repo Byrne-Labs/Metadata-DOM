@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class DeclarativeSecurityAttribute : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _parent;

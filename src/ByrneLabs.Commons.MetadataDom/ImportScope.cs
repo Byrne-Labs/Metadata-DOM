@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class ImportScope : DebugCodeElementWithHandle
     {
         private readonly Lazy<IReadOnlyList<ImportDefinition>> _imports;

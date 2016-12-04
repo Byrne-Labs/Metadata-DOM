@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class Constant : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _parent;

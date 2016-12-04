@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
     public class Metadata : CodeElement, IDisposable
     {
         private readonly Lazy<IReadOnlyList<AssemblyFile>> _assemblyFiles;
