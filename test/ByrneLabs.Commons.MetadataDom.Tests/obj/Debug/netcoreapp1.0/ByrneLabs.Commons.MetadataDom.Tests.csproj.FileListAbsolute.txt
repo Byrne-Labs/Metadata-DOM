@@ -1,0 +1,10 @@
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\netcoreapp1.0\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\netcoreapp1.0\xunit.runner.utility.dotnet.dll
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.Tests.dll
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.Tests.pdb
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.dll
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.pdb
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\obj\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.Tests.csprojResolveAssemblyReference.cache
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\obj\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.Tests.AssemblyInfo.cs
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\obj\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.Tests.dll
+C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\obj\Debug\netcoreapp1.0\ByrneLabs.Commons.MetadataDom.Tests.pdb
