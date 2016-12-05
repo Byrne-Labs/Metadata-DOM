@@ -12,8 +12,8 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     internal class MetadataState : IDisposable
     {
-        private static readonly IReadOnlyList<Type> DebugMetadataTypes = new List<Type> { typeof(CustomDebugInformationHandle), typeof(DocumentHandle), typeof(System.Reflection.Metadata.ImportDefinition), typeof(ImportScopeHandle), typeof(LocalConstantHandle), typeof(LocalScopeHandle), typeof(LocalVariableHandle), typeof(MethodDebugInformationHandle) };
-        private static readonly IReadOnlyDictionary<Type, Type> HandleTypeMap = new ReadOnlyDictionary<Type, Type>(new Dictionary<Type, Type>
+        private static readonly IEnumerable<Type> DebugMetadataTypes = new List<Type> { typeof(CustomDebugInformationHandle), typeof(DocumentHandle), typeof(System.Reflection.Metadata.ImportDefinition), typeof(ImportScopeHandle), typeof(LocalConstantHandle), typeof(LocalScopeHandle), typeof(LocalVariableHandle), typeof(MethodDebugInformationHandle) };
+        private static readonly IDictionary<Type, Type> HandleTypeMap = new Dictionary<Type, Type>(new Dictionary<Type, Type>
         {
             { typeof(AssemblyDefinitionHandle), typeof(AssemblyDefinition) },
             { typeof(AssemblyFileHandle), typeof(AssemblyFile) },

@@ -16,7 +16,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
     {
         public MetadataTests(ITestOutputHelper output)
         {
-            _output = output;
+               _output = output;
         }
 
         private readonly ITestOutputHelper _output;
@@ -51,7 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                     {
                         CheckCodeElement(codeElementPropertyValue, checkedCodeElements);
                     }
-                    else if (codeElementsPropertyValue?.GetType().IsConstructedGenericType == true && typeof(CodeElement).IsAssignableFrom(codeElementsPropertyValue.GetType().GetGenericArguments().First()))
+                    else if (codeElementsPropertyValue?.GetType().IsConstructedGenericType == true && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
                     {
                         foreach (var childCodeElement in codeElementsPropertyValue.Cast<CodeElement>())
                         {

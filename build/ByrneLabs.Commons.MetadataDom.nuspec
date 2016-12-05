@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>ByrneLabs.Commons.MetadataDom</id>
+        <title>Reflection Metadata DOM</title>
+        <authors>Byrne Labs</authors>
+        <owners>byrnelabs</owners>
+        <language>en-US</language>
+        <licenseUrl>https://github.com/Byrne-Labs/Metadata-DOM/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/Byrne-Labs/Metadata-DOM/</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/Byrne-Labs/Metadata-DOM/master/beaker.png</iconUrl>
+        <description>A domain object model (DOM) wrapper of the .NET Core System.Reflection.Metadata classes</description>
+        <copyright>Copyright ©2016 Byrne Labs</copyright>
+        <tags>System.Reflection.Metadata Reflection</tags>
+        <version>1.0.0</version>
+
+        <dependencies>
+            <group targetFramework="net45">
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework=".NETFramework,Version=v4.5.1">
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework=".NETFramework4.5.2">
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework=".NETFramework4.6">
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework=".NETFramework4.6.1">
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework=".NETFramework4.6.2">
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework="netstandared1.5">
+                <dependency id="System.IO.FileSystem" version="4.3.0" />
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework="netcoreapp1.0">
+                <dependency id="System.IO.FileSystem" version="4.3.0" />
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+            <group targetFramework=".NETCoreApp,Version=v1.1">
+                <dependency id="System.IO.FileSystem" version="4.3.0" />
+                <dependency id="System.Reflection.Metadata" version="1.3.0" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="**\ByrneLabs.Commons.MetadataDom.*" target="lib" />
+    </files>
+</package>
