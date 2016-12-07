@@ -3,6 +3,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute" />
     public class CustomAttribute : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _constructor;
@@ -17,10 +18,14 @@ namespace ByrneLabs.Commons.MetadataDom
             _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(customAttribute.Value)));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Constructor" />
+        /// <summary>The constructor (<see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="T:ByrneLabs.Commons.MetadataDom.MemberReference" />) of the custom attribute type.</summary>
         public CodeElement Constructor => _constructor.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Parent" />
         public CodeElement Parent => _parent.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Value" />
         public Blob Value => _value.Value;
     }
 }

@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation" />
     public class MethodImplementation : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -20,12 +21,16 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(methodImplementation.GetCustomAttributes()));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.MethodBody" />
         public CodeElement MethodBody => _methodBody.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.MethodDeclaration" />
         public CodeElement MethodDeclaration => _methodDeclaration.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.Type" />
         public TypeDefinition Type => _type.Value;
     }
 }

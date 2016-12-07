@@ -3,6 +3,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition" />
     public class ImportDefinition : DebugCodeElementWithoutHandle
     {
         private readonly Lazy<Blob> _alias;
@@ -51,14 +52,19 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.Alias" />
         public Blob Alias => _alias?.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.Kind" />
         public ImportDefinitionKind Kind { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.TargetAssembly" />
         public AssemblyReference TargetAssembly => _targetAssembly?.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.TargetNamespace" />
         public Blob TargetNamespace => _targetNamespace?.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.TargetType" />
         public CodeElement TargetType => _targetType?.Value;
     }
 }

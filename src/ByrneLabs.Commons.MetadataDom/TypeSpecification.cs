@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification" />
     public class TypeSpecification : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -16,8 +17,10 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(typeSpecification.GetCustomAttributes()));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.Signature" />
         public Blob Signature => _signature.Value;
     }
 }

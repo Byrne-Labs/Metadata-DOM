@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition" />
     public class NamespaceDefinition : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
@@ -22,14 +23,19 @@ namespace ByrneLabs.Commons.MetadataDom
             _exportedTypes = new Lazy<IEnumerable<ExportedType>>(() => GetCodeElements<ExportedType>(namespaceDefinition.ExportedTypes));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.ExportedTypes" />
         public IEnumerable<ExportedType> ExportedTypes => _exportedTypes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.NamespaceDefinitions" />
         public IEnumerable<NamespaceDefinition> NamespaceDefinitions => _namespaceDefinitions.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.Parent" />
         public NamespaceDefinition Parent => _parent.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.TypeDefinitions" />
         public IEnumerable<TypeDefinition> TypeDefinitions => _typeDefinitions.Value;
     }
 }

@@ -14,7 +14,6 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<IEnumerable<Document>> _documents;
         private readonly Lazy<IEnumerable<EventDefinition>> _eventDefinitions;
-        private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
         private readonly Lazy<IEnumerable<FieldDefinition>> _fieldDefinitions;
         private readonly Lazy<IEnumerable<ImportScope>> _importScopes;
         private readonly Lazy<IEnumerable<LocalConstant>> _localConstants;
@@ -51,7 +50,6 @@ namespace ByrneLabs.Commons.MetadataDom
                 _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(Reader.CustomAttributes));
                 _declarativeSecurityAttributes = new Lazy<IEnumerable<DeclarativeSecurityAttribute>>(() => GetCodeElements<DeclarativeSecurityAttribute>(Reader.DeclarativeSecurityAttributes));
                 _eventDefinitions = new Lazy<IEnumerable<EventDefinition>>(() => GetCodeElements<EventDefinition>(Reader.EventDefinitions));
-                _exportedTypes = new Lazy<IEnumerable<ExportedType>>(() => GetCodeElements<ExportedType>(Reader.ExportedTypes));
                 _fieldDefinitions = new Lazy<IEnumerable<FieldDefinition>>(() => GetCodeElements<FieldDefinition>(Reader.FieldDefinitions));
                 _importScopes = new Lazy<IEnumerable<ImportScope>>(() => GetCodeElements<ImportScope>(Reader.ImportScopes));
                 _manifestResources = new Lazy<IEnumerable<ManifestResource>>(() => GetCodeElements<ManifestResource>(Reader.ManifestResources));
@@ -74,11 +72,6 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
-        /*
-        * MethodSpecificationHandle
-        * CustomDebugInformationHandle
-        */
-
         public AssemblyDefinition AssemblyDefinition { get; }
 
         public IEnumerable<AssemblyFile> AssemblyFiles => !HasMetadata ? null : _assemblyFiles.Value;
@@ -95,7 +88,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public IEnumerable<EventDefinition> EventDefinitions => !HasMetadata ? null : _eventDefinitions.Value;
 
-        public IEnumerable<ExportedType> ExportedTypes => !HasMetadata ? null : _exportedTypes.Value;
+        public IEnumerable<ExportedType> ExportedTypes => MetadataState.ExportedTypes;
 
         public IEnumerable<FieldDefinition> FieldDefinitions => !HasMetadata ? null : _fieldDefinitions.Value;
 

@@ -6,6 +6,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition" />
     [DebuggerDisplay("{Namespace}.{Name}")]
     public class TypeDefinition : CodeElementWithHandle
     {
@@ -47,38 +48,61 @@ namespace ByrneLabs.Commons.MetadataDom
             _properties = new Lazy<IEnumerable<PropertyDefinition>>(() => GetCodeElements<PropertyDefinition>(typeDefinition.GetProperties()));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.Attributes" />
         public TypeAttributes Attributes { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.BaseType" />
+        /// <summary>The base type of the type definition: either
+        ///     <see cref="T:System.Reflection.Metadata.TypeSpecification" />, <see cref="T:System.Reflection.Metadata.TypeReference" /> or
+        ///     <see cref="T:System.Reflection.Metadata.TypeDefinition" />.</summary>
         public CodeElement BaseType => _baseType.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetDeclarativeSecurityAttributes" />
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetDeclaringType" />
+        /// <summary>Returns the enclosing type of a specified nested type or null if the type is not nested.</summary>
         public TypeDefinition DeclaringType => _declaringType.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetEvents" />
         public IEnumerable<EventDefinition> Events => _events.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetFields" />
         public IEnumerable<FieldDefinition> Fields => _fields.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetGenericParameters" />
         public IEnumerable<GenericParameter> GenericParameters => _genericParameters.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetInterfaceImplementations" />
         public IEnumerable<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetLayout" />
         public TypeLayout Layout { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethodImplementations" />
         public IEnumerable<MethodImplementation> MethodImplementations => _methodImplementations.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
         public IEnumerable<MethodDefinitionBase> Methods => _methods.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.Namespace" />
+        /// <summary>Full name of the namespace where the type is defined, or null if the type is nested or defined in a root namespace.</summary>
         public string Namespace => _namespace.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.NamespaceDefinition" />
+        /// <summary>The definition handle of the namespace where the type is defined, or null if the type is nested or defined in a root namespace.</summary>
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetNestedTypes" />
         public IEnumerable<TypeDefinition> NestedTypes => _nestedTypes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetProperties" />
         public IEnumerable<PropertyDefinition> Properties => _properties.Value;
     }
 }

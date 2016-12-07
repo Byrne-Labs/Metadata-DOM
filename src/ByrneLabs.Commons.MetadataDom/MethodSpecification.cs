@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification" />
     public class MethodSpecification : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -18,10 +19,17 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(methodSpecification.GetCustomAttributes()));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Method" />
+        /// <summary>
+        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="T:ByrneLabs.Commons.MetadataDom.MemberRefernce" /> specifying to which generic method this
+        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.MethodSpecification" /> refers, that is which generic method is it an instantiation of.</summary>
         public CodeElement Method => _method.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Signature" />
+        /// <summary></summary>
         public Blob Signature => _signature.Value;
     }
 }

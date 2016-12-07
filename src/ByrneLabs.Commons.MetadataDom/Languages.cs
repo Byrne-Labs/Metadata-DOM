@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom
+﻿namespace ByrneLabs.Commons.MetadataDom
 {
     public enum Languages
     {
+        C,
+        CPlusPlus,
         CSharp,
-        VisualBasic,
-        FSharp
+        Cobol,
+        FSharp,
+        ILAssembly,
+        JScript,
+        Java,
+        MCPlusPlus,
+        Pascal,
+        SMC,
+        VisualBasic
     }
 }

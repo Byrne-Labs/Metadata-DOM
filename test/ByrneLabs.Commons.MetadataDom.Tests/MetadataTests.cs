@@ -209,11 +209,5 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             AssertValid(metadata);
             AssertHasDebugMetadata(metadata);
         }
-
-        [Fact]
-        public void TestSourceCodeOnOwnAssemblyAndPdb()
-        {
-            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-        }
     }
 }

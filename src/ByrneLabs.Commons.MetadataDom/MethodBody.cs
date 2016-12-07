@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock" />
     public class MethodBody : CodeElementWithoutHandle
     {
         private readonly Lazy<IReadOnlyList<ExceptionRegion>> _exceptionRegions;
@@ -17,18 +18,21 @@ namespace ByrneLabs.Commons.MetadataDom
             LocalVariablesInitialized = methodBody.LocalVariablesInitialized;
             MaxStack = methodBody.MaxStack;
             Size = methodBody.Size;
-            methodBody.GetILBytes();
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.ExceptionRegions" />
         public IEnumerable<ExceptionRegion> ExceptionRegions => _exceptionRegions.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.LocalSignature" />
         public StandaloneSignature LocalSignature => _localSignature.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.LocalVariablesInitialized" />
         public bool LocalVariablesInitialized { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.MaxStack" />
         public int MaxStack { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.Size" />
         public int Size { get; }
-
     }
 }

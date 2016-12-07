@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.MemberReference" />
     public class MemberReference : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -21,12 +22,20 @@ namespace ByrneLabs.Commons.MetadataDom
             Kind = memberResource.GetKind();
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.GetKind" />
         public MemberReferenceKind Kind { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.Parent" />
+        /// <summary>
+        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" />, <see cref="T:ByrneLabs.Commons.MetadataDom.ModuleReference" />,
+        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="T:ByrneLabs.Commons.MetadataDom.TypeReference" />, or
+        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeSpecification" />.</summary>
         public CodeElement Parent => _parent.Value;
 
         public Blob Signature => _signature.Value;

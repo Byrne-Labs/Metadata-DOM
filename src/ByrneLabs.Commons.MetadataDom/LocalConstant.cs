@@ -3,6 +3,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.LocalConstant" />
     public class LocalConstant : DebugCodeElementWithHandle
     {
         private readonly Lazy<string> _name;
@@ -15,8 +16,10 @@ namespace ByrneLabs.Commons.MetadataDom
             _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(localConstant.Signature)));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.LocalConstant.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.LocalConstant.Signature" />
         public Blob Signature => _signature.Value;
     }
 }

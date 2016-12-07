@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
 
-
 namespace ByrneLabs.Commons.MetadataDom
 {
-    
+    /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition" />
     public class AssemblyDefinition : CodeElementWithHandle
     {
         private readonly Lazy<string> _culture;
@@ -28,20 +27,28 @@ namespace ByrneLabs.Commons.MetadataDom
             _declarativeSecurityAttributes = new Lazy<IEnumerable<DeclarativeSecurityAttribute>>(() => GetCodeElements<DeclarativeSecurityAttribute>(assemblyDefinition.GetDeclarativeSecurityAttributes()));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Culture" />
         public string Culture => _culture.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.GetDeclarativeSecurityAttributes" />
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Flags" />
         public AssemblyFlags Flags { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.HashAlgorithm" />
         public AssemblyHashAlgorithm HashAlgorithm { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.PublicKey" />
         public Blob PublicKey => _publicKey.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Version" />
         public Version Version { get; }
     }
 }

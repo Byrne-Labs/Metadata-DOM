@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition" />
     public class FieldDefinition : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -28,22 +29,31 @@ namespace ByrneLabs.Commons.MetadataDom
             RelativeVirtualAddress = fieldDefinition.GetRelativeVirtualAddress();
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Attributes" />
         public FieldAttributes Attributes { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDeclaringType" />
         public CodeElement DeclaringType => _declaringType.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetMarshallingDescriptor" />
         public Blob MarshallingDescriptor => _marshallingDescriptor.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetOffset" />
         public int Offset { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetRelativeVirtualAddress" />
         public int RelativeVirtualAddress { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Signature" />
         public Blob Signature => _signature.Value;
     }
 }

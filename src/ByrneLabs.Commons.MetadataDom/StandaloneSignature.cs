@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature" />
     public class StandaloneSignature : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -17,10 +18,18 @@ namespace ByrneLabs.Commons.MetadataDom
             Kind = standaloneSignature.GetKind();
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetKind" />
+        /// <summary>Determines the kind of signature, which can be <see cref="F:ByrneLabs.Commons.MetadataDom.SignatureKind.Method" /> or
+        ///     <see cref="F:ByrneLabs.Commons.MetadataDom.SignatureKind.LocalVariables" />
+        /// </summary>
+        /// <exception cref="T:System.BadImageFormatException">The signature is invalid.</exception>
         public StandaloneSignatureKind Kind { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.Signature" />
+        /// <summary></summary>
         public Blob Signature => _signature.Value;
     }
 }

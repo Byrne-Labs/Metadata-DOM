@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.Parameter" />
     public class Parameter : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -23,16 +24,22 @@ namespace ByrneLabs.Commons.MetadataDom
             _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(parameter.GetMarshallingDescriptor())));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.Attributes" />
         public ParameterAttributes Attributes { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetMarshallingDescriptor" />
         public Blob MarshallingDescriptor => _marshallingDescriptor.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.SequenceNumber" />
         public int SequenceNumber { get; }
     }
 }

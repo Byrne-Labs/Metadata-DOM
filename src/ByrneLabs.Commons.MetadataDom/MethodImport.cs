@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.MethodImport" />
     public class MethodImport : CodeElementWithoutHandle
     {
         private readonly Lazy<ModuleReference> _module;
@@ -15,10 +16,13 @@ namespace ByrneLabs.Commons.MetadataDom
             _module = new Lazy<ModuleReference>(() => GetCodeElement<ModuleReference>(methodImport.Module));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImport.Attributes" />
         public MethodImportAttributes Attributes { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImport.Module" />
         public ModuleReference Module => _module.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodImport.Name" />
         public string Name => _name.Value;
     }
 }

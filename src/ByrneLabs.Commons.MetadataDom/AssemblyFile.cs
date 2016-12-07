@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile" />
     public class AssemblyFile : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -19,12 +20,16 @@ namespace ByrneLabs.Commons.MetadataDom
             ContainsMetadata = assemblyFile.ContainsMetadata;
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile.ContainsMetadata" />
         public bool ContainsMetadata { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile.HashValue" />
         public Blob HashValue => _hashValue.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile.ContainsMetadata" />
         public string Name => _name.Value;
     }
 }

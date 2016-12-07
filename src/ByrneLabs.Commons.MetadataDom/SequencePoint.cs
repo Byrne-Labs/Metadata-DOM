@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint" />
     public class SequencePoint : CodeElementWithoutHandle, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;
@@ -22,18 +22,25 @@ namespace ByrneLabs.Commons.MetadataDom
             _sourceCode = new Lazy<string>(LoadSourceCode);
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.Document" />
         public Document Document => _document.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.EndColumn" />
         public int EndColumn { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.EndLine" />
         public int EndLine { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.IsHidden" />
         public bool IsHidden { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.Offset" />
         public int Offset { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.StartColumn" />
         public int StartColumn { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.StartLine" />
         public int StartLine { get; }
 
         public string SourceCode => _sourceCode.Value;

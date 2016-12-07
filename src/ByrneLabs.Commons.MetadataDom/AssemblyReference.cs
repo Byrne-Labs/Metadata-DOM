@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference" />
     public class AssemblyReference : CodeElementWithHandle
     {
         private readonly Lazy<string> _culture;
@@ -25,18 +26,25 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyReference.GetCustomAttributes()));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Culture" />
         public string Culture => _culture.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Flags" />
         public AssemblyFlags Flags { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.HashValue" />
         public Blob HashValue => _hashValue.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Name" />
         public string Name => _name.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.PublicKeyOrToken" />
         public Blob PublicKeyOrToken => _publicKeyOrToken.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Version" />
         public Version Version { get; }
     }
 }

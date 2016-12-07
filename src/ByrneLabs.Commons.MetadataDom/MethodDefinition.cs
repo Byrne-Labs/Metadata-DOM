@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -10,6 +7,5 @@ namespace ByrneLabs.Commons.MetadataDom
         internal MethodDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
         }
-
     }
 }

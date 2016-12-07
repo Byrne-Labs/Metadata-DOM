@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute" />
     public class DeclarativeSecurityAttribute : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _parent;
@@ -17,10 +18,13 @@ namespace ByrneLabs.Commons.MetadataDom
             _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(declarativeSecurityAttribute.PermissionSet)));
         }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.Action" />
         public DeclarativeSecurityAction Action { get; }
 
+        /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.Parent" />
         public CodeElement Parent => _parent.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.PermissionSet" />
         public Blob PermissionSet => _permissionSet.Value;
     }
 }

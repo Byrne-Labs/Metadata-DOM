@@ -5,14 +5,15 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation" />
     public class MethodDebugInformation : DebugCodeElementWithHandle, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;
         private readonly Lazy<StandaloneSignature> _localSignature;
         private readonly Lazy<IReadOnlyList<SequencePoint>> _sequencePoints;
         private readonly Lazy<Blob> _sequencePointsBlob;
-        private readonly Lazy<MethodDefinition> _stateMachineKickoffMethod;
         private readonly Lazy<string> _sourceCode;
+        private readonly Lazy<MethodDefinition> _stateMachineKickoffMethod;
 
         internal MethodDebugInformation(MethodDebugInformationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -25,15 +26,20 @@ namespace ByrneLabs.Commons.MetadataDom
             _sourceCode = new Lazy<string>(() => Document == null ? null : string.Join(Environment.NewLine, SequencePoints.Select(sequencePoint => sequencePoint.SourceCode)));
         }
 
-
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.Document" />
         public Document Document => _document.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.LocalSignature" />
         public StandaloneSignature LocalSignature => _localSignature.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.GetSequencePoints" />
         public IReadOnlyList<SequencePoint> SequencePoints => _sequencePoints.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.SequencePointsBlob" />
+        /// <summary></summary>
         public Blob SequencePointsBlob => _sequencePointsBlob.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.GetStateMachineKickoffMethod" />
         public MethodDefinition StateMachineKickoffMethod => _stateMachineKickoffMethod.Value;
 
         public string SourceCode => _sourceCode.Value;

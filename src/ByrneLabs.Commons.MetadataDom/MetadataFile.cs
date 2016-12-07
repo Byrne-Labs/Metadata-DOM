@@ -33,9 +33,9 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
-        public PEReader PEReader { get; }
-
         public bool HasMetadata { get; }
+
+        public PEReader PEReader { get; }
 
         public MetadataReader Reader { get; }
 

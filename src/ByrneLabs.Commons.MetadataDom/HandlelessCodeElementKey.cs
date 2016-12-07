@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -27,8 +25,8 @@ namespace ByrneLabs.Commons.MetadataDom
             unchecked
             {
                 var hash = 91;
-                hash = hash * 17 + KeyValue.GetHashCode();
-                hash = hash * 17 + CodeElementType.GetHashCode();
+                hash = hash*17 + KeyValue.GetHashCode();
+                hash = hash*17 + CodeElementType.GetHashCode();
                 return hash;
             }
         }
