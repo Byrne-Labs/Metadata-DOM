@@ -16,7 +16,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
     {
         public MetadataTests(ITestOutputHelper output)
         {
-               _output = output;
+            _output = output;
         }
 
         private readonly ITestOutputHelper _output;
@@ -86,43 +86,43 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var startTime = DateTime.Now;
             _output.WriteLine($"\t{allMetadata.Count(metadata => !metadata.HasMetadata)} files without metadata ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.AssemblyFiles?.Count).Sum()} AssemblyFiles ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.AssemblyFiles?.Count()).Sum()} AssemblyFiles ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.AssemblyReferences?.Count).Sum()} AssemblyReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.AssemblyReferences?.Count()).Sum()} AssemblyReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.CustomDebugInformation?.Count).Sum()} CustomDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.CustomDebugInformation?.Count()).Sum()} CustomDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.DeclarativeSecurityAttributes?.Count).Sum()} DeclarativeSecurityAttributes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.DeclarativeSecurityAttributes?.Count()).Sum()} DeclarativeSecurityAttributes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.Documents?.Count).Sum()} Documents ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.Documents?.Count()).Sum()} Documents ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.EventDefinitions?.Count).Sum()} EventDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.EventDefinitions?.Count()).Sum()} EventDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ExportedTypes?.Count).Sum()} ExportedTypes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ExportedTypes?.Count()).Sum()} ExportedTypes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.FieldDefinitions?.Count).Sum()} FieldDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.FieldDefinitions?.Count()).Sum()} FieldDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ImportScopes?.Count).Sum()} ImportScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ImportScopes?.Count()).Sum()} ImportScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalConstants?.Count).Sum()} LocalConstants ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalConstants?.Count()).Sum()} LocalConstants ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalScopes?.Count).Sum()} LocalScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalScopes?.Count()).Sum()} LocalScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalVariables?.Count).Sum()} LocalVariables ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalVariables?.Count()).Sum()} LocalVariables ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ManifestResources?.Count).Sum()} ManifestResources ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ManifestResources?.Count()).Sum()} ManifestResources ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MemberReferences?.Count).Sum()} MemberReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MemberReferences?.Count()).Sum()} MemberReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MethodDebugInformation?.Count).Sum()} MethodDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MethodDebugInformation?.Count()).Sum()} MethodDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MethodDefinitions?.Count).Sum()} MethodDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MethodDefinitions?.Count()).Sum()} MethodDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.PropertyDefinitions?.Count).Sum()} PropertyDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.PropertyDefinitions?.Count()).Sum()} PropertyDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.TypeDefinitions?.Count).Sum()} TypeDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.TypeDefinitions?.Count()).Sum()} TypeDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.TypeReferences?.Count).Sum()} TypeReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.TypeReferences?.Count()).Sum()} TypeReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
         }
 
         private void SmokeTestOnDotNetFramework(bool prefetch)
@@ -195,7 +195,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        public void TestWithOwnPdbWithoutPrefetch()
+        public void TestOnOwnPdbWithoutPrefetch()
         {
             var metadata = new Metadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
             AssertValid(metadata);
@@ -203,11 +203,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        public void TestWithOwnPdbWithPrefetch()
+        public void TestOnOwnPdbWithPrefetch()
         {
             var metadata = new Metadata(true, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
             AssertValid(metadata);
             AssertHasDebugMetadata(metadata);
+        }
+
+        [Fact]
+        public void TestSourceCodeOnOwnAssemblyAndPdb()
+        {
+            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
         }
     }
 }

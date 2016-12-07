@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -20,10 +21,24 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected string AsString(StringHandle stringHandle) => Reader.GetString(stringHandle);
 
-        protected T GetCodeElement<T>(object handle) where T : CodeElement => MetadataState.GetCodeElement<T>(handle);
-
         protected CodeElement GetCodeElement(object handle) => MetadataState.GetCodeElement(handle);
 
-        protected IReadOnlyList<T> GetCodeElements<T>(IEnumerable handles) where T : CodeElement => MetadataState.GetCodeElements<T>(handles);
+        protected Lazy<CodeElement> GetLazyCodeElement(object handle) => new Lazy<CodeElement>(() => MetadataState.GetCodeElement(handle));
+
+        internal T GetCodeElement<T>(object handle) where T : ICodeElementWithHandle => (T) (object) MetadataState.GetCodeElement(handle);
+
+        internal T GetCodeElement<T>(HandlelessCodeElementKey key) where T : ICodeElementWithoutHandle => (T) (object) MetadataState.GetCodeElement(key);
+
+        internal IReadOnlyList<T> GetCodeElements<T>(IEnumerable handles) where T : ICodeElementWithHandle => handles.Cast<object>().Select(handle => MetadataState.GetCodeElement(handle)).Cast<T>().ToList();
+
+        internal IReadOnlyList<T> GetCodeElements<T>(IEnumerable<HandlelessCodeElementKey> keys) where T : ICodeElementWithoutHandle => keys.Select(handle => MetadataState.GetCodeElement(handle)).Cast<T>().ToList();
+
+        internal Lazy<T> GetLazyCodeElement<T>(object handle) where T : ICodeElementWithHandle => new Lazy<T>(() => (T) (object) MetadataState.GetCodeElement(handle));
+
+        internal Lazy<T> GetLazyCodeElement<T>(HandlelessCodeElementKey key) where T : ICodeElementWithoutHandle => new Lazy<T>(() => (T) (object) MetadataState.GetCodeElement(key));
+
+        internal Lazy<IReadOnlyList<T>> GetLazyCodeElements<T>(IEnumerable handles) where T : ICodeElementWithHandle => new Lazy<IReadOnlyList<T>>(() => handles.Cast<object>().Select(handle => MetadataState.GetCodeElement(handle)).Cast<T>().ToList());
+
+        internal Lazy<IReadOnlyList<T>> GetLazyCodeElements<T>(IEnumerable<HandlelessCodeElementKey> keys) where T : ICodeElementWithoutHandle => new Lazy<IReadOnlyList<T>>(() => keys.Select(handle => MetadataState.GetCodeElement(handle)).Cast<T>().ToList());
     }
 }

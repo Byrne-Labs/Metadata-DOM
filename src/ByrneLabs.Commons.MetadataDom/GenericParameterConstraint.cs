@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class GenericParameterConstraint : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<GenericParameter> _parameter;
         private readonly Lazy<CodeElement> _type;
 
@@ -15,10 +15,10 @@ namespace ByrneLabs.Commons.MetadataDom
             var genericParameterConstraint = Reader.GetGenericParameterConstraint(metadataHandle);
             _type = new Lazy<CodeElement>(() => GetCodeElement(genericParameterConstraint.Type));
             _parameter = new Lazy<GenericParameter>(() => GetCodeElement<GenericParameter>(genericParameterConstraint.Parameter));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(genericParameterConstraint.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(genericParameterConstraint.GetCustomAttributes()));
         }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public GenericParameter Parameter => _parameter.Value;
 

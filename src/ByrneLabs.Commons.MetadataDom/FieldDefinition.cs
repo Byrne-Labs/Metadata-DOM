@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class FieldDefinition : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _declaringType;
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<Blob> _marshallingDescriptor;
@@ -20,7 +20,7 @@ namespace ByrneLabs.Commons.MetadataDom
             _name = new Lazy<string>(() => AsString(fieldDefinition.Name));
             Attributes = fieldDefinition.Attributes;
             _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(fieldDefinition.Signature)));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(fieldDefinition.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(fieldDefinition.GetCustomAttributes()));
             _defaultValue = new Lazy<Constant>(() => GetCodeElement<Constant>(fieldDefinition.GetDefaultValue()));
             _declaringType = new Lazy<CodeElement>(() => GetCodeElement(fieldDefinition.GetDeclaringType()));
             _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(fieldDefinition.GetMarshallingDescriptor())));
@@ -30,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public FieldAttributes Attributes { get; }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public CodeElement DeclaringType => _declaringType.Value;
 

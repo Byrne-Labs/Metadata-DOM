@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class AssemblyReference : CodeElementWithHandle
     {
         private readonly Lazy<string> _culture;
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _hashValue;
         private readonly Lazy<string> _name;
         private readonly Lazy<Blob> _publicKeyOrToken;
@@ -22,12 +22,12 @@ namespace ByrneLabs.Commons.MetadataDom
             _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(assemblyReference.HashValue)));
             _publicKeyOrToken = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(assemblyReference.PublicKeyOrToken)));
             Version = assemblyReference.Version;
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyReference.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyReference.GetCustomAttributes()));
         }
 
         public string Culture => _culture.Value;
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public AssemblyFlags Flags { get; }
 

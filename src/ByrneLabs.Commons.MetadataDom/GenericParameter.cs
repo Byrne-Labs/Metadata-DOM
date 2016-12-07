@@ -7,8 +7,8 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class GenericParameter : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<GenericParameterConstraint>> _constraints;
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<string> _name;
         private readonly Lazy<CodeElement> _parent;
 
@@ -19,15 +19,15 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = genericParameter.Attributes;
             Index = genericParameter.Index;
             _parent = new Lazy<CodeElement>(() => GetCodeElement(genericParameter.Parent));
-            _constraints = new Lazy<IReadOnlyList<GenericParameterConstraint>>(() => GetCodeElements<GenericParameterConstraint>(genericParameter.GetConstraints()));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(genericParameter.GetCustomAttributes()));
+            _constraints = new Lazy<IEnumerable<GenericParameterConstraint>>(() => GetCodeElements<GenericParameterConstraint>(genericParameter.GetConstraints()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(genericParameter.GetCustomAttributes()));
         }
 
         public GenericParameterAttributes Attributes { get; }
 
-        public IReadOnlyList<GenericParameterConstraint> Constraints => _constraints.Value;
+        public IEnumerable<GenericParameterConstraint> Constraints => _constraints.Value;
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public int Index { get; }
 

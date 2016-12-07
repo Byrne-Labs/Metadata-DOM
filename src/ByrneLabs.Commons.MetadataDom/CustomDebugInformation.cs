@@ -11,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom
         internal CustomDebugInformation(CustomDebugInformationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             var customDebugInformation = Reader.GetCustomDebugInformation(metadataHandle);
-            _parent = new Lazy<CodeElement>(() => GetCodeElement<CodeElement>(customDebugInformation.Parent));
+            _parent = new Lazy<CodeElement>(() => GetCodeElement(customDebugInformation.Parent));
             Kind = AsGuid(customDebugInformation.Kind);
             _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(customDebugInformation.Value)));
         }

@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class ManifestResource : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
         private readonly Lazy<string> _name;
 
@@ -18,12 +18,12 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = manifestResource.Attributes;
             _implementation = new Lazy<CodeElement>(() => GetCodeElement(manifestResource.Implementation));
             Offset = manifestResource.Offset;
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(manifestResource.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(manifestResource.GetCustomAttributes()));
         }
 
         public ManifestResourceAttributes Attributes { get; }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public CodeElement Implementation => _implementation.Value;
 

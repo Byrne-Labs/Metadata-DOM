@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class AssemblyFile : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _hashValue;
         private readonly Lazy<string> _name;
 
@@ -15,13 +15,13 @@ namespace ByrneLabs.Commons.MetadataDom
             var assemblyFile = Reader.GetAssemblyFile(metadataHandle);
             _name = new Lazy<string>(() => AsString(assemblyFile.Name));
             _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(assemblyFile.HashValue)));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyFile.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyFile.GetCustomAttributes()));
             ContainsMetadata = assemblyFile.ContainsMetadata;
         }
 
         public bool ContainsMetadata { get; }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public Blob HashValue => _hashValue.Value;
 

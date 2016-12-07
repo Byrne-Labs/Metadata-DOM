@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class EventDefinition : CodeElementWithHandle
     {
         private readonly Lazy<MethodDefinition> _adder;
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<string> _name;
         private readonly Lazy<MethodDefinition> _raiser;
         private readonly Lazy<MethodDefinition> _remover;
@@ -23,14 +23,14 @@ namespace ByrneLabs.Commons.MetadataDom
             _adder = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(eventDefinition.GetAccessors().Adder));
             _raiser = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(eventDefinition.GetAccessors().Raiser));
             _remover = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(eventDefinition.GetAccessors().Remover));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(eventDefinition.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(eventDefinition.GetCustomAttributes()));
         }
 
         public MethodDefinition Adder => _adder.Value;
 
         public EventAttributes Attributes { get; }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public string Name => _name.Value;
 

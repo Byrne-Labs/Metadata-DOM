@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<ModuleReference> _module;
         private readonly Lazy<string> _name;
 
-        internal MethodImport(System.Reflection.Metadata.MethodImport methodImport, MetadataState metadataState) : base(methodImport, metadataState)
+        internal MethodImport(System.Reflection.Metadata.MethodImport methodImport, MetadataState metadataState) : base(new HandlelessCodeElementKey<MethodImport>(methodImport), metadataState)
         {
             Attributes = methodImport.Attributes;
             _name = new Lazy<string>(() => AsString(methodImport.Name));

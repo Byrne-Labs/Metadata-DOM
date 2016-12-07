@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class MethodImplementation : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _methodBody;
         private readonly Lazy<CodeElement> _methodDeclaration;
         private readonly Lazy<TypeDefinition> _type;
@@ -17,10 +17,10 @@ namespace ByrneLabs.Commons.MetadataDom
             _type = new Lazy<TypeDefinition>(() => GetCodeElement<TypeDefinition>(methodImplementation.Type));
             _methodBody = new Lazy<CodeElement>(() => GetCodeElement(methodImplementation.MethodBody));
             _methodDeclaration = new Lazy<CodeElement>(() => GetCodeElement(methodImplementation.MethodDeclaration));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(methodImplementation.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(methodImplementation.GetCustomAttributes()));
         }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public CodeElement MethodBody => _methodBody.Value;
 

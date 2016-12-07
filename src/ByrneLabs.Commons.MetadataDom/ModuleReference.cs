@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class ModuleReference : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<string> _name;
 
         internal ModuleReference(ModuleReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
@@ -14,10 +14,10 @@ namespace ByrneLabs.Commons.MetadataDom
             var moduleReference = Reader.GetModuleReference(metadataHandle);
             _name = new Lazy<string>(() => AsString(moduleReference.Name));
 
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(moduleReference.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(moduleReference.GetCustomAttributes()));
         }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public string Name => _name.Value;
     }

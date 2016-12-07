@@ -6,11 +6,11 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class LocalScope : DebugCodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<LocalScope>> _children;
+        private readonly Lazy<IEnumerable<LocalScope>> _children;
         private readonly Lazy<ImportScope> _importScope;
-        private readonly Lazy<IReadOnlyList<LocalConstant>> _localConstants;
-        private readonly Lazy<IReadOnlyList<LocalVariable>> _localVariables;
-        private readonly Lazy<MethodDefinition> _method;
+        private readonly Lazy<IEnumerable<LocalConstant>> _localConstants;
+        private readonly Lazy<IEnumerable<LocalVariable>> _localVariables;
+        private readonly Lazy<MethodDefinitionBase> _method;
 
         internal LocalScope(LocalScopeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -18,14 +18,14 @@ namespace ByrneLabs.Commons.MetadataDom
             EndOffset = localScope.EndOffset;
             _importScope = new Lazy<ImportScope>(() => GetCodeElement<ImportScope>(localScope.ImportScope));
             Length = localScope.Length;
-            _method = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(localScope.Method));
+            _method = new Lazy<MethodDefinitionBase>(() => GetCodeElement<MethodDefinitionBase>(localScope.Method));
             StartOffset = localScope.StartOffset;
-            _children = new Lazy<IReadOnlyList<LocalScope>>(LoadChildren);
-            _localConstants = new Lazy<IReadOnlyList<LocalConstant>>(() => GetCodeElements<LocalConstant>(localScope.GetLocalConstants()));
-            _localVariables = new Lazy<IReadOnlyList<LocalVariable>>(() => GetCodeElements<LocalVariable>(localScope.GetLocalVariables()));
+            _children = new Lazy<IEnumerable<LocalScope>>(LoadChildren);
+            _localConstants = new Lazy<IEnumerable<LocalConstant>>(() => GetCodeElements<LocalConstant>(localScope.GetLocalConstants()));
+            _localVariables = new Lazy<IEnumerable<LocalVariable>>(() => GetCodeElements<LocalVariable>(localScope.GetLocalVariables()));
         }
 
-        public IReadOnlyList<LocalScope> Children => _children.Value;
+        public IEnumerable<LocalScope> Children => _children.Value;
 
         public int EndOffset { get; }
 
@@ -33,15 +33,15 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public int Length { get; }
 
-        public IReadOnlyList<LocalConstant> LocalConstants => _localConstants.Value;
+        public IEnumerable<LocalConstant> LocalConstants => _localConstants.Value;
 
-        public IReadOnlyList<LocalVariable> LocalVariables => _localVariables.Value;
+        public IEnumerable<LocalVariable> LocalVariables => _localVariables.Value;
 
-        public MethodDefinition Method => _method.Value;
+        public MethodDefinitionBase Method => _method.Value;
 
         public int StartOffset { get; }
 
-        private IReadOnlyList<LocalScope> LoadChildren()
+        private IEnumerable<LocalScope> LoadChildren()
         {
             var localScope = Reader.GetLocalScope((LocalScopeHandle) ((ICodeElementWithHandle) this).MetadataHandle);
 

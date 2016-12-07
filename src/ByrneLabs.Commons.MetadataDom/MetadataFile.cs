@@ -8,7 +8,6 @@ namespace ByrneLabs.Commons.MetadataDom
     internal class MetadataFile : IDisposable
     {
         private readonly MetadataReaderProvider _metadataReaderProvider;
-        private readonly PEReader _peReader;
 
         public MetadataFile(bool prefetchMetadata, FileInfo file, MetadataFileType fileType)
         {
@@ -17,11 +16,11 @@ namespace ByrneLabs.Commons.MetadataDom
             switch (fileType)
             {
                 case MetadataFileType.Assembly:
-                    _peReader = new PEReader(fileStream, prefetchMetadata ? PEStreamOptions.PrefetchEntireImage : PEStreamOptions.Default);
-                    if (_peReader.HasMetadata)
+                    PEReader = new PEReader(fileStream, prefetchMetadata ? PEStreamOptions.PrefetchEntireImage : PEStreamOptions.Default);
+                    if (PEReader.HasMetadata)
                     {
-                        HasMetadata = _peReader.HasMetadata;
-                        Reader = _peReader.GetMetadataReader();
+                        HasMetadata = PEReader.HasMetadata;
+                        Reader = PEReader.GetMetadataReader();
                     }
                     break;
                 case MetadataFileType.Pdb:
@@ -34,13 +33,15 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
+        public PEReader PEReader { get; }
+
         public bool HasMetadata { get; }
 
         public MetadataReader Reader { get; }
 
         public void Dispose()
         {
-            _peReader?.Dispose();
+            PEReader?.Dispose();
             _metadataReaderProvider?.Dispose();
         }
     }

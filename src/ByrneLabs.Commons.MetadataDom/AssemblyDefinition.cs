@@ -10,8 +10,8 @@ namespace ByrneLabs.Commons.MetadataDom
     public class AssemblyDefinition : CodeElementWithHandle
     {
         private readonly Lazy<string> _culture;
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
-        private readonly Lazy<IReadOnlyList<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<string> _name;
         private readonly Lazy<Blob> _publicKey;
 
@@ -24,15 +24,15 @@ namespace ByrneLabs.Commons.MetadataDom
             HashAlgorithm = assemblyDefinition.HashAlgorithm;
             _publicKey = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(assemblyDefinition.PublicKey)));
             Version = assemblyDefinition.Version;
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyDefinition.GetCustomAttributes()));
-            _declarativeSecurityAttributes = new Lazy<IReadOnlyList<DeclarativeSecurityAttribute>>(() => GetCodeElements<DeclarativeSecurityAttribute>(assemblyDefinition.GetDeclarativeSecurityAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyDefinition.GetCustomAttributes()));
+            _declarativeSecurityAttributes = new Lazy<IEnumerable<DeclarativeSecurityAttribute>>(() => GetCodeElements<DeclarativeSecurityAttribute>(assemblyDefinition.GetDeclarativeSecurityAttributes()));
         }
 
         public string Culture => _culture.Value;
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public IReadOnlyList<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         public AssemblyFlags Flags { get; }
 

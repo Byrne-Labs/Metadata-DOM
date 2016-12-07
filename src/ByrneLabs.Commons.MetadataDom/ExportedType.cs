@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class ExportedType : CodeElementWithHandle
     {
-        private readonly Lazy<IReadOnlyList<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
         private readonly Lazy<string> _name;
         private readonly Lazy<string> _namespace;
@@ -22,12 +22,12 @@ namespace ByrneLabs.Commons.MetadataDom
             IsForwarder = exportedType.IsForwarder;
             _namespace = new Lazy<string>(() => AsString(exportedType.Namespace));
             _namespaceDefinition = new Lazy<NamespaceDefinition>(() => GetCodeElement<NamespaceDefinition>(exportedType.NamespaceDefinition));
-            _customAttributes = new Lazy<IReadOnlyList<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(exportedType.GetCustomAttributes()));
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(exportedType.GetCustomAttributes()));
         }
 
         public TypeAttributes Attributes { get; }
 
-        public IReadOnlyList<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public CodeElement Implementation => _implementation.Value;
 
