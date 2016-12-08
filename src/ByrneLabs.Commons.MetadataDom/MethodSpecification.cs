@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification" />
+    [PublicAPI]
     public class MethodSpecification : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

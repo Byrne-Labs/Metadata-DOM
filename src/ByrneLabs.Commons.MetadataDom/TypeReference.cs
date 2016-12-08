@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.TypeReference" />
+    [PublicAPI]
     public class TypeReference : CodeElementWithHandle
     {
         private readonly Lazy<string> _name;

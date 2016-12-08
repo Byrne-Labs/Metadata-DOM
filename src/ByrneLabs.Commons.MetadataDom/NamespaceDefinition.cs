@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition" />
+    [PublicAPI]
     public class NamespaceDefinition : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;

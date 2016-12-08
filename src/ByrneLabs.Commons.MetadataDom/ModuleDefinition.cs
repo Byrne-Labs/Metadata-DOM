@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition" />
+    [PublicAPI]
     public class ModuleDefinition : CodeElementWithHandle
     {
         private readonly Lazy<string> _name;

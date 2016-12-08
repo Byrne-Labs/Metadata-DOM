@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -6,6 +7,7 @@ using System.Reflection.Metadata;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition" />
+    [PublicAPI]
     public class AssemblyDefinition : CodeElementWithHandle
     {
         private readonly Lazy<string> _culture;

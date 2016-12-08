@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint" />
+    [PublicAPI]
     public class SequencePoint : CodeElementWithoutHandle, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;

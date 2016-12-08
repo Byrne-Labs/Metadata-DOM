@@ -1,7 +1,9 @@
 ﻿using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public abstract class DebugCodeElementWithoutHandle : CodeElement, ICodeElementWithoutHandle
     {
         internal DebugCodeElementWithoutHandle(object metadata, MetadataState metadataState) : base(metadataState)

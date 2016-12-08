@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition" />
     [DebuggerDisplay("{Namespace}.{Name}")]
+    [PublicAPI]
     public class TypeDefinition : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _baseType;

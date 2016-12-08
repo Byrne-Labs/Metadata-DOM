@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion" />
+    [PublicAPI]
     public class ExceptionRegion : CodeElementWithoutHandle
     {
         private readonly Lazy<CodeElement> _catchType;

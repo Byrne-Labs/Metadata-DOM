@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock" />
+    [PublicAPI]
     public class MethodBody : CodeElementWithoutHandle
     {
         private readonly Lazy<IReadOnlyList<ExceptionRegion>> _exceptionRegions;

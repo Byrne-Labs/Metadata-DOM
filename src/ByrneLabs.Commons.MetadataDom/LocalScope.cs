@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalScope" />
+    [PublicAPI]
     public class LocalScope : DebugCodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<LocalScope>> _children;

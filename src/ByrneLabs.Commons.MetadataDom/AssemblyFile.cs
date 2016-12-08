@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile" />
+    [PublicAPI]
     public class AssemblyFile : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

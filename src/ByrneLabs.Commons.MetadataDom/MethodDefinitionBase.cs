@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition" />
     [DebuggerDisplay("{DeclaringType.Namespace}.{DeclaringType.Name}.{Name}")]
+    [PublicAPI]
     public abstract class MethodDefinitionBase : CodeElementWithHandle, IContainsSourceCode
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

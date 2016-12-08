@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.Document" />
     [DebuggerDisplay("{Name}")]
+    [PublicAPI]
     public class Document : DebugCodeElementWithHandle, IContainsSourceCode
     {
         private static readonly IDictionary<Guid, HashAlgorithms> KnownHashAlgorithms = new Dictionary<Guid, HashAlgorithms>

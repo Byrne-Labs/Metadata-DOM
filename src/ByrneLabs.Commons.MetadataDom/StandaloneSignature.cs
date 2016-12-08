@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature" />
+    [PublicAPI]
     public class StandaloneSignature : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

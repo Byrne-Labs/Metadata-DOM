@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.Parameter" />
+    [PublicAPI]
     public class Parameter : CodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

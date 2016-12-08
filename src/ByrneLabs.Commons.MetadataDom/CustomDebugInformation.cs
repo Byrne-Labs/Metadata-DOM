@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.CustomDebugInformation" />
+    [PublicAPI]
     public class CustomDebugInformation : DebugCodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _parent;

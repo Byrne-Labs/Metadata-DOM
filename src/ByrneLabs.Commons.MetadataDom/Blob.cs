@@ -1,7 +1,9 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public class Blob
     {
         internal Blob(byte[] bytes)

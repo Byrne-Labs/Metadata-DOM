@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ImportScope" />
+    [PublicAPI]
     public class ImportScope : DebugCodeElementWithHandle
     {
         private readonly Lazy<IEnumerable<ImportDefinition>> _imports;

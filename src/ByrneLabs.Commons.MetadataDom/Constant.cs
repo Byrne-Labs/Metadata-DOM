@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.Constant" />
+    [PublicAPI]
     public class Constant : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _parent;

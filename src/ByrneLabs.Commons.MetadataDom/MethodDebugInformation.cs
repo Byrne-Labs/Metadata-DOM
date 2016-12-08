@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation" />
+    [PublicAPI]
     public class MethodDebugInformation : DebugCodeElementWithHandle, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable" />
+    [PublicAPI]
     public class LocalVariable : DebugCodeElementWithHandle
     {
         private readonly Lazy<string> _name;

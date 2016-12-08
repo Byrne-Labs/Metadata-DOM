@@ -1,5 +1,8 @@
-﻿namespace ByrneLabs.Commons.MetadataDom
+﻿using JetBrains.Annotations;
+
+namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public enum Languages
     {
         C,

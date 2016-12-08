@@ -1,7 +1,9 @@
 ﻿using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public abstract class CodeElementWithHandle : CodeElement, ICodeElementWithHandle
     {
         internal CodeElementWithHandle(object metadataHandle, MetadataState metadataState) : base(metadataState)

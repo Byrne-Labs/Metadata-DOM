@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition" />
+    [PublicAPI]
     public class EventDefinition : CodeElementWithHandle
     {
         private readonly Lazy<MethodDefinition> _adder;

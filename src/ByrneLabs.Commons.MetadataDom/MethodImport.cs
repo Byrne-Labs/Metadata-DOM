@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodImport" />
+    [PublicAPI]
     public class MethodImport : CodeElementWithoutHandle
     {
         private readonly Lazy<ModuleReference> _module;

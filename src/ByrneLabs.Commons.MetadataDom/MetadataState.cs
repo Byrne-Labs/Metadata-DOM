@@ -76,8 +76,6 @@ namespace ByrneLabs.Commons.MetadataDom
             _exportedTypes = new Lazy<IEnumerable<ExportedType>>(() => AssemblyReader.ExportedTypes.Select(exportedType => GetCodeElement(exportedType)).Cast<ExportedType>().ToList());
         }
 
-        public MetadataFile AssemblyFile { get; }
-
         public MetadataReader AssemblyReader => AssemblyFile?.Reader;
 
         public IEnumerable<ExportedType> ExportedTypes => !HasMetadata ? null : _exportedTypes.Value;
@@ -86,9 +84,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool HasMetadata => AssemblyFile?.HasMetadata == true;
 
-        public MetadataFile PdbFile { get; }
-
         public MetadataReader PdbReader => PdbFile?.Reader;
+
+        private MetadataFile AssemblyFile { get; }
+
+        private MetadataFile PdbFile { get; }
 
         public void Dispose()
         {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute" />
+    [PublicAPI]
     public class CustomAttribute : CodeElementWithHandle
     {
         private readonly Lazy<CodeElement> _constructor;
