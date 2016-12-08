@@ -25,12 +25,12 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.Parameter" />
-        /// <summary>The constrained <see cref="T:ByrneLabs.Commons.MetadataDom.GenericParameter" />.</summary>
+        /// <summary>The constrained <see cref="ByrneLabs.Commons.MetadataDom.GenericParameter" />.</summary>
         public GenericParameter Parameter => _parameter.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.Type" />
-        /// <summary>Handle (<see cref="T:ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="T:ByrneLabs.Commons.MetadataDom.TypeReference" />, or
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeSpecification" />) specifying from which type this generic parameter is constrained to derive, or which interface this generic parameter is constrained to implement.</summary>
+        /// <summary>Handle (<see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, or
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" />) specifying from which type this generic parameter is constrained to derive, or which interface this generic parameter is constrained to implement.</summary>
         public CodeElement Type => _type.Value;
     }
 }

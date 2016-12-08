@@ -20,8 +20,8 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.Constant.Parent" />
-        /// <summary>The parent handle (<see cref="T:ByrneLabs.Commons.MetadataDom.Parameter" />, <see cref="T:ByrneLabs.Commons.MetadataDom.FieldDefinition" />, or
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.PropertyDefinition" />).</summary>
+        /// <summary>The parent handle (<see cref="ByrneLabs.Commons.MetadataDom.Parameter" />, <see cref="ByrneLabs.Commons.MetadataDom.FieldDefinition" />, or
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.PropertyDefinition" />).</summary>
         public CodeElement Parent => _parent.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.Constant.TypeCode" />

@@ -55,8 +55,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.BaseType" />
         /// <summary>The base type of the type definition: either
-        ///     <see cref="T:System.Reflection.Metadata.TypeSpecification" />, <see cref="T:System.Reflection.Metadata.TypeReference" /> or
-        ///     <see cref="T:System.Reflection.Metadata.TypeDefinition" />.</summary>
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" /> or
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />.</summary>
         public CodeElement BaseType => _baseType.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetCustomAttributes" />

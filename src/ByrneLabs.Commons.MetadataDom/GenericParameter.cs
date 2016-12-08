@@ -43,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Parent" />
         /// <summary>
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeDefinition" /> or <see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" />.</summary>
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" /> or <see cref="ByrneLabs.Commons.MetadataDom.MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
     }
 }

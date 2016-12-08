@@ -3,7 +3,7 @@
 namespace ByrneLabs.Commons.MetadataDom
 {
     [PublicAPI]
-    public enum Languages
+    public enum Language
     {
         C,
         CPlusPlus,

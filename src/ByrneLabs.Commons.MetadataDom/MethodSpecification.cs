@@ -26,8 +26,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Method" />
         /// <summary>
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="T:ByrneLabs.Commons.MetadataDom.MemberRefernce" /> specifying to which generic method this
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.MethodSpecification" /> refers, that is which generic method is it an instantiation of.</summary>
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="ByrneLabs.Commons.MetadataDom.MemberReference" /> specifying to which generic method this
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.MethodSpecification" /> refers, that is which generic method is it an instantiation of.</summary>
         public CodeElement Method => _method.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Signature" />

@@ -37,13 +37,13 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Implementation" />
         /// <returns>
         ///     <list type="bullet">
-        ///         <item><description><see cref="T:ByrneLabs.Commons.MetadataDom.AssemblyFile" /> representing another module in the assembly.</description></item>
+        ///         <item><description><see cref="ByrneLabs.Commons.MetadataDom.AssemblyFile" /> representing another module in the assembly.</description></item>
         ///         <item>
-        ///             <description><see cref="T:ByrneLabs.Commons.MetadataDom.AssemblyReference" /> representing another assembly if
-        ///                 <see cref="P:ByrneLabs.Commons.MetadataDom.ExportedType.IsForwarder" /> is true.</description>
+        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.AssemblyReference" /> representing another assembly if
+        ///                 <see cref="ByrneLabs.Commons.MetadataDom.ExportedType.IsForwarder" /> is true.</description>
         ///         </item>
         ///         <item>
-        ///             <description><see cref="T:ByrneLabs.Commons.MetadataDom.ExportedType" /> representing the declaring exported type in which this was is nested.</description>
+        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.ExportedType" /> representing the declaring exported type in which this was is nested.</description>
         ///         </item>
         ///     </list>
         /// </returns>

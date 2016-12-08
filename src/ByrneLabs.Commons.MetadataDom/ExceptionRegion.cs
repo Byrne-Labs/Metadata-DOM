@@ -22,8 +22,8 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.CatchType" />
-        /// <summary>Returns a <see cref="T:ByrneLabs.Commons.MetadataDom.TypeReference" />, <see cref="T:ByrneLabs.Commons.MetadataDom.TypeDefinition" />, or
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeSpecification" /> if the region represents a catch, null otherwise.</summary>
+        /// <summary>Returns a <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, or
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" /> if the region represents a catch, null otherwise.</summary>
         public CodeElement CatchType => _catchType.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.FilterOffset" />

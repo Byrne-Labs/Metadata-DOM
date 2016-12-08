@@ -32,9 +32,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource.Implementation" />
         /// <summary>
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.AssemblyFile" />, <see cref="T:ByrneLabs.Commons.MetadataDom.AssemblyReference" />, or null.</summary>
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.AssemblyFile" />, <see cref="ByrneLabs.Commons.MetadataDom.AssemblyReference" />, or null.</summary>
         /// <remarks>Corresponds to Implementation field of ManifestResource table in ECMA-335 Standard. If null, then
-        ///     <see cref="P:ByrneLabs.Commons.MetadataDom.ManifestResource.Offset" /> is an offset in the PE image that contains the metadata, starting from the Resource entry in the CLI header.</remarks>
+        ///     <see cref="Offset" /> is an offset in the PE image that contains the metadata, starting from the Resource entry in the CLI header.</remarks>
         public CodeElement Implementation => _implementation.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource.Name" />

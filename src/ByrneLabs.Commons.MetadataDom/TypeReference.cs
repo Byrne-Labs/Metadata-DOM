@@ -29,25 +29,25 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeReference.ResolutionScope" />
         /// <summary>Resolution scope in which the target type is defined and is uniquely identified by the specified
-        ///     <see cref="P:ByrneLabs.Commons.MetadataDom.TypeReference.Namespace" /> and <see cref="P:System.Reflection.Metadata.TypeReference.Name" />.</summary>
+        ///     <see cref="Namespace" /> and <see cref="Name" />.</summary>
         /// <remarks>Resolution scope can be one of the following handles:
         ///     <list type="bullet">
         ///         <item>
-        ///             <description><see cref="T:ByrneLabs.Commons.MetadataDom.TypeReference" /> of the enclosing type, if the target type is a nested type.</description>
+        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.TypeReference" /> of the enclosing type, if the target type is a nested type.</description>
         ///         </item>
         ///         <item>
-        ///             <description><see cref="T:ByrneLabs.Commons.MetadataDom.ModuleReference" />, if the target type is defined in another module within the same assembly as this one.</description>
+        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.ModuleReference" />, if the target type is defined in another module within the same assembly as this one.</description>
         ///         </item>
         ///         <item>
-        ///             <description><see cref="F:ByrneLabs.Commons.MetadataDom.ModuleDefinition" />, if the target type is defined in the current module. This should not occur in a CLI compressed metadata module.</description>
+        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.ModuleDefinition" />, if the target type is defined in the current module. This should not occur in a CLI compressed metadata module.</description>
         ///         </item>
         ///         <item>
-        ///             <description><see cref="T:ByrneLabs.Commons.MetadataDom.AssemblyReferenceHandle" />, if the target type is defined in a different assembly from the current module.</description>
+        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.AssemblyReference" />, if the target type is defined in a different assembly from the current module.</description>
         ///         </item>
         ///         <item>
         ///             <description>Possibly a surprise if the handle was nil because that means it was resolved by searching the
-        ///                 <see cref="P:System.Reflection.Metadata.MetadataReader.ExportedTypes" /> for a matching
-        ///                 <see cref="P:ByrneLabs.Commons.MetadataDom.TypeReference.Namespace" /> and <see cref="P:ByrneLabs.Commons.MetadataDom.TypeReference.Name" />.</description>
+        ///                 <see cref="ReflectionData.ExportedTypes" /> for a matching
+        ///                 <see cref="Namespace" /> and <see cref="Name" />.</description>
         ///         </item>
         ///     </list>
         /// </remarks>

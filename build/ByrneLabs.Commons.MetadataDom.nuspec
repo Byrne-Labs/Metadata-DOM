@@ -12,7 +12,7 @@
         <description>A domain object model (DOM) wrapper of the .NET Core System.Reflection.Metadata classes</description>
         <copyright>Copyright ©2016 Byrne Labs</copyright>
         <tags>System.Reflection.Metadata Reflection</tags>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
 
         <dependencies>
             <group targetFramework="net45">
@@ -48,6 +48,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="**\ByrneLabs.Commons.MetadataDom.*" target="lib" />
+        <file src="**\ByrneLabs.Commons.MetadataDom.dll" target="lib" />
+        <file src="**\ByrneLabs.Commons.MetadataDom.xml" target="lib" />
     </files>
 </package>

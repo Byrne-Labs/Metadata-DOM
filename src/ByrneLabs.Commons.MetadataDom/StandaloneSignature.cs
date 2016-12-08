@@ -24,10 +24,10 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetKind" />
-        /// <summary>Determines the kind of signature, which can be <see cref="F:ByrneLabs.Commons.MetadataDom.SignatureKind.Method" /> or
-        ///     <see cref="F:ByrneLabs.Commons.MetadataDom.SignatureKind.LocalVariables" />
+        /// <summary>Determines the kind of signature, which can be <see cref="System.Reflection.Metadata.SignatureKind.Method" /> or
+        ///     <see cref="System.Reflection.Metadata.SignatureKind.LocalVariables" />
         /// </summary>
-        /// <exception cref="T:System.BadImageFormatException">The signature is invalid.</exception>
+        /// <exception cref="System.BadImageFormatException">The signature is invalid.</exception>
         public StandaloneSignatureKind Kind { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.Signature" />

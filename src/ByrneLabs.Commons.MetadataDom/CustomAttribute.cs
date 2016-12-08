@@ -21,7 +21,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Constructor" />
-        /// <summary>The constructor (<see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="T:ByrneLabs.Commons.MetadataDom.MemberReference" />) of the custom attribute type.</summary>
+        /// <summary>The constructor (<see cref="ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="ByrneLabs.Commons.MetadataDom.MemberReference" />) of the custom attribute type.</summary>
         public CodeElement Constructor => _constructor.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Parent" />

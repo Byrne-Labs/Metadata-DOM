@@ -35,9 +35,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.Parent" />
         /// <summary>
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.MethodDefinition" />, <see cref="T:ByrneLabs.Commons.MetadataDom.ModuleReference" />,
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="T:ByrneLabs.Commons.MetadataDom.TypeReference" />, or
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeSpecification" />.</summary>
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.MethodDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.ModuleReference" />,
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, or
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" />.</summary>
         public CodeElement Parent => _parent.Value;
 
         public Blob Signature => _signature.Value;

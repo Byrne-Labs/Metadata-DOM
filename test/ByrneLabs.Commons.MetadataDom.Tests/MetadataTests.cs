@@ -22,19 +22,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private readonly ITestOutputHelper _output;
 
         [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        private static void AssertHasDebugMetadata(Metadata metadata) => Assert.True(metadata.Documents.Any());
+        private static void AssertHasDebugMetadata(ReflectionData reflectionData) => Assert.True(reflectionData.Documents.Any());
 
         [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        private static void AssertHasMetadata(Metadata metadata)
+        private static void AssertHasMetadata(ReflectionData reflectionData)
         {
-            Assert.NotNull(metadata.AssemblyDefinition);
-            Assert.True(metadata.TypeDefinitions.Any());
+            Assert.NotNull(reflectionData.AssemblyDefinition);
+            Assert.True(reflectionData.TypeDefinitions.Any());
         }
 
-        private void AssertValid(Metadata metadata)
+        private void AssertValid(ReflectionData reflectionData)
         {
-            CheckCodeElement(metadata, new List<CodeElement>());
-            OutputMetadataSummary(new[] { metadata });
+            CheckCodeElement(reflectionData, new List<CodeElement>());
+            OutputMetadataSummary(new[] { reflectionData });
         }
 
         private static void CheckCodeElement(CodeElement codeElement, ICollection<CodeElement> checkedCodeElements)
@@ -81,48 +81,48 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             return gacAssemblies.ToList();
         }
 
-        private void OutputMetadataSummary(IEnumerable<Metadata> allMetadata)
+        private void OutputMetadataSummary(IEnumerable<ReflectionData> allMetadata)
         {
             var startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Count(metadata => !metadata.HasMetadata)} files without metadata ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Count(reflectionData => !reflectionData.HasMetadata)} files without reflectionData ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.AssemblyFiles?.Count()).Sum()} AssemblyFiles ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.AssemblyFiles?.Count()).Sum()} AssemblyFiles ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.AssemblyReferences?.Count()).Sum()} AssemblyReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.AssemblyReferences?.Count()).Sum()} AssemblyReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.CustomDebugInformation?.Count()).Sum()} CustomDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.CustomDebugInformation?.Count()).Sum()} CustomDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.DeclarativeSecurityAttributes?.Count()).Sum()} DeclarativeSecurityAttributes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.DeclarativeSecurityAttributes?.Count()).Sum()} DeclarativeSecurityAttributes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.Documents?.Count()).Sum()} Documents ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.Documents?.Count()).Sum()} Documents ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.EventDefinitions?.Count()).Sum()} EventDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.EventDefinitions?.Count()).Sum()} EventDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ExportedTypes?.Count()).Sum()} ExportedTypes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.ExportedTypes?.Count()).Sum()} ExportedTypes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.FieldDefinitions?.Count()).Sum()} FieldDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.FieldDefinitions?.Count()).Sum()} FieldDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ImportScopes?.Count()).Sum()} ImportScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.ImportScopes?.Count()).Sum()} ImportScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalConstants?.Count()).Sum()} LocalConstants ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.LocalConstants?.Count()).Sum()} LocalConstants ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalScopes?.Count()).Sum()} LocalScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.LocalScopes?.Count()).Sum()} LocalScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.LocalVariables?.Count()).Sum()} LocalVariables ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.LocalVariables?.Count()).Sum()} LocalVariables ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.ManifestResources?.Count()).Sum()} ManifestResources ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.ManifestResources?.Count()).Sum()} ManifestResources ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MemberReferences?.Count()).Sum()} MemberReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.MemberReferences?.Count()).Sum()} MemberReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MethodDebugInformation?.Count()).Sum()} MethodDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.MethodDebugInformation?.Count()).Sum()} MethodDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.MethodDefinitions?.Count()).Sum()} MethodDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.MethodDefinitions?.Count()).Sum()} MethodDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.PropertyDefinitions?.Count()).Sum()} PropertyDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.PropertyDefinitions?.Count()).Sum()} PropertyDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.TypeDefinitions?.Count()).Sum()} TypeDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.TypeDefinitions?.Count()).Sum()} TypeDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
             startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(metadata => metadata.TypeReferences?.Count()).Sum()} TypeReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
+            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.TypeReferences?.Count()).Sum()} TypeReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
         }
 
         private void SmokeTestOnDotNetFramework(bool prefetch)
@@ -134,9 +134,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             {
                 try
                 {
-                    using (var metadata = new Metadata(prefetch, assemblyFile))
+                    using (var reflectionData = new ReflectionData(prefetch, assemblyFile))
                     {
-                        AssertValid(metadata);
+                        AssertValid(reflectionData);
                     }
                 }
                 catch (Exception exception)
@@ -163,51 +163,51 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Fact]
         public void TestOnOwnAssemblyAndPdbWithoutPrefetch()
         {
-            var metadata = new Metadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            AssertValid(metadata);
-            AssertHasMetadata(metadata);
-            AssertHasDebugMetadata(metadata);
+            var reflectionData = new ReflectionData(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
+            AssertHasDebugMetadata(reflectionData);
         }
 
         [Fact]
         public void TestOnOwnAssemblyAndPdbWithPrefetch()
         {
-            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            AssertValid(metadata);
-            AssertHasMetadata(metadata);
-            AssertHasDebugMetadata(metadata);
+            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
+            AssertHasDebugMetadata(reflectionData);
         }
 
         [Fact]
         public void TestOnOwnAssemblyWithoutPrefetch()
         {
-            var metadata = new Metadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
-            AssertValid(metadata);
-            AssertHasMetadata(metadata);
+            var reflectionData = new ReflectionData(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
         }
 
         [Fact]
         public void TestOnOwnAssemblyWithPrefetch()
         {
-            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
-            AssertValid(metadata);
-            AssertHasMetadata(metadata);
+            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
         }
 
         [Fact]
         public void TestOnOwnPdbWithoutPrefetch()
         {
-            var metadata = new Metadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            AssertValid(metadata);
-            AssertHasDebugMetadata(metadata);
+            var reflectionData = new ReflectionData(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            AssertValid(reflectionData);
+            AssertHasDebugMetadata(reflectionData);
         }
 
         [Fact]
         public void TestOnOwnPdbWithPrefetch()
         {
-            var metadata = new Metadata(true, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            AssertValid(metadata);
-            AssertHasDebugMetadata(metadata);
+            var reflectionData = new ReflectionData(true, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            AssertValid(reflectionData);
+            AssertHasDebugMetadata(reflectionData);
         }
     }
 }

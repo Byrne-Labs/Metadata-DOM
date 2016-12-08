@@ -3,7 +3,7 @@
 namespace ByrneLabs.Commons.MetadataDom
 {
     [PublicAPI]
-    public enum HashAlgorithms
+    public enum HashAlgorithm
     {
         Sha1,
         Sha256

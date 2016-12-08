@@ -24,8 +24,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation.Interface" />
         /// <summary>The interface that is implemented
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="T:ByrneLabs.Commons.MetadataDom.TypeReference" />, or
-        ///     <see cref="T:ByrneLabs.Commons.MetadataDom.TypeSpecification" />
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, or
+        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" />
         /// </summary>
         public CodeElement Interface => _interface.Value;
     }

@@ -90,10 +90,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private MetadataFile PdbFile { get; }
 
+        /// <inheritdoc />
         public void Dispose()
         {
-            PdbFile?.Dispose();
-            AssemblyFile?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
@@ -475,5 +476,14 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => AssemblyFile.PEReader.GetMethodBody(relativeVirtualAddress);
+
+        protected virtual void Dispose(bool disposeManaged)
+        {
+            if (disposeManaged)
+            {
+                PdbFile?.Dispose();
+                AssemblyFile?.Dispose();
+            }
+        }
     }
 }

@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinitionHandle.ToDebugInformationHandle" />
-        /// <summary>Returns a <see cref="T:ByrneLabs.Commons.MetadataDom.MethodDebugInformation" /> corresponding to this handle.</summary>
+        /// <summary>Returns a <see cref="ByrneLabs.Commons.MetadataDom.MethodDebugInformation" /> corresponding to this handle.</summary>
         /// <remarks></remarks>
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
 
