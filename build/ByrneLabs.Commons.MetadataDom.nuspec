@@ -11,7 +11,7 @@
         <iconUrl>https://raw.githubusercontent.com/Byrne-Labs/Metadata-DOM/master/beaker.png</iconUrl>
         <description>A domain object model (DOM) wrapper of the .NET Core System.Reflection.Metadata classes</description>
         <copyright>Copyright ©2016 Byrne Labs</copyright>
-        <tags>System.Reflection.Metadata Reflection</tags>
+        <tags>System.Reflection.Metadata Reflection Metadata .NETCore .NETStandard</tags>
         <version>1.0.1</version>
 
         <dependencies>
@@ -49,6 +49,7 @@
     </metadata>
     <files>
         <file src="**\ByrneLabs.Commons.MetadataDom.dll" target="lib" />
+        <file src="**\ByrneLabs.Commons.MetadataDom.pdb" target="lib" />
         <file src="**\ByrneLabs.Commons.MetadataDom.xml" target="lib" />
     </files>
 </package>

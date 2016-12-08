@@ -2,25 +2,28 @@
 
 cls
 
+rd /s /q ..\packages 1>nul
 rd /s /q ..\src\ByrneLabs.Commons.MetadataDom\bin 1>nul
 rd /s /q ..\src\ByrneLabs.Commons.MetadataDom\obj 1>nul
 
-rem call:core netcoreapp1.0
-rem call:core netcoreapp1.1
-rem call:core netstandard1.3
-rem call:core netstandard1.4
-rem call:core netstandard1.5
+call:core netcoreapp1.0
+call:core netcoreapp1.1
+call:core netstandard1.3
+call:core netstandard1.4
+call:core netstandard1.5
 call:core netstandard1.6
 
-rem call:classic net45
-rem call:classic net451
-rem call:classic net452
-rem call:classic net46
-rem call:classic net461
-rem call:classic net462
+call:classic net45
+call:classic net451
+call:classic net452
+call:classic net46
+call:classic net461
+call:classic net462
 
-rem call:classic monoandroid10
-rem call:classic xamarinios10
+call:classic monoandroid10
+call:classic xamarinios10
+
+del /f /s /q ..\src\ByrneLabs.Commons.MetadataDom\bin\release\ByrneLabs.Commons.MetadataDom.xml
 
 nuget pack -BasePath ..\src\ByrneLabs.Commons.MetadataDom\bin\release -OutputDirectory ..\src\ByrneLabs.Commons.MetadataDom\bin\release -Symbols
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -61,6 +62,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 _propertyDefinitions = new Lazy<IEnumerable<PropertyDefinition>>(() => GetCodeElements<PropertyDefinition>(Reader.PropertyDefinitions));
                 _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() => GetCodeElements<TypeDefinition>(Reader.TypeDefinitions));
                 _typeReferences = new Lazy<IEnumerable<TypeReference>>(() => GetCodeElements<TypeReference>(Reader.TypeReferences));
+                MetadataKind = Reader.MetadataKind;
             }
             if (MetadataState.HasDebugMetadata)
             {
@@ -74,52 +76,79 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
+        /// <inheritdoc cref="MetadataReader.GetAssemblyDefinition" />
         public AssemblyDefinition AssemblyDefinition { get; }
 
+        /// <inheritdoc cref="MetadataReader.AssemblyFiles" />
         public IEnumerable<AssemblyFile> AssemblyFiles => !HasMetadata ? null : _assemblyFiles.Value;
 
+        /// <inheritdoc cref="MetadataReader.AssemblyReferences" />
         public IEnumerable<AssemblyReference> AssemblyReferences => !HasMetadata ? null : _assemblyReferences.Value;
 
+        /// <inheritdoc cref="MetadataReader.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => !HasMetadata ? null : _customAttributes.Value;
 
+        /// <inheritdoc cref="MetadataReader.CustomDebugInformation" />
         public IEnumerable<CustomDebugInformation> CustomDebugInformation => !HasDebugMetadata ? null : _customDebugInformation.Value;
 
+        /// <inheritdoc cref="MetadataReader.DeclarativeSecurityAttributes" />
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => !HasMetadata ? null : _declarativeSecurityAttributes.Value;
 
+        /// <inheritdoc cref="MetadataReader.Documents" />
         public IEnumerable<Document> Documents => !HasDebugMetadata ? null : _documents.Value;
 
+        /// <inheritdoc cref="MetadataReader.EventDefinitions" />
         public IEnumerable<EventDefinition> EventDefinitions => !HasMetadata ? null : _eventDefinitions.Value;
 
+        /// <inheritdoc cref="MetadataReader.ExportedTypes" />
         public IEnumerable<ExportedType> ExportedTypes => MetadataState.ExportedTypes;
 
+        /// <inheritdoc cref="MetadataReader.FieldDefinitions" />
         public IEnumerable<FieldDefinition> FieldDefinitions => !HasMetadata ? null : _fieldDefinitions.Value;
 
+        /// <summary>False if no PDB file found or if data could not be decoded; else true</summary>
         public bool HasDebugMetadata { get; }
 
+        /// <inheritdoc cref="PEReader.HasMetadata" />
         public bool HasMetadata { get; }
 
+        /// <inheritdoc cref="MetadataReader.ImportScopes" />
         public IEnumerable<ImportScope> ImportScopes => !HasMetadata ? null : _importScopes.Value;
 
+        /// <inheritdoc cref="MetadataReader.LocalConstants" />
         public IEnumerable<LocalConstant> LocalConstants => !HasDebugMetadata ? null : _localConstants.Value;
 
+        /// <inheritdoc cref="MetadataReader.LocalScopes" />
         public IEnumerable<LocalScope> LocalScopes => !HasDebugMetadata ? null : _localScopes.Value;
 
+        /// <inheritdoc cref="MetadataReader.LocalVariables" />
         public IEnumerable<LocalVariable> LocalVariables => !HasDebugMetadata ? null : _localVariables.Value;
 
+        /// <inheritdoc cref="MetadataReader.ManifestResources" />
         public IEnumerable<ManifestResource> ManifestResources => !HasMetadata ? null : _manifestResources.Value;
 
+        /// <inheritdoc cref="MetadataReader.MemberReferences" />
         public IEnumerable<MemberReference> MemberReferences => !HasMetadata ? null : _memberReferences.Value;
 
+        /// <inheritdoc cref="MetadataReader.MetadataKind" />
+        public MetadataKind MetadataKind { get; }
+
+        /// <inheritdoc cref="MetadataReader.MethodDebugInformation" />
         public IEnumerable<MethodDebugInformation> MethodDebugInformation => !HasDebugMetadata ? null : _methodDebugInformation.Value;
 
+        /// <inheritdoc cref="MetadataReader.MethodDefinitions" />
         public IEnumerable<MethodDefinitionBase> MethodDefinitions => !HasMetadata ? null : _methodDefinitions.Value;
 
+        /// <inheritdoc cref="MetadataReader.GetModuleDefinition" />
         public ModuleDefinition ModuleDefinition => !HasMetadata ? null : _moduleDefinition.Value;
 
+        /// <inheritdoc cref="MetadataReader.PropertyDefinitions" />
         public IEnumerable<PropertyDefinition> PropertyDefinitions => !HasMetadata ? null : _propertyDefinitions.Value;
 
+        /// <inheritdoc cref="MetadataReader.TypeDefinitions" />
         public IEnumerable<TypeDefinition> TypeDefinitions => !HasMetadata ? null : _typeDefinitions.Value;
 
+        /// <inheritdoc cref="MetadataReader.TypeReferences" />
         public IEnumerable<TypeReference> TypeReferences => !HasMetadata ? null : _typeReferences.Value;
 
         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader ?? MetadataState.PdbReader;
