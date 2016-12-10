@@ -32,7 +32,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
     }
 
-    internal sealed class HandlelessCodeElementKey<T> : HandlelessCodeElementKey where T : ICodeElementWithoutHandle
+    internal sealed class HandlelessCodeElementKey<T> : HandlelessCodeElementKey where T : CodeElement
     {
         public HandlelessCodeElementKey(object keyValue) : base(keyValue, typeof(T))
         {

@@ -7,23 +7,29 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ModuleReference" />
     [PublicAPI]
-    public class ModuleReference : CodeElementWithHandle
+    public class ModuleReference : RuntimeCodeElement, ICodeElementWithHandle<ModuleReferenceHandle, System.Reflection.Metadata.ModuleReference>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<string> _name;
 
         internal ModuleReference(ModuleReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var moduleReference = Reader.GetModuleReference(metadataHandle);
-            _name = new Lazy<string>(() => AsString(moduleReference.Name));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetModuleReference(metadataHandle);
+            Name = AsString(MetadataToken.Name);
 
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(moduleReference.GetCustomAttributes()));
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleReference.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleReference.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public ModuleReferenceHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.ModuleReference MetadataToken { get; }
     }
 }

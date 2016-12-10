@@ -6,25 +6,26 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion" />
     [PublicAPI]
-    public class ExceptionRegion : CodeElementWithoutHandle
+    public class ExceptionRegion : RuntimeCodeElement, ICodeElementWithToken<System.Reflection.Metadata.ExceptionRegion>
     {
-        private readonly Lazy<CodeElement> _catchType;
+        private readonly Lazy<TypeBase> _catchType;
 
         internal ExceptionRegion(System.Reflection.Metadata.ExceptionRegion exceptionRegion, MetadataState metadataState) : base(new HandlelessCodeElementKey<ExceptionRegion>(exceptionRegion), metadataState)
         {
-            _catchType = GetLazyCodeElement(exceptionRegion.CatchType);
-            FilterOffset = exceptionRegion.FilterOffset;
-            HandlerLength = exceptionRegion.HandlerLength;
-            HandlerOffset = exceptionRegion.HandlerOffset;
-            Kind = exceptionRegion.Kind;
-            TryLength = exceptionRegion.TryLength;
-            TryOffset = exceptionRegion.TryOffset;
+            MetadataToken = exceptionRegion;
+            _catchType = GetLazyCodeElementWithHandle<TypeBase>(MetadataToken.CatchType);
+            FilterOffset = MetadataToken.FilterOffset;
+            HandlerLength = MetadataToken.HandlerLength;
+            HandlerOffset = MetadataToken.HandlerOffset;
+            Kind = MetadataToken.Kind;
+            TryLength = MetadataToken.TryLength;
+            TryOffset = MetadataToken.TryOffset;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.CatchType" />
-        /// <summary>Returns a <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, or
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" /> if the region represents a catch, null otherwise.</summary>
-        public CodeElement CatchType => _catchType.Value;
+        /// <summary>Returns a <see cref="TypeReference" />, <see cref="TypeDefinition" />, or
+        ///     <see cref="TypeSpecification" /> if the region represents a catch, null otherwise.</summary>
+        public TypeBase CatchType => _catchType.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.FilterOffset" />
         public int FilterOffset { get; }
@@ -43,5 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.TryOffset" />
         public int TryOffset { get; }
+
+        public System.Reflection.Metadata.ExceptionRegion MetadataToken { get; }
     }
 }

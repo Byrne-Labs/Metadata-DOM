@@ -8,29 +8,28 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition" />
     [PublicAPI]
-    public class AssemblyDefinition : CodeElementWithHandle
+    public class AssemblyDefinition : RuntimeCodeElement, ICodeElementWithHandle<AssemblyDefinitionHandle, System.Reflection.Metadata.AssemblyDefinition>
     {
-        private readonly Lazy<string> _culture;
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
-        private readonly Lazy<string> _name;
         private readonly Lazy<Blob> _publicKey;
 
-        internal AssemblyDefinition(AssemblyDefinitionHandle assemblyDefinitionHandle, MetadataState metadataState) : base(assemblyDefinitionHandle, metadataState)
+        internal AssemblyDefinition(AssemblyDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var assemblyDefinition = Reader.GetAssemblyDefinition();
-            _name = new Lazy<string>(() => AsString(assemblyDefinition.Name));
-            _culture = new Lazy<string>(() => AsString(assemblyDefinition.Culture));
-            Flags = assemblyDefinition.Flags;
-            HashAlgorithm = assemblyDefinition.HashAlgorithm;
-            _publicKey = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(assemblyDefinition.PublicKey)));
-            Version = assemblyDefinition.Version;
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyDefinition.GetCustomAttributes()));
-            _declarativeSecurityAttributes = new Lazy<IEnumerable<DeclarativeSecurityAttribute>>(() => GetCodeElements<DeclarativeSecurityAttribute>(assemblyDefinition.GetDeclarativeSecurityAttributes()));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetAssemblyDefinition();
+            Name = AsString(MetadataToken.Name);
+            Culture = AsString(MetadataToken.Culture);
+            Flags = MetadataToken.Flags;
+            HashAlgorithm = MetadataToken.HashAlgorithm;
+            _publicKey = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PublicKey)));
+            Version = MetadataToken.Version;
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _declarativeSecurityAttributes = GetLazyCodeElementsWithHandle<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Culture" />
-        public string Culture => _culture.Value;
+        public string Culture { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
@@ -45,12 +44,18 @@ namespace ByrneLabs.Commons.MetadataDom
         public AssemblyHashAlgorithm HashAlgorithm { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.PublicKey" />
         public Blob PublicKey => _publicKey.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Version" />
         public Version Version { get; }
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public AssemblyDefinitionHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.AssemblyDefinition MetadataToken { get; }
     }
 }

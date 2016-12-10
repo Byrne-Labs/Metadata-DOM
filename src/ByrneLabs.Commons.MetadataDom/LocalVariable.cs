@@ -1,21 +1,19 @@
-﻿using System;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable" />
     [PublicAPI]
-    public class LocalVariable : DebugCodeElementWithHandle
+    public class LocalVariable : DebugCodeElement, ICodeElementWithHandle<LocalVariableHandle, System.Reflection.Metadata.LocalVariable>
     {
-        private readonly Lazy<string> _name;
-
         internal LocalVariable(LocalVariableHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var localVariable = Reader.GetLocalVariable(metadataHandle);
-            _name = new Lazy<string>(() => AsString(localVariable.Name));
-            Attributes = localVariable.Attributes;
-            Index = localVariable.Index;
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetLocalVariable(metadataHandle);
+            Name = AsString(MetadataToken.Name);
+            Attributes = MetadataToken.Attributes;
+            Index = MetadataToken.Index;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable.Attributes" />
@@ -25,6 +23,12 @@ namespace ByrneLabs.Commons.MetadataDom
         public int Index { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public LocalVariableHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.LocalVariable MetadataToken { get; }
     }
 }

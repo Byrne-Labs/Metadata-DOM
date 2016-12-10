@@ -7,21 +7,21 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MemberReference" />
     [PublicAPI]
-    public class MemberReference : CodeElementWithHandle
+    public class MemberReference : RuntimeCodeElement, ICodeElementWithHandle<MemberReferenceHandle, System.Reflection.Metadata.MemberReference>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<string> _name;
         private readonly Lazy<CodeElement> _parent;
         private readonly Lazy<Blob> _signature;
 
         internal MemberReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var memberResource = Reader.GetMemberReference(metadataHandle);
-            _name = new Lazy<string>(() => AsString(memberResource.Name));
-            _parent = new Lazy<CodeElement>(() => GetCodeElement(memberResource.Parent));
-            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(memberResource.Signature)));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(memberResource.GetCustomAttributes()));
-            Kind = memberResource.GetKind();
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetMemberReference(metadataHandle);
+            Name = AsString(MetadataToken.Name);
+            _parent = GetLazyCodeElementWithHandle(MetadataToken.Parent);
+            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            Kind = MetadataToken.GetKind();
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.GetCustomAttributes" />
@@ -31,15 +31,19 @@ namespace ByrneLabs.Commons.MetadataDom
         public MemberReferenceKind Kind { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.Parent" />
-        /// <summary>
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.MethodDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.ModuleReference" />,
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, or
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" />.</summary>
+        /// <summary><see cref="MethodDefinition" />, <see cref="ModuleReference" />, <see cref="TypeDefinition" />, <see cref="TypeReference" />, or
+        ///     <see cref="TypeSpecification" />.</summary>
         public CodeElement Parent => _parent.Value;
 
         public Blob Signature => _signature.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public MemberReferenceHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.MemberReference MetadataToken { get; }
     }
 }

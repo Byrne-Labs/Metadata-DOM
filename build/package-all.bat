@@ -27,6 +27,7 @@ del /f /s /q ..\src\ByrneLabs.Commons.MetadataDom\bin\release\ByrneLabs.Commons.
 
 nuget pack -BasePath ..\src\ByrneLabs.Commons.MetadataDom\bin\release -OutputDirectory ..\src\ByrneLabs.Commons.MetadataDom\bin\release -Symbols
 
+copy ..\src\ByrneLabs.Commons.MetadataDom\bin\release\*.nupkg ..\..\"Private NuGet Repo"
 goto:eof
 
 

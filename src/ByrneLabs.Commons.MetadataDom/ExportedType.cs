@@ -8,24 +8,23 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ExportedType" />
     [PublicAPI]
-    public class ExportedType : CodeElementWithHandle
+    public class ExportedType : RuntimeCodeElement, ICodeElementWithHandle<ExportedTypeHandle, System.Reflection.Metadata.ExportedType>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
-        private readonly Lazy<string> _name;
-        private readonly Lazy<string> _namespace;
         private readonly Lazy<NamespaceDefinition> _namespaceDefinition;
 
         internal ExportedType(ExportedTypeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var exportedType = Reader.GetExportedType(metadataHandle);
-            _name = new Lazy<string>(() => AsString(exportedType.Name));
-            Attributes = exportedType.Attributes;
-            _implementation = new Lazy<CodeElement>(() => GetCodeElement(exportedType.Implementation));
-            IsForwarder = exportedType.IsForwarder;
-            _namespace = new Lazy<string>(() => AsString(exportedType.Namespace));
-            _namespaceDefinition = new Lazy<NamespaceDefinition>(() => GetCodeElement<NamespaceDefinition>(exportedType.NamespaceDefinition));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(exportedType.GetCustomAttributes()));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetExportedType(metadataHandle);
+            Name = AsString(MetadataToken.Name);
+            Attributes = MetadataToken.Attributes;
+            _implementation = GetLazyCodeElementWithHandle(MetadataToken.Implementation);
+            IsForwarder = MetadataToken.IsForwarder;
+            Namespace = AsString(MetadataToken.Namespace);
+            _namespaceDefinition = GetLazyCodeElementWithHandle<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Attributes" />
@@ -37,13 +36,13 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Implementation" />
         /// <returns>
         ///     <list type="bullet">
-        ///         <item><description><see cref="ByrneLabs.Commons.MetadataDom.AssemblyFile" /> representing another module in the assembly.</description></item>
+        ///         <item><description><see cref="AssemblyFile" /> representing another module in the assembly.</description></item>
         ///         <item>
-        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.AssemblyReference" /> representing another assembly if
-        ///                 <see cref="ByrneLabs.Commons.MetadataDom.ExportedType.IsForwarder" /> is true.</description>
+        ///             <description><see cref="AssemblyReference" /> representing another assembly if
+        ///                 <see cref="ExportedType.IsForwarder" /> is true.</description>
         ///         </item>
         ///         <item>
-        ///             <description><see cref="ByrneLabs.Commons.MetadataDom.ExportedType" /> representing the declaring exported type in which this was is nested.</description>
+        ///             <description><see cref="ExportedType" /> representing the declaring exported type in which this was is nested.</description>
         ///         </item>
         ///     </list>
         /// </returns>
@@ -53,12 +52,18 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsForwarder { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Namespace" />
-        public string Namespace => _namespace.Value;
+        public string Namespace { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.NamespaceDefinition" />
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public ExportedTypeHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.ExportedType MetadataToken { get; }
     }
 }

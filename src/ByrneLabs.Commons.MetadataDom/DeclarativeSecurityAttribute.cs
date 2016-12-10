@@ -7,17 +7,18 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute" />
     [PublicAPI]
-    public class DeclarativeSecurityAttribute : CodeElementWithHandle
+    public class DeclarativeSecurityAttribute : RuntimeCodeElement, ICodeElementWithHandle<DeclarativeSecurityAttributeHandle, System.Reflection.Metadata.DeclarativeSecurityAttribute>
     {
         private readonly Lazy<CodeElement> _parent;
         private readonly Lazy<Blob> _permissionSet;
 
         internal DeclarativeSecurityAttribute(DeclarativeSecurityAttributeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var declarativeSecurityAttribute = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
-            _parent = new Lazy<CodeElement>(() => GetCodeElement(declarativeSecurityAttribute.Parent));
-            Action = declarativeSecurityAttribute.Action;
-            _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(declarativeSecurityAttribute.PermissionSet)));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
+            _parent = GetLazyCodeElementWithHandle(MetadataToken.Parent);
+            Action = MetadataToken.Action;
+            _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PermissionSet)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.Action" />
@@ -28,5 +29,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.PermissionSet" />
         public Blob PermissionSet => _permissionSet.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public DeclarativeSecurityAttributeHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.DeclarativeSecurityAttribute MetadataToken { get; }
     }
 }

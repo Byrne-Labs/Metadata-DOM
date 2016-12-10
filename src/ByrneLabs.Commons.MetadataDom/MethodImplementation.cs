@@ -7,20 +7,23 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation" />
     [PublicAPI]
-    public class MethodImplementation : CodeElementWithHandle
+    public class MethodImplementation : RuntimeCodeElement, ICodeElementWithHandle<MethodImplementationHandle, System.Reflection.Metadata.MethodImplementation>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<CodeElement> _methodBody;
+        private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<CodeElement> _methodDeclaration;
+        private readonly Lazy<MethodDefinitionBase> _methodDefinition;
         private readonly Lazy<TypeDefinition> _type;
 
         internal MethodImplementation(MethodImplementationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var methodImplementation = Reader.GetMethodImplementation(metadataHandle);
-            _type = new Lazy<TypeDefinition>(() => GetCodeElement<TypeDefinition>(methodImplementation.Type));
-            _methodBody = new Lazy<CodeElement>(() => GetCodeElement(methodImplementation.MethodBody));
-            _methodDeclaration = new Lazy<CodeElement>(() => GetCodeElement(methodImplementation.MethodDeclaration));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(methodImplementation.GetCustomAttributes()));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetMethodImplementation(metadataHandle);
+            _type = GetLazyCodeElementWithHandle<TypeDefinition>(MetadataToken.Type);
+            _methodDefinition = new Lazy<MethodDefinitionBase>(() => MetadataToken.MethodBody.Kind == HandleKind.MethodDefinition ? GetCodeElementWithHandle<MethodDefinitionBase>(MetadataToken.MethodBody) : null);
+            _methodBody = new Lazy<MethodBody>(() => MetadataToken.MethodBody.Kind == HandleKind.MethodDefinition ? null : GetCodeElementWithHandle<MethodBody>(MetadataToken.MethodBody));
+            _methodDeclaration = GetLazyCodeElementWithHandle(MetadataToken.MethodDeclaration);
+            _customAttributes = GetLazyCodeElementsWithoutHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.GetCustomAttributes" />
@@ -34,5 +37,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.Type" />
         public TypeDefinition Type => _type.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public MethodImplementationHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.MethodImplementation MetadataToken { get; }
     }
 }

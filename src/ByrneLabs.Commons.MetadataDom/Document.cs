@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -10,12 +11,12 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.Document" />
     [DebuggerDisplay("{Name}")]
     [PublicAPI]
-    public class Document : DebugCodeElementWithHandle, IContainsSourceCode
+    public class Document : DebugCodeElement, ICodeElementWithHandle<DocumentHandle, System.Reflection.Metadata.Document>
     {
         private static readonly IDictionary<Guid, HashAlgorithm> KnownHashAlgorithms = new Dictionary<Guid, HashAlgorithm>
         {
-            { Guid.Parse("ff1816ec-aa5e-4d10-87f7-6f4963833460"), HashAlgorithm.Sha1 },
-            { Guid.Parse("8829d00f-11b8-4213-878b-770e8597ac16"), HashAlgorithm.Sha256 }
+            { Guid.Parse("ff1816ec-aa5e-4d10-87f7-6f4963833460"), MetadataDom.HashAlgorithm.Sha1 },
+            { Guid.Parse("8829d00f-11b8-4213-878b-770e8597ac16"), MetadataDom.HashAlgorithm.Sha256 }
         };
         private static readonly IDictionary<Guid, Language> KnownLanguages = new Dictionary<Guid, Language>
         {
@@ -38,25 +39,26 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal Document(DocumentHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var document = Reader.GetDocument(metadataHandle);
-            Name = Reader.GetString(document.Name);
-            _hash = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(document.Hash)));
-            HashAlgorithmGuid = AsGuid(document.HashAlgorithm);
-            HashAlgorithm = KnownHashAlgorithms[HashAlgorithmGuid];
-            LanguageGuid = AsGuid(document.Language);
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetDocument(metadataHandle);
+            Name = Reader.GetString(MetadataToken.Name);
+            _hash = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Hash)));
+            HashAlgorithmGuid = AsGuid(MetadataToken.HashAlgorithm);
+            HashAlgorithm = HashAlgorithmGuid.Equals(Guid.Empty) ? (HashAlgorithm?) null : KnownHashAlgorithms[HashAlgorithmGuid];
+            LanguageGuid = AsGuid(MetadataToken.Language);
             Language = KnownLanguages[LanguageGuid];
             _sourceCode = new Lazy<string>(() => File.Exists(Name) ? File.ReadAllText(Name) : null);
-            _sourceCodeLines = new Lazy<string[]>(() => File.Exists(Name) ? File.ReadAllLines(Name) : null);
+            _sourceCodeLines = new Lazy<string[]>(() => SourceCode == null ? null : Regex.Split(SourceCode, "\r\n|\r|\n"));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.Document.Hash" />
         /// <remarks>
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.Document.HashAlgorithm" /> determines the algorithm used to produce this hash. The source document is hashed in its binary form as stored in the file.</remarks>
+        ///     <see cref="Document.HashAlgorithm" /> determines the algorithm used to produce this hash. The source MetadataToken is hashed in its binary form as stored in the file.</remarks>
         public Blob Hash => _hash.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.Document.HashAlgorithm" />
-        /// <summary>Hash algorithm used to calculate <see cref="ByrneLabs.Commons.MetadataDom.Document.Hash" /> (SHA1, SHA256, etc.)</summary>
-        public HashAlgorithm HashAlgorithm { get; }
+        /// <summary>Hash algorithm used to calculate <see cref="Document.Hash" /> (SHA1, SHA256, etc.)</summary>
+        public HashAlgorithm? HashAlgorithm { get; }
 
         public Guid HashAlgorithmGuid { get; }
 
@@ -68,10 +70,14 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.Document.Name" />
         public string Name { get; }
 
-        internal string[] SourceCodeLines => _sourceCodeLines.Value;
-
         public string SourceCode => _sourceCode.Value;
 
-        public string SourceFile => Name;
+        internal string[] SourceCodeLines => _sourceCodeLines.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public DocumentHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.Document MetadataToken { get; }
     }
 }

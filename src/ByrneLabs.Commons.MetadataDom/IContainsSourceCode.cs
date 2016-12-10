@@ -5,8 +5,8 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public interface IContainsSourceCode
     {
-        string SourceCode { get; }
+        Document Document { get; }
 
-        string SourceFile { get; }
+        string SourceCode { get; }
     }
 }

@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute" />
     [PublicAPI]
-    public class CustomAttribute : CodeElementWithHandle
+    public class CustomAttribute : RuntimeCodeElement, ICodeElementWithHandle<CustomAttributeHandle, System.Reflection.Metadata.CustomAttribute>
     {
         private readonly Lazy<CodeElement> _constructor;
         private readonly Lazy<CodeElement> _parent;
@@ -14,14 +14,15 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal CustomAttribute(CustomAttributeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var customAttribute = Reader.GetCustomAttribute(metadataHandle);
-            _constructor = new Lazy<CodeElement>(() => GetCodeElement(customAttribute.Constructor));
-            _parent = new Lazy<CodeElement>(() => GetCodeElement(customAttribute.Parent));
-            _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(customAttribute.Value)));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetCustomAttribute(metadataHandle);
+            _constructor = GetLazyCodeElementWithHandle(MetadataToken.Constructor);
+            _parent = GetLazyCodeElementWithHandle(MetadataToken.Parent);
+            _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Value)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Constructor" />
-        /// <summary>The constructor (<see cref="ByrneLabs.Commons.MetadataDom.MethodDefinition" /> or <see cref="ByrneLabs.Commons.MetadataDom.MemberReference" />) of the custom attribute type.</summary>
+        /// <summary>The constructor (<see cref="MethodDefinition" /> or <see cref="MemberReference" />) of the custom attribute type.</summary>
         public CodeElement Constructor => _constructor.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Parent" />
@@ -29,5 +30,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Value" />
         public Blob Value => _value.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public CustomAttributeHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.CustomAttribute MetadataToken { get; }
     }
 }

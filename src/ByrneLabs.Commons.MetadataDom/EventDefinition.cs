@@ -8,25 +8,25 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition" />
     [PublicAPI]
-    public class EventDefinition : CodeElementWithHandle
+    public class EventDefinition : RuntimeCodeElement, ICodeElementWithHandle<EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
     {
         private readonly Lazy<MethodDefinition> _adder;
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<string> _name;
         private readonly Lazy<MethodDefinition> _raiser;
         private readonly Lazy<MethodDefinition> _remover;
-        private readonly Lazy<CodeElement> _type;
+        private readonly Lazy<TypeBase> _type;
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var eventDefinition = Reader.GetEventDefinition(metadataHandle);
-            _type = new Lazy<CodeElement>(() => GetCodeElement(eventDefinition.Type));
-            Attributes = eventDefinition.Attributes;
-            _name = new Lazy<string>(() => AsString(eventDefinition.Name));
-            _adder = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(eventDefinition.GetAccessors().Adder));
-            _raiser = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(eventDefinition.GetAccessors().Raiser));
-            _remover = new Lazy<MethodDefinition>(() => GetCodeElement<MethodDefinition>(eventDefinition.GetAccessors().Remover));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(eventDefinition.GetCustomAttributes()));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetEventDefinition(metadataHandle);
+            _type = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(MetadataToken.Type));
+            Attributes = MetadataToken.Attributes;
+            Name = AsString(MetadataToken.Name);
+            _adder = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Adder);
+            _raiser = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Raiser);
+            _remover = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Remover);
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Adder" />
@@ -39,7 +39,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Raiser" />
         public MethodDefinition Raiser => _raiser.Value;
@@ -48,6 +48,13 @@ namespace ByrneLabs.Commons.MetadataDom
         public MethodDefinition Remover => _remover.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Type" />
-        public CodeElement Type => _type.Value;
+        /// <summary>A <see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" /></summary>
+        public TypeBase Type => _type.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public EventDefinitionHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.EventDefinition MetadataToken { get; }
     }
 }

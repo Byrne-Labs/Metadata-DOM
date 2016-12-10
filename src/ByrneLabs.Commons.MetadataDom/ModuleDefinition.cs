@@ -6,18 +6,17 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition" />
     [PublicAPI]
-    public class ModuleDefinition : CodeElementWithHandle
+    public class ModuleDefinition : RuntimeCodeElement, ICodeElementWithHandle<ModuleDefinitionHandle, System.Reflection.Metadata.ModuleDefinition>
     {
-        private readonly Lazy<string> _name;
-
         internal ModuleDefinition(ModuleDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var moduleDefinition = Reader.GetModuleDefinition();
-            _name = new Lazy<string>(() => AsString(moduleDefinition.Name));
-            BaseGenerationId = AsGuid(moduleDefinition.BaseGenerationId);
-            Generation = moduleDefinition.Generation;
-            GenerationId = AsGuid(moduleDefinition.GenerationId);
-            Mvid = AsGuid(moduleDefinition.Mvid);
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetModuleDefinition();
+            Name = AsString(MetadataToken.Name);
+            BaseGenerationId = AsGuid(MetadataToken.BaseGenerationId);
+            Generation = MetadataToken.Generation;
+            GenerationId = AsGuid(MetadataToken.GenerationId);
+            Mvid = AsGuid(MetadataToken.Mvid);
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.BaseGenerationId" />
@@ -33,6 +32,12 @@ namespace ByrneLabs.Commons.MetadataDom
         public Guid Mvid { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public ModuleDefinitionHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.ModuleDefinition MetadataToken { get; }
     }
 }

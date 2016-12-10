@@ -8,27 +8,29 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition" />
     [PublicAPI]
-    public class FieldDefinition : CodeElementWithHandle
+    public class FieldDefinition : RuntimeCodeElement, ICodeElementWithHandle<FieldDefinitionHandle, System.Reflection.Metadata.FieldDefinition>, IContainsSourceCode
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<CodeElement> _declaringType;
+        private readonly Lazy<TypeBase> _declaringType;
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<Blob> _marshallingDescriptor;
-        private readonly Lazy<string> _name;
+        private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<Blob> _signature;
 
         internal FieldDefinition(FieldDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var fieldDefinition = Reader.GetFieldDefinition(metadataHandle);
-            _name = new Lazy<string>(() => AsString(fieldDefinition.Name));
-            Attributes = fieldDefinition.Attributes;
-            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(fieldDefinition.Signature)));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(fieldDefinition.GetCustomAttributes()));
-            _defaultValue = new Lazy<Constant>(() => GetCodeElement<Constant>(fieldDefinition.GetDefaultValue()));
-            _declaringType = new Lazy<CodeElement>(() => GetCodeElement(fieldDefinition.GetDeclaringType()));
-            _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(fieldDefinition.GetMarshallingDescriptor())));
-            Offset = fieldDefinition.GetOffset();
-            RelativeVirtualAddress = fieldDefinition.GetRelativeVirtualAddress();
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetFieldDefinition(metadataHandle);
+            Name = AsString(MetadataToken.Name);
+            Attributes = MetadataToken.Attributes;
+            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _defaultValue = GetLazyCodeElementWithHandle<Constant>(MetadataToken.GetDefaultValue());
+            _declaringType = GetLazyCodeElementWithHandle<TypeBase>(MetadataToken.GetDeclaringType());
+            _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.GetMarshallingDescriptor())));
+            Offset = MetadataToken.GetOffset();
+            RelativeVirtualAddress = MetadataToken.GetRelativeVirtualAddress();
+            _methodBody = new Lazy<MethodBody>(() => MetadataToken.GetRelativeVirtualAddress() == 0 ? null : GetCodeElementWithoutHandle<MethodBody>(MetadataToken.GetRelativeVirtualAddress()));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Attributes" />
@@ -38,7 +40,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDeclaringType" />
-        public CodeElement DeclaringType => _declaringType.Value;
+        public TypeBase DeclaringType => _declaringType.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
@@ -46,8 +48,10 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetMarshallingDescriptor" />
         public Blob MarshallingDescriptor => _marshallingDescriptor.Value;
 
+        public MethodBody MethodBody => _methodBody.Value;
+
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Name" />
-        public string Name => _name.Value;
+        public string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetOffset" />
         public int Offset { get; }
@@ -57,5 +61,17 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Signature" />
         public Blob Signature => _signature.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public FieldDefinitionHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.FieldDefinition MetadataToken { get; }
+
+        public Document Document { get; }
+
+        public string SourceCode { get; }
+
+        public string SourceFile { get; }
     }
 }

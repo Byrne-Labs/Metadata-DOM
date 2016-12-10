@@ -6,26 +6,27 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition" />
     [PublicAPI]
-    public class ImportDefinition : DebugCodeElementWithoutHandle
+    public class ImportDefinition : DebugCodeElement, ICodeElementWithToken<System.Reflection.Metadata.ImportDefinition>
     {
         private readonly Lazy<Blob> _alias;
         private readonly Lazy<AssemblyReference> _targetAssembly;
         private readonly Lazy<Blob> _targetNamespace;
-        private readonly Lazy<CodeElement> _targetType;
+        private readonly Lazy<TypeBase> _targetType;
 
-        internal ImportDefinition(System.Reflection.Metadata.ImportDefinition importDefinition, MetadataState metadataState) : base(importDefinition, metadataState)
+        internal ImportDefinition(System.Reflection.Metadata.ImportDefinition importDefinition, MetadataState metadataState) : base(new HandlelessCodeElementKey<ImportDefinition>(importDefinition), metadataState)
         {
+            MetadataToken = importDefinition;
             Kind = importDefinition.Kind;
             switch (importDefinition.Kind)
             {
                 case ImportDefinitionKind.AliasAssemblyNamespace:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetAssembly = new Lazy<AssemblyReference>(() => GetCodeElement<AssemblyReference>(importDefinition.TargetAssembly));
+                    _targetAssembly = GetLazyCodeElementWithHandle<AssemblyReference>(importDefinition.TargetAssembly);
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.AliasAssemblyReference:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetAssembly = new Lazy<AssemblyReference>(() => GetCodeElement<AssemblyReference>(importDefinition.TargetAssembly));
+                    _targetAssembly = GetLazyCodeElementWithHandle<AssemblyReference>(importDefinition.TargetAssembly);
                     break;
                 case ImportDefinitionKind.AliasNamespace:
                 case ImportDefinitionKind.ImportXmlNamespace:
@@ -34,10 +35,10 @@ namespace ByrneLabs.Commons.MetadataDom
                     break;
                 case ImportDefinitionKind.AliasType:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetType = new Lazy<CodeElement>(() => GetCodeElement(importDefinition.TargetType));
+                    _targetType = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(importDefinition.TargetType));
                     break;
                 case ImportDefinitionKind.ImportAssemblyNamespace:
-                    _targetAssembly = new Lazy<AssemblyReference>(() => GetCodeElement<AssemblyReference>(importDefinition.TargetAssembly));
+                    _targetAssembly = GetLazyCodeElementWithHandle<AssemblyReference>(importDefinition.TargetAssembly);
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.ImportAssemblyReferenceAlias:
@@ -47,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.ImportType:
-                    _targetType = new Lazy<CodeElement>(() => GetCodeElement(importDefinition.TargetType));
+                    _targetType = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(importDefinition.TargetType));
                     break;
                 default:
                     throw new ArgumentException($"Unknown ImportDefinitionKind {importDefinition.Kind}");
@@ -67,6 +68,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public Blob TargetNamespace => _targetNamespace?.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.TargetType" />
-        public CodeElement TargetType => _targetType?.Value;
+        public TypeBase TargetType => _targetType?.Value;
+
+        public System.Reflection.Metadata.ImportDefinition MetadataToken { get; }
     }
 }

@@ -7,26 +7,31 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation" />
     [PublicAPI]
-    public class InterfaceImplementation : CodeElementWithHandle
+    public class InterfaceImplementation : RuntimeCodeElement, ICodeElementWithHandle<InterfaceImplementationHandle, System.Reflection.Metadata.InterfaceImplementation>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<CodeElement> _interface;
+        private readonly Lazy<TypeBase> _interface;
 
         internal InterfaceImplementation(InterfaceImplementationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var interfaceImplementation = Reader.GetInterfaceImplementation(metadataHandle);
-            _interface = new Lazy<CodeElement>(() => GetCodeElement(interfaceImplementation.Interface));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(interfaceImplementation.GetCustomAttributes()));
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetInterfaceImplementation(metadataHandle);
+            _interface = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(MetadataToken.Interface));
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation.Interface" />
-        /// <summary>The interface that is implemented
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeDefinition" />, <see cref="ByrneLabs.Commons.MetadataDom.TypeReference" />, or
-        ///     <see cref="ByrneLabs.Commons.MetadataDom.TypeSpecification" />
+        /// <summary>The interface that is implemented <see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" />
         /// </summary>
-        public CodeElement Interface => _interface.Value;
+        public TypeBase Interface => _interface.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public InterfaceImplementationHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.InterfaceImplementation MetadataToken { get; }
     }
 }

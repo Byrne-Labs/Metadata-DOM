@@ -7,19 +7,19 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile" />
     [PublicAPI]
-    public class AssemblyFile : CodeElementWithHandle
+    public class AssemblyFile : RuntimeCodeElement, ICodeElementWithHandle<AssemblyFileHandle, System.Reflection.Metadata.AssemblyFile>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _hashValue;
-        private readonly Lazy<string> _name;
 
         internal AssemblyFile(AssemblyFileHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var assemblyFile = Reader.GetAssemblyFile(metadataHandle);
-            _name = new Lazy<string>(() => AsString(assemblyFile.Name));
-            _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(assemblyFile.HashValue)));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(assemblyFile.GetCustomAttributes()));
-            ContainsMetadata = assemblyFile.ContainsMetadata;
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetAssemblyFile(metadataHandle);
+            Name = AsString(MetadataToken.Name);
+            _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.HashValue)));
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            ContainsMetadata = MetadataToken.ContainsMetadata;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile.ContainsMetadata" />
@@ -32,6 +32,12 @@ namespace ByrneLabs.Commons.MetadataDom
         public Blob HashValue => _hashValue.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile.ContainsMetadata" />
-        public string Name => _name.Value;
+        public string Name { get; }
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public AssemblyFileHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.AssemblyFile MetadataToken { get; }
     }
 }

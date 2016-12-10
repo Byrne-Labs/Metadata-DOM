@@ -7,14 +7,15 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint" />
     [PublicAPI]
-    public class SequencePoint : CodeElementWithoutHandle, IContainsSourceCode
+    public class SequencePoint : RuntimeCodeElement, ICodeElementWithToken<System.Reflection.Metadata.SequencePoint>, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;
         private readonly Lazy<string> _sourceCode;
 
         internal SequencePoint(System.Reflection.Metadata.SequencePoint sequencePoint, MetadataState metadataState) : base(new HandlelessCodeElementKey<SequencePoint>(sequencePoint), metadataState)
         {
-            _document = new Lazy<Document>(() => GetCodeElement<Document>(sequencePoint.Document));
+            MetadataToken = sequencePoint;
+            _document = GetLazyCodeElementWithHandle<Document>(sequencePoint.Document);
             EndColumn = sequencePoint.EndColumn;
             EndLine = sequencePoint.EndLine;
             IsHidden = sequencePoint.IsHidden;
@@ -23,9 +24,6 @@ namespace ByrneLabs.Commons.MetadataDom
             StartLine = sequencePoint.StartLine;
             _sourceCode = new Lazy<string>(LoadSourceCode);
         }
-
-        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.Document" />
-        public Document Document => _document.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.EndColumn" />
         public int EndColumn { get; }
@@ -45,14 +43,17 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.StartLine" />
         public int StartLine { get; }
 
-        public string SourceCode => _sourceCode.Value;
+        public System.Reflection.Metadata.SequencePoint MetadataToken { get; }
 
-        public string SourceFile => Document.SourceFile;
+        /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.Document" />
+        public Document Document => _document.Value;
+
+        public string SourceCode => _sourceCode.Value;
 
         private string LoadSourceCode()
         {
             string sourceCode;
-            if (StartLine == 16707566)
+            if (StartLine == 16707566 || Document.SourceCode == null)
             {
                 sourceCode = null;
             }

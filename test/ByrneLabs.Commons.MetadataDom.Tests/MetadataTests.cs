@@ -195,6 +195,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
+        public void TestOnSampleAssembly()
+        {
+            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
+        }
+
+        [Fact]
         public void TestOnOwnPdbWithoutPrefetch()
         {
             var reflectionData = new ReflectionData(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
@@ -209,5 +217,22 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             AssertValid(reflectionData);
             AssertHasDebugMetadata(reflectionData);
         }
+
+        private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
+
+        [Fact]
+        public void TestOnPrebuildResources()
+        {
+            var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
+            var loadableFiles = resourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
+            foreach (var loadableFile in loadableFiles)
+            {
+                using (var reflectionData = new ReflectionData(loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null))
+                {
+                    AssertValid(reflectionData);
+                }
+            }
+        }
+
     }
 }

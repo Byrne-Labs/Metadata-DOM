@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection.Metadata;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock" />
     [PublicAPI]
-    public class MethodBody : CodeElementWithoutHandle
+    public class MethodBody : RuntimeCodeElement, ICodeElementWithToken<MethodBodyBlock>
     {
-        private readonly Lazy<IReadOnlyList<ExceptionRegion>> _exceptionRegions;
+        private readonly Lazy<IEnumerable<ExceptionRegion>> _exceptionRegions;
         private readonly Lazy<StandaloneSignature> _localSignature;
 
         internal MethodBody(int relativeVirtualAddress, MetadataState metadataState) : base(new HandlelessCodeElementKey<MethodBody>(relativeVirtualAddress), metadataState)
         {
-            var methodBody = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
-            _exceptionRegions = GetLazyCodeElements<ExceptionRegion>(methodBody.ExceptionRegions.Select(exceptionRegion => new HandlelessCodeElementKey<ExceptionRegion>(exceptionRegion)));
-            _localSignature = GetLazyCodeElement<StandaloneSignature>(methodBody.LocalSignature);
-            LocalVariablesInitialized = methodBody.LocalVariablesInitialized;
-            MaxStack = methodBody.MaxStack;
-            Size = methodBody.Size;
+            MetadataToken = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
+            _exceptionRegions = GetLazyCodeElementsWithoutHandle<ExceptionRegion>(MetadataToken.ExceptionRegions);
+            _localSignature = GetLazyCodeElementWithHandle<StandaloneSignature>(MetadataToken.LocalSignature);
+            LocalVariablesInitialized = MetadataToken.LocalVariablesInitialized;
+            MaxStack = MetadataToken.MaxStack;
+            Size = MetadataToken.Size;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.ExceptionRegions" />
@@ -36,5 +36,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.Size" />
         public int Size { get; }
+
+        public MethodBodyBlock MetadataToken { get; }
     }
 }

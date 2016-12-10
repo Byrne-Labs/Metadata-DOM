@@ -7,17 +7,18 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature" />
     [PublicAPI]
-    public class StandaloneSignature : CodeElementWithHandle
+    public class StandaloneSignature : RuntimeCodeElement, ICodeElementWithHandle<StandaloneSignatureHandle, System.Reflection.Metadata.StandaloneSignature>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _signature;
 
         internal StandaloneSignature(StandaloneSignatureHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            var standaloneSignature = Reader.GetStandaloneSignature(metadataHandle);
-            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(standaloneSignature.Signature)));
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => GetCodeElements<CustomAttribute>(standaloneSignature.GetCustomAttributes()));
-            Kind = standaloneSignature.GetKind();
+            MetadataHandle = metadataHandle;
+            MetadataToken = Reader.GetStandaloneSignature(metadataHandle);
+            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
+            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            Kind = MetadataToken.GetKind();
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetCustomAttributes" />
@@ -33,5 +34,11 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.Signature" />
         /// <summary></summary>
         public Blob Signature => _signature.Value;
+
+        public Handle DowncastMetadataHandle => MetadataHandle;
+
+        public StandaloneSignatureHandle MetadataHandle { get; }
+
+        public System.Reflection.Metadata.StandaloneSignature MetadataToken { get; }
     }
 }
