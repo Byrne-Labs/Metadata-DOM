@@ -263,4 +263,7 @@
   <Import Condition="'$(ImportMicrosoftCommonProps)' == 'true' And Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
   <Import Condition="'$(ImportXamarinIOSCSharpTargets)' == 'true'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Condition="'$(ImportXamarinAndroidCSharpTargets)' == 'true'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <ItemGroup>
+    <Compile Remove="GenericTypeInstantiation.cs" />
+  </ItemGroup>
 </Project>

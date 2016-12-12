@@ -24,13 +24,13 @@ namespace ByrneLabs.Commons.MetadataDom
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
             _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _defaultValue = GetLazyCodeElementWithHandle<Constant>(MetadataToken.GetDefaultValue());
-            _declaringType = GetLazyCodeElementWithHandle<TypeBase>(MetadataToken.GetDeclaringType());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
+            _declaringType =new Lazy<TypeBase>(()=>(TypeBase) MetadataState.GetCodeElement(MetadataToken.GetDeclaringType()));
             _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.GetMarshallingDescriptor())));
             Offset = MetadataToken.GetOffset();
             RelativeVirtualAddress = MetadataToken.GetRelativeVirtualAddress();
-            _methodBody = new Lazy<MethodBody>(() => MetadataToken.GetRelativeVirtualAddress() == 0 ? null : GetCodeElementWithoutHandle<MethodBody>(MetadataToken.GetRelativeVirtualAddress()));
+            //_methodBody = new Lazy<MethodBody>(() => MetadataToken.GetRelativeVirtualAddress() == 0 ? null : GetCodeElementWithoutHandle<MethodBody>(MetadataToken.GetRelativeVirtualAddress()));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Attributes" />
@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetMarshallingDescriptor" />
         public Blob MarshallingDescriptor => _marshallingDescriptor.Value;
 
-        public MethodBody MethodBody => _methodBody.Value;
+        public MethodBody MethodBody => null; //_methodBody.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Name" />
         public string Name { get; }
@@ -62,6 +62,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Signature" />
         public Blob Signature => _signature.Value;
 
+        public string SourceFile { get; }
+
         public Handle DowncastMetadataHandle => MetadataHandle;
 
         public FieldDefinitionHandle MetadataHandle { get; }
@@ -71,7 +73,5 @@ namespace ByrneLabs.Commons.MetadataDom
         public Document Document { get; }
 
         public string SourceCode { get; }
-
-        public string SourceFile { get; }
     }
 }

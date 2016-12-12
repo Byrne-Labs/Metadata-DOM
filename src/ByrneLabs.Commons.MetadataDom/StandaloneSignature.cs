@@ -17,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetStandaloneSignature(metadataHandle);
             _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             Kind = MetadataToken.GetKind();
         }
 

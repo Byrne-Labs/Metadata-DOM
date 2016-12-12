@@ -16,8 +16,8 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetInterfaceImplementation(metadataHandle);
-            _interface = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(MetadataToken.Interface));
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _interface = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.Interface));
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation.GetCustomAttributes" />

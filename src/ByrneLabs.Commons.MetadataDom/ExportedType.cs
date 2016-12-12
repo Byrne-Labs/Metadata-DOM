@@ -20,11 +20,11 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetExportedType(metadataHandle);
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
-            _implementation = GetLazyCodeElementWithHandle(MetadataToken.Implementation);
+            _implementation = MetadataState.GetLazyCodeElement(MetadataToken.Implementation);
             IsForwarder = MetadataToken.IsForwarder;
             Namespace = AsString(MetadataToken.Namespace);
-            _namespaceDefinition = GetLazyCodeElementWithHandle<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Attributes" />

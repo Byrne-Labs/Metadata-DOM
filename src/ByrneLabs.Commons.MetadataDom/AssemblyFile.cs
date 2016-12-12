@@ -18,7 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetAssemblyFile(metadataHandle);
             Name = AsString(MetadataToken.Name);
             _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.HashValue)));
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             ContainsMetadata = MetadataToken.ContainsMetadata;
         }
 

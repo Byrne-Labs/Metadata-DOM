@@ -17,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetModuleReference(metadataHandle);
             Name = AsString(MetadataToken.Name);
 
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleReference.GetCustomAttributes" />

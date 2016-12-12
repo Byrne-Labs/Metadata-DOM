@@ -17,9 +17,9 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetGenericParameterConstraint(metadataHandle);
-            _type = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(MetadataToken.Type));
-            _parameter = GetLazyCodeElementWithHandle<GenericParameter>(MetadataToken.Parameter);
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            //_type = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type));
+            _parameter = MetadataState.GetLazyCodeElement<GenericParameter>(MetadataToken.Parameter);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.GetCustomAttributes" />
@@ -31,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.Type" />
         /// <summary>Handle (<see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" />) specifying from which type this generic parameter is constrained to derive, or which interface this generic parameter is constrained to implement.</summary>
-        public TypeBase Type => _type.Value;
+        public TypeBase Type => null; // _type.Value;
 
         public Handle DowncastMetadataHandle => MetadataHandle;
 

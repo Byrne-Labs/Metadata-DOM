@@ -20,13 +20,13 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetEventDefinition(metadataHandle);
-            _type = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(MetadataToken.Type));
+            _type = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type));
             Attributes = MetadataToken.Attributes;
             Name = AsString(MetadataToken.Name);
-            _adder = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Adder);
-            _raiser = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Raiser);
-            _remover = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Remover);
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _adder = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Adder);
+            _raiser = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Raiser);
+            _remover = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Remover);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Adder" />

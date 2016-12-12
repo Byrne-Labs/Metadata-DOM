@@ -10,12 +10,12 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private readonly Lazy<ModuleReference> _module;
 
-        internal MethodImport(System.Reflection.Metadata.MethodImport methodImport, MetadataState metadataState) : base(new HandlelessCodeElementKey<MethodImport>(methodImport), metadataState)
+        internal MethodImport(System.Reflection.Metadata.MethodImport methodImport, MetadataState metadataState) : base(new CodeElementKey<MethodImport>(methodImport), metadataState)
         {
             MetadataToken = methodImport;
             Attributes = methodImport.Attributes;
             Name = AsString(methodImport.Name);
-            _module = GetLazyCodeElementWithHandle<ModuleReference>(methodImport.Module);
+            _module = MetadataState.GetLazyCodeElement<ModuleReference>(methodImport.Module);
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImport.Attributes" />

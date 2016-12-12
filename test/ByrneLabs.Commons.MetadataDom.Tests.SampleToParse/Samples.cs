@@ -24,9 +24,18 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
     public class MoreSamples : Samples
     {
-
-        public static void Main(string[] args)
+        public enum ByteEnum : byte
         {
+            A,
+            B,
+            C
+        }
+
+        public enum NotAFlag
+        {
+            A,
+            B,
+            C
         }
 
         [Flags]
@@ -38,14 +47,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             BC = 3
         }
 
-        public enum NotAFlag
+        public static void Main(string[] args)
         {
-            A, B, C
-        }
-
-        public enum ByteEnum : byte
-        {
-            A, B, C
         }
 
         public void DoSomething(ref string a)

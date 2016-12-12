@@ -41,8 +41,17 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public void Dispose()
         {
-            PEReader?.Dispose();
-            _metadataReaderProvider?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool managedOnly)
+        {
+            if (managedOnly)
+            {
+                PEReader?.Dispose();
+                _metadataReaderProvider?.Dispose();
+            }
         }
     }
 }

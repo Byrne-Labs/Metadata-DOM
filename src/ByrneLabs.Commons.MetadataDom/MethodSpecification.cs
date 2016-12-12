@@ -18,11 +18,10 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetMethodSpecification(metadataHandle);
-            _method = GetLazyCodeElementWithHandle(MetadataToken.Method);
+            _method = MetadataState.GetLazyCodeElement(MetadataToken.Method);
             _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            var provider = new DisassemblingTypeProvider();
-            var signature = MetadataToken.DecodeSignature(provider, null);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            //var signature = MetadataToken.DecodeSignature(provider, null);
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.GetCustomAttributes" />

@@ -12,10 +12,10 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<Document> _document;
         private readonly Lazy<string> _sourceCode;
 
-        internal SequencePoint(System.Reflection.Metadata.SequencePoint sequencePoint, MetadataState metadataState) : base(new HandlelessCodeElementKey<SequencePoint>(sequencePoint), metadataState)
+        internal SequencePoint(System.Reflection.Metadata.SequencePoint sequencePoint, MetadataState metadataState) : base(new CodeElementKey<SequencePoint>(sequencePoint), metadataState)
         {
             MetadataToken = sequencePoint;
-            _document = GetLazyCodeElementWithHandle<Document>(sequencePoint.Document);
+            _document = MetadataState.GetLazyCodeElement<Document>(sequencePoint.Document);
             EndColumn = sequencePoint.EndColumn;
             EndLine = sequencePoint.EndLine;
             IsHidden = sequencePoint.IsHidden;

@@ -24,8 +24,8 @@ namespace ByrneLabs.Commons.MetadataDom
             HashAlgorithm = MetadataToken.HashAlgorithm;
             _publicKey = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PublicKey)));
             Version = MetadataToken.Version;
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _declarativeSecurityAttributes = GetLazyCodeElementsWithHandle<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Culture" />

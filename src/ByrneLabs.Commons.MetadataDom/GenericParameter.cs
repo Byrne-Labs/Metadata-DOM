@@ -8,26 +8,29 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter" />
     [PublicAPI]
-    public class GenericParameter : RuntimeCodeElement, ICodeElementWithHandle<GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
+    public class GenericParameter : TypeBase<GenericParameter, GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
     {
-        private readonly Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<CodeElement> _parent;
+        private Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
+        private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private Lazy<CodeElement> _parent;
 
-        internal GenericParameter(GenericParameterHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
+        internal GenericParameter(GenericParameter baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetGenericParameter(metadataHandle);
-            Name = AsString(MetadataToken.Name);
-            Attributes = MetadataToken.Attributes;
-            Index = MetadataToken.Index;
-            _parent = GetLazyCodeElementWithHandle(MetadataToken.Parent);
-            _constraints = GetLazyCodeElementsWithHandle<GenericParameterConstraint>(MetadataToken.GetConstraints());
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            Initialize();
+        }
+
+        internal GenericParameter(GenericParameter genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
+        {
+            Initialize();
+        }
+
+        internal GenericParameter(GenericParameterHandle handle, MetadataState metadataState) : base(handle, metadataState)
+        {
+            Initialize();
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Attributes" />
-        public GenericParameterAttributes Attributes { get; }
+        public GenericParameterAttributes Attributes { get; protected set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.GetConstraints" />
         public IEnumerable<GenericParameterConstraint> Constraints => _constraints.Value;
@@ -36,20 +39,22 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Index" />
-        public int Index { get; }
-
-        /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Name" />
-        public string Name { get; }
+        public int Index { get; private set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Parent" />
         /// <summary>
         ///     <see cref="TypeDefinition" /> or <see cref="MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
-
-        public GenericParameterHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.GenericParameter MetadataToken { get; }
+        private void Initialize()
+        {
+            Name = AsString(MetadataToken.Name);
+            Attributes = MetadataToken.Attributes;
+            Index = MetadataToken.Index;
+            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
+            _constraints = MetadataState.GetLazyCodeElements<GenericParameterConstraint>(MetadataToken.GetConstraints());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            IsGenericParameter = true;
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
-        private readonly Lazy<Blob> _signature;
+        private readonly Lazy<CodeElement> _returnType;
 
         internal MethodDefinitionBase(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -30,15 +30,15 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = MetadataToken.Attributes;
             ImplAttributes = MetadataToken.ImplAttributes;
             RelativeVirtualAddress = MetadataToken.RelativeVirtualAddress;
-            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _declaringType = GetLazyCodeElementWithHandle<TypeDefinition>(MetadataToken.GetDeclaringType());
-            _declarativeSecurityAttributes = GetLazyCodeElementsWithHandle<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
-            _genericParameters = GetLazyCodeElementsWithHandle<GenericParameter>(MetadataToken.GetGenericParameters());
-            _import = GetLazyCodeElementWithoutHandle<MethodImport>(MetadataToken.GetImport());
-            _methodBody = new Lazy<MethodBody>(() => MetadataToken.RelativeVirtualAddress == 0 ? null : GetCodeElementWithHandle<MethodBody>(new HandlelessCodeElementKey<MethodBody>(MetadataToken.RelativeVirtualAddress)));
-            _parameters = GetLazyCodeElementsWithHandle<Parameter>(MetadataToken.GetParameters());
-            _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : GetCodeElementWithHandle<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(MetadataToken.GetDeclaringType());
+            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
+            _genericParameters = MetadataState.GetLazyCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
+            _import = MetadataState.GetLazyCodeElement<MethodImport>(MetadataToken.GetImport());
+            //_methodBody = new Lazy<MethodBody>(() => MetadataToken.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(MetadataToken.RelativeVirtualAddress)));
+            _parameters = MetadataState.GetLazyCodeElements<Parameter>(MetadataToken.GetParameters());
+            _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
+            _returnType = new Lazy<CodeElement>(() => MetadataToken.DecodeSignature(MetadataState.SignatureTypeProvider, new CodeElementGenericContext(DeclaringType.GenericParameters, GenericParameters)).ReturnType);
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Attributes" />
@@ -67,7 +67,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetImport" />
         public MethodImport Import => _import.Value;
 
-        public MethodBody MethodBody => _methodBody.Value;
+        public MethodBody MethodBody => null; //_methodBody.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Name" />
         public string Name { get; }
@@ -78,9 +78,10 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.RelativeVirtualAddress" />
         public int RelativeVirtualAddress { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Signature" />
-        public Blob Signature => _signature.Value;
+        /// <summary>Returns <see cref="TypeDefinition" />, <see cref="TypeReference" />, <see cref="TypeSpecification" />, <see cref="GenericParameter" />, or null when void</summary>
+        public CodeElement ReturnType => _returnType.Value;
 
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Signature" />
         public Handle DowncastMetadataHandle => MetadataHandle;
 
         public MethodDefinitionHandle MetadataHandle { get; }
@@ -90,6 +91,5 @@ namespace ByrneLabs.Commons.MetadataDom
         public Document Document { get; }
 
         public string SourceCode => DebugInformation?.SourceCode;
-
     }
 }

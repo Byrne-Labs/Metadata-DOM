@@ -19,10 +19,10 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetNamespaceDefinition(metadataHandle);
             Name = AsString(MetadataToken.Name);
-            _parent = GetLazyCodeElementWithHandle<NamespaceDefinition>(MetadataToken.Parent);
-            _namespaceDefinitions = GetLazyCodeElementsWithHandle<NamespaceDefinition>(MetadataToken.NamespaceDefinitions);
-            _typeDefinitions = GetLazyCodeElementsWithHandle<TypeDefinition>(MetadataToken.TypeDefinitions);
-            _exportedTypes = GetLazyCodeElementsWithHandle<ExportedType>(MetadataToken.ExportedTypes);
+            _parent = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.Parent);
+            _namespaceDefinitions = MetadataState.GetLazyCodeElements<NamespaceDefinition>(MetadataToken.NamespaceDefinitions);
+            _typeDefinitions = MetadataState.GetLazyCodeElements<TypeDefinition>(MetadataToken.TypeDefinitions);
+            _exportedTypes = MetadataState.GetLazyCodeElements<ExportedType>(MetadataToken.ExportedTypes);
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.ExportedTypes" />

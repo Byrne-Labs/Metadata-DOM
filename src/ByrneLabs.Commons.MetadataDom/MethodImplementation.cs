@@ -19,11 +19,11 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetMethodImplementation(metadataHandle);
-            _type = GetLazyCodeElementWithHandle<TypeDefinition>(MetadataToken.Type);
-            _methodDefinition = new Lazy<MethodDefinitionBase>(() => MetadataToken.MethodBody.Kind == HandleKind.MethodDefinition ? GetCodeElementWithHandle<MethodDefinitionBase>(MetadataToken.MethodBody) : null);
-            _methodBody = new Lazy<MethodBody>(() => MetadataToken.MethodBody.Kind == HandleKind.MethodDefinition ? null : GetCodeElementWithHandle<MethodBody>(MetadataToken.MethodBody));
-            _methodDeclaration = GetLazyCodeElementWithHandle(MetadataToken.MethodDeclaration);
-            _customAttributes = GetLazyCodeElementsWithoutHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _type = MetadataState.GetLazyCodeElement<TypeDefinition>(MetadataToken.Type);
+            _methodDefinition = new Lazy<MethodDefinitionBase>(() => MetadataToken.MethodBody.Kind == HandleKind.MethodDefinition ? MetadataState.GetCodeElement<MethodDefinitionBase>(MetadataToken.MethodBody) : null);
+            _methodBody = new Lazy<MethodBody>(() => MetadataToken.MethodBody.Kind == HandleKind.MethodDefinition ? null : MetadataState.GetCodeElement<MethodBody>(MetadataToken.MethodBody));
+            _methodDeclaration = MetadataState.GetLazyCodeElement(MetadataToken.MethodDeclaration);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.GetCustomAttributes" />

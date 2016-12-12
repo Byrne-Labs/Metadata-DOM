@@ -16,8 +16,8 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetCustomAttribute(metadataHandle);
-            _constructor = GetLazyCodeElementWithHandle(MetadataToken.Constructor);
-            _parent = GetLazyCodeElementWithHandle(MetadataToken.Parent);
+            _constructor = MetadataState.GetLazyCodeElement(MetadataToken.Constructor);
+            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
             _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Value)));
         }
 

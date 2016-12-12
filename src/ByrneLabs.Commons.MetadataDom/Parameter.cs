@@ -20,9 +20,9 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetParameter(metadataHandle);
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
-            _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             SequenceNumber = MetadataToken.SequenceNumber;
-            _defaultValue = GetLazyCodeElementWithHandle<Constant>(MetadataToken.GetDefaultValue());
+            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
             _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.GetMarshallingDescriptor())));
         }
 

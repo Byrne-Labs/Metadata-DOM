@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
@@ -21,9 +22,11 @@ namespace ByrneLabs.Commons.MetadataDom
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
             _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
-            _getter = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Getter);
-            _setter = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetAccessors().Setter);
-            _defaultValue = GetLazyCodeElementWithHandle<Constant>(MetadataToken.GetDefaultValue());
+            _getter = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Getter);
+            _setter = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Setter);
+            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
+
+            //var signature = MetadataToken.DecodeSignature(provider, new DisassemblingGenericContext(new List<string>(), new List<string>()));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Attributes" />

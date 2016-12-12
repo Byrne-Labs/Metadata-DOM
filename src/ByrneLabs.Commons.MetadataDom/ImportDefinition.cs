@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<Blob> _targetNamespace;
         private readonly Lazy<TypeBase> _targetType;
 
-        internal ImportDefinition(System.Reflection.Metadata.ImportDefinition importDefinition, MetadataState metadataState) : base(new HandlelessCodeElementKey<ImportDefinition>(importDefinition), metadataState)
+        internal ImportDefinition(System.Reflection.Metadata.ImportDefinition importDefinition, MetadataState metadataState) : base(new CodeElementKey<ImportDefinition>(importDefinition), metadataState)
         {
             MetadataToken = importDefinition;
             Kind = importDefinition.Kind;
@@ -21,12 +21,12 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 case ImportDefinitionKind.AliasAssemblyNamespace:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetAssembly = GetLazyCodeElementWithHandle<AssemblyReference>(importDefinition.TargetAssembly);
+                    _targetAssembly = MetadataState.GetLazyCodeElement<AssemblyReference>(importDefinition.TargetAssembly);
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.AliasAssemblyReference:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetAssembly = GetLazyCodeElementWithHandle<AssemblyReference>(importDefinition.TargetAssembly);
+                    _targetAssembly = MetadataState.GetLazyCodeElement<AssemblyReference>(importDefinition.TargetAssembly);
                     break;
                 case ImportDefinitionKind.AliasNamespace:
                 case ImportDefinitionKind.ImportXmlNamespace:
@@ -35,10 +35,10 @@ namespace ByrneLabs.Commons.MetadataDom
                     break;
                 case ImportDefinitionKind.AliasType:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetType = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(importDefinition.TargetType));
+                    _targetType = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(importDefinition.TargetType));
                     break;
                 case ImportDefinitionKind.ImportAssemblyNamespace:
-                    _targetAssembly = GetLazyCodeElementWithHandle<AssemblyReference>(importDefinition.TargetAssembly);
+                    _targetAssembly = MetadataState.GetLazyCodeElement<AssemblyReference>(importDefinition.TargetAssembly);
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.ImportAssemblyReferenceAlias:
@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.ImportType:
-                    _targetType = new Lazy<TypeBase>(() => GetCodeElementWithHandle<TypeBase>(importDefinition.TargetType));
+                    _targetType = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(importDefinition.TargetType));
                     break;
                 default:
                     throw new ArgumentException($"Unknown ImportDefinitionKind {importDefinition.Kind}");

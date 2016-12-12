@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using JetBrains.Annotations;
+using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -39,40 +40,40 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public ReflectionData(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile = null) : base(assemblyFile ?? pdbFile, new MetadataState(prefetchMetadata, assemblyFile, pdbFile))
+        public ReflectionData(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile = null) : base(new CodeElementKey<ReflectionData>(assemblyFile ?? pdbFile), new MetadataState(prefetchMetadata, assemblyFile, pdbFile))
         {
             if (MetadataState.HasMetadata)
             {
                 HasMetadata = true;
                 if (Reader.IsAssembly)
                 {
-                    AssemblyDefinition = GetCodeElementWithHandle<AssemblyDefinition>(Handle.AssemblyDefinition);
+                    AssemblyDefinition = MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
                 }
-                _assemblyFiles = GetLazyCodeElementsWithHandle<AssemblyFile>(Reader.AssemblyFiles);
-                _assemblyReferences = GetLazyCodeElementsWithHandle<AssemblyReference>(Reader.AssemblyReferences);
-                _customAttributes = GetLazyCodeElementsWithHandle<CustomAttribute>(Reader.CustomAttributes);
-                _declarativeSecurityAttributes = GetLazyCodeElementsWithHandle<DeclarativeSecurityAttribute>(Reader.DeclarativeSecurityAttributes);
-                _eventDefinitions = GetLazyCodeElementsWithHandle<EventDefinition>(Reader.EventDefinitions);
-                _fieldDefinitions = GetLazyCodeElementsWithHandle<FieldDefinition>(Reader.FieldDefinitions);
-                _importScopes = GetLazyCodeElementsWithHandle<ImportScope>(Reader.ImportScopes);
-                _manifestResources = GetLazyCodeElementsWithHandle<ManifestResource>(Reader.ManifestResources);
-                _memberReferences = GetLazyCodeElementsWithHandle<MemberReference>(Reader.MemberReferences);
-                _methodDefinitions = GetLazyCodeElementsWithHandle<MethodDefinitionBase>(Reader.MethodDefinitions);
-                _moduleDefinition = GetLazyCodeElementWithHandle<ModuleDefinition>(Handle.ModuleDefinition);
-                _propertyDefinitions = GetLazyCodeElementsWithHandle<PropertyDefinition>(Reader.PropertyDefinitions);
-                _typeDefinitions = GetLazyCodeElementsWithHandle<TypeDefinition>(Reader.TypeDefinitions);
-                _typeReferences = GetLazyCodeElementsWithHandle<TypeReference>(Reader.TypeReferences);
+                _assemblyFiles = MetadataState.GetLazyCodeElements<AssemblyFile>(Reader.AssemblyFiles);
+                _assemblyReferences = MetadataState.GetLazyCodeElements<AssemblyReference>(Reader.AssemblyReferences);
+                _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(Reader.CustomAttributes);
+                _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(Reader.DeclarativeSecurityAttributes);
+                _eventDefinitions = MetadataState.GetLazyCodeElements<EventDefinition>(Reader.EventDefinitions);
+                _fieldDefinitions = MetadataState.GetLazyCodeElements<FieldDefinition>(Reader.FieldDefinitions);
+                _importScopes = MetadataState.GetLazyCodeElements<ImportScope>(Reader.ImportScopes);
+                _manifestResources = MetadataState.GetLazyCodeElements<ManifestResource>(Reader.ManifestResources);
+                _memberReferences = MetadataState.GetLazyCodeElements<MemberReference>(Reader.MemberReferences);
+                _methodDefinitions = new Lazy<IEnumerable<MethodDefinitionBase>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).Cast<MethodDefinitionBase>());
+                _moduleDefinition = MetadataState.GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
+                _propertyDefinitions = MetadataState.GetLazyCodeElements<PropertyDefinition>(Reader.PropertyDefinitions);
+                _typeDefinitions = MetadataState.GetLazyCodeElements<TypeDefinition>(Reader.TypeDefinitions);
+                _typeReferences = MetadataState.GetLazyCodeElements<TypeReference>(Reader.TypeReferences);
                 MetadataKind = Reader.MetadataKind;
             }
             if (MetadataState.HasDebugMetadata)
             {
                 HasDebugMetadata = true;
-                _customDebugInformation = GetLazyCodeElementsWithHandle<CustomDebugInformation>(MetadataState.PdbReader.CustomDebugInformation);
-                _documents = GetLazyCodeElementsWithHandle<Document>(MetadataState.PdbReader.Documents);
-                _localConstants = GetLazyCodeElementsWithHandle<LocalConstant>(MetadataState.PdbReader.LocalConstants);
-                _localScopes = GetLazyCodeElementsWithHandle<LocalScope>(MetadataState.PdbReader.LocalScopes);
-                _localVariables = GetLazyCodeElementsWithHandle<LocalVariable>(MetadataState.PdbReader.LocalVariables);
-                _methodDebugInformation = GetLazyCodeElementsWithHandle<MethodDebugInformation>(MetadataState.PdbReader.MethodDebugInformation);
+                _customDebugInformation = MetadataState.GetLazyCodeElements<CustomDebugInformation>(MetadataState.PdbReader.CustomDebugInformation);
+                _documents = MetadataState.GetLazyCodeElements<Document>(MetadataState.PdbReader.Documents);
+                _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(MetadataState.PdbReader.LocalConstants);
+                _localScopes = MetadataState.GetLazyCodeElements<LocalScope>(MetadataState.PdbReader.LocalScopes);
+                _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(MetadataState.PdbReader.LocalVariables);
+                _methodDebugInformation = MetadataState.GetLazyCodeElements<MethodDebugInformation>(MetadataState.PdbReader.MethodDebugInformation);
             }
         }
 

@@ -17,9 +17,9 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetImportScope(metadataHandle);
-            _parent = GetLazyCodeElementWithHandle<ImportScope>(MetadataToken.Parent);
+            _parent = MetadataState.GetLazyCodeElement<ImportScope>(MetadataToken.Parent);
             _importsBlob = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.ImportsBlob)));
-            _imports = GetLazyCodeElementsWithoutHandle<ImportDefinition>(MetadataToken.GetImports());
+            _imports = MetadataState.GetLazyCodeElements<ImportDefinition>(MetadataToken.GetImports());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ImportScope.GetImports" />

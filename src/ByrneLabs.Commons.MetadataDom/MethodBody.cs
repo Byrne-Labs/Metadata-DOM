@@ -12,11 +12,11 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<ExceptionRegion>> _exceptionRegions;
         private readonly Lazy<StandaloneSignature> _localSignature;
 
-        internal MethodBody(int relativeVirtualAddress, MetadataState metadataState) : base(new HandlelessCodeElementKey<MethodBody>(relativeVirtualAddress), metadataState)
+        internal MethodBody(int relativeVirtualAddress, MetadataState metadataState) : base(new CodeElementKey<MethodBody>(relativeVirtualAddress), metadataState)
         {
             MetadataToken = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
-            _exceptionRegions = GetLazyCodeElementsWithoutHandle<ExceptionRegion>(MetadataToken.ExceptionRegions);
-            _localSignature = GetLazyCodeElementWithHandle<StandaloneSignature>(MetadataToken.LocalSignature);
+            _exceptionRegions = MetadataState.GetLazyCodeElements<ExceptionRegion>(MetadataToken.ExceptionRegions);
+            _localSignature = MetadataState.GetLazyCodeElement<StandaloneSignature>(MetadataToken.LocalSignature);
             LocalVariablesInitialized = MetadataToken.LocalVariablesInitialized;
             MaxStack = MetadataToken.MaxStack;
             Size = MetadataToken.Size;

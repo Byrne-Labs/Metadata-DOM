@@ -10,10 +10,10 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private readonly Lazy<TypeBase> _catchType;
 
-        internal ExceptionRegion(System.Reflection.Metadata.ExceptionRegion exceptionRegion, MetadataState metadataState) : base(new HandlelessCodeElementKey<ExceptionRegion>(exceptionRegion), metadataState)
+        internal ExceptionRegion(System.Reflection.Metadata.ExceptionRegion exceptionRegion, MetadataState metadataState) : base(new CodeElementKey<ExceptionRegion>(exceptionRegion), metadataState)
         {
             MetadataToken = exceptionRegion;
-            _catchType = GetLazyCodeElementWithHandle<TypeBase>(MetadataToken.CatchType);
+            _catchType = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.CatchType));
             FilterOffset = MetadataToken.FilterOffset;
             HandlerLength = MetadataToken.HandlerLength;
             HandlerOffset = MetadataToken.HandlerOffset;

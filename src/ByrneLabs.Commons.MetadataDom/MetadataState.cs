@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -37,6 +38,7 @@ namespace ByrneLabs.Commons.MetadataDom
             { typeof(ManifestResourceHandle), typeof(ManifestResource) },
             { typeof(MemberReferenceHandle), typeof(MemberReference) },
             { typeof(MethodDebugInformationHandle), typeof(MethodDebugInformation) },
+            { typeof(MethodDefinitionHandle), typeof(MethodDefinition) },
             { typeof(MethodImplementationHandle), typeof(MethodImplementation) },
             { typeof(System.Reflection.Metadata.MethodImport), typeof(MethodImport) },
             { typeof(MethodSpecificationHandle), typeof(MethodSpecification) },
@@ -51,19 +53,19 @@ namespace ByrneLabs.Commons.MetadataDom
             { typeof(TypeReferenceHandle), typeof(TypeReference) },
             { typeof(TypeSpecificationHandle), typeof(TypeSpecification) }
         });
-        private readonly IDictionary<object, CodeElement> _codeElementCache = new Dictionary<object, CodeElement>();
+        private readonly IDictionary<CodeElementKey, CodeElement> _codeElementCache = new Dictionary<CodeElementKey, CodeElement>();
         private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
-        private AssemblyDefinition _assemblyDefinition;
-        private ModuleDefinition _moduleDefinition;
 
         public MetadataState(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile)
         {
+            SignatureTypeProvider = new CodeElementSignatureTypeProvider(this);
             if (assemblyFile != null)
             {
                 if (!assemblyFile.Exists)
                 {
                     throw new ArgumentException($"The file {assemblyFile.FullName} does not exist", nameof(assemblyFile));
                 }
+
                 AssemblyFile = new MetadataFile(prefetchMetadata, assemblyFile, MetadataFileType.Assembly);
             }
 
@@ -73,6 +75,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     throw new ArgumentException($"The file {pdbFile.FullName} does not exist", nameof(pdbFile));
                 }
+
                 PdbFile = new MetadataFile(prefetchMetadata, pdbFile, MetadataFileType.Pdb);
             }
             else if (!AssemblyFile.PEReader.PEHeaders.IsCoffOnly)
@@ -94,6 +97,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool HasMetadata => AssemblyFile?.HasMetadata == true;
 
         public MetadataReader PdbReader => PdbFile?.Reader;
+
+        public CodeElementSignatureTypeProvider SignatureTypeProvider { get; }
 
         private MetadataFile AssemblyFile { get; }
 
@@ -263,8 +268,14 @@ namespace ByrneLabs.Commons.MetadataDom
             return downcastHandle;
         }
 
+        public static Type GetCodeElementTypeForHandle(Handle handle)
+        {
+            var upcastHandle = UpcastHandle(handle);
+            return HandleTypeMap[upcastHandle.GetType()];
+        }
+
         [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
-        private static object UpcastHandle(Handle handle)
+        public static object UpcastHandle(Handle handle)
         {
             object upcastHandle;
             switch (handle.Kind)
@@ -387,78 +398,262 @@ namespace ByrneLabs.Commons.MetadataDom
             return upcastHandle;
         }
 
-        public void CacheCodeElement(CodeElement codeElement, object key) => _codeElementCache.Add(DowncastHandle(key) ?? key, codeElement);
+        private static ConstructorInfo GetConstructor(Type type, object[] parameters)
+        {
+            ConstructorInfo matchingConstructor = null;
+            foreach (var constructor in type.GetTypeInfo().DeclaredConstructors.Where(constructor => constructor.GetParameters().Length == parameters.Length))
+            {
+                var match = true;
+                var parameterIndex = 0;
+                foreach (var parameter in constructor.GetParameters())
+                {
+                    if (!parameter.ParameterType.GetTypeInfo().IsAssignableFrom(parameters[parameterIndex].GetType()))
+                    {
+                        match = false;
+                        break;
+                    }
 
-        public CodeElement GetCodeElement(object key)
+                    parameterIndex++;
+                }
+
+                if (match)
+                {
+                    matchingConstructor = constructor;
+                    break;
+                }
+            }
+
+            return matchingConstructor;
+        }
+
+        public void CacheCodeElement(CodeElement codeElement, CodeElementKey key) => _codeElementCache.Add(key, codeElement);
+
+        public CodeElement GetCodeElement(Type codeElementType, params object[] keyValues)
+        {
+            return GetCodeElement(new CodeElementKey(codeElementType, keyValues));
+        }
+
+        public CodeElement GetCodeElement(CodeElementKey key)
         {
             CodeElement codeElement;
-            var downcastHandle = DowncastHandle(key);
-            if (downcastHandle == null)
+            if (_codeElementCache.ContainsKey(key))
             {
-                if (_codeElementCache.ContainsKey(key))
-                {
-                    codeElement = _codeElementCache[key];
-                }
-                else
-                {
-                    var handlelessCodeElementKey = key as HandlelessCodeElementKey;
-                    var codeElementType = handlelessCodeElementKey == null ? HandleTypeMap[key.GetType()] : handlelessCodeElementKey.CodeElementType;
-                    var constructor = codeElementType.GetTypeInfo().DeclaredConstructors.Single(constructorCheck => constructorCheck.GetParameters().Length == 2 && constructorCheck.GetParameters()[1].ParameterType == GetType());
-                    codeElement = (CodeElement)constructor.Invoke(new[] { handlelessCodeElementKey == null ? key : handlelessCodeElementKey.KeyValue, this });
-                }
+                codeElement = _codeElementCache[key];
             }
-            else if (downcastHandle.Value.IsNil)
+            else if (key.PrimitiveTypeCode.HasValue)
             {
-                codeElement = null;
+                codeElement = new PrimitiveType(key.PrimitiveTypeCode.Value, this);
             }
-            else if (key is AssemblyDefinitionHandle)
-            {
-                codeElement = _assemblyDefinition ?? (_assemblyDefinition = new AssemblyDefinition((AssemblyDefinitionHandle)key, this));
-            }
-            else if (key is ModuleDefinitionHandle)
-            {
-                codeElement = _moduleDefinition ?? (_moduleDefinition = new ModuleDefinition((ModuleDefinitionHandle)key, this));
-            }
-            else if (DebugMetadataTypes.Contains(key.GetType()) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.GetType()) && !HasMetadata)
+            else if (key?.Handle.Value.IsNil == true || DebugMetadataTypes.Contains(key.CodeElementType) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.CodeElementType) && !HasMetadata)
             {
                 codeElement = null;
             }
             else
             {
-                if (_codeElementCache.ContainsKey(downcastHandle.Value))
+                Type codeElementType;
+                if (key.UpcastHandle is MethodDefinitionHandle)
                 {
-                    codeElement = _codeElementCache[downcastHandle.Value];
-                }
-                else
-                {
-                    var upcastHandle = UpcastHandle(downcastHandle.Value);
-
-                    if (upcastHandle is MethodDefinitionHandle)
+                    var methodDefinition = AssemblyReader.GetMethodDefinition((MethodDefinitionHandle)key.UpcastHandle);
+                    var methodName = AssemblyReader.GetString(methodDefinition.Name);
+                    if (".ctor".Equals(methodName) || ".cctor".Equals(methodName))
                     {
-                        var methodDefinition = AssemblyReader.GetMethodDefinition((MethodDefinitionHandle)upcastHandle);
-                        var methodName = AssemblyReader.GetString(methodDefinition.Name);
-                        if (".ctor".Equals(methodName) || ".cctor".Equals(methodName))
-                        {
-                            codeElement = new ConstructorDefinition((MethodDefinitionHandle)upcastHandle, this);
-                        }
-                        else
-                        {
-                            codeElement = new MethodDefinition((MethodDefinitionHandle)upcastHandle, this);
-                        }
+                        codeElementType = typeof(ConstructorDefinition);
                     }
                     else
                     {
-                        var codeElementType = HandleTypeMap[upcastHandle.GetType()];
-                        var constructor = codeElementType.GetTypeInfo().DeclaredConstructors.Single(constructorCheck => constructorCheck.GetParameters().Length == 2 && constructorCheck.GetParameters()[1].ParameterType == GetType());
-                        codeElement = (CodeElement)constructor.Invoke(new[] { upcastHandle, this });
+                        codeElementType = typeof(MethodDefinition);
                     }
                 }
+                else
+                {
+                    codeElementType = key.CodeElementType;
+                }
+                var constructorParameterValues = key.KeyValues.Select(keyValue => keyValue is Handle ? UpcastHandle((Handle)keyValue) : keyValue).Append(this).ToArray();
+                var constructor = GetConstructor(codeElementType, constructorParameterValues);
+                codeElement = (CodeElement)constructor.Invoke(constructorParameterValues);
             }
 
             return codeElement;
         }
 
+        public T GetCodeElement<T>(CodeElementKey<T> key) where T : CodeElement => (T)GetCodeElement((CodeElementKey)key);
+
+        public T GetCodeElement<T>(params object[] keyValues) where T : CodeElement => GetCodeElement(new CodeElementKey<T>(keyValues));
+
+        public CodeElement GetCodeElement(object handle) => GetCodeElement(new CodeElementKey(handle));
+
+        public IEnumerable<T> GetCodeElements<T>(IEnumerable<CodeElementKey<T>> keys) where T : CodeElement => keys.Select(GetCodeElement).ToList();
+
+        public IEnumerable<CodeElement> GetCodeElements(IEnumerable handles) => handles.Cast<object>().Select(handle => GetCodeElement(handle)).ToList();
+
+        public IEnumerable<T> GetCodeElements<T>(IEnumerable handles) where T : CodeElement => handles.Cast<object>().Select(handle => GetCodeElement<T>(handle)).ToList();
+
+        public Lazy<CodeElement> GetLazyCodeElement(CodeElementKey key) => new Lazy<CodeElement>(() => GetCodeElement(key));
+
+        public Lazy<CodeElement> GetLazyCodeElement(object handle) => new Lazy<CodeElement>(() => GetCodeElement(handle));
+
+        public Lazy<T> GetLazyCodeElement<T>(CodeElementKey<T> key) where T : CodeElement => new Lazy<T>(() => GetCodeElement(key));
+
+        public Lazy<T> GetLazyCodeElement<T>(params object[] keyValues) where T : CodeElement => new Lazy<T>(() => GetCodeElement(new CodeElementKey<T>(keyValues)));
+
+        public Lazy<T> GetLazyCodeElement<T>(object handle) where T : CodeElement => new Lazy<T>(() => GetCodeElement<T>(handle));
+
+        public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable<CodeElementKey<T>> keys) where T : CodeElement => new Lazy<IEnumerable<T>>(() => GetCodeElements(keys));
+
+        public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable handles) where T : CodeElement => new Lazy<IEnumerable<T>>(() => GetCodeElements<T>(handles));
+
+        public Lazy<IEnumerable<CodeElement>> GetLazyCodeElements(IEnumerable handles) => new Lazy<IEnumerable<CodeElement>>(() => GetCodeElements(handles));
+
         public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => relativeVirtualAddress == 0 ? null : AssemblyFile.PEReader.GetMethodBody(relativeVirtualAddress);
+
+        [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
+        public object GetTokenForHandle(object handle)
+        {
+            object token;
+            var upcastHandle = handle is Handle ? UpcastHandle((Handle)handle) : handle;
+            if (upcastHandle == null)
+            {
+                token = null;
+            }
+            else if (upcastHandle is AssemblyDefinitionHandle)
+            {
+                token = AssemblyReader.GetAssemblyDefinition();
+            }
+            else if (upcastHandle is AssemblyFileHandle)
+            {
+                token = AssemblyReader.GetAssemblyFile((AssemblyFileHandle)upcastHandle);
+            }
+            else if (upcastHandle is AssemblyReferenceHandle)
+            {
+                token = AssemblyReader.GetAssemblyReference((AssemblyReferenceHandle)upcastHandle);
+            }
+            else if (upcastHandle is ConstantHandle)
+            {
+                token = AssemblyReader.GetConstant((ConstantHandle)upcastHandle);
+            }
+            else if (upcastHandle is CustomAttributeHandle)
+            {
+                token = AssemblyReader.GetCustomAttribute((CustomAttributeHandle)upcastHandle);
+            }
+            else if (upcastHandle is CustomDebugInformationHandle)
+            {
+                token = AssemblyReader.GetCustomDebugInformation((CustomDebugInformationHandle)upcastHandle);
+            }
+            else if (upcastHandle is DeclarativeSecurityAttributeHandle)
+            {
+                token = AssemblyReader.GetDeclarativeSecurityAttribute((DeclarativeSecurityAttributeHandle)upcastHandle);
+            }
+            else if (upcastHandle is DocumentHandle)
+            {
+                token = AssemblyReader.GetDocument((DocumentHandle)upcastHandle);
+            }
+            else if (upcastHandle is EventDefinitionHandle)
+            {
+                token = AssemblyReader.GetEventDefinition((EventDefinitionHandle)upcastHandle);
+            }
+            else if (upcastHandle is ExportedTypeHandle)
+            {
+                token = AssemblyReader.GetExportedType((ExportedTypeHandle)upcastHandle);
+            }
+            else if (upcastHandle is FieldDefinitionHandle)
+            {
+                token = AssemblyReader.GetFieldDefinition((FieldDefinitionHandle)upcastHandle);
+            }
+            else if (upcastHandle is GenericParameterHandle)
+            {
+                token = AssemblyReader.GetGenericParameter((GenericParameterHandle)upcastHandle);
+            }
+            else if (upcastHandle is GenericParameterConstraintHandle)
+            {
+                token = AssemblyReader.GetGenericParameterConstraint((GenericParameterConstraintHandle)upcastHandle);
+            }
+            else if (upcastHandle is ImportScopeHandle)
+            {
+                token = AssemblyReader.GetImportScope((ImportScopeHandle)upcastHandle);
+            }
+            else if (upcastHandle is InterfaceImplementationHandle)
+            {
+                token = AssemblyReader.GetInterfaceImplementation((InterfaceImplementationHandle)upcastHandle);
+            }
+            else if (upcastHandle is LocalConstantHandle)
+            {
+                token = AssemblyReader.GetLocalConstant((LocalConstantHandle)upcastHandle);
+            }
+            else if (upcastHandle is LocalScopeHandle)
+            {
+                token = AssemblyReader.GetLocalScope((LocalScopeHandle)upcastHandle);
+            }
+            else if (upcastHandle is LocalVariableHandle)
+            {
+                token = AssemblyReader.GetLocalVariable((LocalVariableHandle)upcastHandle);
+            }
+            else if (upcastHandle is ManifestResourceHandle)
+            {
+                token = AssemblyReader.GetManifestResource((ManifestResourceHandle)upcastHandle);
+            }
+            else if (upcastHandle is MemberReferenceHandle)
+            {
+                token = AssemblyReader.GetMemberReference((MemberReferenceHandle)upcastHandle);
+            }
+            else if (upcastHandle is MethodDebugInformationHandle)
+            {
+                token = AssemblyReader.GetMethodDebugInformation((MethodDebugInformationHandle)upcastHandle);
+            }
+            else if (upcastHandle is MethodDefinitionHandle)
+            {
+                token = AssemblyReader.GetMethodDefinition((MethodDefinitionHandle)upcastHandle);
+            }
+            else if (upcastHandle is MethodImplementationHandle)
+            {
+                token = AssemblyReader.GetMethodImplementation((MethodImplementationHandle)upcastHandle);
+            }
+            else if (upcastHandle is MethodSpecificationHandle)
+            {
+                token = AssemblyReader.GetMethodSpecification((MethodSpecificationHandle)upcastHandle);
+            }
+            else if (upcastHandle is ModuleDefinitionHandle)
+            {
+                token = AssemblyReader.GetModuleDefinition();
+            }
+            else if (upcastHandle is ModuleReferenceHandle)
+            {
+                token = AssemblyReader.GetModuleReference((ModuleReferenceHandle)upcastHandle);
+            }
+            else if (upcastHandle is NamespaceDefinitionHandle)
+            {
+                token = AssemblyReader.GetNamespaceDefinition((NamespaceDefinitionHandle)upcastHandle);
+            }
+            else if (upcastHandle is ParameterHandle)
+            {
+                token = AssemblyReader.GetParameter((ParameterHandle)upcastHandle);
+            }
+            else if (upcastHandle is PropertyDefinitionHandle)
+            {
+                token = AssemblyReader.GetPropertyDefinition((PropertyDefinitionHandle)upcastHandle);
+            }
+            else if (upcastHandle is StandaloneSignatureHandle)
+            {
+                token = AssemblyReader.GetStandaloneSignature((StandaloneSignatureHandle)upcastHandle);
+            }
+            else if (upcastHandle is TypeDefinitionHandle)
+            {
+                token = AssemblyReader.GetTypeDefinition((TypeDefinitionHandle)upcastHandle);
+            }
+            else if (upcastHandle is TypeReferenceHandle)
+            {
+                token = AssemblyReader.GetTypeReference((TypeReferenceHandle)upcastHandle);
+            }
+            else if (upcastHandle is TypeSpecificationHandle)
+            {
+                token = AssemblyReader.GetTypeSpecification((TypeSpecificationHandle)upcastHandle);
+            }
+            else
+            {
+                throw new ArgumentException($"{handle.GetType()} is an invalid handle type", nameof(handle));
+            }
+
+            return token;
+        }
 
         protected virtual void Dispose(bool disposeManaged)
         {

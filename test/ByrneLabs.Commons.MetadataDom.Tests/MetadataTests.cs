@@ -20,6 +20,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         private readonly ITestOutputHelper _output;
+        private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
 
         [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
         private static void AssertHasDebugMetadata(ReflectionData reflectionData) => Assert.True(reflectionData.Documents.Any());
@@ -42,6 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             if (!checkedCodeElements.Contains(codeElement))
             {
                 checkedCodeElements.Add(codeElement);
+                var discoveredCodeElements = new List<CodeElement>();
                 foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties())
                 {
                     var propertyValue = property.GetValue(codeElement);
@@ -49,15 +51,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                     var codeElementsPropertyValue = propertyValue as IEnumerable;
                     if (codeElementPropertyValue != null)
                     {
-                        CheckCodeElement(codeElementPropertyValue, checkedCodeElements);
+                        discoveredCodeElements.Add(codeElementPropertyValue);
                     }
                     else if (codeElementsPropertyValue?.GetType().IsConstructedGenericType == true && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
                     {
-                        foreach (var childCodeElement in codeElementsPropertyValue.Cast<CodeElement>())
-                        {
-                            CheckCodeElement(childCodeElement, checkedCodeElements);
-                        }
+                        discoveredCodeElements.AddRange(codeElementsPropertyValue.Cast<CodeElement>());
                     }
+                }
+                var assemblies = checkedCodeElements.OfType<AssemblyDefinition>().ToArray();
+                foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null).Except(checkedCodeElements).Distinct())
+                {
+                    CheckCodeElement(discoveredCodeElement, checkedCodeElements);
                 }
             }
         }
@@ -195,14 +199,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        public void TestOnSampleAssembly()
-        {
-            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
-            AssertValid(reflectionData);
-            AssertHasMetadata(reflectionData);
-        }
-
-        [Fact]
         public void TestOnOwnPdbWithoutPrefetch()
         {
             var reflectionData = new ReflectionData(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
@@ -218,8 +214,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             AssertHasDebugMetadata(reflectionData);
         }
 
-        private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
-
         [Fact]
         public void TestOnPrebuildResources()
         {
@@ -234,5 +228,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             }
         }
 
+        [Fact]
+        public void TestOnSampleAssembly()
+        {
+            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
+        }
     }
 }

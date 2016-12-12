@@ -21,12 +21,12 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetMethodDebugInformation(metadataHandle);
-            _document = GetLazyCodeElementWithHandle<Document>(MetadataToken.Document);
-            _localSignature = GetLazyCodeElementWithHandle<StandaloneSignature>(MetadataToken.LocalSignature);
+            _document = MetadataState.GetLazyCodeElement<Document>(MetadataToken.Document);
+            _localSignature = MetadataState.GetLazyCodeElement<StandaloneSignature>(MetadataToken.LocalSignature);
             _sequencePointsBlob = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.SequencePointsBlob)));
-            _sequencePoints = GetLazyCodeElementsWithoutHandle<SequencePoint>(MetadataToken.GetSequencePoints());
-            _stateMachineKickoffMethod = GetLazyCodeElementWithHandle<MethodDefinition>(MetadataToken.GetStateMachineKickoffMethod());
-            _sourceCode = new Lazy<string>(() => Document == null ? null : string.Join(Environment.NewLine, SequencePoints.Select(sequencePoint => sequencePoint.SourceCode)));
+            _sequencePoints = MetadataState.GetLazyCodeElements<SequencePoint>(MetadataToken.GetSequencePoints());
+            _stateMachineKickoffMethod = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetStateMachineKickoffMethod());
+            _sourceCode = new Lazy<string>(() => Document == null ? null : string.Join(Environment.NewLine, SequencePoints.Where(sequencePoint => sequencePoint != null).Select(sequencePoint => sequencePoint.SourceCode)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.LocalSignature" />
@@ -52,6 +52,5 @@ namespace ByrneLabs.Commons.MetadataDom
         public Document Document => _document.Value;
 
         public string SourceCode => _sourceCode.Value;
-
     }
 }

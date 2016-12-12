@@ -16,7 +16,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
-            _parent = GetLazyCodeElementWithHandle(MetadataToken.Parent);
+            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
             Action = MetadataToken.Action;
             _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PermissionSet)));
         }
