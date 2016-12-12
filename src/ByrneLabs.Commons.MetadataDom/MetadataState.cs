@@ -444,7 +444,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 codeElement = new PrimitiveType(key.PrimitiveTypeCode.Value, this);
             }
-            else if (key?.Handle.Value.IsNil == true || DebugMetadataTypes.Contains(key.CodeElementType) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.CodeElementType) && !HasMetadata)
+            else if ((key.Handle?.IsNil == true) || DebugMetadataTypes.Contains(key.CodeElementType) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.CodeElementType) && !HasMetadata)
             {
                 codeElement = null;
             }

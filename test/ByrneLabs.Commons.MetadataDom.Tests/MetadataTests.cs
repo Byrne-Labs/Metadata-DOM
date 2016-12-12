@@ -58,8 +58,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                         discoveredCodeElements.AddRange(codeElementsPropertyValue.Cast<CodeElement>());
                     }
                 }
-                var assemblies = checkedCodeElements.OfType<AssemblyDefinition>().ToArray();
-                foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null).Except(checkedCodeElements).Distinct())
+
+                foreach(var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null).Except(checkedCodeElements).Distinct())
                 {
                     CheckCodeElement(discoveredCodeElement, checkedCodeElements);
                 }
@@ -131,10 +131,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         private void SmokeTestOnDotNetFramework(bool prefetch)
         {
-            var assemblyFiles = GetGacAssemblies().Take(10);
+            var assemblyFiles = GetGacAssemblies().Take(200);
             var startTime = DateTime.Now;
             var exceptions = new ConcurrentDictionary<FileInfo, Exception>();
-            Parallel.ForEach(assemblyFiles, assemblyFile =>
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 100,
+            };
+            Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile =>
             {
                 try
                 {
@@ -145,7 +149,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 }
                 catch (Exception exception)
                 {
+                    _output.WriteLine($"Assembly {assemblyFile.FullName} failed with exception:\r\n{exception}");
+                    assemblyFile.CopyTo($@"C:\dev\code\Byrne-Labs\FailedTestFiles\{assemblyFile.Name}");
                     exceptions.TryAdd(assemblyFile, exception);
+                    throw;
                 }
             });
 
@@ -232,6 +239,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         public void TestOnSampleAssembly()
         {
             var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+            AssertValid(reflectionData);
+            AssertHasMetadata(reflectionData);
+        }
+
+        [Fact]
+        public void TestOnFailedAssembly()
+        {
+            var reflectionData = new ReflectionData(true, new FileInfo(@"C:\dev\code\Byrne-Labs\FailedTestFiles\CustomMarshalers.dll"));
             AssertValid(reflectionData);
             AssertHasMetadata(reflectionData);
         }

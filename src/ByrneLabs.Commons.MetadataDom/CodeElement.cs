@@ -10,9 +10,12 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal CodeElement(CodeElementKey key, MetadataState metadataState)
         {
+            Key = key;
             MetadataState = metadataState;
             metadataState.CacheCodeElement(this, key);
         }
+
+        internal CodeElementKey Key { get; }
 
         internal CodeElement(Handle metadataHandle, MetadataState metadataState) : this(new CodeElementKey(metadataHandle), metadataState)
         {

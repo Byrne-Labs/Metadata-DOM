@@ -34,7 +34,10 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
             }
             KeyValues = rawKeyValues;
-            Handle = KeyValues.OfType<Handle>().FirstOrDefault();
+            // ReSharper disable once ReplaceWithOfType.3 -- NOTE: using OfType<Handle> will convert any integer value to a handle
+            var handles = KeyValues.Where(keyValue => keyValue is Handle).Select(keyValue => (Handle)keyValue);
+            Handle = KeyValues.OfType<Handle?>().FirstOrDefault();
+
             UpcastHandle = Handle.HasValue ? MetadataState.UpcastHandle(Handle.Value) : null;
 
             if (codeElementType.GetTypeInfo().IsAbstract)

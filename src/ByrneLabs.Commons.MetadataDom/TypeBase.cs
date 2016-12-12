@@ -4,38 +4,20 @@ using JetBrains.Annotations;
 using System.Reflection.Metadata;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    public abstract class TypeBase<TTypeBase, TKey> : TypeBase where TTypeBase : TypeBase
-    {
-        internal TypeBase(TypeBase<TTypeBase, TKey> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState, new CodeElementKey<TTypeBase>(baseType.KeyValue, typeElementModifiers))
-        {
-            KeyValue = baseType.KeyValue;
-        }
-
-        internal TypeBase(TypeBase<TTypeBase, TKey> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState, new CodeElementKey<TTypeBase>(genericTypeDefinition.KeyValue, genericTypeDefinition, genericTypeArguments))
-        {
-            KeyValue = genericTypeDefinition.KeyValue;
-        }
-
-        internal TypeBase(TKey keyValue, MetadataState metadataState) : base(new CodeElementKey<TTypeBase>(keyValue), metadataState)
-        {
-            KeyValue = keyValue;
-        }
-
-        protected TKey KeyValue { get; }
-    }
 
     public abstract class TypeBase<TTypeBase, THandle, TToken> : TypeBase<TTypeBase, THandle>, ICodeElementWithHandle<THandle, TToken> where TTypeBase : TypeBase
     {
-        internal TypeBase(TypeBase<TTypeBase, THandle, TToken> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
             MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
-        internal TypeBase(TypeBase<TTypeBase, THandle, TToken> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
+        internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
             MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
@@ -52,6 +34,26 @@ namespace ByrneLabs.Commons.MetadataDom
         public THandle MetadataHandle => KeyValue;
 
         public TToken MetadataToken { get; }
+    }
+
+    public abstract class TypeBase<TTypeBase, TKey> : TypeBase where TTypeBase : TypeBase
+    {
+        internal TypeBase(TypeBase<TTypeBase, TKey> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState, new CodeElementKey<TTypeBase>(baseType, typeElementModifiers))
+        {
+            KeyValue = baseType.KeyValue;
+        }
+
+        internal TypeBase(TypeBase<TTypeBase, TKey> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState, new CodeElementKey<TTypeBase>(genericTypeDefinition, genericTypeDefinition, genericTypeArguments))
+        {
+            KeyValue = genericTypeDefinition.KeyValue;
+        }
+
+        internal TypeBase(TKey keyValue, MetadataState metadataState) : base(new CodeElementKey<TTypeBase>(keyValue), metadataState)
+        {
+            KeyValue = keyValue;
+        }
+
+        protected TKey KeyValue { get; }
     }
 
     [DebuggerDisplay("\\{{GetType().FullName,nq}\\}: {Namespace,nq}.{Name,nq}")]
