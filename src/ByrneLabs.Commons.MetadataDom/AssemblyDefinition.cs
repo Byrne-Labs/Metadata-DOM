@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Diagnostics;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition" />
     //[PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name.FullName}")]
     public class AssemblyDefinition : AssemblyBase<AssemblyDefinition, AssemblyDefinitionHandle, System.Reflection.Metadata.AssemblyDefinition>
     {
         private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;

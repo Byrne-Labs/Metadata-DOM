@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
-        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+        public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
@@ -54,7 +54,8 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             _signature = new Lazy<TypeBase>(() =>
             {
-                var signature = MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(ParentTypeDefinition.GenericTypeParameters, null));
+                var genericContext = new GenericContext(ParentTypeDefinition.GenericTypeParameters, null);
+                var signature = MetadataToken.DecodeSignature(MetadataState.TypeProvider, genericContext);
                 return signature;
             });
         }

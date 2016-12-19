@@ -40,7 +40,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
-        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+        public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.Attributes" />
         public TypeAttributes Attributes { get; private set; }

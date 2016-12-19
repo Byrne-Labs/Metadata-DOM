@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name.FullName}")]
     public abstract class AssemblyBase : RuntimeCodeElement, IAssembly
     {
         internal AssemblyBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)

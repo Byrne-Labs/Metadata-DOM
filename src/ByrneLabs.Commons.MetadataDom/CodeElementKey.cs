@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [DebuggerDisplay("\\{CodeElementKey\\}: {KeysToString()}")]
     internal class CodeElementKey
     {
         public CodeElementKey(Type codeElementType, params object[] keyValues)
@@ -67,6 +69,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public CodeElementKey(object handle) : this(MetadataState.DowncastHandle(handle) ?? throw new ArgumentException(nameof(handle)))
         {
         }
+
+        private string KeysToString() => string.Join(", ", KeyValues);
 
         public Type CodeElementType { get; }
 

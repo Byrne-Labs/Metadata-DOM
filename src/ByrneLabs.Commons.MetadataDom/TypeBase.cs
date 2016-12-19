@@ -13,19 +13,19 @@ namespace ByrneLabs.Commons.MetadataDom
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         public Handle DowncastMetadataHandle { get; }
@@ -80,7 +80,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             IsGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
-            GenericTypeArguments = genericTypeArguments.Select(typeArgument => (TypeBase) MetadataState.GetCodeElement(typeArgument.GetType(), typeArgument, TypeElementModifiers.GenericArgument)).ToArray();
+            GenericTypeArguments = genericTypeArguments.Select(typeArgument => (TypeBase)MetadataState.GetCodeElement(typeArgument.GetType(), typeArgument, TypeElementModifiers.GenericArgument)).ToArray();
             Initialize();
         }
 
@@ -96,7 +96,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string Namespace { get; }
 
-        public virtual string AssemblyQualifiedName => $"{FullName}, {Assembly.Name.FullName}";
+        public virtual string AssemblyQualifiedName => Assembly == null ? FullName : $"{FullName}, {Assembly.Name.FullName}";
 
         /// <summary>When overridden in a derived class, returns the <see cref="TypeBase" /> of the object encompassed or referred to by the current array, pointer or reference type.</summary>
         /// <returns>The <see cref="TypeBase" /> of the object encompassed or referred to by the current array, pointer, or reference type, or null if the current
@@ -132,10 +132,13 @@ namespace ByrneLabs.Commons.MetadataDom
         private void Initialize()
         {
             _fullName = new Lazy<string>(() =>
-                (IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".")) +
-                Name +
-                (HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]") + "]") : string.Empty) +
-                (IsArray ? "[]" : string.Empty));
+            {
+                var parent = (IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + "."));
+                var genericArgumentsText = (HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]")) + "]" : string.Empty);
+                var array = (IsArray ? "[]" : string.Empty);
+
+                return parent + Name + genericArgumentsText + array;
+            });
         }
     }
 }

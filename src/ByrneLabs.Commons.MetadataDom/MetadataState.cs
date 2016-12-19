@@ -92,7 +92,12 @@ namespace ByrneLabs.Commons.MetadataDom
 
             _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().ToList());
             _assemblyReferences = GetLazyCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences);
+
+            _assemblyDefinition = new Lazy<AssemblyDefinition>(() => AssemblyReader.IsAssembly ? GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition) : null);
         }
+        private Lazy<AssemblyDefinition> _assemblyDefinition;
+
+        public AssemblyDefinition AssemblyDefinition => _assemblyDefinition.Value;
 
         public AssemblyReference FindAssemblyReference(AssemblyName assemblyName) => AssemblyReferences.SingleOrDefault(assemblyReference => assemblyReference.Name.FullName.Equals(assemblyName.FullName));
 
@@ -113,6 +118,8 @@ namespace ByrneLabs.Commons.MetadataDom
         private MetadataFile AssemblyFile { get; }
 
         private MetadataFile PdbFile { get; }
+
+
 
         /// <inheritdoc />
         public void Dispose()
@@ -544,7 +551,7 @@ namespace ByrneLabs.Commons.MetadataDom
             }
             else if (upcastHandle is AssemblyDefinitionHandle)
             {
-                token = AssemblyReader.IsAssembly ? (object)AssemblyReader.GetAssemblyDefinition() : null;
+                token = AssemblyReader.GetAssemblyDefinition();
             }
             else if (upcastHandle is AssemblyFileHandle)
             {

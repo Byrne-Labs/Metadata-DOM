@@ -56,7 +56,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public MethodDefinitionBase MethodDefinition => _methodDefinition.Value;
 
-        public override string Name => MethodDeclaration.Name;
+        public override string Name => MethodDefinition.Name;
 
         public override IEnumerable<IParameter> Parameters => MethodDefinition.Parameters;
 

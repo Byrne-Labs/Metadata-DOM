@@ -23,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
-        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+        public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         public override TypeBase DeclaringType
         {

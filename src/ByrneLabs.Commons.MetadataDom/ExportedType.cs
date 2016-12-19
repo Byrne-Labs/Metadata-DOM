@@ -23,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
-        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+        public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Attributes" />
         public TypeAttributes Attributes { get; }
@@ -31,13 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override TypeBase DeclaringType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override TypeBase DeclaringType { get; } = null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Implementation" />
         /// <returns>
@@ -57,21 +51,9 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.IsForwarder" />
         public bool IsForwarder { get; }
 
-        public override bool IsGenericParameter
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override bool IsGenericParameter { get; } = false;
 
-        public override MemberTypes MemberType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
         public override string Name => AsString(MetadataToken.Name);
 

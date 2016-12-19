@@ -30,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
-        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+        public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Attributes" />
         public GenericParameterAttributes Attributes { get; protected set; }

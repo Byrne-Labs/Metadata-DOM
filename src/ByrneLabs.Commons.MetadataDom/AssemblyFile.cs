@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
 
@@ -7,6 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile" />
     //[PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class AssemblyFile : RuntimeCodeElement, ICodeElementWithHandle<AssemblyFileHandle, System.Reflection.Metadata.AssemblyFile>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
