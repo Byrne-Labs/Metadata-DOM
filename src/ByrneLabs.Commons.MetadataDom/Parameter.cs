@@ -67,6 +67,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.SequenceNumber" />
         public int Position { get; }
 
-        public string TextSignature => (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
+        public string TextSignature => ParameterType == null ? string.Empty : (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
     }
 }

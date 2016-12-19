@@ -22,6 +22,29 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
     public class MoreSamples : Samples
     {
 
+        public MoreSamples()
+        {
+            BasicEvent += BasicEventHandler1;
+            BasicEvent += BasicEventHandler2;
+            EventWithDeclaredAccessors += EventHandler;
+        }
+
+        public delegate void BasicDelegate(string value);
+
+        public event BasicDelegate BasicEvent;
+
+        public void BasicEventHandler1(string value)
+        {
+        }
+
+        public void BasicEventHandler2(string value)
+        {
+        }
+
+        public void EventHandler(object sender, EventArgs e)
+        {
+        }
+
         public event EventHandler EventWithoutDeclaredAccessors;
 
         public event EventHandler EventWithDeclaredAccessors
@@ -35,6 +58,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
                 throw new NotImplementedException();
             }
         }
+
+        public ByteEnum ByteEnumValue { get; protected internal set; }
 
         public string this[int index, string index2]
         {
@@ -51,9 +76,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public enum ByteEnum : byte
         {
-            A,
+            A = byte.MinValue,
             B,
-            C
+            C = byte.MaxValue
         }
 
         public enum NotAFlag

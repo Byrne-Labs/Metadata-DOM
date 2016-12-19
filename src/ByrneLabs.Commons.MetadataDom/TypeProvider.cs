@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Immutable;
+using System.Reflection;
 using System.Reflection.Metadata;
+using System.Text.RegularExpressions;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -25,10 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetSystemType() => _systemType;
 
-        public TypeBase GetTypeFromSerializedName(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public TypeBase GetTypeFromSerializedName(string name) => _metadataState.GetCodeElement<SerializedType>(name);
 
         public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type)
         {

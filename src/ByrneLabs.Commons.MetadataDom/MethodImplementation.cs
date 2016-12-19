@@ -12,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodBody> _methodBody;
-        private readonly Lazy<MethodDefinitionBase> _methodDeclaration;
+        private readonly Lazy<IMethod> _methodDeclaration;
         private readonly Lazy<MethodDefinitionBase> _methodDefinition;
         private readonly Lazy<TypeDefinition> _type;
 
@@ -35,56 +35,32 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 return methodBody;
             });
-            _methodDeclaration = MetadataState.GetLazyCodeElement<MethodDefinitionBase>(MetadataToken.MethodDeclaration);
+            _methodDeclaration = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.MethodDeclaration);
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.GetCustomAttributes" />
         public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override TypeBase DeclaringType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override TypeBase DeclaringType => MethodDefinition.DeclaringType;
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
-        public override IEnumerable<TypeBase> GenericArguments
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override IEnumerable<TypeBase> GenericArguments => MethodDefinition.GenericArguments;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.MethodBody" />
         public CodeElement MethodBody => _methodBody.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.MethodDeclaration" />
-        public MethodDefinitionBase MethodDeclaration => _methodDeclaration.Value;
+        public IMethod MethodDeclaration => _methodDeclaration.Value;
 
         public MethodDefinitionBase MethodDefinition => _methodDefinition.Value;
 
         public override string Name => MethodDeclaration.Name;
 
-        public override IEnumerable<IParameter> Parameters
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override IEnumerable<IParameter> Parameters => MethodDefinition.Parameters;
 
-        public override string TextSignature
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override string TextSignature => MethodDefinition.TextSignature;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.Type" />
         public TypeDefinition Type => _type.Value;

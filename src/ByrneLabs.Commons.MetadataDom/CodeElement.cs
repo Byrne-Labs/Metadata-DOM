@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
@@ -20,10 +21,13 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         protected abstract MetadataReader Reader { get; }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
         internal CodeElementKey Key { get; }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal MetadataState MetadataState { get; }
 
         protected Guid AsGuid(GuidHandle guidHandle) => Reader.GetGuid(guidHandle);

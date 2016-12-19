@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata;
+﻿using System.Diagnostics;
+using System.Reflection.Metadata;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -14,6 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        protected override sealed MetadataReader Reader => MetadataState.AssemblyReader;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader;
     }
 }

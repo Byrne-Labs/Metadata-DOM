@@ -23,8 +23,24 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetPropertyDefinition(metadataHandle);
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
-            _getMethod = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Getter);
-            _setMethod = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Setter);
+            _getMethod =new Lazy<MethodDefinition>(() =>
+            {
+                var getMethod = MetadataState.GetCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Getter);
+                if (getMethod != null)
+                {
+                    getMethod.RelatedProperty = this;
+                }
+                return getMethod;
+            });
+            _setMethod = new Lazy<MethodDefinition>(() =>
+            {
+                var setMethod = MetadataState.GetCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Setter);
+                if (setMethod != null)
+                {
+                    setMethod.RelatedProperty = this;
+                }
+                return setMethod;
+            });
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
             _signature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(((TypeDefinition) DeclaringType).GenericTypeParameters, new TypeBase[] { })));
         }

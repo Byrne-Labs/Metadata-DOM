@@ -12,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private readonly Lazy<IConstructor> _constructor;
         private readonly Lazy<CodeElement> _parent;
-        private readonly Lazy<CustomAttributeValue<TypeBase>> _value;
+        private readonly Lazy<CustomAttributeValue<TypeBase>?> _value;
 
         internal CustomAttribute(CustomAttributeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -20,7 +20,25 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetCustomAttribute(metadataHandle);
             _constructor = MetadataState.GetLazyCodeElement<IConstructor>(MetadataToken.Constructor);
             _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
-            _value = new Lazy<CustomAttributeValue<TypeBase>>(() => MetadataToken.DecodeValue(MetadataState.TypeProvider));
+            _value = new Lazy<CustomAttributeValue<TypeBase>?>(() =>
+            {
+                CustomAttributeValue<TypeBase>? value;
+
+                /*
+                 * I cannot figure out why, but the DecodeValue call will throw an exception if the argument kind is not field or property. -- Jonathan Byrne 12/19/2016
+                 */
+                var valueKind = (CustomAttributeNamedArgumentKind)Reader.GetBlobReader(MetadataToken.Value).ReadSerializationTypeCode();
+                if (valueKind == CustomAttributeNamedArgumentKind.Field || valueKind == CustomAttributeNamedArgumentKind.Property)
+                {
+                    value = MetadataToken.DecodeValue(MetadataState.TypeProvider);
+                }
+                else
+                {
+                    value = null;
+                }
+
+                return value;
+            });
         }
 
         public TypeBase AttributeType => Constructor.DeclaringType;
@@ -33,7 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public CodeElement Parent => _parent.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Value" />
-        public CustomAttributeValue<TypeBase> Value => _value.Value;
+        public CustomAttributeValue<TypeBase>? Value => _value.Value;
 
         public Handle DowncastMetadataHandle => MetadataHandle;
 

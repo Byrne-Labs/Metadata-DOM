@@ -56,6 +56,7 @@ namespace ByrneLabs.Commons.MetadataDom
         });
         private readonly IDictionary<CodeElementKey, CodeElement> _codeElementCache = new Dictionary<CodeElementKey, CodeElement>();
         private readonly Lazy<IEnumerable<TypeBase>> _definedTypes;
+        private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
 
         public MetadataState(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile)
         {
@@ -90,7 +91,12 @@ namespace ByrneLabs.Commons.MetadataDom
             }
 
             _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().ToList());
+            _assemblyReferences = GetLazyCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences);
         }
+
+        public AssemblyReference FindAssemblyReference(AssemblyName assemblyName) => AssemblyReferences.SingleOrDefault(assemblyReference => assemblyReference.Name.FullName.Equals(assemblyName.FullName));
+
+        public IEnumerable<AssemblyReference> AssemblyReferences => _assemblyReferences.Value;
 
         public MetadataReader AssemblyReader => AssemblyFile?.Reader;
 
@@ -538,7 +544,7 @@ namespace ByrneLabs.Commons.MetadataDom
             }
             else if (upcastHandle is AssemblyDefinitionHandle)
             {
-                token = AssemblyReader.GetAssemblyDefinition();
+                token = AssemblyReader.IsAssembly ? (object)AssemblyReader.GetAssemblyDefinition() : null;
             }
             else if (upcastHandle is AssemblyFileHandle)
             {

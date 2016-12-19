@@ -12,7 +12,6 @@ namespace ByrneLabs.Commons.MetadataDom
     public class ReflectionData : CodeElement, IDisposable
     {
         private readonly Lazy<IEnumerable<AssemblyFile>> _assemblyFiles;
-        private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<IEnumerable<CustomDebugInformation>> _customDebugInformation;
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
@@ -52,7 +51,6 @@ namespace ByrneLabs.Commons.MetadataDom
                     AssemblyDefinition = MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
                 }
                 _assemblyFiles = MetadataState.GetLazyCodeElements<AssemblyFile>(Reader.AssemblyFiles);
-                _assemblyReferences = MetadataState.GetLazyCodeElements<AssemblyReference>(Reader.AssemblyReferences);
                 _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(Reader.CustomAttributes);
                 _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(Reader.DeclarativeSecurityAttributes);
                 _eventDefinitions = MetadataState.GetLazyCodeElements<EventDefinition>(Reader.EventDefinitions);
@@ -89,7 +87,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<AssemblyFile> AssemblyFiles => !HasMetadata ? null : _assemblyFiles.Value;
 
         /// <inheritdoc cref="MetadataReader.AssemblyReferences" />
-        public IEnumerable<AssemblyReference> AssemblyReferences => !HasMetadata ? null : _assemblyReferences.Value;
+        public IEnumerable<AssemblyReference> AssemblyReferences => !HasMetadata ? null : MetadataState.AssemblyReferences;
 
         /// <inheritdoc cref="MetadataReader.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => !HasMetadata ? null : _customAttributes.Value;
