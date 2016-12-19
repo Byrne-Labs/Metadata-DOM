@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint" />
-    [PublicAPI]
+    //[PublicAPI]
     public class SequencePoint : RuntimeCodeElement, ICodeElementWithToken<System.Reflection.Metadata.SequencePoint>, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;

@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
+    //[PublicAPI]
     public abstract class RuntimeCodeElement : CodeElement
     {
         internal RuntimeCodeElement(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)

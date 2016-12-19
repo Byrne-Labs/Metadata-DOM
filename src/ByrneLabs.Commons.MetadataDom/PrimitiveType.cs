@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -7,26 +10,34 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal PrimitiveType(PrimitiveType baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            Initialize();
         }
 
         internal PrimitiveType(PrimitiveType genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
-            Initialize();
         }
 
         internal PrimitiveType(PrimitiveTypeCode primitiveTypeCode, MetadataState metadataState) : base(primitiveTypeCode, metadataState)
         {
-            Initialize();
         }
+
+        public override IAssembly Assembly { get; } = null;
+
+        public override string AssemblyQualifiedName { get; } = null;
+
+        public IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+
+        public override TypeBase DeclaringType { get; } = null;
+
+        public override string FullName => $"System.{Name}";
+
+        public override bool IsGenericParameter { get; } = false;
+
+        public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
+
+        public override string Name => PrimitiveTypeCode.ToString();
+
+        public override string Namespace { get; } = "System";
 
         public PrimitiveTypeCode PrimitiveTypeCode => KeyValue;
-
-        private void Initialize()
-        {
-            Name = PrimitiveTypeCode.ToString();
-            FullName = $"System.{Name}";
-            Namespace = "System";
-        }
     }
 }

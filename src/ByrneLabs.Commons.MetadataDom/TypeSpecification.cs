@@ -7,11 +7,11 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification" />
-    [PublicAPI]
+    //[PublicAPI]
     public class TypeSpecification : TypeBase<TypeSpecification, TypeSpecificationHandle, System.Reflection.Metadata.TypeSpecification>
     {
         private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private Lazy<Blob> _signature;
+        private Lazy<TypeBase> _signature;
 
         internal TypeSpecification(TypeSpecification baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
@@ -28,17 +28,35 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
+        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+
         /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.Signature" />
-        public Blob Signature => _signature.Value;
+        public override TypeBase DeclaringType { get; } = null;
+
+        public override string FullName => Signature.FullName;
+
+        public override bool IsGenericParameter { get; } = false;
+
+        public override MemberTypes MemberType { get; } = MemberTypes.Custom;
+
+        public override string Name => Signature.Name;
+
+        public override string Namespace => Signature.Namespace;
+
+        public TypeDefinition ParentTypeDefinition { get; internal set; }
+
+        public TypeBase Signature => _signature.Value;
 
         private void Initialize()
         {
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
-           // var signature = MetadataToken.DecodeSignature(MetadataState.SignatureTypeProvider, new CodeElementGenericContext(new List<GenericParameter>(), new List<GenericParameter>()));
+            _signature = new Lazy<TypeBase>(() =>
+            {
+                var signature = MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(ParentTypeDefinition.GenericTypeParameters, null));
+                return signature;
+            });
         }
     }
 }

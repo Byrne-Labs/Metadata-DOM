@@ -12,7 +12,7 @@
         <description>A domain object model (DOM) wrapper of the .NET Core System.Reflection.Metadata classes</description>
         <copyright>Copyright ©2016 Byrne Labs</copyright>
         <tags>System.Reflection.Metadata Reflection Metadata .NETCore .NETStandard</tags>
-        <version>1.0.1</version>
+        <version>1.0.0.6</version>
 
         <dependencies>
             <group targetFramework=".NETFramework4.5">

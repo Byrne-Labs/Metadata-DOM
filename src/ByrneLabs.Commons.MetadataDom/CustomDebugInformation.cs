@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.CustomDebugInformation" />
-    [PublicAPI]
+    //[PublicAPI]
     public class CustomDebugInformation : DebugCodeElement, ICodeElementWithHandle<CustomDebugInformationHandle, System.Reflection.Metadata.CustomDebugInformation>
     {
         private readonly Lazy<CodeElement> _parent;
@@ -17,6 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetCustomDebugInformation(metadataHandle);
             _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
             Kind = AsGuid(MetadataToken.Kind);
+            var valueBytes = Reader.GetBlobBytes(MetadataToken.Value);
             _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Value)));
         }
 

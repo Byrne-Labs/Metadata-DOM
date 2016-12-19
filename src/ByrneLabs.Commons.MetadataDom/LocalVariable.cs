@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable" />
-    [PublicAPI]
+    //[PublicAPI]
     public class LocalVariable : DebugCodeElement, ICodeElementWithHandle<LocalVariableHandle, System.Reflection.Metadata.LocalVariable>
     {
         internal LocalVariable(LocalVariableHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)

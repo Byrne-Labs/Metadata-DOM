@@ -2,7 +2,7 @@
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
+    //[PublicAPI]
     public interface IContainsSourceCode
     {
         Document Document { get; }

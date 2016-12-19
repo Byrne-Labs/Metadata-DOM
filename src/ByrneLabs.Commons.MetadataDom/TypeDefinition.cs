@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition" />
-    [PublicAPI]
+    //[PublicAPI]
     public class TypeDefinition : TypeBase<TypeDefinition, TypeDefinitionHandle, System.Reflection.Metadata.TypeDefinition>
     {
         private Lazy<TypeBase> _baseType;
@@ -20,7 +20,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private Lazy<IEnumerable<InterfaceImplementation>> _interfaceImplementations;
         private Lazy<IEnumerable<MethodImplementation>> _methodImplementations;
-        private Lazy<IEnumerable<MethodDefinitionBase>> _methods;
+        private Lazy<IEnumerable<IMethodBase>> _methods;
         private Lazy<NamespaceDefinition> _namespaceDefinition;
         private Lazy<IEnumerable<TypeDefinition>> _nestedTypes;
         private Lazy<IEnumerable<PropertyDefinition>> _properties;
@@ -40,6 +40,8 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
+        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.Attributes" />
         public TypeAttributes Attributes { get; private set; }
 
@@ -55,7 +57,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetDeclaringType" />
         /// <summary>Returns the enclosing type of a specified nested type or null if the type is not nested.</summary>
-        public TypeDefinition DeclaringType => _declaringType.Value;
+        public override TypeBase DeclaringType => _declaringType.Value;
 
         public IEnumerable<Document> Documents { get; private set; }
 
@@ -63,32 +65,83 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<EventDefinition> Events => _events.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetFields" />
-        public IEnumerable<FieldDefinition> Fields => _fields.Value;
+        public IEnumerable<IField> Fields => _fields.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetGenericParameters" />
-        public IEnumerable<GenericParameter> GenericParameters => _genericParameters.Value;
+        public IEnumerable<GenericParameter> GenericTypeParameters => _genericParameters.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetInterfaceImplementations" />
         public IEnumerable<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
+
+        public bool IsAbstract => Attributes.HasFlag(TypeAttributes.Abstract);
+
+        public bool IsAnsiClass => Attributes.HasFlag(TypeAttributes.AnsiClass);
+
+        public bool IsAutoClass => Attributes.HasFlag(TypeAttributes.AutoClass);
+
+        public bool IsAutoLayout => Attributes.HasFlag(TypeAttributes.AutoLayout);
+
+        public bool IsClass => Attributes.HasFlag(TypeAttributes.Class);
+
+        public bool IsEnum => "System.Enum".Equals(BaseType?.FullName);
+
+        public bool IsExplicitLayout => Attributes.HasFlag(TypeAttributes.ExplicitLayout);
+
+        public override bool IsGenericParameter { get; } = false;
+
+        public bool IsGenericTypeDefinition => GenericTypeParameters.Any();
+
+        public bool IsImport => Attributes.HasFlag(TypeAttributes.Import);
+
+        public bool IsInterface => Attributes.HasFlag(TypeAttributes.Interface);
+
+        public bool IsNestedAssembly => Attributes.HasFlag(TypeAttributes.NestedAssembly);
+
+        public bool IsNestedFamANDAssem => Attributes.HasFlag(TypeAttributes.NestedFamANDAssem);
+
+        public bool IsNestedFamily => Attributes.HasFlag(TypeAttributes.NestedFamily);
+
+        public bool IsNestedFamORAssem => Attributes.HasFlag(TypeAttributes.NestedFamORAssem);
+
+        public bool IsNestedPrivate => Attributes.HasFlag(TypeAttributes.NestedPrivate);
+
+        public bool IsNestedPublic => Attributes.HasFlag(TypeAttributes.NestedPublic);
+
+        public bool IsNotPublic => Attributes.HasFlag(TypeAttributes.NotPublic);
+
+        public bool IsPublic => Attributes.HasFlag(TypeAttributes.Public);
+
+        public bool IsSealed => Attributes.HasFlag(TypeAttributes.Sealed);
+
+        public bool IsSerializable => Attributes.HasFlag(TypeAttributes.Serializable);
+
+        public bool IsSpecialName => Attributes.HasFlag(TypeAttributes.SpecialName);
+
+        public bool IsUnicodeClass => Attributes.HasFlag(TypeAttributes.UnicodeClass);
 
         public IEnumerable<Language> Languages { get; private set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetLayout" />
         public TypeLayout Layout { get; private set; }
 
+        public override MemberTypes MemberType => DeclaringType == null ? MemberTypes.TypeInfo : MemberTypes.NestedType;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethodImplementations" />
         public IEnumerable<MethodImplementation> MethodImplementations => _methodImplementations.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
-        public IEnumerable<MethodDefinitionBase> Methods => _methods.Value;
+        public IEnumerable<IMethodBase> Methods => _methods.Value;
+
+        public override string Name => AsString(MetadataToken.Name);
+
+        public override string Namespace => AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.NamespaceDefinition" />
         /// <summary>The definition handle of the namespace where the type is defined, or null if the type is nested or defined in a root namespace.</summary>
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetNestedTypes" />
-        public IEnumerable<TypeDefinition> NestedTypes => _nestedTypes.Value;
+        public IEnumerable<TypeBase> NestedTypes => _nestedTypes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetProperties" />
         public IEnumerable<PropertyDefinition> Properties => _properties.Value;
@@ -96,38 +149,49 @@ namespace ByrneLabs.Commons.MetadataDom
         private void Initialize()
         {
             _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
-            _methods = new Lazy<IEnumerable<MethodDefinitionBase>>(() => MetadataState.GetCodeElements(MetadataToken.GetMethods()).Cast<MethodDefinitionBase>());
+            _methods = MetadataState.GetLazyCodeElements<IMethodBase>(MetadataToken.GetMethods());
             _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(MetadataToken.GetMethodImplementations());
-            Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
-            _baseType = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.BaseType));
-            Namespace = AsString(MetadataToken.Namespace);
+            _baseType = new Lazy<TypeBase>(() =>
+            {
+                var baseType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.BaseType);
+                var typeSpecification = baseType as TypeSpecification;
+                if (typeSpecification != null)
+                {
+                    typeSpecification.ParentTypeDefinition = this;
+                }
+                return baseType;
+            });
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(MetadataToken.GetDeclaringType());
             _events = MetadataState.GetLazyCodeElements<EventDefinition>(MetadataToken.GetEvents());
             _fields = MetadataState.GetLazyCodeElements<FieldDefinition>(MetadataToken.GetFields());
-            _genericParameters = MetadataState.GetLazyCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
-            _interfaceImplementations = MetadataState.GetLazyCodeElements<InterfaceImplementation>(MetadataToken.GetInterfaceImplementations());
+            _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
+            {
+                var genericParameters = MetadataState.GetCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
+                var index = 0;
+                foreach (var genericParameter in genericParameters)
+                {
+                    genericParameter.SetDeclaringType(this);
+                    genericParameter.Index = index++;
+                }
+
+                return genericParameters;
+            });
+            _interfaceImplementations = new Lazy<IEnumerable<InterfaceImplementation>>(() =>
+            {
+                var interfaceImplementations = MetadataState.GetCodeElements<InterfaceImplementation>(MetadataToken.GetInterfaceImplementations());
+                foreach (var interfaceImplementation in interfaceImplementations)
+                {
+                    interfaceImplementation.ImplementingType = this;
+                }
+
+                return interfaceImplementations;
+            });
             Layout = MetadataToken.GetLayout();
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition>(MetadataToken.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(MetadataToken.GetProperties());
-
-            IsAbstract = Attributes.HasFlag(TypeAttributes.Abstract);
-            IsClass = Attributes.HasFlag(TypeAttributes.Class);
-            IsEnum = "System.Enum".Equals(BaseType?.FullName);
-            IsGenericTypeDefinition = GenericParameters.Any();
-            IsImport = Attributes.HasFlag(TypeAttributes.Import);
-            IsInterface = Attributes.HasFlag(TypeAttributes.Interface);
-            IsNestedAssembly = Attributes.HasFlag(TypeAttributes.NestedAssembly);
-            IsNestedFamANDAssem = Attributes.HasFlag(TypeAttributes.NestedFamANDAssem);
-            IsNestedFamily = Attributes.HasFlag(TypeAttributes.NestedFamily);
-            IsNestedFamORAssem = Attributes.HasFlag(TypeAttributes.NestedFamORAssem);
-            IsNestedPrivate = Attributes.HasFlag(TypeAttributes.NestedPrivate);
-            IsNestedPublic = Attributes.HasFlag(TypeAttributes.NestedPublic);
-            IsNotPublic = Attributes.HasFlag(TypeAttributes.NotPublic);
-            IsPublic = Attributes.HasFlag(TypeAttributes.Public);
-            FullName = (IsNested && BaseType != null ? BaseType.FullName + "." : string.Empty) + (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".") + Name;
         }
     }
 }

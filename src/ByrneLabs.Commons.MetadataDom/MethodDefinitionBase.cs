@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
@@ -8,9 +9,9 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition" />
-    [DebuggerDisplay("{DeclaringType.Namespace}.{DeclaringType.Name}.{Name}")]
-    [PublicAPI]
-    public abstract class MethodDefinitionBase : RuntimeCodeElement, ICodeElementWithHandle<MethodDefinitionHandle, System.Reflection.Metadata.MethodDefinition>, IContainsSourceCode
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
+    //[PublicAPI]
+    public abstract class MethodDefinitionBase : MethodBase<MethodDefinitionBase, MethodDefinitionHandle, System.Reflection.Metadata.MethodDefinition>, IContainsSourceCode
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
@@ -20,32 +21,29 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
-        private readonly Lazy<CodeElement> _returnType;
+        private readonly Lazy<MethodSignature<TypeBase>> _signature;
 
         internal MethodDefinitionBase(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetMethodDefinition(metadataHandle);
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
-            ImplAttributes = MetadataToken.ImplAttributes;
-            RelativeVirtualAddress = MetadataToken.RelativeVirtualAddress;
+            MethodImplementationFlags = MetadataToken.ImplAttributes;
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(MetadataToken.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
             _genericParameters = MetadataState.GetLazyCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(MetadataToken.GetImport());
-            //_methodBody = new Lazy<MethodBody>(() => MetadataToken.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(MetadataToken.RelativeVirtualAddress)));
-            _parameters = MetadataState.GetLazyCodeElements<Parameter>(MetadataToken.GetParameters());
+            _methodBody = new Lazy<MethodBody>(() => MetadataToken.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(MetadataToken.RelativeVirtualAddress)));
+            _parameters = new Lazy<IEnumerable<Parameter>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
-            _returnType = new Lazy<CodeElement>(() => MetadataToken.DecodeSignature(MetadataState.SignatureTypeProvider, new CodeElementGenericContext(DeclaringType.GenericParameters, GenericParameters)).ReturnType);
+            _signature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Attributes" />
         public MethodAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinitionHandle.ToDebugInformationHandle" />
         /// <summary>Returns a <see cref="MethodDebugInformation" /> corresponding to this handle.</summary>
@@ -56,40 +54,65 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetDeclaringType" />
-        public TypeDefinition DeclaringType => _declaringType.Value;
+        public override TypeBase DeclaringType => _declaringType.Value;
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetGenericParameters" />
-        public IEnumerable<GenericParameter> GenericParameters => _genericParameters.Value;
-
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.ImplAttributes" />
-        public MethodImplAttributes ImplAttributes { get; }
+        public override IEnumerable<TypeBase> GenericArguments => _genericParameters.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetImport" />
         public MethodImport Import => _import.Value;
 
-        public MethodBody MethodBody => null; //_methodBody.Value;
+        public bool IsAbstract => Attributes.HasFlag(MethodAttributes.Abstract);
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Name" />
-        public string Name { get; }
+        public bool IsAssembly => Attributes.HasFlag(MethodAttributes.Assembly);
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetParameters" />
-        public IEnumerable<Parameter> Parameters => _parameters.Value;
+        public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.RelativeVirtualAddress" />
-        public int RelativeVirtualAddress { get; }
+        public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family);
 
-        /// <summary>Returns <see cref="TypeDefinition" />, <see cref="TypeReference" />, <see cref="TypeSpecification" />, <see cref="GenericParameter" />, or null when void</summary>
-        public CodeElement ReturnType => _returnType.Value;
+        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.FamANDAssem);
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Signature" />
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public bool IsFamilyOrAssembly => Attributes.HasFlag(MethodAttributes.FamORAssem);
 
-        public MethodDefinitionHandle MetadataHandle { get; }
+        public bool IsFinal => Attributes.HasFlag(MethodAttributes.Final);
 
-        public System.Reflection.Metadata.MethodDefinition MetadataToken { get; }
+        public bool IsHideBySig => Attributes.HasFlag(MethodAttributes.HideBySig);
 
-        public Document Document { get; }
+        public bool IsPrivate => Attributes.HasFlag(MethodAttributes.Private);
+
+        public bool IsPublic => Attributes.HasFlag(MethodAttributes.Public);
+
+        public bool IsSpecialName => Attributes.HasFlag(MethodAttributes.SpecialName);
+
+        public bool IsStatic => Attributes.HasFlag(MethodAttributes.Static);
+
+        public bool IsVirtual => Attributes.HasFlag(MethodAttributes.Virtual);
+
+        public MethodBody MethodBody => _methodBody.Value;
+
+        /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.ImplAttributes" />
+        public MethodImplAttributes MethodImplementationFlags { get; }
+
+        public override string Name { get; }
+
+        public override IEnumerable<IParameter> Parameters => _parameters.Value;
+
+        protected MethodSignature<TypeBase> Signature => _signature.Value;
+
+        public Document Document => DebugInformation?.Document;
 
         public string SourceCode => DebugInformation?.SourceCode;
+
+        private IEnumerable<Parameter> LoadParameters()
+        {
+            var parameters = MetadataState.GetCodeElements<Parameter>(MetadataToken.GetParameters());
+            for (var parameterIndex = 0; parameterIndex < Signature.ParameterTypes.Length; parameterIndex++)
+            {
+                var parameter = parameters.Single(parameterCheck => parameterCheck.Position == parameterIndex + 1);
+                parameter.ParameterType = Signature.ParameterTypes[parameterIndex];
+                parameter.Member = this;
+            }
+
+            return parameters;
+        }
     }
 }

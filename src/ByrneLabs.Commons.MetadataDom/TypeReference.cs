@@ -8,10 +8,10 @@ using System.Collections.Generic;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.TypeReference" />
-    [PublicAPI]
+    //[PublicAPI]
     public class TypeReference : TypeBase<TypeReference, TypeReferenceHandle, System.Reflection.Metadata.TypeReference>
     {
-        private Lazy<CodeElement> _resolutionScope;
+        private Lazy<object> _resolutionScope;
 
         internal TypeReference(TypeReference baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
@@ -28,13 +28,41 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
-        private void Initialize()
+        public override IAssembly Assembly
         {
-            Name = AsString(MetadataToken.Name);
-            Namespace = AsString(MetadataToken.Namespace);
-            FullName = (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".") + Name;
-            _resolutionScope = new Lazy<CodeElement>(() => LoadResolutionScope(MetadataToken.ResolutionScope));
+            get
+            {
+                IAssembly assembly;
+                if (ResolutionScope is AssemblyReference)
+                {
+                    assembly = (AssemblyReference) ResolutionScope;
+                }
+                else if (ResolutionScope is TypeReference)
+                {
+                    assembly = ((TypeReference) ResolutionScope).Assembly;
+                }
+                else if (ResolutionScope is ModuleReference)
+                {
+                    assembly = ((ModuleReference) ResolutionScope).Assembly;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Invalid resolution scope {ResolutionScope?.GetType()}");
+                }
+
+                return assembly;
+            }
         }
+
+        public override TypeBase DeclaringType => ResolutionScope is TypeReference ? (TypeBase) ResolutionScope : null;
+
+        public override bool IsGenericParameter { get; } = false;
+
+        public override MemberTypes MemberType => ResolutionScope is TypeReference ? MemberTypes.NestedType : MemberTypes.TypeInfo;
+
+        public override string Name => AsString(MetadataToken.Name);
+
+        public override string Namespace => AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeReference.ResolutionScope" />
         /// <summary>Resolution scope in which the target type is defined and is uniquely identified by the specified
@@ -55,16 +83,20 @@ namespace ByrneLabs.Commons.MetadataDom
         ///         </item>
         ///         <item>
         ///             <description>Possibly a surprise if the handle was nil because that means it was resolved by searching the
-        ///                 <see cref="ReflectionData.ExportedTypes" /> for a matching
-        ///                 <see cref="TypeBase.Namespace" /> and <see cref="TypeBase.Name" />.</description>
+        ///                 <see cref="ReflectionData.ExportedTypes" /> for a matching <see cref="TypeBase.Namespace" /> and <see cref="TypeBase.Name" />.</description>
         ///         </item>
         ///     </list>
         /// </remarks>
-        public CodeElement ResolutionScope => _resolutionScope.Value;
+        public object ResolutionScope => _resolutionScope.Value;
 
-        private CodeElement LoadResolutionScope(EntityHandle resolutionScopeHandle) =>
+        private void Initialize()
+        {
+            _resolutionScope = new Lazy<object>(() => LoadResolutionScope(MetadataToken.ResolutionScope));
+        }
+
+        private object LoadResolutionScope(EntityHandle resolutionScopeHandle) =>
             !resolutionScopeHandle.IsNil ?
                 MetadataState.GetCodeElement(resolutionScopeHandle) :
-                MetadataState.ExportedTypes.SingleOrDefault(exportedType => exportedType.Name.Equals(Name) && exportedType.Namespace.Equals(Namespace));
+                MetadataState.DefinedTypes.SingleOrDefault(exportedType => exportedType.Name.Equals(Name) && exportedType.Namespace.Equals(Namespace));
     }
 }

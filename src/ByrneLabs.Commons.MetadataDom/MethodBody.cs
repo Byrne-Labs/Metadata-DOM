@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock" />
-    [PublicAPI]
+    //[PublicAPI]
     public class MethodBody : RuntimeCodeElement, ICodeElementWithToken<MethodBodyBlock>
     {
         private readonly Lazy<IEnumerable<ExceptionRegion>> _exceptionRegions;
@@ -16,7 +16,20 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataToken = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
             _exceptionRegions = MetadataState.GetLazyCodeElements<ExceptionRegion>(MetadataToken.ExceptionRegions);
-            _localSignature = MetadataState.GetLazyCodeElement<StandaloneSignature>(MetadataToken.LocalSignature);
+            _localSignature = new Lazy<StandaloneSignature>(() =>
+            {
+                StandaloneSignature localSignature;
+                if (MetadataToken.LocalSignature.IsNil)
+                {
+                    localSignature = null;
+                }
+                else
+                {
+                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(MetadataToken.LocalSignature);
+                    localSignature.GenericContext = GenericContext;
+                }
+                return localSignature;
+            });
             LocalVariablesInitialized = MetadataToken.LocalVariablesInitialized;
             MaxStack = MetadataToken.MaxStack;
             Size = MetadataToken.Size;
@@ -36,6 +49,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.Size" />
         public int Size { get; }
+
+        internal GenericContext GenericContext { get; set; }
 
         public MethodBodyBlock MetadataToken { get; }
     }

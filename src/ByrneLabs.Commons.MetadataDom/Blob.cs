@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
+    //[PublicAPI]
     public class Blob
     {
         internal Blob(byte[] bytes)

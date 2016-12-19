@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BuildFrameworkTarget Condition="'$(BuildFrameworkTarget)' == ''">netstandard1.6</BuildFrameworkTarget>
@@ -133,8 +133,11 @@
       </PropertyGroup>
     </When>
   </Choose>
-  <PropertyGroup Label="Configuration">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)' == 'Release'">
     <DocumentationFile>bin\$(Configuration)\ByrneLabs.Commons.MetadataDom.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -190,44 +193,17 @@
           <Version>1.1.0</Version>
         </PackageReference>
         <PackageReference Include="System.Diagnostics.Tools">
-          <Version>4.3.0</Version>
+          <Version>4.0.1</Version>
           <PrivateAssets>All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="System.IO.FileSystem">
-          <Version>4.3.0</Version>
+          <Version>4.0.1</Version>
         </PackageReference>
         <PackageReference Include="System.Reflection.Metadata">
-          <Version>1.4.1</Version>
+          <Version>1.5.0-beta-24814-01</Version>
         </PackageReference>
         <PackageReference Include="JetBrains.Annotations">
           <Version>10.2.1</Version>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-          <Version>2.0.0-rc</Version>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers">
-          <Version>1.0.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-          <Version>1.2.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Maintainability.Analyzers">
-          <Version>1.2.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Net.RoslynDiagnostics">
-          <Version>1.2.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="Microsoft.QualityGuidelines.Analyzers">
-          <Version>1.2.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="System.Resources.Analyzers">
-          <Version>1.2.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="System.Security.Cryptography.Hashing.Algorithms.Analyzers">
-          <Version>1.2.0-beta2</Version>
-        </PackageReference>
-        <PackageReference Include="Text.Analyzers">
-          <Version>1.2.0-beta2</Version>
         </PackageReference>
       </ItemGroup>
     </When>
@@ -265,5 +241,6 @@
   <Import Condition="'$(ImportXamarinAndroidCSharpTargets)' == 'true'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ItemGroup>
     <Compile Remove="GenericTypeInstantiation.cs" />
+    <Compile Remove="IEvent.cs" />
   </ItemGroup>
 </Project>

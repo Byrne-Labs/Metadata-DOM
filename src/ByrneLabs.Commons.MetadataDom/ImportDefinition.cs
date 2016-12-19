@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition" />
-    [PublicAPI]
+    //[PublicAPI]
     public class ImportDefinition : DebugCodeElement, ICodeElementWithToken<System.Reflection.Metadata.ImportDefinition>
     {
         private readonly Lazy<Blob> _alias;
@@ -35,7 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     break;
                 case ImportDefinitionKind.AliasType:
                     _alias = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.Alias)));
-                    _targetType = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(importDefinition.TargetType));
+                    _targetType = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(importDefinition.TargetType));
                     break;
                 case ImportDefinitionKind.ImportAssemblyNamespace:
                     _targetAssembly = MetadataState.GetLazyCodeElement<AssemblyReference>(importDefinition.TargetAssembly);
@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     _targetNamespace = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(importDefinition.TargetNamespace)));
                     break;
                 case ImportDefinitionKind.ImportType:
-                    _targetType = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(importDefinition.TargetType));
+                    _targetType = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(importDefinition.TargetType));
                     break;
                 default:
                     throw new ArgumentException($"Unknown ImportDefinitionKind {importDefinition.Kind}");

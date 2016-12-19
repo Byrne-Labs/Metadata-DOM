@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource" />
-    [PublicAPI]
+    //[PublicAPI]
     public class ManifestResource : RuntimeCodeElement, ICodeElementWithHandle<ManifestResourceHandle, System.Reflection.Metadata.ManifestResource>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute" />
-    [PublicAPI]
+    //[PublicAPI]
     public class DeclarativeSecurityAttribute : RuntimeCodeElement, ICodeElementWithHandle<DeclarativeSecurityAttributeHandle, System.Reflection.Metadata.DeclarativeSecurityAttribute>
     {
         private readonly Lazy<CodeElement> _parent;
@@ -18,6 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
             _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
             Action = MetadataToken.Action;
+            var permissionSet = Reader.GetBlobBytes(MetadataToken.PermissionSet);
             _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PermissionSet)));
         }
 

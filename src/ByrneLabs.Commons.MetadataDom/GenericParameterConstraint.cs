@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint" />
-    [PublicAPI]
+    //[PublicAPI]
     public class GenericParameterConstraint : RuntimeCodeElement, ICodeElementWithHandle<GenericParameterConstraintHandle, System.Reflection.Metadata.GenericParameterConstraint>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -17,7 +17,20 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetGenericParameterConstraint(metadataHandle);
-            //_type = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type));
+            _type = new Lazy<TypeBase>(() =>
+            {
+                var constrainedType = (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type);
+                var constrainedTypeSpecification = constrainedType as TypeSpecification;
+                if (constrainedTypeSpecification != null)
+                {
+                    var parentType = Parameter.Parent as TypeDefinition;
+                    if (parentType != null)
+                    {
+                        constrainedTypeSpecification.ParentTypeDefinition = parentType;
+                    }
+                }
+                return constrainedType;
+            });
             _parameter = MetadataState.GetLazyCodeElement<GenericParameter>(MetadataToken.Parameter);
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
@@ -31,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.Type" />
         /// <summary>Handle (<see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" />) specifying from which type this generic parameter is constrained to derive, or which interface this generic parameter is constrained to implement.</summary>
-        public TypeBase Type => null; // _type.Value;
+        public TypeBase Type => _type.Value;
 
         public Handle DowncastMetadataHandle => MetadataHandle;
 

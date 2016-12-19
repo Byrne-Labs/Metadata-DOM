@@ -7,11 +7,12 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter" />
-    [PublicAPI]
+    //[PublicAPI]
     public class GenericParameter : TypeBase<GenericParameter, GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
     {
         private Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
         private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private TypeBase _declaringType;
         private Lazy<CodeElement> _parent;
 
         internal GenericParameter(GenericParameter baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
@@ -29,6 +30,8 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
+        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Attributes" />
         public GenericParameterAttributes Attributes { get; protected set; }
 
@@ -38,23 +41,33 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        public override TypeBase DeclaringType => _declaringType;
+
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Index" />
-        public int Index { get; private set; }
+        public int Index { get; internal set; }
+
+        public override bool IsGenericParameter { get; } = true;
+
+        public override MemberTypes MemberType { get; } = MemberTypes.Custom;
+
+        public override string Name => AsString(MetadataToken.Name);
+
+        public override string Namespace { get; } = null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Parent" />
         /// <summary>
         ///     <see cref="TypeDefinition" /> or <see cref="MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
 
+        internal void SetDeclaringType(TypeBase declaringType) => _declaringType = declaringType;
+
         private void Initialize()
         {
-            Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
             Index = MetadataToken.Index;
             _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
             _constraints = MetadataState.GetLazyCodeElements<GenericParameterConstraint>(MetadataToken.GetConstraints());
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            IsGenericParameter = true;
         }
     }
 }

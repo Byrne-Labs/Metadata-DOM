@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalConstant" />
-    [PublicAPI]
+    //[PublicAPI]
     public class LocalConstant : DebugCodeElement, ICodeElementWithHandle<LocalConstantHandle, System.Reflection.Metadata.LocalConstant>
     {
         private readonly Lazy<Blob> _signature;

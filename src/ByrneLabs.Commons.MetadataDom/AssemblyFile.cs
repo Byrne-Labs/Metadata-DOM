@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyFile" />
-    [PublicAPI]
+    //[PublicAPI]
     public class AssemblyFile : RuntimeCodeElement, ICodeElementWithHandle<AssemblyFileHandle, System.Reflection.Metadata.AssemblyFile>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

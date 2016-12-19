@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
@@ -24,6 +21,34 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
     public class MoreSamples : Samples
     {
+
+        public event EventHandler EventWithoutDeclaredAccessors;
+
+        public event EventHandler EventWithDeclaredAccessors
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string this[int index, string index2]
+        {
+            get
+            {
+                return "a";
+            }
+            set
+            {
+                var a = "a";
+                DoSomething(ref a);
+            }
+        }
+
         public enum ByteEnum : byte
         {
             A,
@@ -53,6 +78,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public void DoSomething(ref string a)
         {
+        }
+
+        protected virtual void OnEventWithoutDeclaredAccessors()
+        {
+            EventWithoutDeclaredAccessors?.Invoke(this, EventArgs.Empty);
         }
     }
 }

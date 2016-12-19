@@ -7,51 +7,58 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference" />
-    [PublicAPI]
-    public class AssemblyReference : RuntimeCodeElement, ICodeElementWithHandle<AssemblyReferenceHandle, System.Reflection.Metadata.AssemblyReference>
+    //[PublicAPI]
+    public class AssemblyReference : AssemblyBase<AssemblyReference, AssemblyReferenceHandle, System.Reflection.Metadata.AssemblyReference>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _hashValue;
-        private readonly Lazy<Blob> _publicKeyOrToken;
 
         internal AssemblyReference(AssemblyReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetAssemblyReference(metadataHandle);
-            Name = AsString(MetadataToken.Name);
-            Culture = AsString(MetadataToken.Culture);
-            Flags = MetadataToken.Flags;
+            var name = new AssemblyName
+            {
+                Name = AsString(MetadataToken.Name),
+                CultureName = AsString(MetadataToken.Culture),
+                Flags = (MetadataToken.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (MetadataToken.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
+                ContentType = MetadataToken.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
+                Version = MetadataToken.Version
+            };
+            var publicKeyOrToken = Reader.GetBlobBytes(MetadataToken.PublicKeyOrToken);
+            if (publicKeyOrToken.Length == 8)
+            {
+                name.SetPublicKeyToken(publicKeyOrToken);
+            }
+            else
+            {
+                name.SetPublicKey(publicKeyOrToken);
+            }
+            Name = name;
+
             _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.HashValue)));
-            _publicKeyOrToken = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PublicKeyOrToken)));
-            Version = MetadataToken.Version;
+            Flags = MetadataToken.Flags;
+
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Culture" />
-        public string Culture { get; }
-
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+
+        public override IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; } = new List<DeclarativeSecurityAttribute>();
+
+        public override IEnumerable<TypeBase> DefinedTypes { get; } = new List<TypeBase>();
+
+        public override IMethod EntryPoint { get; } = null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Flags" />
-        public AssemblyFlags Flags { get; }
+        public override AssemblyFlags Flags { get; }
+
+        public override AssemblyHashAlgorithm HashAlgorithm { get; } = AssemblyHashAlgorithm.None;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.HashValue" />
         public Blob HashValue => _hashValue.Value;
 
-        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Name" />
-        public string Name { get; }
+        public override AssemblyName Name { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.PublicKeyOrToken" />
-        public Blob PublicKeyOrToken => _publicKeyOrToken.Value;
-
-        /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Version" />
-        public Version Version { get; }
-
-        public Handle DowncastMetadataHandle => MetadataHandle;
-
-        public AssemblyReferenceHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.AssemblyReference MetadataToken { get; }
+        public override IEnumerable<IAssembly> ReferencedAssemblies { get; } = new List<IAssembly>();
     }
 }

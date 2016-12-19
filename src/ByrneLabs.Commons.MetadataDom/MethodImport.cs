@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodImport" />
-    [PublicAPI]
+    //[PublicAPI]
     public class MethodImport : RuntimeCodeElement, ICodeElementWithToken<System.Reflection.Metadata.MethodImport>
     {
         private readonly Lazy<ModuleReference> _module;

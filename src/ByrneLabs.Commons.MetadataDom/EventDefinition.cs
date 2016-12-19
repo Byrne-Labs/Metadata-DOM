@@ -2,59 +2,89 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition" />
-    [PublicAPI]
-    public class EventDefinition : RuntimeCodeElement, ICodeElementWithHandle<EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
+    //[PublicAPI]
+    public class EventDefinition : MemberBase<EventDefinition, EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
     {
-        private readonly Lazy<MethodDefinition> _adder;
+        private readonly Lazy<IMethod> _addeMethod;
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<MethodDefinition> _raiser;
-        private readonly Lazy<MethodDefinition> _remover;
+        private readonly Lazy<IMethod> _raiseMethod;
+        private readonly Lazy<IMethod> _removeMethod;
         private readonly Lazy<TypeBase> _type;
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetEventDefinition(metadataHandle);
-            _type = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type));
+            _type = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(MetadataToken.Type));
             Attributes = MetadataToken.Attributes;
             Name = AsString(MetadataToken.Name);
-            _adder = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Adder);
-            _raiser = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Raiser);
-            _remover = MetadataState.GetLazyCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Remover);
+            _addeMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Adder);
+            _raiseMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Raiser);
+            _removeMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Remover);
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Adder" />
-        public MethodDefinition Adder => _adder.Value;
+        public IMethod AddMethod => _addeMethod.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Attributes" />
         public EventAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Name" />
-        public string Name { get; }
+        public override TypeBase DeclaringType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public TypeBase EventHandlerType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override string FullName => $"{DeclaringType.FullName}.{Name}";
+
+        public bool IsMulticast
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool IsSpecialName => Attributes.HasFlag(EventAttributes.SpecialName);
+
+        public override MemberTypes MemberType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Raiser" />
-        public MethodDefinition Raiser => _raiser.Value;
+        public IMethod RaiseMethod => _raiseMethod.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Remover" />
-        public MethodDefinition Remover => _remover.Value;
+        public IMethod RemoveMethod => _removeMethod.Value;
+
+        public override string TextSignature { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Type" />
         /// <summary>A <see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" /></summary>
         public TypeBase Type => _type.Value;
-
-        public Handle DowncastMetadataHandle => MetadataHandle;
-
-        public EventDefinitionHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.EventDefinition MetadataToken { get; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
+    //[PublicAPI]
     public enum Language
     {
         C,

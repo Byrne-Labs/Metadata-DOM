@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition" />
-    [PublicAPI]
-    public class ModuleDefinition : RuntimeCodeElement, ICodeElementWithHandle<ModuleDefinitionHandle, System.Reflection.Metadata.ModuleDefinition>
+    //[PublicAPI]
+    public class ModuleDefinition : ModuleBase<ModuleDefinition, ModuleDefinitionHandle, System.Reflection.Metadata.ModuleDefinition>
     {
         internal ModuleDefinition(ModuleDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetModuleDefinition();
             Name = AsString(MetadataToken.Name);
             BaseGenerationId = AsGuid(MetadataToken.BaseGenerationId);
             Generation = MetadataToken.Generation;
@@ -19,8 +18,12 @@ namespace ByrneLabs.Commons.MetadataDom
             Mvid = AsGuid(MetadataToken.Mvid);
         }
 
+        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.BaseGenerationId" />
         public Guid BaseGenerationId { get; }
+
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.Generation" />
         public int Generation { get; }
@@ -30,14 +33,5 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.Mvid" />
         public Guid Mvid { get; }
-
-        /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.Name" />
-        public string Name { get; }
-
-        public Handle DowncastMetadataHandle => MetadataHandle;
-
-        public ModuleDefinitionHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.ModuleDefinition MetadataToken { get; }
     }
 }

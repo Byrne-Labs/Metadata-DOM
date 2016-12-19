@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -36,7 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom
             { typeof(LocalScopeHandle), typeof(LocalScope) },
             { typeof(LocalVariableHandle), typeof(LocalVariable) },
             { typeof(ManifestResourceHandle), typeof(ManifestResource) },
-            { typeof(MemberReferenceHandle), typeof(MemberReference) },
+            { typeof(MemberReferenceHandle), typeof(MemberReferenceBase) },
             { typeof(MethodDebugInformationHandle), typeof(MethodDebugInformation) },
             { typeof(MethodDefinitionHandle), typeof(MethodDefinition) },
             { typeof(MethodImplementationHandle), typeof(MethodImplementation) },
@@ -54,11 +55,11 @@ namespace ByrneLabs.Commons.MetadataDom
             { typeof(TypeSpecificationHandle), typeof(TypeSpecification) }
         });
         private readonly IDictionary<CodeElementKey, CodeElement> _codeElementCache = new Dictionary<CodeElementKey, CodeElement>();
-        private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
+        private readonly Lazy<IEnumerable<TypeBase>> _definedTypes;
 
         public MetadataState(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile)
         {
-            SignatureTypeProvider = new CodeElementSignatureTypeProvider(this);
+            TypeProvider = new TypeProvider(this);
             if (assemblyFile != null)
             {
                 if (!assemblyFile.Exists)
@@ -68,29 +69,32 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 AssemblyFile = new MetadataFile(prefetchMetadata, assemblyFile, MetadataFileType.Assembly);
             }
-
-            if (pdbFile != null)
+            if (!pdbFile?.Exists == true)
             {
-                if (!pdbFile.Exists)
-                {
-                    throw new ArgumentException($"The file {pdbFile.FullName} does not exist", nameof(pdbFile));
-                }
-
-                PdbFile = new MetadataFile(prefetchMetadata, pdbFile, MetadataFileType.Pdb);
+                throw new ArgumentException($"The file {pdbFile.FullName} does not exist", nameof(pdbFile));
             }
-            else if (!AssemblyFile.PEReader.PEHeaders.IsCoffOnly)
+
+            if (pdbFile == null)
+            {
+                pdbFile = new FileInfo(assemblyFile.FullName.Substring(0, assemblyFile.FullName.Length - assemblyFile.Extension.Length) + ".pdb");
+            }
+            else if (!pdbFile.Exists && !AssemblyFile.PEReader.PEHeaders.IsCoffOnly)
             {
                 var debugDirectoryEntries = AssemblyFile.PEReader.ReadDebugDirectory();
                 var debugDirectoryDataEntries = debugDirectoryEntries.Where(debugDirectoryEntry => debugDirectoryEntry.Type == DebugDirectoryEntryType.CodeView).Select(debugDirectoryEntry => AssemblyFile.PEReader.ReadCodeViewDebugDirectoryData(debugDirectoryEntry)).ToList();
                 pdbFile = debugDirectoryDataEntries.Select(debugDirectoryEntry => new FileInfo(debugDirectoryEntry.Path)).Distinct().SingleOrDefault();
             }
+            if (pdbFile?.Exists == true)
+            {
+                PdbFile = new MetadataFile(prefetchMetadata, pdbFile, MetadataFileType.Pdb);
+            }
 
-            _exportedTypes = new Lazy<IEnumerable<ExportedType>>(() => AssemblyReader.ExportedTypes.Select(exportedType => GetCodeElement(exportedType)).Cast<ExportedType>().ToList());
+            _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().ToList());
         }
 
         public MetadataReader AssemblyReader => AssemblyFile?.Reader;
 
-        public IEnumerable<ExportedType> ExportedTypes => !HasMetadata ? null : _exportedTypes.Value;
+        public IEnumerable<TypeBase> DefinedTypes => !HasMetadata ? null : _definedTypes.Value;
 
         public bool HasDebugMetadata => PdbFile?.HasMetadata == true;
 
@@ -98,7 +102,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public MetadataReader PdbReader => PdbFile?.Reader;
 
-        public CodeElementSignatureTypeProvider SignatureTypeProvider { get; }
+        public TypeProvider TypeProvider { get; }
 
         private MetadataFile AssemblyFile { get; }
 
@@ -433,6 +437,8 @@ namespace ByrneLabs.Commons.MetadataDom
             return GetCodeElement(new CodeElementKey(codeElementType, keyValues));
         }
 
+        public CodeElement GetCodeElement(object handle) => GetCodeElement(new CodeElementKey(handle));
+
         public CodeElement GetCodeElement(CodeElementKey key)
         {
             CodeElement codeElement;
@@ -444,7 +450,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 codeElement = new PrimitiveType(key.PrimitiveTypeCode.Value, this);
             }
-            else if ((key.Handle?.IsNil == true) || DebugMetadataTypes.Contains(key.CodeElementType) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.CodeElementType) && !HasMetadata)
+            else if (key.Handle?.IsNil == true || DebugMetadataTypes.Contains(key.UpcastHandle?.GetType()) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.UpcastHandle?.GetType()) && !HasMetadata)
             {
                 codeElement = null;
             }
@@ -464,6 +470,23 @@ namespace ByrneLabs.Commons.MetadataDom
                         codeElementType = typeof(MethodDefinition);
                     }
                 }
+                else if (key.UpcastHandle is MemberReferenceHandle)
+                {
+                    var memberReference = AssemblyReader.GetMemberReference((MemberReferenceHandle)key.UpcastHandle);
+                    var methodName = AssemblyReader.GetString(memberReference.Name);
+                    if (memberReference.GetKind() == MemberReferenceKind.Field)
+                    {
+                        codeElementType = typeof(FieldReference);
+                    }
+                    else if (".ctor".Equals(methodName) || ".cctor".Equals(methodName))
+                    {
+                        codeElementType = typeof(ConstructorReference);
+                    }
+                    else
+                    {
+                        codeElementType = typeof(MethodReference);
+                    }
+                }
                 else
                 {
                     codeElementType = key.CodeElementType;
@@ -476,33 +499,31 @@ namespace ByrneLabs.Commons.MetadataDom
             return codeElement;
         }
 
-        public T GetCodeElement<T>(CodeElementKey<T> key) where T : CodeElement => (T)GetCodeElement((CodeElementKey)key);
+        public T GetCodeElement<T>(CodeElementKey key) => (T)(object)GetCodeElement(key);
 
-        public T GetCodeElement<T>(params object[] keyValues) where T : CodeElement => GetCodeElement(new CodeElementKey<T>(keyValues));
+        public T GetCodeElement<T>(params object[] keyValues) => (T)(object)GetCodeElement(new CodeElementKey(typeof(T), keyValues));
 
-        public CodeElement GetCodeElement(object handle) => GetCodeElement(new CodeElementKey(handle));
+        public IEnumerable<CodeElement> GetCodeElements(IEnumerable handles) => handles.Cast<object>().Select(GetCodeElement).ToList();
 
-        public IEnumerable<T> GetCodeElements<T>(IEnumerable<CodeElementKey<T>> keys) where T : CodeElement => keys.Select(GetCodeElement).ToList();
+        public IEnumerable<T> GetCodeElements<T>(IEnumerable handles) => handles.Cast<object>().Select(handle => GetCodeElement<T>(handle)).ToList();
 
-        public IEnumerable<CodeElement> GetCodeElements(IEnumerable handles) => handles.Cast<object>().Select(handle => GetCodeElement(handle)).ToList();
-
-        public IEnumerable<T> GetCodeElements<T>(IEnumerable handles) where T : CodeElement => handles.Cast<object>().Select(handle => GetCodeElement<T>(handle)).ToList();
-
-        public Lazy<CodeElement> GetLazyCodeElement(CodeElementKey key) => new Lazy<CodeElement>(() => GetCodeElement(key));
+        public IEnumerable<T> GetCodeElements<T>(IEnumerable<CodeElementKey> keys) => keys.Select(GetCodeElement<T>).ToList();
 
         public Lazy<CodeElement> GetLazyCodeElement(object handle) => new Lazy<CodeElement>(() => GetCodeElement(handle));
 
-        public Lazy<T> GetLazyCodeElement<T>(CodeElementKey<T> key) where T : CodeElement => new Lazy<T>(() => GetCodeElement(key));
+        public Lazy<T> GetLazyCodeElement<T>(object handle) => new Lazy<T>(() => GetCodeElement<T>(handle));
 
-        public Lazy<T> GetLazyCodeElement<T>(params object[] keyValues) where T : CodeElement => new Lazy<T>(() => GetCodeElement(new CodeElementKey<T>(keyValues)));
+        public Lazy<CodeElement> GetLazyCodeElement(CodeElementKey key) => new Lazy<CodeElement>(() => GetCodeElement(key));
 
-        public Lazy<T> GetLazyCodeElement<T>(object handle) where T : CodeElement => new Lazy<T>(() => GetCodeElement<T>(handle));
+        public Lazy<T> GetLazyCodeElement<T>(CodeElementKey key) => new Lazy<T>(() => GetCodeElement<T>(key));
 
-        public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable<CodeElementKey<T>> keys) where T : CodeElement => new Lazy<IEnumerable<T>>(() => GetCodeElements(keys));
+        public Lazy<T> GetLazyCodeElement<T>(params object[] keyValues) => new Lazy<T>(() => (T)(object)GetCodeElement(new CodeElementKey(typeof(T), keyValues)));
 
-        public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable handles) where T : CodeElement => new Lazy<IEnumerable<T>>(() => GetCodeElements<T>(handles));
+        public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable handles) => new Lazy<IEnumerable<T>>(() => GetCodeElements<T>(handles));
 
         public Lazy<IEnumerable<CodeElement>> GetLazyCodeElements(IEnumerable handles) => new Lazy<IEnumerable<CodeElement>>(() => GetCodeElements(handles));
+
+        public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable<CodeElementKey> keys) => new Lazy<IEnumerable<T>>(() => GetCodeElements<T>(keys));
 
         public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => relativeVirtualAddress == 0 ? null : AssemblyFile.PEReader.GetMethodBody(relativeVirtualAddress);
 

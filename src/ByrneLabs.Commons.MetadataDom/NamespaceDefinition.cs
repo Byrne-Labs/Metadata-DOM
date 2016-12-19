@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition" />
-    [PublicAPI]
+    //[PublicAPI]
     public class NamespaceDefinition : RuntimeCodeElement, ICodeElementWithHandle<NamespaceDefinitionHandle, System.Reflection.Metadata.NamespaceDefinition>
     {
         private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;

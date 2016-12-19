@@ -11,17 +11,13 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public CodeElementKey(Type codeElementType, params object[] keyValues)
         {
-            if (keyValues.Length == 0)
+            if (keyValues.Length == 0 && codeElementType!=typeof(SystemType))
             {
                 throw new ArgumentException("At least one key value must be provided", nameof(keyValues));
             }
             if (keyValues.Any(keyValue => keyValue == null))
             {
                 throw new ArgumentException("Key values cannot be null", nameof(keyValues));
-            }
-            if (codeElementType != null && !typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementType))
-            {
-                throw new ArgumentException($"Type {codeElementType.FullName} does not inherit {typeof(CodeElement).FullName}", nameof(codeElementType));
             }
 
             var rawKeyValues = (object[])keyValues.Clone();
@@ -33,35 +29,34 @@ namespace ByrneLabs.Commons.MetadataDom
                     rawKeyValues[index] = handle;
                 }
             }
+
             KeyValues = rawKeyValues;
-            // ReSharper disable once ReplaceWithOfType.3 -- NOTE: using OfType<Handle> will convert any integer value to a handle
-            var handles = KeyValues.Where(keyValue => keyValue is Handle).Select(keyValue => (Handle)keyValue);
             Handle = KeyValues.OfType<Handle?>().FirstOrDefault();
 
             UpcastHandle = Handle.HasValue ? MetadataState.UpcastHandle(Handle.Value) : null;
 
-            if (codeElementType.GetTypeInfo().IsAbstract)
+            if ((codeElementType == null && !typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementType) || codeElementType.GetTypeInfo().IsAbstract) && Handle != null)
             {
-                if (Handle == null)
-                {
-                    throw new ArgumentException($"Type {CodeElementType.FullName} is abstract", nameof(codeElementType));
-                }
                 CodeElementType = MetadataState.GetCodeElementTypeForHandle(Handle.Value);
+            }
+            else if (codeElementType != null && !typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementType))
+            {
+                throw new ArgumentException($"Type {codeElementType.FullName} does not inherit {typeof(CodeElement).FullName}", nameof(codeElementType));
+            }
+            else if (codeElementType.GetTypeInfo().IsAbstract)
+            {
+                throw new ArgumentException($"Type {codeElementType.FullName} is abstract", nameof(codeElementType));
             }
             else if (codeElementType == null)
             {
-                if (Handle == null)
-                {
-                    throw new ArgumentNullException(nameof(codeElementType));
-                }
-                CodeElementType = MetadataState.GetCodeElementTypeForHandle(Handle.Value);
+                throw new ArgumentNullException(nameof(codeElementType));
             }
             else
             {
                 CodeElementType = codeElementType;
             }
 
-            var primitiveTypeCode = keyValues.OfType<PrimitiveTypeCode>().FirstOrDefault();
+            var primitiveTypeCode = KeyValues.OfType<PrimitiveTypeCode>().FirstOrDefault();
             PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?)null : primitiveTypeCode;
         }
 
@@ -98,6 +93,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     hash = hash * 17 + keyValue.GetHashCode();
                 }
+
                 hash = hash * 17 + CodeElementType.GetHashCode();
                 return hash;
             }

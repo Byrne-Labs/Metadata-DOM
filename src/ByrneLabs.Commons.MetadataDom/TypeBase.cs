@@ -8,25 +8,24 @@ using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-
     public abstract class TypeBase<TTypeBase, THandle, TToken> : TypeBase<TTypeBase, THandle>, ICodeElementWithHandle<THandle, TToken> where TTypeBase : TypeBase
     {
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         public Handle DowncastMetadataHandle { get; }
@@ -56,108 +55,87 @@ namespace ByrneLabs.Commons.MetadataDom
         protected TKey KeyValue { get; }
     }
 
-    [DebuggerDisplay("\\{{GetType().FullName,nq}\\}: {Namespace,nq}.{Name,nq}")]
-    [PublicAPI]
-    public abstract class TypeBase : RuntimeCodeElement
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
+    //[PublicAPI]
+    public abstract class TypeBase : RuntimeCodeElement, IMember
     {
+        private Lazy<string> _fullName;
+
         internal TypeBase(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
         {
-            IsArray = (typeElementModifiers.HasFlag(TypeElementModifiers.Array));
-            IsByRef = (typeElementModifiers.HasFlag(TypeElementModifiers.ByRef));
-            IsGenericType = (typeElementModifiers.HasFlag(TypeElementModifiers.Generic));
-            IsPointer = (typeElementModifiers.HasFlag(TypeElementModifiers.Pointer));
+            IsArray = typeElementModifiers.HasFlag(TypeElementModifiers.Array);
+            IsByRef = typeElementModifiers.HasFlag(TypeElementModifiers.ByRef);
+            IsGenericType = typeElementModifiers.HasFlag(TypeElementModifiers.GenericType);
+            IsPointer = typeElementModifiers.HasFlag(TypeElementModifiers.Pointer);
 
             if (IsArray || IsPointer)
             {
                 ElementType = baseType;
             }
+            GenericTypeArguments = new TypeBase[] { };
+            Initialize();
         }
 
         internal TypeBase(TypeBase genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
         {
             IsGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
-            GenericTypeArguments = genericTypeArguments.ToArray();
+            GenericTypeArguments = genericTypeArguments.Select(typeArgument => (TypeBase) MetadataState.GetCodeElement(typeArgument.GetType(), typeArgument, TypeElementModifiers.GenericArgument)).ToArray();
+            Initialize();
         }
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
+            GenericTypeArguments = new TypeBase[] { };
+            Initialize();
         }
 
-        /// <inheritdoc cref="System.Type.AssemblyQualifiedName" />
-        public string AssemblyQualifiedName { get; protected set; }
+        public abstract IAssembly Assembly { get; }
+
+        public abstract bool IsGenericParameter { get; }
+
+        public abstract string Namespace { get; }
+
+        public virtual string AssemblyQualifiedName => $"{FullName}, {Assembly.Name.FullName}";
 
         /// <summary>When overridden in a derived class, returns the <see cref="TypeBase" /> of the object encompassed or referred to by the current array, pointer or reference type.</summary>
         /// <returns>The <see cref="TypeBase" /> of the object encompassed or referred to by the current array, pointer, or reference type, or null if the current
         ///     <see cref="TypeBase" /> is not an array or a pointer, or is not passed by reference, or represents a generic type or a type parameter in the definition of a generic type or generic method.</returns>
-        public TypeBase ElementType { get; protected set; }
+        public TypeBase ElementType { get; }
 
-        /// <inheritdoc cref="System.Type.FullName" />
-        public string FullName { get; protected set; }
+        public IEnumerable<TypeBase> GenericTypeArguments { get; }
 
-        public TypeBase[] GenericTypeArguments { get; protected set; }
+        public TypeBase GenericTypeDefinition { get; }
 
-        public bool IsAbstract { get; protected set; }
+        public bool HasGenericTypeArguments => GenericTypeArguments.Any();
 
-        public bool IsArray { get; protected set; }
+        public bool IsArray { get; }
 
-        public bool IsByRef { get; protected set; }
+        public bool IsByRef { get; }
 
-        public bool IsClass { get; protected set; }
+        public bool IsGenericType { get; }
 
-        /// <inheritdoc cref="System.Reflection.TypeInfo.IsEnum" />
-        public bool IsEnum { get; protected set; }
+        public bool IsNested => DeclaringType != null;
 
-        public bool IsGenericParameter { get; protected set; }
+        public bool IsPointer { get; }
 
-        public bool IsGenericType { get; protected set; }
+        public abstract TypeBase DeclaringType { get; }
 
-        public bool IsGenericTypeDefinition { get; protected set; }
+        public virtual string FullName => _fullName.Value;
 
-        public bool IsImport { get; protected set; }
+        public abstract MemberTypes MemberType { get; }
 
-        public bool IsInterface { get; protected set; }
+        public abstract string Name { get; }
 
-        /// <inheritdoc cref="System.Type.IsNested" />
-        public bool IsNested => IsNestedAssembly || IsNestedFamily || IsNestedFamANDAssem || IsNestedFamORAssem || IsNestedPrivate || IsNestedPublic;
+        public string TextSignature => FullName;
 
-        public bool IsNestedAssembly { get; protected set; }
-
-        public bool IsNestedFamANDAssem { get; protected set; }
-
-        public bool IsNestedFamily { get; protected set; }
-
-        public bool IsNestedFamORAssem { get; protected set; }
-
-        public bool IsNestedPrivate { get; protected set; }
-
-        public bool IsNestedPublic { get; protected set; }
-
-        public bool IsNotPublic { get; protected set; }
-
-        public bool IsPointer { get; protected set; }
-
-        public bool IsPrimitive { get; protected set; }
-
-        public bool IsPublic { get; protected set; }
-
-        public string Name { get; protected set; }
-
-        public string Namespace { get; protected set; }
-
-        protected TypeBase GenericTypeDefinition { get; set; }
-
-        /// <summary>Returns a <see cref="TypeDefinition" /> object that represents a generic type definition from which the current generic type can be constructed.</summary>
-        /// <returns>A <see cref="TypeDefinition" /> object representing a generic type from which the current type can be constructed.</returns>
-        /// <exception cref="System.InvalidOperationException">The current type is not a generic type.  That is, <see cref="IsGenericType" /> returns false. </exception>
-        public TypeBase GetGenericTypeDefinition()
+        private void Initialize()
         {
-            if (!IsGenericType)
-            {
-                throw new InvalidOperationException($"{GetType().FullName} is not a generic type");
-            }
-
-            return GenericTypeDefinition;
+            _fullName = new Lazy<string>(() =>
+                (IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".")) +
+                Name +
+                (HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]") + "]") : string.Empty) +
+                (IsArray ? "[]" : string.Empty));
         }
     }
 }

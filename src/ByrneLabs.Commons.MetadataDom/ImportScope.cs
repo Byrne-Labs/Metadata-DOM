@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ImportScope" />
-    [PublicAPI]
+    //[PublicAPI]
     public class ImportScope : DebugCodeElement, ICodeElementWithHandle<ImportScopeHandle, System.Reflection.Metadata.ImportScope>
     {
         private readonly Lazy<IEnumerable<ImportDefinition>> _imports;

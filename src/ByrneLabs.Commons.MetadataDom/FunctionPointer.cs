@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text;
 
@@ -7,7 +8,6 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class FunctionPointer : TypeBase<FunctionPointer, MethodSignature<TypeBase>>
     {
-
         internal FunctionPointer(FunctionPointer baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             Initialize();
@@ -23,6 +23,43 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
+        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
+
+        public override TypeBase DeclaringType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int GenericParameterCount { get; protected set; }
+
+        public override bool IsGenericParameter
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override MemberTypes MemberType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override string Name { get; }
+
+        public override string Namespace { get; }
+
+        public IEnumerable<TypeBase> ParameterTypes { get; protected set; }
+
+        public int RequiredParameterCount { get; protected set; }
+
+        public TypeBase ReturnType { get; protected set; }
 
         private void Initialize()
         {
@@ -31,13 +68,5 @@ namespace ByrneLabs.Commons.MetadataDom
             GenericParameterCount = KeyValue.GenericParameterCount;
             RequiredParameterCount = KeyValue.RequiredParameterCount;
         }
-
-        public int GenericParameterCount { get; protected set; }
-
-        public IEnumerable<TypeBase> ParameterTypes { get; protected set; }
-
-        public int RequiredParameterCount { get; protected set; }
-
-        public TypeBase ReturnType { get; protected set; }
     }
 }

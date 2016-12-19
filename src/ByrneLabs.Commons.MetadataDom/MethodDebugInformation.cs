@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation" />
-    [PublicAPI]
+    //[PublicAPI]
     public class MethodDebugInformation : DebugCodeElement, ICodeElementWithHandle<MethodDebugInformationHandle, System.Reflection.Metadata.MethodDebugInformation>, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;

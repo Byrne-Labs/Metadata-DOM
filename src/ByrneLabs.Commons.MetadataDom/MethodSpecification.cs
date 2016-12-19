@@ -3,42 +3,63 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using JetBrains.Annotations;
+using System.Collections.Immutable;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification" />
-    [PublicAPI]
-    public class MethodSpecification : RuntimeCodeElement, ICodeElementWithHandle<MethodSpecificationHandle, System.Reflection.Metadata.MethodSpecification>
+    //[PublicAPI]
+    public class MethodSpecification : MethodBase<MethodSpecification, MethodSpecificationHandle, System.Reflection.Metadata.MethodSpecification>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<CodeElement> _method;
-        private readonly Lazy<Blob> _signature;
+        private readonly Lazy<MethodBase> _method;
+        private readonly Lazy<ImmutableArray<TypeBase>> _signature;
 
         internal MethodSpecification(MethodSpecificationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetMethodSpecification(metadataHandle);
-            _method = MetadataState.GetLazyCodeElement(MetadataToken.Method);
-            _signature = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Signature)));
+            _method = new Lazy<MethodBase>(() => (MethodBase) MetadataState.GetCodeElement(new CodeElementKey(Method.GetType(), Method, Signature)));
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            //var signature = MetadataToken.DecodeSignature(provider, null);
+            _signature = new Lazy<ImmutableArray<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, null));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+
+        public override TypeBase DeclaringType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override string FullName { get; }
+
+        public override IEnumerable<TypeBase> GenericArguments
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Method" />
-        /// <summary><see cref="MethodDefinition" /> or <see cref="MemberReference" /> specifying to which generic method this <see cref="MethodSpecification" /> refers, that is which generic method is it an instantiation of.</summary>
-        public CodeElement Method => _method.Value;
+        /// <summary><see cref="MethodDefinition" /> or <see cref="MemberReferenceBase" /> specifying to which generic method this <see cref="MethodSpecification" />
+        ///     refers, that is which generic method is it an instantiation of.</summary>
+        public MethodBase Method => _method.Value;
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Signature" />
-        /// <summary></summary>
-        public Blob Signature => _signature.Value;
+        public override string Name { get; }
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public override IEnumerable<IParameter> Parameters => Method.Parameters;
 
-        public MethodSpecificationHandle MetadataHandle { get; }
+        public override string TextSignature
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public System.Reflection.Metadata.MethodSpecification MetadataToken { get; }
+        internal ImmutableArray<TypeBase> Signature => _signature.Value;
     }
 }

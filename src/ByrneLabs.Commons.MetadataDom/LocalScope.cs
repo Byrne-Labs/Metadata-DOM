@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalScope" />
-    [PublicAPI]
+    //[PublicAPI]
     public class LocalScope : DebugCodeElement, ICodeElementWithHandle<LocalScopeHandle, System.Reflection.Metadata.LocalScope>
     {
         private readonly Lazy<IEnumerable<LocalScope>> _children;

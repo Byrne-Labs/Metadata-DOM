@@ -9,8 +9,8 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.Document" />
-    [DebuggerDisplay("{Name}")]
-    [PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
+    //[PublicAPI]
     public class Document : DebugCodeElement, ICodeElementWithHandle<DocumentHandle, System.Reflection.Metadata.Document>
     {
         private static readonly IDictionary<Guid, HashAlgorithm> KnownHashAlgorithms = new Dictionary<Guid, HashAlgorithm>

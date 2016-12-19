@@ -7,8 +7,8 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ExportedType" />
-    [PublicAPI]
-    public class ExportedType : RuntimeCodeElement, ICodeElementWithHandle<ExportedTypeHandle, System.Reflection.Metadata.ExportedType>
+    //[PublicAPI]
+    public class ExportedType : TypeBase<ExportedType, ExportedTypeHandle, System.Reflection.Metadata.ExportedType>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
@@ -16,22 +16,28 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal ExportedType(ExportedTypeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetExportedType(metadataHandle);
-            Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
             _implementation = MetadataState.GetLazyCodeElement(MetadataToken.Implementation);
             IsForwarder = MetadataToken.IsForwarder;
-            Namespace = AsString(MetadataToken.Namespace);
             _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
         }
+
+        public override IAssembly Assembly => MetadataState.GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition);
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Attributes" />
         public TypeAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+
+        public override TypeBase DeclaringType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Implementation" />
         /// <returns>
@@ -51,19 +57,27 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.IsForwarder" />
         public bool IsForwarder { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Name" />
-        public string Name { get; }
+        public override bool IsGenericParameter
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.Namespace" />
-        public string Namespace { get; }
+        public override MemberTypes MemberType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override string Name => AsString(MetadataToken.Name);
+
+        public override string Namespace => AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.NamespaceDefinition" />
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
-
-        public Handle DowncastMetadataHandle => MetadataHandle;
-
-        public ExportedTypeHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.ExportedType MetadataToken { get; }
     }
 }

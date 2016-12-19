@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    [PublicAPI]
+    //[PublicAPI]
     public class ReflectionData : CodeElement, IDisposable
     {
         private readonly Lazy<IEnumerable<AssemblyFile>> _assemblyFiles;
@@ -18,13 +18,15 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<IEnumerable<Document>> _documents;
         private readonly Lazy<IEnumerable<EventDefinition>> _eventDefinitions;
+        private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
         private readonly Lazy<IEnumerable<FieldDefinition>> _fieldDefinitions;
         private readonly Lazy<IEnumerable<ImportScope>> _importScopes;
+        private readonly Lazy<IEnumerable<Language>> _languages;
         private readonly Lazy<IEnumerable<LocalConstant>> _localConstants;
         private readonly Lazy<IEnumerable<LocalScope>> _localScopes;
         private readonly Lazy<IEnumerable<LocalVariable>> _localVariables;
         private readonly Lazy<IEnumerable<ManifestResource>> _manifestResources;
-        private readonly Lazy<IEnumerable<MemberReference>> _memberReferences;
+        private readonly Lazy<IEnumerable<MemberReferenceBase>> _memberReferences;
         private readonly Lazy<IEnumerable<MethodDebugInformation>> _methodDebugInformation;
         private readonly Lazy<IEnumerable<MethodDefinitionBase>> _methodDefinitions;
         private readonly Lazy<ModuleDefinition> _moduleDefinition;
@@ -54,10 +56,11 @@ namespace ByrneLabs.Commons.MetadataDom
                 _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(Reader.CustomAttributes);
                 _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(Reader.DeclarativeSecurityAttributes);
                 _eventDefinitions = MetadataState.GetLazyCodeElements<EventDefinition>(Reader.EventDefinitions);
+                _exportedTypes = MetadataState.GetLazyCodeElements<ExportedType>(Reader.ExportedTypes);
                 _fieldDefinitions = MetadataState.GetLazyCodeElements<FieldDefinition>(Reader.FieldDefinitions);
                 _importScopes = MetadataState.GetLazyCodeElements<ImportScope>(Reader.ImportScopes);
                 _manifestResources = MetadataState.GetLazyCodeElements<ManifestResource>(Reader.ManifestResources);
-                _memberReferences = MetadataState.GetLazyCodeElements<MemberReference>(Reader.MemberReferences);
+                _memberReferences = MetadataState.GetLazyCodeElements<MemberReferenceBase>(Reader.MemberReferences);
                 _methodDefinitions = new Lazy<IEnumerable<MethodDefinitionBase>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).Cast<MethodDefinitionBase>());
                 _moduleDefinition = MetadataState.GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
                 _propertyDefinitions = MetadataState.GetLazyCodeElements<PropertyDefinition>(Reader.PropertyDefinitions);
@@ -69,7 +72,9 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 HasDebugMetadata = true;
                 _customDebugInformation = MetadataState.GetLazyCodeElements<CustomDebugInformation>(MetadataState.PdbReader.CustomDebugInformation);
+                var documentHandles = MetadataState.PdbReader.Documents;
                 _documents = MetadataState.GetLazyCodeElements<Document>(MetadataState.PdbReader.Documents);
+                _languages = new Lazy<IEnumerable<Language>>(() => Documents.Select(document => document.Language).Distinct().ToList());
                 _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(MetadataState.PdbReader.LocalConstants);
                 _localScopes = MetadataState.GetLazyCodeElements<LocalScope>(MetadataState.PdbReader.LocalScopes);
                 _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(MetadataState.PdbReader.LocalVariables);
@@ -102,7 +107,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<EventDefinition> EventDefinitions => !HasMetadata ? null : _eventDefinitions.Value;
 
         /// <inheritdoc cref="MetadataReader.ExportedTypes" />
-        public IEnumerable<ExportedType> ExportedTypes => MetadataState.ExportedTypes;
+        public IEnumerable<ExportedType> ExportedTypes => _exportedTypes.Value;
 
         /// <inheritdoc cref="MetadataReader.FieldDefinitions" />
         public IEnumerable<FieldDefinition> FieldDefinitions => !HasMetadata ? null : _fieldDefinitions.Value;
@@ -115,6 +120,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="MetadataReader.ImportScopes" />
         public IEnumerable<ImportScope> ImportScopes => !HasMetadata ? null : _importScopes.Value;
+
+        public IEnumerable<Language> Languages => !HasDebugMetadata ? null : _languages.Value;
 
         /// <inheritdoc cref="MetadataReader.LocalConstants" />
         public IEnumerable<LocalConstant> LocalConstants => !HasDebugMetadata ? null : _localConstants.Value;
@@ -129,7 +136,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<ManifestResource> ManifestResources => !HasMetadata ? null : _manifestResources.Value;
 
         /// <inheritdoc cref="MetadataReader.MemberReferences" />
-        public IEnumerable<MemberReference> MemberReferences => !HasMetadata ? null : _memberReferences.Value;
+        public IEnumerable<MemberReferenceBase> MemberReferences => !HasMetadata ? null : _memberReferences.Value;
 
         /// <inheritdoc cref="MetadataReader.MetadataKind" />
         public MetadataKind MetadataKind { get; }
