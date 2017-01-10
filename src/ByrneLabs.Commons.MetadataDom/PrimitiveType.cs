@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -27,8 +25,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
 
         public override TypeBase DeclaringType { get; } = null;
-
-        public override string FullName => $"System.{Name}";
 
         public override bool IsGenericParameter { get; } = false;
 

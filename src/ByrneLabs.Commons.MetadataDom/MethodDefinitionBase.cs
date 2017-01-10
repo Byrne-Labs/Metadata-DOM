@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -42,6 +41,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Attributes" />
         public MethodAttributes Attributes { get; }
 
+        public override string FullName => $"{DeclaringType.FullName}.{Name}";
+
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetCustomAttributes" />
         public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
@@ -67,6 +68,12 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
+        public bool IsEventAdder => IsSpecialName && Name.StartsWith("add_");
+
+        public bool IsEventRaiser => IsSpecialName && Name.StartsWith("raise_");
+
+        public bool IsEventRemover => IsSpecialName && Name.StartsWith("remove_");
+
         public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family);
 
         public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.FamANDAssem);
@@ -78,6 +85,10 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsHideBySig => Attributes.HasFlag(MethodAttributes.HideBySig);
 
         public bool IsPrivate => Attributes.HasFlag(MethodAttributes.Private);
+
+        public bool IsPropertyGetter => IsSpecialName && Name.StartsWith("get_");
+
+        public bool IsPropertySetter => IsSpecialName && Name.StartsWith("set_");
 
         public bool IsPublic => Attributes.HasFlag(MethodAttributes.Public);
 
@@ -104,13 +115,25 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private IEnumerable<Parameter> LoadParameters()
         {
-            var parameters = MetadataState.GetCodeElements<Parameter>(MetadataToken.GetParameters());
-            for (var parameterIndex = 0; parameterIndex < Signature.ParameterTypes.Length; parameterIndex++)
+            var allParameters = MetadataState.GetCodeElements<Parameter>(MetadataToken.GetParameters()).ToList();
+            var parameters = allParameters.Where(parameter => parameter.Position > 0).ToList();
+            if (Signature.ParameterTypes.Length != parameters.Count)
             {
-                var parameter = parameters.Single(parameterCheck => parameterCheck.Position == parameterIndex + 1);
-                parameter.ParameterType = Signature.ParameterTypes[parameterIndex];
+                throw new BadImageException($"Method {FullName} has {parameters.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found");
+            }
+            for (var position = 1; position <= parameters.Count; position++)
+            {
+                if (!parameters.Exists(parameter => parameter.Position == position))
+                {
+                    throw new BadImageException($"Method {FullName} has {parameters.Count} parameters but does not have a parameter for position {position}");
+                }
+            }
+            foreach (var parameter in parameters)
+            {
+                parameter.ParameterType = Signature.ParameterTypes[parameter.Position - 1];
                 parameter.Member = this;
             }
+            //}
 
             return parameters;
         }

@@ -1,17 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     public class FieldReference : MemberReferenceBase, IField
     {
-        internal FieldReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
+        private readonly Lazy<TypeBase> _fieldSignature;
+
+        internal FieldReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(new CodeElementKey<FieldReference>(metadataHandle), metadataState)
         {
             var parent = MetadataState.GetCodeElement(MetadataToken.Parent);
-            var fieldSignature = MetadataToken.DecodeFieldSignature(MetadataState.TypeProvider, CreateGenericContext());
+            _fieldSignature = new Lazy<TypeBase>(() => CreateFieldSignature());
+        }
+
+        internal TypeBase FieldSignature => _fieldSignature.Value;
+
+        internal TypeBase CreateFieldSignature()
+        {
+            TypeBase fieldSignature;
+            if (Kind == MemberReferenceKind.Method || Parent is TypeSpecification)
+            {
+                fieldSignature = null;
+            }
+            else
+            {
+                GenericContext genericContext;
+                if (Parent is MethodDefinition)
+                {
+                    var methodDefinitionParent = Parent as MethodDefinition;
+                    genericContext = new GenericContext(methodDefinitionParent.DeclaringType.GenericTypeArguments, methodDefinitionParent.GenericArguments);
+                }
+                else if (Parent is ModuleReference)
+                {
+                    genericContext = new GenericContext(null, null);
+                }
+                else if (Parent is TypeBase)
+                {
+                    var typeBaseParent = Parent as TypeBase;
+                    genericContext = new GenericContext(typeBaseParent.GenericTypeArguments, null);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"The parent type {Parent?.GetType().FullName} is not recognized");
+                }
+
+                fieldSignature = MetadataToken.DecodeFieldSignature(MetadataState.TypeProvider, genericContext);
+            }
+            return fieldSignature;
         }
 
         public FieldAttributes Attributes
@@ -110,12 +146,12 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
-        public TypeBase DeclaringType => FieldSignature.DeclaringType;
+        public TypeBase DeclaringType => FieldSignature?.DeclaringType;
 
-        public string FullName => $"{DeclaringType.FullName}.{Name}";
+        public string FullName => DeclaringType == null ? Name : $"{DeclaringType.FullName}.{Name}";
 
-        public MemberTypes MemberType => FieldSignature.MemberType;
+        public MemberTypes MemberType => MemberTypes.Field;
 
-        public string TextSignature => $"{FieldType.FullName} {FullName}";
+        public string TextSignature => $"{FullName}";
     }
 }

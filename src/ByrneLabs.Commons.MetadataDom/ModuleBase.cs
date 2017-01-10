@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Metadata;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {

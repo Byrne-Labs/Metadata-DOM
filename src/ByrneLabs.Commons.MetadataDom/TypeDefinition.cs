@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -24,6 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<NamespaceDefinition> _namespaceDefinition;
         private Lazy<IEnumerable<TypeDefinition>> _nestedTypes;
         private Lazy<IEnumerable<PropertyDefinition>> _properties;
+        private Lazy<IEnumerable<IMember>> _members;
 
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
@@ -73,6 +73,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetInterfaceImplementations" />
         public IEnumerable<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
 
+        public IEnumerable<IMember> Members => _members.Value;
+
         public bool IsAbstract => Attributes.HasFlag(TypeAttributes.Abstract);
 
         public bool IsAnsiClass => Attributes.HasFlag(TypeAttributes.AnsiClass);
@@ -84,6 +86,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsClass => Attributes.HasFlag(TypeAttributes.Class);
 
         public bool IsEnum => "System.Enum".Equals(BaseType?.FullName);
+
+        public bool IsValueType => "System.ValueType".Equals(BaseType?.FullName);
 
         public bool IsExplicitLayout => Attributes.HasFlag(TypeAttributes.ExplicitLayout);
 
@@ -154,7 +158,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = MetadataToken.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
             {
-                var baseType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.BaseType);
+                var baseType = (TypeBase)MetadataState.GetCodeElement(MetadataToken.BaseType);
                 var typeSpecification = baseType as TypeSpecification;
                 if (typeSpecification != null)
                 {
@@ -192,6 +196,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Layout = MetadataToken.GetLayout();
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition>(MetadataToken.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(MetadataToken.GetProperties());
+            _members = new Lazy<IEnumerable<IMember>>(() => Methods.Union<IMember>(Fields).Union(Events).Union(Properties).Union(NestedTypes).ToList());
         }
     }
 }

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    public interface IParameter
+    public interface IParameter: IMember
     {
         IEnumerable<CustomAttribute> CustomAttributes { get; }
 
@@ -19,12 +18,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         IMember Member { get; }
 
-        string Name { get; }
-
         TypeBase ParameterType { get; }
 
         int Position { get; }
-
-        string TextSignature { get; }
     }
 }

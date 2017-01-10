@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -11,8 +10,6 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public override string FullName => $"{DeclaringType.FullName}({string.Join(", ", Parameters.Select(parameter => parameter.TextSignature))})";
-
-        public override string TextSignature => $"{DeclaringType.TextSignature}({string.Join(", ", Parameters.Select(parameter => parameter.TextSignature))})";
+        public override string TextSignature => $"{DeclaringType.FullName}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.TextSignature))})";
     }
 }

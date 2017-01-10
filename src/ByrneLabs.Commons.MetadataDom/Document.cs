@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {

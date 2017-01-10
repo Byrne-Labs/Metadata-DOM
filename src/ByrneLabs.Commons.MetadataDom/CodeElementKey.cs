@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,16 +12,12 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public CodeElementKey(Type codeElementType, params object[] keyValues)
         {
-            if (keyValues.Length == 0 && codeElementType!=typeof(SystemType))
+            if (keyValues.Length == 0 && codeElementType != typeof(SystemType))
             {
                 throw new ArgumentException("At least one key value must be provided", nameof(keyValues));
             }
-            if (keyValues.Any(keyValue => keyValue == null))
-            {
-                throw new ArgumentException("Key values cannot be null", nameof(keyValues));
-            }
 
-            var rawKeyValues = (object[])keyValues.Clone();
+            var rawKeyValues = keyValues.Where(keyValue=>keyValue!=null).ToArray();
             for (var index = 0; index < rawKeyValues.Length; index++)
             {
                 var handle = MetadataState.DowncastHandle(rawKeyValues[index]);
@@ -95,7 +90,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 var hash = 91;
                 foreach (var keyValue in KeyValues)
                 {
-                    hash = hash * 17 + keyValue.GetHashCode();
+                    hash = hash * 17 + (keyValue == null ? 0 : keyValue.GetHashCode());
                 }
 
                 hash = hash * 17 + CodeElementType.GetHashCode();

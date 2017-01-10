@@ -1,18 +1,17 @@
-﻿using System.Linq;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     public class MethodReference : MethodReferenceBase, IMethod
     {
-        internal MethodReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
+        internal MethodReference(MemberReferenceHandle metadataHandle, MethodDefinition methodDefinition, MetadataState metadataState) : base(metadataHandle, methodDefinition, metadataState)
         {
         }
 
-        public override string FullName => $"{DeclaringType.FullName}.{Name}({string.Join(", ", Parameters.Select(parameter => parameter.TextSignature))})";
+        internal MethodReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, null, metadataState)
+        {
+        }
 
-        public override string TextSignature => $"{ReturnType.TextSignature} {FullName}";
-
-        public TypeBase ReturnType => MethodSignature.Value.ReturnType;
+        public TypeBase ReturnType => MethodSignature?.ReturnType;
     }
 }

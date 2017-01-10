@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition" />
     //[PublicAPI]
-    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{DeclaringType.FullName,nq}.{Name}\"")]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public class PropertyDefinition : RuntimeCodeElement, IMember, ICodeElementWithHandle<PropertyDefinitionHandle, System.Reflection.Metadata.PropertyDefinition>
     {
         private readonly Lazy<Constant> _defaultValue;
@@ -84,6 +83,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Name" />
         public string Name { get; }
 
-        public string TextSignature => $"{PropertyType.TextSignature} {FullName}";
+        public string TextSignature => FullName;
     }
 }

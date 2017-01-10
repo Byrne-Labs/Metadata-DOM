@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
-using JetBrains.Annotations;
 using System.Collections.Immutable;
 
 namespace ByrneLabs.Commons.MetadataDom

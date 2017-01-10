@@ -37,24 +37,23 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         private void AssertValid(ReflectionData reflectionData)
         {
-            var checkedCodeElements = new List<CodeElement>();
+            var checkedMetadataElements = new List<CodeElement>();
             /*
              * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
              */
             foreach (var typeDefinition in reflectionData.TypeDefinitions)
             {
-                CheckCodeElement(typeDefinition, checkedCodeElements,true);
+                CheckCodeElement(typeDefinition, checkedMetadataElements, true);
             }
 
-           // CheckCodeElement(reflectionData, checkedCodeElements,false);
-           // OutputMetadataSummary(new[] { reflectionData });
+            CheckCodeElement(reflectionData, checkedMetadataElements, false);
         }
 
-        private static void CheckCodeElement(CodeElement codeElement, ICollection<CodeElement> checkedCodeElements, bool excludeAssemblies)
+        private static void CheckCodeElement(CodeElement codeElement, ICollection<CodeElement> checkedMetadataElements, bool excludeAssemblies)
         {
-            if (!checkedCodeElements.Contains(codeElement))
+            if (!checkedMetadataElements.Contains(codeElement))
             {
-                checkedCodeElements.Add(codeElement);
+                checkedMetadataElements.Add(codeElement);
                 var discoveredCodeElements = new List<CodeElement>();
                 foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties())
                 {
@@ -80,9 +79,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                         }
                     }
                 }
-                foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null && !(excludeAssemblies && discoveredCodeElement is AssemblyDefinition)).Except(checkedCodeElements).Distinct())
+                foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null && !(excludeAssemblies && discoveredCodeElement is AssemblyDefinition)).Except(checkedMetadataElements).Distinct())
                 {
-                    CheckCodeElement(discoveredCodeElement, checkedCodeElements, excludeAssemblies);
+                    CheckCodeElement(discoveredCodeElement, checkedMetadataElements, excludeAssemblies);
                 }
             }
         }
@@ -134,50 +133,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             return gacAssemblies.OrderBy(x => random.Next()).ToList();
         }
 
-        private void OutputMetadataSummary(IEnumerable<ReflectionData> allMetadata)
-        {
-            var startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Count(reflectionData => !reflectionData.HasMetadata)} files without reflectionData ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.AssemblyFiles?.Count()).Sum()} AssemblyFiles ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.AssemblyReferences?.Count()).Sum()} AssemblyReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.CustomDebugInformation?.Count()).Sum()} CustomDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.DeclarativeSecurityAttributes?.Count()).Sum()} DeclarativeSecurityAttributes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.Documents?.Count()).Sum()} Documents ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.EventDefinitions?.Count()).Sum()} EventDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.ExportedTypes?.Count()).Sum()} ExportedTypes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.FieldDefinitions?.Count()).Sum()} FieldDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.ImportScopes?.Count()).Sum()} ImportScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.LocalConstants?.Count()).Sum()} LocalConstants ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.LocalScopes?.Count()).Sum()} LocalScopes ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.LocalVariables?.Count()).Sum()} LocalVariables ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.ManifestResources?.Count()).Sum()} ManifestResources ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.MemberReferences?.Count()).Sum()} MemberReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.MethodDebugInformation?.Count()).Sum()} MethodDebugInformation ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.MethodDefinitions?.Count()).Sum()} MethodDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.PropertyDefinitions?.Count()).Sum()} PropertyDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.TypeDefinitions?.Count()).Sum()} TypeDefinitions ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-            startTime = DateTime.Now;
-            _output.WriteLine($"\t{allMetadata.Select(reflectionData => reflectionData.TypeReferences?.Count()).Sum()} TypeReferences ({DateTime.Now.Subtract(startTime).TotalSeconds} seconds)");
-        }
-
         private void SmokeTestOnAssemblies(IEnumerable<FileInfo> assemblyFiles, bool prefetch)
         {
             var startTime = DateTime.Now;
@@ -186,10 +141,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             {
                 try
                 {
-                    using (var reflectionData = new ReflectionData(prefetch, assemblyFile))
-                    {
-                        AssertValid(reflectionData);
-                    }
                 }
                 catch (Exception exception)
                 {
@@ -218,6 +169,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile =>
             {
                 var assemblyStartTime = DateTime.Now;
+                var originalAssemblyDirectory = assemblyFile.Directory;
                 try
                 {
                     using (var reflectionData = new ReflectionData(prefetch, assemblyFile))
@@ -225,9 +177,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                         AssertValid(reflectionData);
                     }
 
-                    var newAssemblyFile = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), PassedAssemblyDirectory.FullName));
-                    newAssemblyFile.Directory.Create();
-                    assemblyFile.MoveTo(newAssemblyFile.FullName);
+                    var passedAssemblyFile = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), PassedAssemblyDirectory.FullName));
+                    passedAssemblyFile.Directory.Create();
+                    assemblyFile.MoveTo(passedAssemblyFile.FullName);
                 }
                 catch (Exception exception)
                 {
@@ -236,7 +188,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                     newAssemblyFile.Directory.Create();
                     assemblyFile.MoveTo(newAssemblyFile.FullName);
                     exceptions.TryAdd(assemblyFile, exception);
-                    throw;
+                }
+                while (!originalAssemblyDirectory.GetFileSystemInfos().Any())
+                {
+                    originalAssemblyDirectory.Delete();
+                    originalAssemblyDirectory = originalAssemblyDirectory.Parent;
                 }
 
                 var assemblyExecutionTime = DateTime.Now.Subtract(assemblyStartTime);
@@ -268,9 +224,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Speed", "Fast")]
         public void TestOnFailedAssemblies()
         {
-            var files = FailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
-            SmokeTestOnAssemblies(files, true);
-            SmokeTestOnAssemblies(files, false);
+            if (FailedAssemblyDirectory.Exists)
+            {
+                var files = FailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
+                SmokeTestOnAssemblies(files, true);
+                SmokeTestOnAssemblies(files, false);
+            }
         }
 
         [Fact]
@@ -338,6 +297,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             foreach (var loadableFile in loadableFiles)
             {
                 using (var reflectionData = new ReflectionData(loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null))
+                {
+                    AssertValid(reflectionData);
+                }
+            }
+        }
+
+        [Fact]
+        [Trait("Speed", "Fast")]
+        public void TestOnPrebuildAssemblyResources()
+        {
+            var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
+            var loadableFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
+            foreach (var loadableFile in loadableFiles.Where(file => !file.Name.Equals("EmptyType.dll")))
+            {
+                using (var reflectionData = new ReflectionData(loadableFile))
                 {
                     AssertValid(reflectionData);
                 }

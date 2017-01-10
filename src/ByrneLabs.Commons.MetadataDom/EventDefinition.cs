@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Threading;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition" />
     //[PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
     public class EventDefinition : MemberBase<EventDefinition, EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
     {
         private readonly Lazy<IMethod> _addMethod;
@@ -54,7 +54,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Remover" />
         public IMethod RemoveMethod => _removeMethod.Value;
 
-        public override string TextSignature => $"{Type.FullName} {FullName}";
+        public override string TextSignature => FullName;
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Type" />
         /// <summary>A <see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" /></summary>

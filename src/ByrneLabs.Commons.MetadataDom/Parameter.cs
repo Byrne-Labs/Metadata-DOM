@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.Parameter" />
     //[PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{ParameterType.FullName,nq} {Name,nq}\"")]
     public class Parameter : RuntimeCodeElement, ICodeElementWithHandle<ParameterHandle, System.Reflection.Metadata.Parameter>, IParameter
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -33,6 +33,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
 
+        public bool IsIndexer { get; internal set; }
+
         public bool IsLcid => Attributes.HasFlag(ParameterAttributes.Lcid);
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetMarshallingDescriptor" />
@@ -43,6 +45,17 @@ namespace ByrneLabs.Commons.MetadataDom
         public ParameterHandle MetadataHandle { get; }
 
         public System.Reflection.Metadata.Parameter MetadataToken { get; }
+
+        public TypeBase DeclaringType => Member.DeclaringType;
+
+        public string FullName => Name;
+
+        public MemberTypes MemberType => MemberTypes.Field;
+
+        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.Name" />
+        public string Name { get; }
+
+        public string TextSignature => ParameterType == null ? string.Empty : (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
@@ -59,14 +72,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public IMember Member { get; internal set; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.Parameter.Name" />
-        public string Name { get; }
-
         public TypeBase ParameterType { get; internal set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.SequenceNumber" />
         public int Position { get; }
-
-        public string TextSignature => ParameterType == null ? string.Empty : (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
     }
 }

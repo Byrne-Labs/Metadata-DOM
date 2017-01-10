@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -51,9 +50,11 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
-        public override string Name { get; }
+        public override string Name => null;
 
-        public override string Namespace { get; }
+        public override string Namespace => null;
+
+        public override string FullName => null;
 
         public IEnumerable<TypeBase> ParameterTypes { get; protected set; }
 

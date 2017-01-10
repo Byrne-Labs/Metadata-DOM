@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Reflection.Metadata;
-using System.Text.RegularExpressions;
 
 namespace ByrneLabs.Commons.MetadataDom
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using System.Reflection.Metadata;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,9 +134,8 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 var parent = (IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + "."));
                 var genericArgumentsText = (HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]")) + "]" : string.Empty);
-                var array = (IsArray ? "[]" : string.Empty);
 
-                return parent + Name + genericArgumentsText + array;
+                return parent + Name + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
             });
         }
     }

@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace ByrneLabs.Commons.MetadataDom
+﻿namespace ByrneLabs.Commons.MetadataDom
 {
     //[PublicAPI]
     public enum Language

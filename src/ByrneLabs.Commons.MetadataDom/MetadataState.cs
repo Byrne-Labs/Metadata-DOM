@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -90,10 +89,10 @@ namespace ByrneLabs.Commons.MetadataDom
                 PdbFile = new MetadataFile(prefetchMetadata, pdbFile, MetadataFileType.Pdb);
             }
 
-            _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().ToList());
-            _assemblyReferences = GetLazyCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences);
+            _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader == null ? new List<TypeBase>() : AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().ToList());
+            _assemblyReferences = new Lazy<IEnumerable<AssemblyReference>>(() => AssemblyReader == null ? new List<AssemblyReference>() : GetCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences));
 
-            _assemblyDefinition = new Lazy<AssemblyDefinition>(() => AssemblyReader.IsAssembly ? GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition) : null);
+            _assemblyDefinition = new Lazy<AssemblyDefinition>(() => AssemblyReader?.IsAssembly == true ? GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition) : null);
         }
         private Lazy<AssemblyDefinition> _assemblyDefinition;
 
@@ -424,7 +423,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 var parameterIndex = 0;
                 foreach (var parameter in constructor.GetParameters())
                 {
-                    if (!parameter.ParameterType.GetTypeInfo().IsAssignableFrom(parameters[parameterIndex].GetType()))
+                    if (parameters[parameterIndex] != null && !parameter.ParameterType.GetTypeInfo().IsAssignableFrom(parameters[parameterIndex].GetType()))
                     {
                         match = false;
                         break;

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 using System.Collections.Generic;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -44,6 +43,10 @@ namespace ByrneLabs.Commons.MetadataDom
                 else if (ResolutionScope is ModuleReference)
                 {
                     assembly = ((ModuleReference) ResolutionScope).Assembly;
+                }
+                else if (ResolutionScope is ModuleDefinition)
+                {
+                    assembly = ((ModuleDefinition) ResolutionScope).Assembly;
                 }
                 else
                 {

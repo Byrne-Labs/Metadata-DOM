@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {

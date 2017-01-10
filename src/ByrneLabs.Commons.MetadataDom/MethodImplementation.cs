@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -30,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 else
                 {
                     methodBody = MetadataState.GetCodeElement<MethodBody>(MetadataToken.MethodBody);
-                    methodBody.GenericContext = new GenericContext(Type.GenericTypeArguments, _methodDeclaration.Value.GenericArguments);
+                    methodBody.GenericContext = new GenericContext(Type.GenericTypeArguments, MethodDeclaration.GenericArguments);
                 }
 
                 return methodBody;

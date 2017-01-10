@@ -1,32 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     public abstract class MethodReferenceBase : MemberReferenceBase, IMethodBase
     {
-        internal MethodReferenceBase(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
-        {
-            var parameters = new List<IParameter>();
-            for (var position = 1; position <= MethodSignature.Value.ParameterTypes.Length; position++)
-            {
-                parameters.Add(new MethodReferenceParameter(this, position));
-            }
 
-            Parameters = parameters;
+        private readonly Lazy<MethodSignature<TypeBase>?> _methodSignature;
+        private readonly MethodDefinitionBase _methodDefinition;
+
+        internal MethodReferenceBase(MemberReferenceHandle metadataHandle, MethodDefinitionBase methodDefinition, MetadataState metadataState) : base(new CodeElementKey<MemberReferenceBase>(metadataHandle, methodDefinition), metadataState)
+        {
+            _methodDefinition = methodDefinition;
+            _methodSignature = new Lazy<MethodSignature<TypeBase>?>(() =>
+            {
+                MethodSignature<TypeBase>? methodSignature;
+                if (methodDefinition == null)
+                {
+                    methodSignature = null;
+                }
+                else
+                {
+                    var genericContext = new GenericContext(methodDefinition.DeclaringType.GenericTypeArguments, methodDefinition.GenericArguments);
+                    methodSignature = MetadataToken.DecodeMethodSignature(MetadataState.TypeProvider, genericContext);
+                }
+                return methodSignature;
+            });
         }
 
-        public TypeBase DeclaringType => (TypeBase) Parent;
+        protected MethodSignature<TypeBase>? MethodSignature => _methodSignature.Value;
 
-        public abstract string FullName { get; }
+        public TypeBase DeclaringType => (TypeBase)Parent;
 
         public MemberTypes MemberType => IsConstructor ? MemberTypes.Constructor : MemberTypes.Method;
-
-        public abstract string TextSignature { get; }
 
         public bool ContainsGenericParameters { get; } = false;
 
@@ -36,6 +44,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsGenericMethod { get; } = false;
 
-        public IEnumerable<IParameter> Parameters { get; }
+        public IEnumerable<IParameter> Parameters => _methodDefinition?.Parameters;
+
+        public string FullName => _methodDefinition?.FullName;
+
+        public string TextSignature => _methodDefinition?.TextSignature;
     }
 }

@@ -1,8 +1,6 @@
-﻿using JetBrains.Annotations;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 using System.Collections.Generic;
 using System.Reflection;
-using System;
 using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom

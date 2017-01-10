@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -18,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             MetadataToken = Reader.GetCustomAttribute(metadataHandle);
-            _constructor = MetadataState.GetLazyCodeElement<IConstructor>(MetadataToken.Constructor);
+            _constructor = MetadataState.GetLazyCodeElement<IConstructor>(MetadataToken.Constructor, null);
             _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
             _value = new Lazy<CustomAttributeValue<TypeBase>?>(() =>
             {
