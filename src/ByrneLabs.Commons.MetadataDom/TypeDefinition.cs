@@ -18,12 +18,12 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<IEnumerable<FieldDefinition>> _fields;
         private Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private Lazy<IEnumerable<InterfaceImplementation>> _interfaceImplementations;
+        private Lazy<IEnumerable<IMember>> _members;
         private Lazy<IEnumerable<MethodImplementation>> _methodImplementations;
         private Lazy<IEnumerable<IMethodBase>> _methods;
         private Lazy<NamespaceDefinition> _namespaceDefinition;
         private Lazy<IEnumerable<TypeDefinition>> _nestedTypes;
         private Lazy<IEnumerable<PropertyDefinition>> _properties;
-        private Lazy<IEnumerable<IMember>> _members;
 
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
@@ -73,8 +73,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetInterfaceImplementations" />
         public IEnumerable<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
 
-        public IEnumerable<IMember> Members => _members.Value;
-
         public bool IsAbstract => Attributes.HasFlag(TypeAttributes.Abstract);
 
         public bool IsAnsiClass => Attributes.HasFlag(TypeAttributes.AnsiClass);
@@ -86,8 +84,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsClass => Attributes.HasFlag(TypeAttributes.Class);
 
         public bool IsEnum => "System.Enum".Equals(BaseType?.FullName);
-
-        public bool IsValueType => "System.ValueType".Equals(BaseType?.FullName);
 
         public bool IsExplicitLayout => Attributes.HasFlag(TypeAttributes.ExplicitLayout);
 
@@ -123,10 +119,14 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsUnicodeClass => Attributes.HasFlag(TypeAttributes.UnicodeClass);
 
+        public bool IsValueType => "System.ValueType".Equals(BaseType?.FullName);
+
         public IEnumerable<Language> Languages { get; private set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetLayout" />
         public TypeLayout Layout { get; private set; }
+
+        public IEnumerable<IMember> Members => _members.Value;
 
         public override MemberTypes MemberType => DeclaringType == null ? MemberTypes.TypeInfo : MemberTypes.NestedType;
 
@@ -158,7 +158,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = MetadataToken.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
             {
-                var baseType = (TypeBase)MetadataState.GetCodeElement(MetadataToken.BaseType);
+                var baseType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.BaseType);
                 var typeSpecification = baseType as TypeSpecification;
                 if (typeSpecification != null)
                 {

@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Reflection.Metadata;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -12,19 +12,19 @@ namespace ByrneLabs.Commons.MetadataDom
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         public Handle DowncastMetadataHandle { get; }
@@ -79,7 +79,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             IsGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
-            GenericTypeArguments = genericTypeArguments.Select(typeArgument => (TypeBase)MetadataState.GetCodeElement(typeArgument.GetType(), typeArgument, TypeElementModifiers.GenericArgument)).ToArray();
+            GenericTypeArguments = genericTypeArguments.Select(typeArgument => (TypeBase) MetadataState.GetCodeElement(typeArgument.GetType(), typeArgument, TypeElementModifiers.GenericArgument)).ToArray();
             Initialize();
         }
 
@@ -132,8 +132,8 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             _fullName = new Lazy<string>(() =>
             {
-                var parent = (IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + "."));
-                var genericArgumentsText = (HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]")) + "]" : string.Empty);
+                var parent = IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]")) + "]" : string.Empty;
 
                 return parent + Name + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
             });

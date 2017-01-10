@@ -20,7 +20,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            _type = new Lazy<TypeBase>(() => (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type));
+            _type = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(MetadataToken.Type));
             Attributes = MetadataToken.Attributes;
             Name = AsString(MetadataToken.Name);
             _addMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Adder);

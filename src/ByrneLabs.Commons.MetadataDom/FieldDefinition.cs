@@ -46,11 +46,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
-        public bool IsFamily => Attributes.HasFlag(FieldAttributes.Family);
+        public bool IsFamily => Attributes.HasFlag(FieldAttributes.Family) && !IsPublic;
 
-        public bool IsFamilyAndAssembly => Attributes.HasFlag(FieldAttributes.FamANDAssem);
+        public bool IsFamilyAndAssembly => Attributes.HasFlag(FieldAttributes.FamANDAssem) && !IsPublic;
 
-        public bool IsFamilyOrAssembly => Attributes.HasFlag(FieldAttributes.FamORAssem);
+        public bool IsFamilyOrAssembly => Attributes.HasFlag(FieldAttributes.FamORAssem) && !IsPublic;
 
         public bool IsInitOnly => Attributes.HasFlag(FieldAttributes.InitOnly);
 

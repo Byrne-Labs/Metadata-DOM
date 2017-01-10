@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -23,6 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<LocalScope>> _localScopes;
         private readonly Lazy<IEnumerable<LocalVariable>> _localVariables;
         private readonly Lazy<IEnumerable<ManifestResource>> _manifestResources;
+        private readonly Lazy<IEnumerable<IMember>> _memberDefinitions;
         private readonly Lazy<IEnumerable<MemberReferenceBase>> _memberReferences;
         private readonly Lazy<IEnumerable<MethodDebugInformation>> _methodDebugInformation;
         private readonly Lazy<IEnumerable<MethodDefinitionBase>> _methodDefinitions;
@@ -30,7 +31,6 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<PropertyDefinition>> _propertyDefinitions;
         private readonly Lazy<IEnumerable<TypeDefinition>> _typeDefinitions;
         private readonly Lazy<IEnumerable<TypeReference>> _typeReferences;
-        private readonly Lazy<IEnumerable<IMember>> _memberDefinitions;
 
         public ReflectionData(FileInfo assemblyFile) : this(false, assemblyFile)
         {
@@ -63,10 +63,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 _methodDefinitions = new Lazy<IEnumerable<MethodDefinitionBase>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).Cast<MethodDefinitionBase>());
                 _moduleDefinition = MetadataState.GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
                 _propertyDefinitions = MetadataState.GetLazyCodeElements<PropertyDefinition>(Reader.PropertyDefinitions);
-                _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() =>
-                {
-                    return MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToList();
-                });
+                _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() => { return MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToList(); });
                 _typeReferences = MetadataState.GetLazyCodeElements<TypeReference>(Reader.TypeReferences);
                 _memberDefinitions = new Lazy<IEnumerable<IMember>>(() => MethodDefinitions.Union<IMember>(FieldDefinitions).Union(EventDefinitions).Union(PropertyDefinitions).Union(TypeDefinitions).ToList());
                 MetadataKind = Reader.MetadataKind;
@@ -98,7 +95,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         ///// <inheritdoc cref="MetadataReader.GetCustomAttributes" />
         //public IEnumerable<CustomAttribute> CustomAttributes => !HasMetadata ? new List<CustomAttribute>() : _customAttributes.Value;
-
         /// <inheritdoc cref="MetadataReader.CustomDebugInformation" />
         public IEnumerable<CustomDebugInformation> CustomDebugInformation => !HasDebugMetadata ? new List<CustomDebugInformation>() : _customDebugInformation.Value;
 
@@ -113,7 +109,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         ///// <inheritdoc cref="MetadataReader.ExportedTypes" />
         //public IEnumerable<ExportedType> ExportedTypes => _exportedTypes.Value;
-
         /// <inheritdoc cref="MetadataReader.FieldDefinitions" />
         public IEnumerable<FieldDefinition> FieldDefinitions => !HasMetadata ? new List<FieldDefinition>() : _fieldDefinitions.Value;
 
@@ -136,7 +131,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         ///// <inheritdoc cref="MetadataReader.LocalVariables" />
         //public IEnumerable<LocalVariable> LocalVariables => !HasDebugMetadata ? new List<LocalVariable>() : _localVariables.Value;
-
         /// <inheritdoc cref="MetadataReader.ManifestResources" />
         public IEnumerable<ManifestResource> ManifestResources => !HasMetadata ? new List<ManifestResource>() : _manifestResources.Value;
 
@@ -144,13 +138,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         ///// <inheritdoc cref="MetadataReader.MemberReferences" />
         //public IEnumerable<MemberReferenceBase> MemberReferences => !HasMetadata ? new List<MemberReferenceBase>() : _memberReferences.Value;
-
         /// <inheritdoc cref="MetadataReader.MetadataKind" />
         public MetadataKind MetadataKind { get; }
 
         ///// <inheritdoc cref="MetadataReader.MethodDebugInformation" />
         //public IEnumerable<MethodDebugInformation> MethodDebugInformation => !HasDebugMetadata ? new List<MethodDebugInformation>() : _methodDebugInformation.Value;
-
         /// <inheritdoc cref="MetadataReader.MethodDefinitions" />
         public IEnumerable<MethodDefinitionBase> MethodDefinitions => !HasMetadata ? new List<MethodDefinitionBase>() : _methodDefinitions.Value;
 
@@ -167,7 +159,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         ///// <inheritdoc cref="MetadataReader.TypeReferences" />
         //public IEnumerable<TypeReference> TypeReferences => !HasMetadata ? new List<TypeReference>() : _typeReferences.Value;
-
         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader ?? MetadataState.PdbReader;
 
         /// <inheritdoc />

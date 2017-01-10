@@ -7,9 +7,8 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public abstract class MethodReferenceBase : MemberReferenceBase, IMethodBase
     {
-
-        private readonly Lazy<MethodSignature<TypeBase>?> _methodSignature;
         private readonly MethodDefinitionBase _methodDefinition;
+        private readonly Lazy<MethodSignature<TypeBase>?> _methodSignature;
 
         internal MethodReferenceBase(MemberReferenceHandle metadataHandle, MethodDefinitionBase methodDefinition, MetadataState metadataState) : base(new CodeElementKey<MemberReferenceBase>(metadataHandle, methodDefinition), metadataState)
         {
@@ -32,9 +31,13 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected MethodSignature<TypeBase>? MethodSignature => _methodSignature.Value;
 
-        public TypeBase DeclaringType => (TypeBase)Parent;
+        public TypeBase DeclaringType => (TypeBase) Parent;
+
+        public string FullName => _methodDefinition?.FullName;
 
         public MemberTypes MemberType => IsConstructor ? MemberTypes.Constructor : MemberTypes.Method;
+
+        public string TextSignature => _methodDefinition?.TextSignature;
 
         public bool ContainsGenericParameters { get; } = false;
 
@@ -45,9 +48,5 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsGenericMethod { get; } = false;
 
         public IEnumerable<IParameter> Parameters => _methodDefinition?.Parameters;
-
-        public string FullName => _methodDefinition?.FullName;
-
-        public string TextSignature => _methodDefinition?.TextSignature;
     }
 }

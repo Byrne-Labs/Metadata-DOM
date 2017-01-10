@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BuildFrameworkTarget Condition="'$(BuildFrameworkTarget)' == ''">netstandard1.6</BuildFrameworkTarget>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Id>ByrneLabs.Commons.MetadataDom</Id>
+    <Title>Reflection Metadata DOM</Title>
+    <PackageVersion>1.0.0-rc1</PackageVersion>
+    <Authors>Byrne Labs</Authors>
+    <Owners>byrnelabs</Owners>
+    <PackageLicenseUrl>https://github.com/Byrne-Labs/Metadata-DOM/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Byrne-Labs/Metadata-DOM/</PackageProjectUrl>
+    <IconUrl>https://raw.githubusercontent.com/Byrne-Labs/Metadata-DOM/master/beaker.png</IconUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Description>A domain object model (DOM) wrapper of the .NET Core System.Reflection.Metadata classes</Description>
+    <Copyright>Copyright ©2016 Byrne Labs</Copyright>
+    <PackageTags>System.Reflection.Metadata Reflection Metadata</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <ProjectGuid>a07da73f-ea48-4ab1-b482-b5641f1a3d5c</ProjectGuid>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netcoreapp1.0'">
+      <PropertyGroup>
+        <TargetFramework>netcoreapp1.0</TargetFramework>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netcoreapp1.1'">
+      <PropertyGroup>
+        <TargetFramework>netcoreapp1.1</TargetFramework>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netstandard1.3'">
+      <PropertyGroup>
+        <TargetFramework>netstandard1.3</TargetFramework>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netstandard1.4'">
+      <PropertyGroup>
+        <TargetFramework>netstandard1.4</TargetFramework>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netstandard1.5'">
+      <PropertyGroup>
+        <TargetFramework>netstandard1.5</TargetFramework>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netstandard1.6'">
+      <PropertyGroup>
+        <TargetFramework>netstandard1.6</TargetFramework>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'xamarinios10'">
+      <PropertyGroup>
+        <ProductVersion>8.0.30703</ProductVersion>
+        <SchemaVersion>2.0</SchemaVersion>
+        <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+        <ImportXamarinIOSCSharpTargets>true</ImportXamarinIOSCSharpTargets>
+        <BuildWith>mono</BuildWith>
+      </PropertyGroup>
+      <ItemGroup>
+        <Reference Include="Xamarin.iOS" />
+      </ItemGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'MonoAndroid10'">
+      <PropertyGroup>
+        <ProductVersion>8.0.30703</ProductVersion>
+        <SchemaVersion>2.0</SchemaVersion>
+        <ImportXamarinAndroidCSharpTargets>true</ImportXamarinAndroidCSharpTargets>
+        <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+        <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+        <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+        <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+        <BuildWith>mono</BuildWith>
+      </PropertyGroup>
+      <ItemGroup>
+        <Reference Include="Mono.Android" />
+        <Reference Include="mscorlib" />
+      </ItemGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'net45'">
+      <PropertyGroup>
+        <BuildWith>classic</BuildWith>
+        <TargetFramework>net45</TargetFramework>
+        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'net451'">
+      <PropertyGroup>
+        <BuildWith>classic</BuildWith>
+        <TargetFramework>net451</TargetFramework>
+        <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'net452'">
+      <PropertyGroup>
+        <BuildWith>classic</BuildWith>
+        <TargetFramework>net452</TargetFramework>
+        <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'net46'">
+      <PropertyGroup>
+        <BuildWith>classic</BuildWith>
+        <TargetFramework>net46</TargetFramework>
+        <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'net461'">
+      <PropertyGroup>
+        <BuildWith>classic</BuildWith>
+        <TargetFramework>net461</TargetFramework>
+        <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'net462'">
+      <PropertyGroup>
+        <BuildWith>classic</BuildWith>
+        <TargetFramework>net462</TargetFramework>
+        <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)' == 'Release'">
+    <DocumentationFile>bin\$(Configuration)\ByrneLabs.Commons.MetadataDom.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.RegularExpressions">
+      <Version>4.4.0-beta-24814-01</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple" Version="4.4.0-beta-24814-01" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(BuildWith)' == 'core'">
+      <PropertyGroup>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildWith)' == 'mono'">
+      <PropertyGroup>
+        <OutputPath>bin\$(Configuration)\$(BuildFrameworkTarget)\</OutputPath>
+        <IntermediateOutputPath>obj\$(Configuration)\$(BuildFrameworkTarget)\</IntermediateOutputPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(BuildWith)' == 'classic'">
+      <PropertyGroup>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+        <ImportMicrosoftCSharpTargets>true</ImportMicrosoftCSharpTargets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="'$(BuildWith)' == 'core'">
+      <PropertyGroup>
+        <ImportMicrosoftCommonProps>false</ImportMicrosoftCommonProps>
+        <ImportMicrosoftCSharpTargets>true</ImportMicrosoftCSharpTargets>
+      </PropertyGroup>
+      <ItemGroup>
+        <Compile Include="**\*.cs" />
+        <EmbeddedResource Include="**\*.resx" />
+        <PackageReference Include="Microsoft.NET.Sdk">
+          <Version>1.0.0-alpha-20161104-2</Version>
+          <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NETCore.Platforms">
+          <Version>1.2.0-beta-24814-01</Version>
+        </PackageReference>
+        <PackageReference Include="System.Diagnostics.Tools">
+          <Version>4.4.0-beta-24814-01</Version>
+          <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="System.IO.FileSystem">
+          <Version>4.3.0</Version>
+        </PackageReference>
+        <PackageReference Include="System.Reflection.Metadata">
+          <Version>1.4.2</Version>
+        </PackageReference>
+        <PackageReference Include="JetBrains.Annotations">
+          <Version>10.2.1</Version>
+        </PackageReference>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(BuildWith)' == 'classic' Or '$(BuildWith)' == 'mono'">
+      <PropertyGroup>
+        <ProjectGuid>a07da73f-ea48-4ab1-b482-b5641f1a3d5c</ProjectGuid>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>ByrneLabs.Commons.MetadataDom</RootNamespace>
+        <AssemblyName>ByrneLabs.Commons.MetadataDom</AssemblyName>
+        <FileAlignment>512</FileAlignment>
+      </PropertyGroup>
+      <ItemGroup>
+        <Compile Include="*.cs" />
+        <EmbeddedResource Include="*.resx" />
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="JetBrains.Annotations">
+          <HintPath>..\..\packages\jetbrains.annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Collections.Immutable, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>..\..\packages\System.Collections.Immutable.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Reflection.Metadata, Version=1.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>..\..\packages\System.Reflection.Metadata.1.3.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Condition="'$(ImportMicrosoftCSharpTargets)' == 'true'" Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Condition="'$(ImportMicrosoftCommonProps)' == 'true' And Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+  <Import Condition="'$(ImportXamarinIOSCSharpTargets)' == 'true'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Condition="'$(ImportXamarinAndroidCSharpTargets)' == 'true'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <ItemGroup>
+    <Compile Remove="GenericTypeInstantiation.cs" />
+    <Compile Remove="IEvent.cs" />
+  </ItemGroup>
+</Project>

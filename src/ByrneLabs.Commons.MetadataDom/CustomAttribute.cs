@@ -26,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 /*
                  * I cannot figure out why, but the DecodeValue call will throw an exception if the argument kind is not field or property. -- Jonathan Byrne 12/19/2016
                  */
-                var valueKind = (CustomAttributeNamedArgumentKind)Reader.GetBlobReader(MetadataToken.Value).ReadSerializationTypeCode();
+                var valueKind = (CustomAttributeNamedArgumentKind) Reader.GetBlobReader(MetadataToken.Value).ReadSerializationTypeCode();
                 if (valueKind == CustomAttributeNamedArgumentKind.Field || valueKind == CustomAttributeNamedArgumentKind.Property)
                 {
                     value = MetadataToken.DecodeValue(MetadataState.TypeProvider);

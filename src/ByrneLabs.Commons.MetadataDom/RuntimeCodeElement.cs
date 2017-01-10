@@ -15,6 +15,6 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader;
+        protected override sealed MetadataReader Reader => MetadataState.AssemblyReader;
     }
 }

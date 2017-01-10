@@ -15,7 +15,6 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common.csproj" />
-    <ProjectReference Include="..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
+    <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
   </ItemGroup>
 </Project>

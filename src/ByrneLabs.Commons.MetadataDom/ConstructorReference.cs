@@ -11,6 +11,5 @@ namespace ByrneLabs.Commons.MetadataDom
         internal ConstructorReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, null, metadataState)
         {
         }
-
     }
 }

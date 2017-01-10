@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Diagnostics;
 
 namespace ByrneLabs.Commons.MetadataDom
 {

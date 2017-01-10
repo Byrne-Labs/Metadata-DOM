@@ -18,7 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetGenericParameterConstraint(metadataHandle);
             _type = new Lazy<TypeBase>(() =>
             {
-                var constrainedType = (TypeBase)MetadataState.GetCodeElement(MetadataToken.Type);
+                var constrainedType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.Type);
                 var constrainedTypeSpecification = constrainedType as TypeSpecification;
                 if (constrainedTypeSpecification != null)
                 {

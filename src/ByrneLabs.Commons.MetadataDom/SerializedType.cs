@@ -7,6 +7,8 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class SerializedType : TypeBase<SerializedType, string>
     {
+        private readonly Lazy<SerializedType> _declaringType;
+
         internal SerializedType(TypeBase<SerializedType, string> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
         }
@@ -14,8 +16,6 @@ namespace ByrneLabs.Commons.MetadataDom
         internal SerializedType(TypeBase<SerializedType, string> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
         }
-
-        private Lazy<SerializedType> _declaringType;
 
         internal SerializedType(string assemblyQualifiedName, MetadataState metadataState) : base(assemblyQualifiedName, metadataState)
         {
@@ -40,14 +40,14 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override IAssembly Assembly { get; }
 
-        public override bool IsGenericParameter { get; }
-
-        public override string Namespace { get; }
-
         public override TypeBase DeclaringType => _declaringType.Value;
+
+        public override bool IsGenericParameter { get; }
 
         public override MemberTypes MemberType { get; }
 
         public override string Name { get; }
+
+        public override string Namespace { get; }
     }
 }

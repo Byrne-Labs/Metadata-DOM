@@ -32,6 +32,8 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
+        public override string FullName => null;
+
         public int GenericParameterCount { get; protected set; }
 
         public override bool IsGenericParameter
@@ -53,8 +55,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public override string Name => null;
 
         public override string Namespace => null;
-
-        public override string FullName => null;
 
         public IEnumerable<TypeBase> ParameterTypes { get; protected set; }
 

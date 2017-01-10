@@ -22,7 +22,7 @@
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk">
-      <Version>15.0.0-preview-20161123-03</Version>
+      <Version>15.0.0-preview-20170106-08</Version>
     </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.2.0-beta4-build3444</Version>
@@ -32,8 +32,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.NetCore\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.NetCore.csproj" />
-    <ProjectReference Include="..\..\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.NetFramework\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.NetFramework.csproj" />
     <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
     <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj" />
   </ItemGroup>

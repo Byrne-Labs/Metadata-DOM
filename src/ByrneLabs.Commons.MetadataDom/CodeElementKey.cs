@@ -17,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 throw new ArgumentException("At least one key value must be provided", nameof(keyValues));
             }
 
-            var rawKeyValues = keyValues.Where(keyValue=>keyValue!=null).ToArray();
+            var rawKeyValues = keyValues.Where(keyValue => keyValue != null).ToArray();
             for (var index = 0; index < rawKeyValues.Length; index++)
             {
                 var handle = MetadataState.DowncastHandle(rawKeyValues[index]);
@@ -54,18 +54,16 @@ namespace ByrneLabs.Commons.MetadataDom
             }
 
             var primitiveTypeCode = KeyValues.OfType<PrimitiveTypeCode>().FirstOrDefault();
-            PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?)null : primitiveTypeCode;
+            PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?) null : primitiveTypeCode;
         }
 
         public CodeElementKey(Handle handle) : this(MetadataState.GetCodeElementTypeForHandle(handle), handle)
         {
         }
 
-        public CodeElementKey(object handle) : this(MetadataState.DowncastHandle(handle) ?? throw new ArgumentException(nameof(handle)))
-        {
-        }
+        public CodeElementKey(object handle) : this(MetadataState.DowncastHandle(handle) ??throw 
 
-        private string KeysToString() => string.Join(", ", KeyValues);
+        private ArgumentException(nameof (handle)))
 
         public Type CodeElementType { get; }
 
@@ -97,6 +95,8 @@ namespace ByrneLabs.Commons.MetadataDom
                 return hash;
             }
         }
+
+        private string KeysToString() => string.Join(", ", KeyValues);
     }
 
     internal sealed class CodeElementKey<T> : CodeElementKey where T : CodeElement

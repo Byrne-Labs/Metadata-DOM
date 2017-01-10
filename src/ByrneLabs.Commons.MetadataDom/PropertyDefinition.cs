@@ -22,7 +22,7 @@ namespace ByrneLabs.Commons.MetadataDom
             MetadataToken = Reader.GetPropertyDefinition(metadataHandle);
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
-            _getMethod =new Lazy<MethodDefinition>(() =>
+            _getMethod = new Lazy<MethodDefinition>(() =>
             {
                 var getMethod = MetadataState.GetCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Getter);
                 if (getMethod != null)

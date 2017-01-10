@@ -41,8 +41,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Attributes" />
         public MethodAttributes Attributes { get; }
 
-        public override string FullName => $"{DeclaringType.FullName}.{Name}";
-
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetCustomAttributes" />
         public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
@@ -57,6 +55,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetDeclaringType" />
         public override TypeBase DeclaringType => _declaringType.Value;
 
+        public override string FullName => $"{DeclaringType.FullName}.{Name}";
+
         public override IEnumerable<TypeBase> GenericArguments => _genericParameters.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetImport" />
@@ -66,19 +66,17 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsAssembly => Attributes.HasFlag(MethodAttributes.Assembly);
 
-        public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
-
         public bool IsEventAdder => IsSpecialName && Name.StartsWith("add_");
 
         public bool IsEventRaiser => IsSpecialName && Name.StartsWith("raise_");
 
         public bool IsEventRemover => IsSpecialName && Name.StartsWith("remove_");
 
-        public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family);
+        public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family) && !IsPublic;
 
-        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.FamANDAssem);
+        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.FamANDAssem) && !IsPublic;
 
-        public bool IsFamilyOrAssembly => Attributes.HasFlag(MethodAttributes.FamORAssem);
+        public bool IsFamilyOrAssembly => Attributes.HasFlag(MethodAttributes.FamORAssem) && !IsPublic;
 
         public bool IsFinal => Attributes.HasFlag(MethodAttributes.Final);
 
@@ -121,6 +119,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 throw new BadImageException($"Method {FullName} has {parameters.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found");
             }
+
             for (var position = 1; position <= parameters.Count; position++)
             {
                 if (!parameters.Exists(parameter => parameter.Position == position))

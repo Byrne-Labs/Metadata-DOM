@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    public interface IParameter: IMember
+    public interface IParameter : IMember
     {
         IEnumerable<CustomAttribute> CustomAttributes { get; }
 

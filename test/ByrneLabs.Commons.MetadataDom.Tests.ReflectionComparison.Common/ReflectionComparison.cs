@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +9,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common
     public abstract class ReflectionComparison
     {
         protected abstract Assembly LoadAssembly(FileInfo assemblyFile);
+
+        public IEnumerable<string> Check(FileInfo assemblyFile)
+        {
+            return Check(assemblyFile, null);
+        }
 
         public int Check(string[] args)
         {
@@ -23,16 +29,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common
             var assemblyFile = new FileInfo(args[0]);
             FileInfo pdbFile = args.Length == 1 ? null : new FileInfo(args[1]);
 
-            using (var reflectionData = (pdbFile == null ? new ReflectionData(assemblyFile) : new ReflectionData(assemblyFile, pdbFile)))
+            var errors = Check(assemblyFile, pdbFile);
+
+            if (errors.Any())
             {
-                var assembly = LoadAssembly(assemblyFile);
-                var errors = ReflectionChecker.CompareCodeElementsToReflectionData(assembly, reflectionData);
-                if (errors.Any())
-                {
-                    File.WriteAllLines(assemblyFile.FullName + ".errors", errors);
-                }
-                return errors.Any() ? 1 : 0;
+                File.WriteAllLines(assemblyFile.FullName + ".errors", errors);
             }
+            return errors.Any() ? 1 : 0;
         }
 
     }

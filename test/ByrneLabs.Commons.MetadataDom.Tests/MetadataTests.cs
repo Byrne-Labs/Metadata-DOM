@@ -20,7 +20,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         private readonly ITestOutputHelper _output;
-        private static readonly DirectoryInfo FailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "FailedTestAssemblies"));
+        private static readonly DirectoryInfo ValidationFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "ValidationFailedTestAssemblies"));
+        private static readonly DirectoryInfo UnloadableAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "UnloadableTestAssemblies"));
+        private static readonly DirectoryInfo ReadFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "ReadFailedTestAssemblies"));
         private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
         private static readonly DirectoryInfo PassedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "PassedTestAssemblies"));
         private static readonly DirectoryInfo TestAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "TestAssemblies"));
@@ -133,102 +135,104 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             return gacAssemblies.OrderBy(x => random.Next()).ToList();
         }
 
-        private void SmokeTestOnAssemblies(IEnumerable<FileInfo> assemblyFiles, bool prefetch)
+        [Fact]
+        [Trait("Speed", "Fast")]
+        public void TestOnValidationFailedAssemblyDirectoryAssemblies()
         {
-            var startTime = DateTime.Now;
-            var exceptions = new ConcurrentDictionary<FileInfo, Exception>();
-            Parallel.ForEach(assemblyFiles, assemblyFile =>
+            if (ValidationFailedAssemblyDirectory.Exists)
             {
-                try
+                var assemblyFiles = ValidationFailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
+                foreach (var assemblyFile in assemblyFiles)
                 {
+                    Assert.True(TestCopiedAssembly(assemblyFile));
                 }
-                catch (Exception exception)
-                {
-                    exceptions.TryAdd(assemblyFile, exception);
-                }
-            });
-
-            var executionTime = DateTime.Now.Subtract(startTime);
-            _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
-            _output.WriteLine($"\t{assemblyFiles.Count()} files loaded");
-            if (exceptions.Any())
-            {
-                _output.WriteLine(string.Join("\r\n\r\n", exceptions.Select(exception => $"Assembly {exception.Key.FullName} failed with exception:\r\n{exception.Value}")));
             }
         }
 
-        private void SmokeTestOnCopiedAssemblies(bool prefetch)
+        public bool TestCopiedAssembly(FileInfo assemblyFile)
         {
-            var assemblyFiles = CopyAllGacAssemblies();
-            var startTime = DateTime.Now;
+            bool pass = true;
             var exceptions = new ConcurrentDictionary<FileInfo, Exception>();
-            var parallelOptions = new ParallelOptions
+            var assemblyStartTime = DateTime.Now;
+            var originalAssemblyDirectory = assemblyFile.Directory;
+            try
             {
-                MaxDegreeOfParallelism = 100
-            };
-            Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile =>
-            {
-                var assemblyStartTime = DateTime.Now;
-                var originalAssemblyDirectory = assemblyFile.Directory;
-                try
+                using (var reflectionData = new ReflectionData(true, assemblyFile))
                 {
-                    using (var reflectionData = new ReflectionData(prefetch, assemblyFile))
-                    {
-                        AssertValid(reflectionData);
-                    }
-
-                    var passedAssemblyFile = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), PassedAssemblyDirectory.FullName));
-                    passedAssemblyFile.Directory.Create();
-                    assemblyFile.MoveTo(passedAssemblyFile.FullName);
-                }
-                catch (Exception exception)
-                {
-                    _output.WriteLine($"Assembly {assemblyFile.FullName} failed with exception:\r\n{exception}");
-                    var newAssemblyFile = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), FailedAssemblyDirectory.FullName));
-                    newAssemblyFile.Directory.Create();
-                    assemblyFile.MoveTo(newAssemblyFile.FullName);
-                    exceptions.TryAdd(assemblyFile, exception);
-                }
-                while (!originalAssemblyDirectory.GetFileSystemInfos().Any())
-                {
-                    originalAssemblyDirectory.Delete();
-                    originalAssemblyDirectory = originalAssemblyDirectory.Parent;
+                    AssertValid(reflectionData);
                 }
 
-                var assemblyExecutionTime = DateTime.Now.Subtract(assemblyStartTime);
-                _output.WriteLine($"{assemblyFile.FullName} execution time: {assemblyExecutionTime.TotalSeconds} seconds");
-            });
-
-            var executionTime = DateTime.Now.Subtract(startTime);
-            _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
-            _output.WriteLine($"\t{assemblyFiles.Count()} files loaded");
-            if (exceptions.Any())
-            {
-                _output.WriteLine(string.Join("\r\n\r\n", exceptions.Select(exception => $"Assembly {exception.Key.FullName} failed with exception:\r\n{exception.Value}")));
+                var errors = ReflectionChecker.Check(assemblyFile);
+                pass = !errors.Any();
+                DirectoryInfo newFileDirectory;
+                if (errors.Any())
+                {
+                    _output.WriteLine($"Assembly {assemblyFile.FullName} failed with the errors:{Environment.NewLine}{string.Join(Environment.NewLine, errors)}");
+                    newFileDirectory = ValidationFailedAssemblyDirectory;
+                }
+                else
+                {
+                    newFileDirectory = PassedAssemblyDirectory;
+                }
+                var newFileLocation = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), newFileDirectory.FullName));
+                newFileLocation.Directory.Create();
+                assemblyFile.MoveTo(newFileLocation.FullName);
             }
+            catch (Exception exception)
+            {
+                pass = false;
+                _output.WriteLine($"Assembly {assemblyFile.FullName} failed with exception:\r\n{exception}");
+                var newAssemblyFile = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), ReadFailedAssemblyDirectory.FullName));
+                newAssemblyFile.Directory.Create();
+                assemblyFile.MoveTo(newAssemblyFile.FullName);
+            }
+
+            while (!originalAssemblyDirectory.GetFileSystemInfos().Any())
+            {
+                originalAssemblyDirectory.Delete();
+                originalAssemblyDirectory = originalAssemblyDirectory.Parent;
+            }
+
+            var assemblyExecutionTime = DateTime.Now.Subtract(assemblyStartTime);
+            _output.WriteLine($"{assemblyFile.FullName} execution time: {assemblyExecutionTime.TotalSeconds} seconds");
+
+            return pass;
         }
 
-        [Fact]
-        [Trait("Speed", "Fast")]
-        public void QuickRandomSmokeTestOnDotNetFrameworkWithoutPrefetch() => SmokeTestOnAssemblies(GetGacAssemblies().Take(20), false);
-
-        [Fact]
-        [Trait("Speed", "Fast")]
-        public void QuickRandomSmokeTestOnDotNetFrameworkWithPrefetch() => SmokeTestOnAssemblies(GetGacAssemblies().Take(20), true);
 
         [Fact]
         [Trait("Speed", "Slow")]
-        public void SmokeTestOnCopiedAssembliesWithPrefetch() => SmokeTestOnCopiedAssemblies(true);
+        public void TestOnCopiedAssemblies()
+        {
+            var assemblyFiles = CopyAllGacAssemblies();
+            var startTime = DateTime.Now;
+            bool pass = true;
+            Parallel.ForEach(assemblyFiles, assemblyFile =>
+            {
+                pass &= TestCopiedAssembly(assemblyFile);
+            });
+
+            var executionTime = DateTime.Now.Subtract(startTime);
+            _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
+            _output.WriteLine($"\t{assemblyFiles.Count()} files loaded");
+
+            Assert.True(pass);
+        }
 
         [Fact]
         [Trait("Speed", "Fast")]
-        public void TestOnFailedAssemblies()
+        public void TestReflectionComparisonOnPrebuiltAssemblies()
         {
-            if (FailedAssemblyDirectory.Exists)
+            var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
+            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).ToList();
+            foreach (var assemblyFile in assemblyFiles)
             {
-                var files = FailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
-                SmokeTestOnAssemblies(files, true);
-                SmokeTestOnAssemblies(files, false);
+                var errors = ReflectionChecker.Check(assemblyFile);
+                if (errors.Any())
+                {
+                    _output.WriteLine(string.Join(Environment.NewLine, errors));
+                }
+                Assert.Empty(errors);
             }
         }
 
@@ -290,7 +294,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Speed", "Fast")]
-        public void TestOnPrebuildResources()
+        public void TestOnPrebuiltResources()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
             var loadableFiles = resourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
@@ -305,7 +309,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Speed", "Fast")]
-        public void TestOnPrebuildAssemblyResources()
+        public void TestOnPrebuiltAssemblyResources()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
             var loadableFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();

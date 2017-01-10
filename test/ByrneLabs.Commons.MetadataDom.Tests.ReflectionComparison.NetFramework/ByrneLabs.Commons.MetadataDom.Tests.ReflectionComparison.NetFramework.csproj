@@ -8,9 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.NetFramework</RootNamespace>
     <AssemblyName>ReflectionComparison</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -21,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -59,10 +63,6 @@
     <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common.csproj">
       <Project>{b874b523-e517-450e-b2de-e398ef0f72d8}</Project>
       <Name>ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj">
-      <Project>{a07da73f-ea48-4ab1-b482-b5641f1a3d5c}</Project>
-      <Name>ByrneLabs.Commons.MetadataDom</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -14,42 +14,6 @@ namespace ByrneLabs.Commons.MetadataDom
             _fieldSignature = new Lazy<TypeBase>(() => CreateFieldSignature());
         }
 
-        internal TypeBase FieldSignature => _fieldSignature.Value;
-
-        internal TypeBase CreateFieldSignature()
-        {
-            TypeBase fieldSignature;
-            if (Kind == MemberReferenceKind.Method || Parent is TypeSpecification)
-            {
-                fieldSignature = null;
-            }
-            else
-            {
-                GenericContext genericContext;
-                if (Parent is MethodDefinition)
-                {
-                    var methodDefinitionParent = Parent as MethodDefinition;
-                    genericContext = new GenericContext(methodDefinitionParent.DeclaringType.GenericTypeArguments, methodDefinitionParent.GenericArguments);
-                }
-                else if (Parent is ModuleReference)
-                {
-                    genericContext = new GenericContext(null, null);
-                }
-                else if (Parent is TypeBase)
-                {
-                    var typeBaseParent = Parent as TypeBase;
-                    genericContext = new GenericContext(typeBaseParent.GenericTypeArguments, null);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"The parent type {Parent?.GetType().FullName} is not recognized");
-                }
-
-                fieldSignature = MetadataToken.DecodeFieldSignature(MetadataState.TypeProvider, genericContext);
-            }
-            return fieldSignature;
-        }
-
         public FieldAttributes Attributes
         {
             get
@@ -138,6 +102,8 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
+        internal TypeBase FieldSignature => _fieldSignature.Value;
+
         public TypeBase FieldType
         {
             get
@@ -153,5 +119,40 @@ namespace ByrneLabs.Commons.MetadataDom
         public MemberTypes MemberType => MemberTypes.Field;
 
         public string TextSignature => $"{FullName}";
+
+        internal TypeBase CreateFieldSignature()
+        {
+            TypeBase fieldSignature;
+            if (Kind == MemberReferenceKind.Method || Parent is TypeSpecification)
+            {
+                fieldSignature = null;
+            }
+            else
+            {
+                GenericContext genericContext;
+                if (Parent is MethodDefinition)
+                {
+                    var methodDefinitionParent = Parent as MethodDefinition;
+                    genericContext = new GenericContext(methodDefinitionParent.DeclaringType.GenericTypeArguments, methodDefinitionParent.GenericArguments);
+                }
+                else if (Parent is ModuleReference)
+                {
+                    genericContext = new GenericContext(null, null);
+                }
+                else if (Parent is TypeBase)
+                {
+                    var typeBaseParent = Parent as TypeBase;
+                    genericContext = new GenericContext(typeBaseParent.GenericTypeArguments, null);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"The parent type {Parent?.GetType().FullName} is not recognized");
+                }
+
+                fieldSignature = MetadataToken.DecodeFieldSignature(MetadataState.TypeProvider, genericContext);
+            }
+
+            return fieldSignature;
+        }
     }
 }
