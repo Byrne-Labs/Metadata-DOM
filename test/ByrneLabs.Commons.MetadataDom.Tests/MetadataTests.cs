@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -26,56 +27,66 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Speed", "Fast")]
         public void TestOnOwnAssemblyAndPdbWithoutPrefetch()
         {
-            var reflectionData = new ReflectionData(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasMetadata(reflectionData);
-            MetadataChecker.AssertHasDebugMetadata(reflectionData);
+            var metadata = new Metadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasMetadata(metadata);
+            AssertHasDebugMetadata(metadata);
+        }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
+        public static void AssertHasMetadata(Metadata metadata)
+        {
+            Assert.NotNull(metadata.AssemblyDefinition);
+            Assert.True(metadata.TypeDefinitions.Any());
         }
 
         [Fact]
         [Trait("Speed", "Fast")]
         public void TestOnOwnAssemblyAndPdbWithPrefetch()
         {
-            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasMetadata(reflectionData);
-            MetadataChecker.AssertHasDebugMetadata(reflectionData);
+            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasMetadata(metadata);
+            AssertHasDebugMetadata(metadata);
         }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
+        public static void AssertHasDebugMetadata(Metadata metadata) => Assert.True(metadata.Documents.Any());
 
         [Fact]
         [Trait("Speed", "Fast")]
         public void TestOnOwnAssemblyWithoutPrefetch()
         {
-            var reflectionData = new ReflectionData(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasMetadata(reflectionData);
+            var metadata = new Metadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasMetadata(metadata);
         }
 
         [Fact]
         [Trait("Speed", "Fast")]
         public void TestOnOwnAssemblyWithPrefetch()
         {
-            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasMetadata(reflectionData);
+            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasMetadata(metadata);
         }
 
         [Fact]
         [Trait("Speed", "Fast")]
         public void TestOnOwnPdbWithoutPrefetch()
         {
-            var reflectionData = new ReflectionData(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasDebugMetadata(reflectionData);
+            var metadata = new Metadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasDebugMetadata(metadata);
         }
 
         [Fact]
         [Trait("Speed", "Fast")]
         public void TestOnOwnPdbWithPrefetch()
         {
-            var reflectionData = new ReflectionData(true, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasDebugMetadata(reflectionData);
+            var metadata = new Metadata(true, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasDebugMetadata(metadata);
         }
 
         [Fact]
@@ -86,9 +97,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var loadableFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles.Where(file => !file.Name.Equals("EmptyType.dll")))
             {
-                using (var reflectionData = new ReflectionData(loadableFile))
+                using (var metadata = new Metadata(loadableFile))
                 {
-                    MetadataChecker.AssertValid(reflectionData);
+                    MetadataChecker.CheckMetadata(metadata);
                 }
             }
         }
@@ -101,9 +112,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var loadableFiles = resourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles)
             {
-                using (var reflectionData = new ReflectionData(loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null))
+                using (var metadata = new Metadata(loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null))
                 {
-                    MetadataChecker.AssertValid(reflectionData);
+                    MetadataChecker.CheckMetadata(metadata);
                 }
             }
         }
@@ -112,9 +123,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Speed", "Fast")]
         public void TestOnSampleAssembly()
         {
-            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasMetadata(reflectionData);
+            var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+            MetadataChecker.CheckMetadata(metadata);
+            AssertHasMetadata(metadata);
         }
     }
 }

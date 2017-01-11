@@ -86,7 +86,7 @@ namespace ByrneLabs.Commons.MetadataDom
         ///         </item>
         ///         <item>
         ///             <description>Possibly a surprise if the handle was nil because that means it was resolved by searching the
-        ///                 <see cref="ReflectionData.ExportedTypes" /> for a matching <see cref="TypeBase.Namespace" /> and <see cref="TypeBase.Name" />.</description>
+        ///                 <see cref="Metadata.ExportedTypes" /> for a matching <see cref="TypeBase.Namespace" /> and <see cref="TypeBase.Name" />.</description>
         ///         </item>
         ///     </list>
         /// </remarks>

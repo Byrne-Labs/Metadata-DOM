@@ -59,6 +59,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public abstract class TypeBase : RuntimeCodeElement, IMember
     {
         private Lazy<string> _fullName;
+        private Lazy<string> _fullNameWithoutAssemblies;
 
         internal TypeBase(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
         {
@@ -121,6 +122,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract TypeBase DeclaringType { get; }
 
         public virtual string FullName => _fullName.Value;
+        public virtual string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
 
         public abstract MemberTypes MemberType { get; }
 
@@ -133,9 +135,21 @@ namespace ByrneLabs.Commons.MetadataDom
             _fullName = new Lazy<string>(() =>
             {
                 var parent = IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
-                var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(", ", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]")) + "]" : string.Empty;
+                var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.AssemblyQualifiedName}]")) + "]" : string.Empty;
 
-                return parent + Name + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
+                var fullName = parent + Name + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
+
+                return fullName;
+            });
+
+            _fullNameWithoutAssemblies = new Lazy<string>(() =>
+            {
+                var parent = IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.FullName}]")) + "]" : string.Empty;
+
+                var fullName = parent + Name + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
+
+                return fullName;
             });
         }
     }

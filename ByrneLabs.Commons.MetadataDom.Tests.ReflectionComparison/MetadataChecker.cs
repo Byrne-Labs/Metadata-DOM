@@ -1,42 +1,25 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using Xunit;
-using Xunit.Abstractions;
 
-namespace ByrneLabs.Commons.MetadataDom.Tests
+namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 {
     public class MetadataChecker
     {
-
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        public static void AssertHasDebugMetadata(ReflectionData reflectionData) => Assert.True(reflectionData.Documents.Any());
-
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        public static void AssertHasMetadata(ReflectionData reflectionData)
-        {
-            Assert.NotNull(reflectionData.AssemblyDefinition);
-            Assert.True(reflectionData.TypeDefinitions.Any());
-        }
-
-        public static void AssertValid(ReflectionData reflectionData)
+        public static void CheckMetadata(Metadata metadata)
         {
             var checkedMetadataElements = new List<CodeElement>();
             /*
              * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
              */
-            foreach (var typeDefinition in reflectionData.TypeDefinitions)
+            foreach (var typeDefinition in metadata.TypeDefinitions)
             {
                 CheckCodeElement(typeDefinition, checkedMetadataElements, true);
             }
 
-            CheckCodeElement(reflectionData, checkedMetadataElements, false);
+            CheckCodeElement(metadata, checkedMetadataElements, false);
         }
 
         public static void CheckCodeElement(CodeElement codeElement, ICollection<CodeElement> checkedMetadataElements, bool excludeAssemblies)

@@ -22,10 +22,13 @@ namespace ByrneLabs.Commons.MetadataDom
                 var constrainedTypeSpecification = constrainedType as TypeSpecification;
                 if (constrainedTypeSpecification != null)
                 {
-                    var parentType = Parameter.Parent as TypeDefinition;
-                    if (parentType != null)
+                    if (Parameter.Parent is TypeDefinition)
                     {
-                        constrainedTypeSpecification.ParentTypeDefinition = parentType;
+                        constrainedTypeSpecification.ParentTypeDefinition = (TypeDefinition)Parameter.Parent;
+                    }
+                    else if (Parameter.Parent is MethodDefinition)
+                    {
+                        constrainedTypeSpecification.ParentMethodDefinition = (MethodDefinition)Parameter.Parent;
                     }
                 }
                 return constrainedType;

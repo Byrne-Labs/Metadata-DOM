@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -7,6 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter" />
     //[PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class GenericParameter : TypeBase<GenericParameter, GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
     {
         private Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
@@ -42,6 +44,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeBase DeclaringType => _declaringType;
 
+        public MethodDefinition DeclaringMethod { get; internal set; }
+
+        public override string FullName => null;
+
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Index" />
         public int Index { get; internal set; }
 
@@ -51,7 +57,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Name => AsString(MetadataToken.Name);
 
-        public override string Namespace { get; } = null;
+        public override string Namespace => DeclaringType?.Namespace;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Parent" />
         /// <summary>

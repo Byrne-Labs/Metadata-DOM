@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -26,6 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
     public abstract class MethodBase : RuntimeCodeElement, IMethodBase
     {
+
         internal MethodBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
         }
@@ -43,8 +45,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract string Name { get; }
 
         public abstract string TextSignature { get; }
-
-        public bool ContainsGenericParameters => GenericArguments.Any();
 
         public abstract IEnumerable<TypeBase> GenericArguments { get; }
 

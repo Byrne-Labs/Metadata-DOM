@@ -7,7 +7,7 @@ using System.Reflection.Metadata;
 namespace ByrneLabs.Commons.MetadataDom
 {
     //[PublicAPI]
-    public class ReflectionData : CodeElement, IDisposable
+    public class Metadata : CodeElement, IDisposable
     {
         private readonly Lazy<IEnumerable<AssemblyFile>> _assemblyFiles;
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -32,15 +32,15 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<TypeDefinition>> _typeDefinitions;
         private readonly Lazy<IEnumerable<TypeReference>> _typeReferences;
 
-        public ReflectionData(FileInfo assemblyFile) : this(false, assemblyFile)
+        public Metadata(FileInfo assemblyFile) : this(false, assemblyFile)
         {
         }
 
-        public ReflectionData(FileInfo assemblyFile, FileInfo pdbFile) : this(false, assemblyFile, pdbFile)
+        public Metadata(FileInfo assemblyFile, FileInfo pdbFile) : this(false, assemblyFile, pdbFile)
         {
         }
 
-        public ReflectionData(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile = null) : base(new CodeElementKey<ReflectionData>(assemblyFile ?? pdbFile), new MetadataState(prefetchMetadata, assemblyFile, pdbFile))
+        public Metadata(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile = null) : base(new CodeElementKey<Metadata>(assemblyFile ?? pdbFile), new MetadataState(prefetchMetadata, assemblyFile, pdbFile))
         {
             AssemblyFile = assemblyFile;
             PdbFile = pdbFile;

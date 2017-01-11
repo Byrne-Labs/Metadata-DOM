@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -20,7 +22,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         private readonly ITestOutputHelper _output;
-        private static readonly DirectoryInfo PassedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../PassedTests"));
         private static readonly DirectoryInfo ReadFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../ReadFailedTests"));
         private static readonly DirectoryInfo ValidationFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../ValidationFailedTests"));
         private static readonly DirectoryInfo TestAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../TestAssemblies"));
@@ -34,7 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 var assemblyFiles = ReadFailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
                 foreach (var assemblyFile in assemblyFiles)
                 {
-                    Assert.True(TestCopiedAssembly(assemblyFile));
+                    Assert.True(CheckMetadata(assemblyFile, null));
                 }
             }
         }
@@ -43,18 +44,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Speed", "Fast")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
-            Assert.True(TestCopiedAssembly(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac\microsoft.stdformat\7.0.3300.0__b03f5f7f11d50a3a\microsoft.stdformat.dll")));
+            Assert.True(CheckMetadata(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ReadFailedTests\NullReferenceException\gac_32\intuit.spc.map.windowsfirewallutilities\v4.0_6.0.39.0__30bbd97113d631f1\intuit.spc.map.windowsfirewallutilities.dll"), null));
         }
-
-
 
         [Fact]
         [Trait("Speed", "Fast")]
         public void TestReflectionComparisonOnSampleAssembly()
         {
-            var reflectionData = new ReflectionData(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
-            MetadataChecker.AssertValid(reflectionData);
-            MetadataChecker.AssertHasMetadata(reflectionData);
+            Assert.True(CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")), null));
         }
 
 
@@ -65,7 +62,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = CopyAllGacAssemblies();
             var startTime = DateTime.Now;
             var pass = true;
-            Parallel.ForEach(assemblyFiles, assemblyFile => { pass &= TestCopiedAssembly(assemblyFile); });
+            Parallel.ForEach(assemblyFiles, assemblyFile => { pass &= CheckMetadata(assemblyFile, null); });
 
             var executionTime = DateTime.Now.Subtract(startTime);
             _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
@@ -82,78 +79,28 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).ToList();
             foreach (var assemblyFile in assemblyFiles)
             {
-                var errors = ReflectionChecker.Check(assemblyFile);
-                if (errors.Any())
-                {
-                    _output.WriteLine(string.Join(Environment.NewLine, errors));
-                }
-                Assert.Empty(errors);
+                Assert.True(CheckMetadata(assemblyFile, null));
             }
         }
 
-        private bool TestCopiedAssembly(FileInfo assemblyFile)
+        private bool CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile)
         {
-            var errors = new List<string>();
-            var assemblyStartTime = DateTime.Now;
-            var originalAssemblyDirectory = assemblyFile.Directory;
-            DirectoryInfo newFileDirectory;
-
-            try
+            var processStartInfo = new ProcessStartInfo("dotnet")
             {
-                using (var reflectionData = new ReflectionData(true, assemblyFile))
-                {
-                    MetadataChecker.AssertValid(reflectionData);
-                }
-
-                errors.AddRange(ReflectionChecker.Check(assemblyFile));
-                if (errors.Any())
-                {
-                    _output.WriteLine($"Assembly {assemblyFile.FullName} failed with the errors:{Environment.NewLine}{string.Join(Environment.NewLine, errors)}");
-                    newFileDirectory = ValidationFailedAssemblyDirectory;
-                }
-                else
-                {
-                    newFileDirectory = PassedAssemblyDirectory;
-                }
-            }
-            catch (Exception exception)
+                Arguments = $"run \"{Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{assemblyFile.FullName}\"" + (pdbFile==null?string.Empty : $" \"{pdbFile.FullName}\""),
+                WorkingDirectory = AppContext.BaseDirectory
+            };
+            var process = Process.Start(processStartInfo);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
             {
-                Exception realException = exception;
-                while (realException is TargetInvocationException && realException.InnerException != null)
-                {
-                    realException = realException.InnerException;
-                }
-                errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{realException}");
-
-                newFileDirectory = new DirectoryInfo(Path.Combine(ReadFailedAssemblyDirectory.FullName, realException.GetType().Name));
-            }
-            FileInfo newFileLocation;
-            if (assemblyFile.FullName.ToLower().StartsWith(TestAssemblyDirectory.FullName.ToLower()))
-            {
-                newFileLocation = new FileInfo(assemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), newFileDirectory.FullName));
-                newFileLocation.Directory.Create();
-                assemblyFile.MoveTo(newFileLocation.FullName);
+                _output.WriteLine($"{assemblyFile.FullName} failed with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
             }
             else
             {
-                newFileLocation = assemblyFile;
+                _output.WriteLine($"{assemblyFile.FullName} succeeded with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
             }
-
-            while (!originalAssemblyDirectory.GetFileSystemInfos().Any())
-            {
-                originalAssemblyDirectory.Delete();
-                originalAssemblyDirectory = originalAssemblyDirectory.Parent;
-            }
-
-            if (errors.Any())
-            {
-                File.WriteAllLines(newFileLocation.FullName.Substring(0, newFileLocation.FullName.Length - 4) + ".log", errors);
-            }
-
-            var assemblyExecutionTime = DateTime.Now.Subtract(assemblyStartTime);
-            _output.WriteLine($"{assemblyFile.FullName} execution time: {assemblyExecutionTime.TotalSeconds} seconds");
-
-            return !errors.Any();
+            return process.ExitCode == 0;
         }
 
         private static IEnumerable<FileInfo> CopyAllGacAssemblies()

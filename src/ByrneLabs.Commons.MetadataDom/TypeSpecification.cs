@@ -44,6 +44,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Namespace => Signature.Namespace;
 
+        public MethodDefinition ParentMethodDefinition { get; internal set; }
+
         public TypeDefinition ParentTypeDefinition { get; internal set; }
 
         public TypeBase Signature => _signature.Value;
@@ -53,7 +55,19 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
             _signature = new Lazy<TypeBase>(() =>
             {
-                var genericContext = new GenericContext(ParentTypeDefinition.GenericTypeParameters, null);
+                GenericContext genericContext;
+                if (ParentTypeDefinition != null)
+                {
+                    genericContext = new GenericContext(ParentTypeDefinition.GenericTypeParameters, null);
+                }
+                else if(ParentMethodDefinition != null)
+                {
+                    genericContext = new GenericContext(null, ParentMethodDefinition.GenericTypeParameters);
+                }
+                else
+                {
+                    throw new InvalidOperationException("No generic type parameters found for type specification");
+                }
                 var signature = MetadataToken.DecodeSignature(MetadataState.TypeProvider, genericContext);
                 return signature;
             });

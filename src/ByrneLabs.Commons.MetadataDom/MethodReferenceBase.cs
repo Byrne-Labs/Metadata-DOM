@@ -39,8 +39,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public string TextSignature => _methodDefinition?.TextSignature;
 
-        public bool ContainsGenericParameters { get; } = false;
-
         public IEnumerable<TypeBase> GenericArguments { get; } = new List<TypeBase>();
 
         public bool IsConstructor => this is IConstructor;

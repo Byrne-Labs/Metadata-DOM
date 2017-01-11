@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -22,52 +23,34 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
+        private Lazy<IEnumerable<Parameter>> _parameters;
+
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
-        public override TypeBase DeclaringType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override TypeBase DeclaringType => null;
 
         public override string FullName => null;
 
         public int GenericParameterCount { get; protected set; }
 
-        public override bool IsGenericParameter
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override bool IsGenericParameter => false;
 
-        public override MemberTypes MemberType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override MemberTypes MemberType => MemberTypes.Method;
 
         public override string Name => null;
 
         public override string Namespace => null;
 
-        public IEnumerable<TypeBase> ParameterTypes { get; protected set; }
-
-        public int RequiredParameterCount { get; protected set; }
+        public IEnumerable<Parameter> Parameters => _parameters.Value;
 
         public TypeBase ReturnType { get; protected set; }
 
         private void Initialize()
         {
-            ParameterTypes = KeyValue.ParameterTypes;
+            var position = 0;
+            _parameters = new Lazy<IEnumerable<Parameter>>(() => KeyValue.ParameterTypes.Select(parameterType => new Parameter(this, parameterType, ++position, position > KeyValue.RequiredParameterCount, MetadataState)).ToList());
             ReturnType = KeyValue.ReturnType;
             GenericParameterCount = KeyValue.GenericParameterCount;
-            RequiredParameterCount = KeyValue.RequiredParameterCount;
         }
     }
 }

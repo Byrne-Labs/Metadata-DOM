@@ -55,7 +55,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetDeclaringType" />
         public override TypeBase DeclaringType => _declaringType.Value;
 
-        public override string FullName => $"{DeclaringType.FullName}.{Name}";
+        public override string FullName => $"{DeclaringType.FullName}.{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.FullName))})";
 
         public override IEnumerable<TypeBase> GenericArguments => _genericParameters.Value;
 
