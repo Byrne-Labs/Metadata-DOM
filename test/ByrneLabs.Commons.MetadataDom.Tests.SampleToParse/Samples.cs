@@ -53,6 +53,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             EventWithDeclaredAccessors += EventHandler;
         }
 
+        public int SomeInt { get; set; }
+
+        public int SomeRedirectedInt => SomeInt;
+
         public string this[int index, string index2]
         {
             get

@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IAssembly Assembly { get; }
 
-        public string Name { get; protected set; }
+        public string ScopedName { get; protected set; }
     }
 
     public abstract class ModuleBase<TModuleBase, THandle, TToken> : ModuleBase, ICodeElementWithHandle<THandle, TToken> where TModuleBase : ModuleBase<TModuleBase, THandle, TToken>

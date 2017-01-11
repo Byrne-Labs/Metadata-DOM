@@ -61,9 +61,9 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public CodeElementKey(object handle) : this(MetadataState.DowncastHandle(handle) ??throw 
-
-        private ArgumentException(nameof (handle)))
+        public CodeElementKey(object handle) : this(MetadataState.DowncastHandle(handle) ?? throw new ArgumentException(nameof(handle)))
+        {
+        }
 
         public Type CodeElementType { get; }
 

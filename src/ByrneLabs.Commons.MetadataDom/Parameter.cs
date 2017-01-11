@@ -15,6 +15,19 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<Blob> _marshallingDescriptor;
 
+        /* Parameters do not have to be named in IL.  When this happens, the parameter does not show up in the metadata parameter list but will have a parameter type.  If there is only one parameter 
+         * type,  we don't need to worry about the position. -- Jonathan Byrne 01/11/2017
+        */
+        internal Parameter(IMember member, TypeBase parameterType, MetadataState metadataState) : base(new CodeElementKey<Parameter>(member, parameterType), metadataState)
+        {
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => new List<CustomAttribute>());
+            Position = 1;
+            _defaultValue = new Lazy<Constant>(() => null);
+            _marshallingDescriptor = new Lazy<Blob>(() => null);
+            Member = member;
+            ParameterType = parameterType;
+        }
+
         internal Parameter(ParameterHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;

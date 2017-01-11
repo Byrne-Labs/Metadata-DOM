@@ -158,7 +158,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = MetadataToken.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
             {
-                var baseType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.BaseType);
+                var baseType = (TypeBase)MetadataState.GetCodeElement(MetadataToken.BaseType);
                 var typeSpecification = baseType as TypeSpecification;
                 if (typeSpecification != null)
                 {

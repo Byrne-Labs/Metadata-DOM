@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal ModuleDefinition(ModuleDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            Name = AsString(MetadataToken.Name);
+            ScopedName = AsString(MetadataToken.Name);
             BaseGenerationId = AsGuid(MetadataToken.BaseGenerationId);
             Generation = MetadataToken.Generation;
             GenerationId = AsGuid(MetadataToken.GenerationId);

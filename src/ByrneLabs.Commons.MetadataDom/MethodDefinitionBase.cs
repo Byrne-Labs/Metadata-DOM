@@ -74,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family) && !IsPublic;
 
-        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.FamANDAssem) && !IsPublic;
+        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.Family) && Attributes.HasFlag(MethodAttributes.Assembly);
 
         public bool IsFamilyOrAssembly => Attributes.HasFlag(MethodAttributes.FamORAssem) && !IsPublic;
 
@@ -82,7 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsHideBySig => Attributes.HasFlag(MethodAttributes.HideBySig);
 
-        public bool IsPrivate => Attributes.HasFlag(MethodAttributes.Private);
+        public bool IsPrivate => Attributes.HasFlag(MethodAttributes.Private) && !IsAssembly;
 
         public bool IsPropertyGetter => IsSpecialName && Name.StartsWith("get_");
 
@@ -115,25 +115,34 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             var allParameters = MetadataState.GetCodeElements<Parameter>(MetadataToken.GetParameters()).ToList();
             var parameters = allParameters.Where(parameter => parameter.Position > 0).ToList();
-            if (Signature.ParameterTypes.Length != parameters.Count)
+            if (Signature.ParameterTypes.Length == 1 && parameters.Count == 0)
             {
-                throw new BadImageException($"Method {FullName} has {parameters.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found");
-            }
+                /* Parameters do not have to be named in IL.  When this happens, the parameter does not show up in the parameter list but will have a parameter type.  If there is only one parameter 
+                 * type,  we don't need to worry about the position. -- Jonathan Byrne 01/11/2017
+                */
+                parameters.Add(new Parameter(this, Signature.ParameterTypes[0], MetadataState));
 
-            for (var position = 1; position <= parameters.Count; position++)
+            }
+            else
             {
-                if (!parameters.Exists(parameter => parameter.Position == position))
+                if (Signature.ParameterTypes.Length != parameters.Count)
                 {
-                    throw new BadImageException($"Method {FullName} has {parameters.Count} parameters but does not have a parameter for position {position}");
+                    throw new BadMetadataException($"Method {FullName} has {parameters.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found");
+                }
+
+                for (var position = 1; position <= parameters.Count; position++)
+                {
+                    if (!parameters.Exists(parameter => parameter.Position == position))
+                    {
+                        throw new BadMetadataException($"Method {FullName} has {parameters.Count} parameters but does not have a parameter for position {position}");
+                    }
+                }
+                foreach (var parameter in parameters)
+                {
+                    parameter.ParameterType = Signature.ParameterTypes[parameter.Position - 1];
+                    parameter.Member = this;
                 }
             }
-            foreach (var parameter in parameters)
-            {
-                parameter.ParameterType = Signature.ParameterTypes[parameter.Position - 1];
-                parameter.Member = this;
-            }
-            //}
-
             return parameters;
         }
     }
