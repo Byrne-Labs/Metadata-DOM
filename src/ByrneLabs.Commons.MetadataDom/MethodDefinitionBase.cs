@@ -72,7 +72,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsEventRemover => IsSpecialName && Name.StartsWith("remove_");
 
-        public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family) && !IsPublic;
+        public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family) && !IsPublic && !IsFamilyOrAssembly;
 
         public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.Family) && Attributes.HasFlag(MethodAttributes.Assembly);
 
@@ -82,7 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsHideBySig => Attributes.HasFlag(MethodAttributes.HideBySig);
 
-        public bool IsPrivate => Attributes.HasFlag(MethodAttributes.Private) && !IsAssembly;
+        public bool IsPrivate => Attributes.HasFlag(MethodAttributes.Private) && !IsAssembly && !IsFamilyOrAssembly;
 
         public bool IsPropertyGetter => IsSpecialName && Name.StartsWith("get_");
 

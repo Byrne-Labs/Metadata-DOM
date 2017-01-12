@@ -94,12 +94,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private void Initialize()
         {
-            _resolutionScope = new Lazy<object>(() => LoadResolutionScope(MetadataToken.ResolutionScope));
+            _resolutionScope = new Lazy<object>(() => !MetadataToken.ResolutionScope.IsNil ?
+                MetadataState.GetCodeElement(MetadataToken.ResolutionScope) :
+                MetadataState.DefinedTypes.SingleOrDefault(exportedType => exportedType.Name.Equals(Name) && exportedType.Namespace.Equals(Namespace)));
         }
 
-        private object LoadResolutionScope(EntityHandle resolutionScopeHandle) =>
-            !resolutionScopeHandle.IsNil ?
-                MetadataState.GetCodeElement(resolutionScopeHandle) :
-                MetadataState.DefinedTypes.SingleOrDefault(exportedType => exportedType.Name.Equals(Name) && exportedType.Namespace.Equals(Namespace));
     }
 }

@@ -54,7 +54,7 @@ namespace ByrneLabs.Commons.MetadataDom
         protected TKey KeyValue { get; }
     }
 
-    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullNameWithoutAssemblies}")]
     //[PublicAPI]
     public abstract class TypeBase : RuntimeCodeElement, IMember
     {
@@ -80,7 +80,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             IsGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
-            GenericTypeArguments = genericTypeArguments.Select(typeArgument => (TypeBase) MetadataState.GetCodeElement(typeArgument.GetType(), typeArgument, TypeElementModifiers.GenericArgument)).ToArray();
+            GenericTypeArguments = genericTypeArguments.ToList();
             Initialize();
         }
 
@@ -144,8 +144,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
             _fullNameWithoutAssemblies = new Lazy<string>(() =>
             {
-                var parent = IsNested ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
-                var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.FullName}]")) + "]" : string.Empty;
+                var parent = IsNested ? DeclaringType.FullNameWithoutAssemblies + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.FullNameWithoutAssemblies}]")) + "]" : string.Empty;
 
                 var fullName = parent + Name + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
 

@@ -85,10 +85,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         private bool CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile)
         {
+            var reflectionComparisonDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison/bin/Debug/netcoreapp1.0"));
             var processStartInfo = new ProcessStartInfo("dotnet")
             {
-                Arguments = $"run \"{Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{assemblyFile.FullName}\"" + (pdbFile==null?string.Empty : $" \"{pdbFile.FullName}\""),
-                WorkingDirectory = AppContext.BaseDirectory
+                Arguments = $"exec \"{Path.Combine(reflectionComparisonDirectory.FullName, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{assemblyFile.FullName}\"" + (pdbFile==null?string.Empty : $" \"{pdbFile.FullName}\""),
+                WorkingDirectory = reflectionComparisonDirectory.FullName
             };
             var process = Process.Start(processStartInfo);
             process.WaitForExit();

@@ -165,6 +165,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             }
         }
 
+        private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
+        {
+            var parent = type.IsNested ? GetTypeFullNameWithoutAssemblies(type.DeclaringType.GetTypeInfo()) + "+" : (string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".");
+            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{GetTypeFullNameWithoutAssemblies(genericTypeArgument.GetTypeInfo())}]")) + "]" : string.Empty;
+
+            var fullName = parent + type.Name + genericArgumentsText;
+
+            return fullName;
+        }
+
         private static void CompareCodeElementsToReflectionData(PropertyDefinition metadataProperty, PropertyInfo reflectionProperty, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
         {
             if (WasChecked(metadataProperty, reflectionProperty, checkedMetadataElements, checkedReflectionElements))
@@ -362,12 +372,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 
         private static string GetTextSignature(TypeInfo reflectedType, MethodInfo methodInfo)
         {
-            return $"{reflectedType.FullName}.{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(parameter => parameter.ParameterType.Namespace + "." + parameter.ParameterType.Name))})";
+            return $"{reflectedType.FullName}.{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
         }
 
         private static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo)
         {
-            return $"{reflectedType.FullName}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => parameter.ParameterType.Namespace + "." + parameter.ParameterType.Name))})";
+            return $"{reflectedType.FullName}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
         }
 
         private static bool WasChecked(CodeElement metadataElement, object reflectionElement, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements)

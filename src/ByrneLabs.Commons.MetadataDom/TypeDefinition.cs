@@ -138,7 +138,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Name => AsString(MetadataToken.Name);
 
-        public override string Namespace => NamespaceDefinition == null ? null : AsString(MetadataToken.Namespace);
+        public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.NamespaceDefinition" />
         /// <summary>The definition handle of the namespace where the type is defined, or null if the type is nested or defined in a root namespace.</summary>
