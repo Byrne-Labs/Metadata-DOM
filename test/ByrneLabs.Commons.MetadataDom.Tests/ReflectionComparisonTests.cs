@@ -27,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly DirectoryInfo TestAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../TestAssemblies"));
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnFailedAssemblyDirectoryAssemblies()
         {
             if (ReadFailedAssemblyDirectory.Exists)
@@ -41,22 +41,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
             Assert.True(CheckMetadata(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ReadFailedTests\NullReferenceException\gac_32\intuit.spc.map.windowsfirewallutilities\v4.0_6.0.39.0__30bbd97113d631f1\intuit.spc.map.windowsfirewallutilities.dll"), null));
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnSampleAssembly()
         {
             Assert.True(CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")), null));
         }
 
-
         [Fact]
-        [Trait("Speed", "Slow")]
+        [Trait("Category", "Slow")]
         public void TestReflectionComparisonOnCopiedAssemblies()
         {
             var assemblyFiles = CopyAllGacAssemblies();
@@ -72,11 +71,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnPrebuiltAssemblies()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
-            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).ToList();
+            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file=>!file.Name.Equals("Interop.Mock01.Impl.dll")).ToList();
             foreach (var assemblyFile in assemblyFiles)
             {
                 Assert.True(CheckMetadata(assemblyFile, null));

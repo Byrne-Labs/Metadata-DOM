@@ -24,7 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnOwnAssemblyAndPdbWithoutPrefetch()
         {
             var metadata = new Metadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
@@ -41,7 +41,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnOwnAssemblyAndPdbWithPrefetch()
         {
             var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
@@ -54,7 +54,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         public static void AssertHasDebugMetadata(Metadata metadata) => Assert.True(metadata.Documents.Any());
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnOwnAssemblyWithoutPrefetch()
         {
             var metadata = new Metadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
@@ -63,7 +63,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnOwnAssemblyWithPrefetch()
         {
             var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
@@ -72,7 +72,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnOwnPdbWithoutPrefetch()
         {
             var metadata = new Metadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
@@ -81,7 +81,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnOwnPdbWithPrefetch()
         {
             var metadata = new Metadata(true, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
@@ -90,7 +90,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnPrebuiltAssemblyResources()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
@@ -105,7 +105,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnPrebuiltResources()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
@@ -120,7 +120,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [Fact]
-        [Trait("Speed", "Fast")]
+        [Trait("Category", "Fast")]
         public void TestOnSampleAssembly()
         {
             var metadata = new Metadata(true, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));

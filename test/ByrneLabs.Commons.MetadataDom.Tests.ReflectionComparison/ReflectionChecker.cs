@@ -167,8 +167,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 
         private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
         {
-            var parent = type.IsNested ? GetTypeFullNameWithoutAssemblies(type.DeclaringType.GetTypeInfo()) + "+" : (string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".");
-            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{GetTypeFullNameWithoutAssemblies(genericTypeArgument.GetTypeInfo())}]")) + "]" : string.Empty;
+            string parent;
+            if ((type.IsGenericParameter && type.DeclaringType != null) || type.IsNested)
+            {
+                parent = GetTypeFullNameWithoutAssemblies(type.DeclaringType.GetTypeInfo()) + "+";
+            }
+            else
+            {
+                parent = string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".";
+            }
+            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{parent}{type.Name}+{genericTypeArgument.Name}]")) + "]" : string.Empty;
 
             var fullName = parent + type.Name + genericArgumentsText;
 

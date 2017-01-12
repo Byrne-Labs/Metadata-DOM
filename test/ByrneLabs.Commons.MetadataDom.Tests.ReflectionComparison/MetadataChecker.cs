@@ -34,12 +34,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                     {
                         var propertyValue = property.GetValue(codeElement);
                         var codeElementPropertyValue = propertyValue as CodeElement;
-                        var codeElementsPropertyValue = propertyValue as IEnumerable;
+                        var codeElementsPropertyValue = (propertyValue as IEnumerable)?.Cast<object>();
                         if (codeElementPropertyValue != null)
                         {
                             discoveredCodeElements.Add(codeElementPropertyValue);
                         }
-                        else if (codeElementsPropertyValue?.GetType().IsConstructedGenericType == true && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
+                        else if (codeElementsPropertyValue != null && codeElementsPropertyValue.Any() && codeElementsPropertyValue.GetType().IsConstructedGenericType == true && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
                         {
                             discoveredCodeElements.AddRange(codeElementsPropertyValue.Cast<CodeElement>());
                         }
