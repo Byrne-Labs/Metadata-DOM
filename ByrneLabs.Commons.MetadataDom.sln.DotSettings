@@ -669,6 +669,11 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=NAMESPACE_005FALIAS/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FFIELD/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FRESOURCE/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=54365E5E1BB9AA449CA1FBF831EF7D98/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=54365E5E1BB9AA449CA1FBF831EF7D98/AbsolutePath/@EntryValue">C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=54365E5E1BB9AA449CA1FBF831EF7D98/RelativePath/@EntryValue">..\test\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File54365E5E1BB9AA449CA1FBF831EF7D98/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File54365E5E1BB9AA449CA1FBF831EF7D98/RelativePriority/@EntryValue">1</s:Double>
 	
 	
 	

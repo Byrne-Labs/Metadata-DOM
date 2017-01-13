@@ -42,7 +42,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 return setMethod;
             });
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
-            _signature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(((TypeDefinition)DeclaringType).GenericTypeParameters, new TypeBase[] { })));
+            _signature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(((TypeDefinition) DeclaringType).GenericTypeParameters, new TypeBase[] { })));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Attributes" />
@@ -77,7 +77,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase DeclaringType => GetMethod?.DeclaringType ?? SetMethod?.DeclaringType;
 
-        public string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod != null && GetMethod.Parameters.Count() > 0 ? $"[{ string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
+        public string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod != null && GetMethod.Parameters.Count() > 0 ? $"[{string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
 
         public MemberTypes MemberType { get; } = MemberTypes.Property;
 

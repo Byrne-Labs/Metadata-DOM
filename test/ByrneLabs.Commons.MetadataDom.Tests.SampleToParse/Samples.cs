@@ -53,10 +53,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             EventWithDeclaredAccessors += EventHandler;
         }
 
-        public int SomeInt { get; set; }
-
-        public int SomeRedirectedInt => SomeInt;
-
         public string this[int index, string index2]
         {
             get
@@ -71,6 +67,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         }
 
         public ByteEnum ByteEnumValue { get; protected internal set; }
+
+        public int SomeInt { get; set; }
+
+        public int SomeRedirectedInt => SomeInt;
 
         public event BasicDelegate BasicEvent;
 

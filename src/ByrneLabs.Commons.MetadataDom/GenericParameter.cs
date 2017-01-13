@@ -42,9 +42,9 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.GetCustomAttributes" />
         public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override TypeBase DeclaringType => _declaringType;
-
         public MethodDefinition DeclaringMethod { get; internal set; }
+
+        public override TypeBase DeclaringType => _declaringType;
 
         public override string FullName => null;
 
@@ -55,14 +55,14 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
-
         public override string Namespace => DeclaringType?.Namespace;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Parent" />
         /// <summary>
         ///     <see cref="TypeDefinition" /> or <see cref="MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
+
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
 
         internal void SetDeclaringType(TypeBase declaringType) => _declaringType = declaringType;
 

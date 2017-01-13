@@ -25,8 +25,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 
-        internal override string UndecoratedName { get; } = "Type";
-
         public override string Namespace { get; } = "System";
+
+        internal override string UndecoratedName { get; } = "Type";
     }
 }

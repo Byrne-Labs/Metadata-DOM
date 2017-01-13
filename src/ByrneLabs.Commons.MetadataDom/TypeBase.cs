@@ -12,19 +12,19 @@ namespace ByrneLabs.Commons.MetadataDom
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         public Handle DowncastMetadataHandle { get; }
@@ -107,6 +107,8 @@ namespace ByrneLabs.Commons.MetadataDom
         ///     <see cref="TypeBase" /> is not an array or a pointer, or is not passed by reference, or represents a generic type or a type parameter in the definition of a generic type or generic method.</returns>
         public TypeBase ElementType { get; }
 
+        public virtual string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
+
         public IEnumerable<TypeBase> GenericTypeArguments { get; }
 
         public TypeBase GenericTypeDefinition { get; }
@@ -123,13 +125,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPointer { get; }
 
+        internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
+
         public abstract TypeBase DeclaringType { get; }
 
         public virtual string FullName => _fullName.Value;
-
-        public virtual string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
-        
-        internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 
         public abstract MemberTypes MemberType { get; }
 
@@ -149,7 +149,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
             _fullNameWithoutAssemblies = new Lazy<string>(() =>
             {
-                var parent = (IsGenericParameter && DeclaringType != null) || IsNested ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
                 var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.FullNameWithoutAssemblies}]")) + "]" : string.Empty;
                 var name = UndecoratedName + genericArgumentsText + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
                 var fullName = parent + name;
@@ -159,20 +159,14 @@ namespace ByrneLabs.Commons.MetadataDom
 
             _fullNameWithoutGenericArguments = new Lazy<string>(() =>
             {
-                var parent = (IsGenericParameter && DeclaringType != null) || IsNested ? $"{DeclaringType.FullNameWithoutAssemblies}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutAssemblies}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
                 var name = UndecoratedName + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
                 var fullName = parent + name;
 
                 return fullName;
             });
 
-            _name = new Lazy<string>(() =>
-            {
-                var parent = (IsGenericParameter && DeclaringType != null) || IsNested ? DeclaringType.FullNameWithoutAssemblies + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
-                var name = UndecoratedName + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty);
-
-                return name;
-            });
+            _name = new Lazy<string>(() =>  UndecoratedName + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty));
         }
     }
 }

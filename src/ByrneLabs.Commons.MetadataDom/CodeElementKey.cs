@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    // ReSharper disable once UseNameofExpression -- This is a false positive because the method is actually executed
     [DebuggerDisplay("\\{CodeElementKey\\}: {KeysToString()}")]
     internal class CodeElementKey
     {
@@ -54,7 +55,7 @@ namespace ByrneLabs.Commons.MetadataDom
             }
 
             var primitiveTypeCode = KeyValues.OfType<PrimitiveTypeCode>().FirstOrDefault();
-            PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?) null : primitiveTypeCode;
+            PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?)null : primitiveTypeCode;
         }
 
         public CodeElementKey(Handle handle) : this(MetadataState.GetCodeElementTypeForHandle(handle), handle)

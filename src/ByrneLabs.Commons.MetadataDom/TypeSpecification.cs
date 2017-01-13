@@ -40,8 +40,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        internal override string UndecoratedName => Signature.Name;
-
         public override string Namespace => Signature.Namespace;
 
         public MethodDefinition ParentMethodDefinition { get; internal set; }
@@ -49,6 +47,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public TypeDefinition ParentTypeDefinition { get; internal set; }
 
         public TypeBase Signature => _signature.Value;
+
+        internal override string UndecoratedName => Signature.Name;
 
         private void Initialize()
         {
@@ -60,7 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     genericContext = new GenericContext(ParentTypeDefinition.GenericTypeParameters, null);
                 }
-                else if(ParentMethodDefinition != null)
+                else if (ParentMethodDefinition != null)
                 {
                     genericContext = new GenericContext(null, ParentMethodDefinition.GenericTypeParameters);
                 }
@@ -68,6 +68,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     throw new InvalidOperationException("No generic type parameters found for type specification");
                 }
+
                 var signature = MetadataToken.DecodeSignature(MetadataState.TypeProvider, genericContext);
                 return signature;
             });

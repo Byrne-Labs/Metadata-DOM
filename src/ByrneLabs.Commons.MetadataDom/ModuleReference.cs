@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ModuleReference" />
     //[PublicAPI]
-    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {ScopedName}")]
     public class ModuleReference : ModuleBase<ModuleReference, ModuleReferenceHandle, System.Reflection.Metadata.ModuleReference>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;

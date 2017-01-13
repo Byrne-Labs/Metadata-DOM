@@ -54,11 +54,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
-
         public override string Namespace => AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.NamespaceDefinition" />
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
+
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
     }
 }

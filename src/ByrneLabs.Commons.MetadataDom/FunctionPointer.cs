@@ -8,6 +8,8 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class FunctionPointer : TypeBase<FunctionPointer, MethodSignature<TypeBase>>
     {
+        private Lazy<IEnumerable<Parameter>> _parameters;
+
         internal FunctionPointer(FunctionPointer baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             Initialize();
@@ -23,8 +25,6 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
-        private Lazy<IEnumerable<Parameter>> _parameters;
-
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         public override TypeBase DeclaringType => null;
@@ -37,13 +37,13 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType => MemberTypes.Method;
 
-        internal override string UndecoratedName => null;
-
         public override string Namespace => null;
 
         public IEnumerable<Parameter> Parameters => _parameters.Value;
 
         public TypeBase ReturnType { get; protected set; }
+
+        internal override string UndecoratedName => null;
 
         private void Initialize()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,16 +11,18 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
     public static class ReflectionChecker
     {
         private static readonly Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<PropertyInfo, PropertyInfo>>> _propertiesToCompare = new Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<PropertyInfo, PropertyInfo>>>();
-        private static DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../PassedTests"));
-        private static DirectoryInfo ReadFailedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../ReadFailedTests"));
-        private static DirectoryInfo ValidationFailedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../ValidationFailedTests"));
-        private static DirectoryInfo TestAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../TestAssemblies"));
+
         public static string BaseDirectory { get; set; }
 
-        public static bool Check(FileInfo assemblyFile)
-        {
-            return Check(assemblyFile, null);
-        }
+        private static DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../PassedTests"));
+
+        private static DirectoryInfo ReadFailedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../ReadFailedTests"));
+
+        private static DirectoryInfo TestAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../TestAssemblies"));
+
+        private static DirectoryInfo ValidationFailedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../ValidationFailedTests"));
+
+        public static bool Check(FileInfo assemblyFile) => Check(assemblyFile, null);
 
         public static bool Check(FileInfo assemblyFile, FileInfo pdbFile)
         {
@@ -42,6 +45,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                         {
                             readException = readException.InnerException;
                         }
+
                         errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{readException}");
                     }
 
@@ -67,6 +71,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                         {
                             CompareCodeElementsToReflectionData(metadata.ModuleDefinition, module, checkedMetadataElements, checkedReflectionElements, errors);
                         }
+
                         var missingMembers = metadata.MemberDefinitions.Except(checkedMetadataElements.OfType<IMember>()).Select(member => $"Could not find member {member.FullName} with reflection").ToList();
                         errors.AddRange(missingMembers);
                     }
@@ -77,6 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                         {
                             realException = realException.InnerException;
                         }
+
                         errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{realException}");
                         readException = readException ?? realException;
                     }
@@ -137,7 +143,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             foreach (var reflectionMember in reflectionType.DeclaredMembers)
             {
                 var reflectionMemberSignature = GetTextSignature(reflectionType, reflectionMember);
-                var members = metadataType.Members.Where(codeElement => codeElement.GetType() == GetMetadataType(reflectionMember) && codeElement.TextSignature.Equals(reflectionMemberSignature)).ToArray();
                 var metadataMember = metadataType.Members.SingleOrDefault(codeElement => codeElement.GetType() == GetMetadataType(reflectionMember) && codeElement.TextSignature.Equals(reflectionMemberSignature));
                 if (metadataMember == null)
                 {
@@ -145,51 +150,33 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                 }
                 else if (reflectionMember is TypeInfo)
                 {
-                    CompareCodeElementsToReflectionData((TypeDefinition)metadataMember, (TypeInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((TypeDefinition) metadataMember, (TypeInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is PropertyInfo)
                 {
-                    CompareCodeElementsToReflectionData((PropertyDefinition)metadataMember, (PropertyInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((PropertyDefinition) metadataMember, (PropertyInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is ConstructorInfo)
                 {
-                    CompareCodeElementsToReflectionData((ConstructorDefinition)metadataMember, (ConstructorInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((ConstructorDefinition) metadataMember, (ConstructorInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is MethodInfo)
                 {
-                    CompareCodeElementsToReflectionData((MethodDefinition)metadataMember, (MethodInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((MethodDefinition) metadataMember, (MethodInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is EventInfo)
                 {
-                    CompareCodeElementsToReflectionData((EventDefinition)metadataMember, (EventInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((EventDefinition) metadataMember, (EventInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is FieldInfo)
                 {
-                    CompareCodeElementsToReflectionData((FieldDefinition)metadataMember, (FieldInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((FieldDefinition) metadataMember, (FieldInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else
                 {
                     throw new BadMetadataException($"Could not handle member type {reflectionMember.GetType().FullName}");
                 }
             }
-        }
-
-        private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
-        {
-            string parent;
-            if ((type.IsGenericParameter && type.DeclaringType != null) || type.IsNested)
-            {
-                parent = GetTypeFullNameWithoutAssemblies(type.DeclaringType.GetTypeInfo()) + "+";
-            }
-            else
-            {
-                parent = string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".";
-            }
-            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{GetTypeFullNameWithoutAssemblies(genericTypeArgument.GetTypeInfo())}]")) + "]" : string.Empty;
-
-            var fullName = parent + type.Name + genericArgumentsText;
-
-            return fullName;
         }
 
         private static void CompareCodeElementsToReflectionData(PropertyDefinition metadataProperty, PropertyInfo reflectionProperty, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
@@ -211,6 +198,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             CompareElements(metadataProperty.FullName, metadataProperty, reflectionProperty, errors);
         }
 
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification="This method is only for ConstructorDefinition clases")]
         private static void CompareCodeElementsToReflectionData(ConstructorDefinition metadataConstructor, ConstructorInfo reflectionConstructor, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
         {
             if (WasChecked(metadataConstructor, reflectionConstructor, checkedMetadataElements, checkedReflectionElements))
@@ -221,6 +209,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             CompareElements(metadataConstructor.FullName, metadataConstructor, reflectionConstructor, errors);
         }
 
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for MethodDefinition clases")]
         private static void CompareCodeElementsToReflectionData(MethodDefinition metadataMethod, MethodInfo reflectionMethod, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
         {
             if (WasChecked(metadataMethod, reflectionMethod, checkedMetadataElements, checkedReflectionElements))
@@ -251,6 +240,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             CompareElements(metadataField.FullName, metadataField, reflectionField, errors);
         }
 
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for ModuleDefinition clases")]
         private static void CompareCodeElementsToReflectionData(ModuleDefinition metadataModule, Module reflectionModule, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
         {
             if (WasChecked(metadataModule, reflectionModule, checkedMetadataElements, checkedReflectionElements))
@@ -337,27 +327,27 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             string textSignature;
             if (memberInfo is TypeInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (TypeInfo)memberInfo);
+                textSignature = GetTextSignature((TypeInfo) memberInfo);
             }
             else if (memberInfo is PropertyInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (PropertyInfo)memberInfo);
+                textSignature = GetTextSignature(reflectedType, (PropertyInfo) memberInfo);
             }
             else if (memberInfo is FieldInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (FieldInfo)memberInfo);
+                textSignature = GetTextSignature(reflectedType, (FieldInfo) memberInfo);
             }
             else if (memberInfo is EventInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (EventInfo)memberInfo);
+                textSignature = GetTextSignature(reflectedType, (EventInfo) memberInfo);
             }
             else if (memberInfo is MethodInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (MethodInfo)memberInfo);
+                textSignature = GetTextSignature(reflectedType, (MethodInfo) memberInfo);
             }
             else if (memberInfo is ConstructorInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (ConstructorInfo)memberInfo);
+                textSignature = GetTextSignature(reflectedType, (ConstructorInfo) memberInfo);
             }
             else
             {
@@ -367,34 +357,37 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             return textSignature;
         }
 
-        private static string GetTextSignature(TypeInfo reflectedType, TypeInfo typeInfo)
-        {
-            return typeInfo.FullName;
-        }
+        private static string GetTextSignature(TypeInfo typeInfo) => typeInfo.FullName;
 
-        private static string GetTextSignature(TypeInfo reflectedType, PropertyInfo propertyInfo)
-        {
-            return $"{reflectedType.FullName}.{propertyInfo.Name}" + ("Item".Equals(propertyInfo.Name) && propertyInfo.GetMethod.GetParameters().Count() > 0 ? $"[{ string.Join(", ", propertyInfo.GetMethod.GetParameters().Select(parameter => parameter.ParameterType.Namespace + "." + parameter.ParameterType.Name))}]" : string.Empty);
-        }
+        private static string GetTextSignature(TypeInfo reflectedType, PropertyInfo propertyInfo) =>
+            $"{reflectedType.FullName}.{propertyInfo.Name}" + ("Item".Equals(propertyInfo.Name) && propertyInfo.GetMethod.GetParameters().Any() ? $"[{string.Join(", ", propertyInfo.GetMethod.GetParameters().Select(parameter => parameter.ParameterType.Namespace + "." + parameter.ParameterType.Name))}]" : string.Empty);
 
-        private static string GetTextSignature(TypeInfo reflectedType, FieldInfo fieldInfo)
-        {
-            return $"{reflectedType.FullName}.{fieldInfo.Name}";
-        }
+        private static string GetTextSignature(TypeInfo reflectedType, FieldInfo fieldInfo) => $"{reflectedType.FullName}.{fieldInfo.Name}";
 
-        private static string GetTextSignature(TypeInfo reflectedType, EventInfo eventInfo)
-        {
-            return $"{reflectedType.FullName}.{eventInfo.Name}";
-        }
+        private static string GetTextSignature(TypeInfo reflectedType, EventInfo eventInfo) => $"{reflectedType.FullName}.{eventInfo.Name}";
 
-        private static string GetTextSignature(TypeInfo reflectedType, MethodInfo methodInfo)
-        {
-            return $"{reflectedType.FullName}.{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
-        }
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for MethodInfo clases")]
+        private static string GetTextSignature(TypeInfo reflectedType, MethodInfo methodInfo) => $"{reflectedType.FullName}.{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
 
-        private static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo)
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for ConstructorInfo clases")]
+        private static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo) => $"{reflectedType.FullName}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
+
+        private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
         {
-            return $"{reflectedType.FullName}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
+            string parent;
+            if (type.IsGenericParameter && type.DeclaringType != null || type.IsNested)
+            {
+                parent = GetTypeFullNameWithoutAssemblies(type.DeclaringType.GetTypeInfo()) + "+";
+            }
+            else
+            {
+                parent = string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".";
+            }
+            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{GetTypeFullNameWithoutAssemblies(genericTypeArgument.GetTypeInfo())}]")) + "]" : string.Empty;
+
+            var fullName = parent + type.Name + genericArgumentsText;
+
+            return fullName;
         }
 
         private static bool WasChecked(CodeElement metadataElement, object reflectionElement, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements)

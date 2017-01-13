@@ -10,8 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal FieldReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(new CodeElementKey<FieldReference>(metadataHandle), metadataState)
         {
-            var parent = MetadataState.GetCodeElement(MetadataToken.Parent);
-            _fieldSignature = new Lazy<TypeBase>(() => CreateFieldSignature());
+            _fieldSignature = new Lazy<TypeBase>(CreateFieldSignature);
         }
 
         public FieldAttributes Attributes

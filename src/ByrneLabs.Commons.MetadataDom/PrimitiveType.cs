@@ -30,10 +30,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 
-        internal override string UndecoratedName => PrimitiveTypeCode.ToString();
-
         public override string Namespace { get; } = "System";
 
         public PrimitiveTypeCode PrimitiveTypeCode => KeyValue;
+
+        internal override string UndecoratedName => PrimitiveTypeCode.ToString();
     }
 }

@@ -121,7 +121,6 @@ namespace ByrneLabs.Commons.MetadataDom
                  * type,  we don't need to worry about the position. -- Jonathan Byrne 01/11/2017
                 */
                 parameters.Add(new Parameter(this, Signature.ParameterTypes[0], MetadataState));
-
             }
             else
             {
@@ -143,6 +142,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     parameter.Member = this;
                 }
             }
+
             return parameters;
         }
     }

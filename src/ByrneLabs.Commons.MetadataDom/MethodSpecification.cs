@@ -23,40 +23,22 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.GetCustomAttributes" />
         public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override TypeBase DeclaringType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override TypeBase DeclaringType => null;
 
-        public override string FullName { get; }
+        public override string FullName => null;
 
-        public override IEnumerable<TypeBase> GenericArguments
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override IEnumerable<TypeBase> GenericArguments => null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.Method" />
         /// <summary><see cref="MethodDefinition" /> or <see cref="MemberReferenceBase" /> specifying to which generic method this <see cref="MethodSpecification" />
         ///     refers, that is which generic method is it an instantiation of.</summary>
         public MethodBase Method => _method.Value;
 
-        public override string Name { get; }
+        public override string Name => null;
 
         public override IEnumerable<IParameter> Parameters => Method.Parameters;
 
-        public override string TextSignature
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override string TextSignature => null;
 
         internal ImmutableArray<TypeBase> Signature => _signature.Value;
     }

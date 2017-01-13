@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class MethodDefinition : MethodDefinitionBase, IMethod
     {
-        private Lazy<IEnumerable<GenericParameter>> _genericParameters;
+        private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
 
         internal MethodDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -24,7 +24,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 return genericParameters;
             });
-
         }
 
         public IEnumerable<GenericParameter> GenericTypeParameters => _genericParameters.Value;

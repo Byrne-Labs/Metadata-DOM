@@ -63,8 +63,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType => ResolutionScope is TypeReference ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
-
         public override string Namespace => AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeReference.ResolutionScope" />
@@ -92,12 +90,13 @@ namespace ByrneLabs.Commons.MetadataDom
         /// </remarks>
         public object ResolutionScope => _resolutionScope.Value;
 
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
+
         private void Initialize()
         {
             _resolutionScope = new Lazy<object>(() => !MetadataToken.ResolutionScope.IsNil ?
                 MetadataState.GetCodeElement(MetadataToken.ResolutionScope) :
                 MetadataState.DefinedTypes.SingleOrDefault(exportedType => exportedType.Name.Equals(Name) && exportedType.Namespace.Equals(Namespace)));
         }
-
     }
 }

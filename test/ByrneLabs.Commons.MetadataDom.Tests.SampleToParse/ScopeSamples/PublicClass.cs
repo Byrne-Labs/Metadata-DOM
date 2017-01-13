@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
+﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
     public class PublicClass
     {
-        private void PrivateMethod()
-        {
-        }
-
-        protected void ProtectedMethod()
+        public void PublicMethod()
         {
         }
 
@@ -18,25 +10,25 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         {
         }
 
+        protected void ProtectedMethod()
+        {
+        }
+
         internal void InternalMethod()
         {
         }
 
-        public void PublicMethod()
+        private void DefaultMethod()
         {
         }
 
-        void DefaultMethod()
+        private void PrivateMethod()
         {
         }
 
-        private class NestedPrivateClass
+        private class NestedDefaultClass
         {
-            private void PrivateMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
+            public void PublicMethod()
             {
             }
 
@@ -44,80 +36,26 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
             }
 
-            internal void InternalMethod()
-            {
-            }
-
-            public void PublicMethod()
-            {
-            }
-
-            void DefaultMethod()
-            {
-            }
-        }
-
-        protected class NestedProtectedClass
-        {
-            private void PrivateMethod()
-            {
-            }
-
             protected void ProtectedMethod()
             {
             }
 
-            protected internal void ProtectedInternalMethod()
-            {
-            }
-
             internal void InternalMethod()
             {
             }
 
-            public void PublicMethod()
+            private void DefaultMethod()
             {
             }
 
-            void DefaultMethod()
-            {
-            }
-        }
-
-        protected internal class NestedProtectedInternalClass
-        {
             private void PrivateMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
-            {
-            }
-
-            protected internal void ProtectedInternalMethod()
-            {
-            }
-
-            internal void InternalMethod()
-            {
-            }
-
-            public void PublicMethod()
-            {
-            }
-
-            void DefaultMethod()
             {
             }
         }
 
         internal class NestedInternalClass
         {
-            private void PrivateMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
+            public void PublicMethod()
             {
             }
 
@@ -125,26 +63,26 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
             }
 
+            protected void ProtectedMethod()
+            {
+            }
+
             internal void InternalMethod()
             {
             }
 
-            public void PublicMethod()
+            private void DefaultMethod()
             {
             }
 
-            void DefaultMethod()
+            private void PrivateMethod()
             {
             }
         }
 
-        class NestedDefaultClass
+        private class NestedPrivateClass
         {
-            private void PrivateMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
+            public void PublicMethod()
             {
             }
 
@@ -152,26 +90,80 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
             }
 
+            protected void ProtectedMethod()
+            {
+            }
+
             internal void InternalMethod()
             {
             }
 
+            private void DefaultMethod()
+            {
+            }
+
+            private void PrivateMethod()
+            {
+            }
+        }
+
+        protected class NestedProtectedClass
+        {
             public void PublicMethod()
             {
             }
 
-            void DefaultMethod()
+            protected internal void ProtectedInternalMethod()
+            {
+            }
+
+            protected void ProtectedMethod()
+            {
+            }
+
+            internal void InternalMethod()
+            {
+            }
+
+            private void DefaultMethod()
+            {
+            }
+
+            private void PrivateMethod()
+            {
+            }
+        }
+
+        protected internal class NestedProtectedInternalClass
+        {
+            public void PublicMethod()
+            {
+            }
+
+            protected internal void ProtectedInternalMethod()
+            {
+            }
+
+            protected void ProtectedMethod()
+            {
+            }
+
+            internal void InternalMethod()
+            {
+            }
+
+            private void DefaultMethod()
+            {
+            }
+
+            private void PrivateMethod()
             {
             }
         }
 
         public class NestedPublicClass
         {
-            private void PrivateMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
+            public void PublicMethod()
             {
             }
 
@@ -179,18 +171,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
             }
 
+            protected void ProtectedMethod()
+            {
+            }
+
             internal void InternalMethod()
             {
             }
 
-            public void PublicMethod()
+            private void DefaultMethod()
             {
             }
 
-            void DefaultMethod()
+            private void PrivateMethod()
             {
             }
         }
-
     }
 }

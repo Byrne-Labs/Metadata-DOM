@@ -53,10 +53,10 @@ namespace ByrneLabs.Commons.MetadataDom
             { typeof(TypeReferenceHandle), typeof(TypeReference) },
             { typeof(TypeSpecificationHandle), typeof(TypeSpecification) }
         });
+        private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
         private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
         private readonly IDictionary<CodeElementKey, CodeElement> _codeElementCache = new Dictionary<CodeElementKey, CodeElement>();
         private readonly Lazy<IEnumerable<TypeBase>> _definedTypes;
-        private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
 
         public MetadataState(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile)
         {

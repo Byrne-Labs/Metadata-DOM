@@ -24,11 +24,11 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     if (Parameter.Parent is TypeDefinition)
                     {
-                        constrainedTypeSpecification.ParentTypeDefinition = (TypeDefinition)Parameter.Parent;
+                        constrainedTypeSpecification.ParentTypeDefinition = (TypeDefinition) Parameter.Parent;
                     }
                     else if (Parameter.Parent is MethodDefinition)
                     {
-                        constrainedTypeSpecification.ParentMethodDefinition = (MethodDefinition)Parameter.Parent;
+                        constrainedTypeSpecification.ParentMethodDefinition = (MethodDefinition) Parameter.Parent;
                     }
                 }
                 return constrainedType;

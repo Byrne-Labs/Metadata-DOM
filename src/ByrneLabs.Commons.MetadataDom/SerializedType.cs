@@ -42,12 +42,12 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeBase DeclaringType => _declaringType.Value;
 
-        public override bool IsGenericParameter { get; }
+        public override bool IsGenericParameter => false;
 
         public override MemberTypes MemberType { get; }
 
-        internal override string UndecoratedName { get; }
-
         public override string Namespace { get; }
+
+        internal override string UndecoratedName { get; }
     }
 }

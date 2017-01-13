@@ -136,8 +136,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
         public IEnumerable<IMethodBase> Methods => _methods.Value;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
-
         public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(MetadataToken.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.NamespaceDefinition" />
@@ -150,6 +148,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetProperties" />
         public IEnumerable<PropertyDefinition> Properties => _properties.Value;
 
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
+
         private void Initialize()
         {
             _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
@@ -158,7 +158,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = MetadataToken.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
             {
-                var baseType = (TypeBase)MetadataState.GetCodeElement(MetadataToken.BaseType);
+                var baseType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.BaseType);
                 var typeSpecification = baseType as TypeSpecification;
                 if (typeSpecification != null)
                 {

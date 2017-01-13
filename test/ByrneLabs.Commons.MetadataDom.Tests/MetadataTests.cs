@@ -1,12 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
 using Xunit;
 using Xunit.Abstractions;
@@ -15,13 +10,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 {
     public class MetadataTests
     {
-        public MetadataTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
-
-        private readonly ITestOutputHelper _output;
         private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
+        public static void AssertHasDebugMetadata(Metadata metadata) => Assert.True(metadata.Documents.Any());
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
+        public static void AssertHasMetadata(Metadata metadata)
+        {
+            Assert.NotNull(metadata.AssemblyDefinition);
+            Assert.True(metadata.TypeDefinitions.Any());
+        }
 
         [Fact]
         [Trait("Category", "Fast")]
@@ -33,13 +32,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             AssertHasDebugMetadata(metadata);
         }
 
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        public static void AssertHasMetadata(Metadata metadata)
-        {
-            Assert.NotNull(metadata.AssemblyDefinition);
-            Assert.True(metadata.TypeDefinitions.Any());
-        }
-
         [Fact]
         [Trait("Category", "Fast")]
         public void TestOnOwnAssemblyAndPdbWithPrefetch()
@@ -49,9 +41,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             AssertHasMetadata(metadata);
             AssertHasDebugMetadata(metadata);
         }
-
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        public static void AssertHasDebugMetadata(Metadata metadata) => Assert.True(metadata.Documents.Any());
 
         [Fact]
         [Trait("Category", "Fast")]

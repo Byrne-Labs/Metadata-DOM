@@ -4,6 +4,6 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         IAssembly Assembly { get; }
 
-        string ScopedName{ get; }
+        string ScopedName { get; }
     }
 }

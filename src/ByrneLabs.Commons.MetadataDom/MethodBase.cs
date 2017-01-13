@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -27,7 +26,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
     public abstract class MethodBase : RuntimeCodeElement, IMethodBase
     {
-
         internal MethodBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
         }
