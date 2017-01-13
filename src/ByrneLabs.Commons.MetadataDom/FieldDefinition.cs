@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsFamily => Attributes.HasFlag(FieldAttributes.Family) && !IsPublic;
 
-        public bool IsFamilyAndAssembly => Attributes.HasFlag(FieldAttributes.FamANDAssem) && !IsPublic;
+        public bool IsFamilyAndAssembly => Attributes.HasFlag(FieldAttributes.FamANDAssem) && !IsPublic && !IsAssembly;
 
         public bool IsFamilyOrAssembly => Attributes.HasFlag(FieldAttributes.FamORAssem) && !IsPublic;
 
@@ -60,7 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPinvokeImpl => Attributes.HasFlag(FieldAttributes.PinvokeImpl);
 
-        public bool IsPrivate => Attributes.HasFlag(FieldAttributes.Private);
+        public bool IsPrivate => Attributes.HasFlag(FieldAttributes.Private) && !IsAssembly;
 
         public bool IsPublic => Attributes.HasFlag(FieldAttributes.Public);
 

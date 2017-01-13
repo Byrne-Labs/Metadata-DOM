@@ -23,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public Handle DowncastMetadataHandle { get; }
 
-        public int MetadataToken { get; }
+        public virtual int MetadataToken { get; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader;

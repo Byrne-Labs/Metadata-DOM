@@ -74,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsFamily => Attributes.HasFlag(MethodAttributes.Family) && !IsPublic && !IsFamilyOrAssembly;
 
-        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.Family) && Attributes.HasFlag(MethodAttributes.Assembly);
+        public bool IsFamilyAndAssembly => Attributes.HasFlag(MethodAttributes.FamANDAssem) && !IsAssembly && !IsPublic;
 
         public bool IsFamilyOrAssembly => Attributes.HasFlag(MethodAttributes.FamORAssem) && !IsPublic;
 

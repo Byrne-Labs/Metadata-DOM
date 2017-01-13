@@ -26,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /* Function pointers have parameter types but no parameter names or parameter handles -- Jonathan Byrne 01/11/2017
         */
 
-        internal Parameter(IMember member, TypeBase parameterType, int position, bool optional, MetadataState metadataState) : base(new CodeElementKey<Parameter>(member, parameterType), metadataState)
+        internal Parameter(IMember member, TypeBase parameterType, int position, bool optional, MetadataState metadataState) : base(new CodeElementKey<Parameter>(member, position, parameterType), metadataState)
         {
             _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => new List<CustomAttribute>());
             Position = position;

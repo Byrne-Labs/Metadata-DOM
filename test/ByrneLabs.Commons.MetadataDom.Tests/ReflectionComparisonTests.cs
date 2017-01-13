@@ -128,7 +128,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
-            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.sqlserver.management.helpviewer\13.0.0.0__89845dcd8080cc91\microsoft.sqlserver.management.helpviewer.dll"), null));
+            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.practices.objectbuilder2\2.2.0.0__31bf3856ad364e35\microsoft.practices.objectbuilder2.dll"), null));
         }
     }
 }

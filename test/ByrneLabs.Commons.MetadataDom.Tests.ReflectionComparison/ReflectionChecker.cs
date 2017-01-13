@@ -272,75 +272,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             var key = new Tuple<Type, Type>(metadataType, reflectionType);
             if (!_propertiesToCompare.ContainsKey(key))
             {
-                var properties = new List<Tuple<PropertyInfo, PropertyInfo>>();
                 var allProperties = metadataType.GetProperties().Select(property => property.Name).Intersect(reflectionType.GetProperties().Select(property => property.Name));
-                foreach (var propertyName in allProperties)
-                {
-                    var metadataPropertyInfo = metadataType.GetProperty(propertyName);
-                    var reflectionPropertyInfo = reflectionType.GetProperty(propertyName);
-                    if (metadataPropertyInfo.PropertyType == reflectionPropertyInfo.PropertyType)
-                    {
-                        properties.Add(new Tuple<PropertyInfo, PropertyInfo>(metadataPropertyInfo, reflectionPropertyInfo));
-                    }
-                }
+                var properties = (from propertyName in allProperties
+                    let metadataPropertyInfo = metadataType.GetProperty(propertyName)
+                    let reflectionPropertyInfo = reflectionType.GetProperty(propertyName)
+                    where metadataPropertyInfo.PropertyType == reflectionPropertyInfo.PropertyType
+                    select new Tuple<PropertyInfo, PropertyInfo>(metadataPropertyInfo, reflectionPropertyInfo)).ToList();
 
                 _propertiesToCompare.Add(key, properties);
             }
 
             return _propertiesToCompare[key];
-        }
-
-        private static Type GetMetadataType(MemberInfo memberInfo)
-        {
-            Type metadataType;
-            if (memberInfo is TypeInfo)
-            {
-                metadataType = typeof(TypeDefinition);
-            }
-            else if (memberInfo is PropertyInfo)
-            {
-                metadataType = typeof(PropertyDefinition);
-            }
-            else if (memberInfo is FieldInfo)
-            {
-                metadataType = typeof(FieldDefinition);
-            }
-            else if (memberInfo is EventInfo)
-            {
-                metadataType = typeof(EventDefinition);
-            }
-            else if (memberInfo is MethodInfo)
-            {
-                metadataType = typeof(MethodDefinition);
-            }
-            else if (memberInfo is ConstructorInfo)
-            {
-                metadataType = typeof(ConstructorDefinition);
-            }
-            else
-            {
-                throw new InvalidOperationException($"Unknown member info type {memberInfo.GetType().FullName}");
-            }
-
-            return metadataType;
-        }
-
-        private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
-        {
-            string parent;
-            if (type.IsGenericParameter && type.DeclaringType != null || type.IsNested)
-            {
-                parent = GetTypeFullNameWithoutAssemblies(type.DeclaringType.GetTypeInfo()) + "+";
-            }
-            else
-            {
-                parent = string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".";
-            }
-            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{GetTypeFullNameWithoutAssemblies(genericTypeArgument.GetTypeInfo())}]")) + "]" : string.Empty;
-
-            var fullName = parent + type.Name + genericArgumentsText;
-
-            return fullName;
         }
 
         private static Exception HandleException(Exception exception, FileInfo assemblyFile, ICollection<string> errors)
