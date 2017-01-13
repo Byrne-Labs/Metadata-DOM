@@ -10,6 +10,6 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public override string TextSignature => $"{DeclaringType.FullName}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.TextSignature))})";
+        public override string TextSignature => $"{DeclaringType.FullName}{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.TextSignature))})";
     }
 }

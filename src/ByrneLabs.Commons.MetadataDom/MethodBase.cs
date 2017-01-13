@@ -46,7 +46,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IEnumerable<TypeBase> GenericArguments { get; }
 
-        public bool IsConstructor => this is IConstructor;
+        public bool IsConstructor => this is IConstructor && ".ctor".Equals(Name);
 
         public bool IsGenericMethod => GenericArguments.Any();
 

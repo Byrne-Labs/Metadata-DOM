@@ -195,7 +195,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 
             CompareTypes($"Property {metadataProperty.FullName}", metadataProperty.PropertyType, reflectionProperty.PropertyType, errors);
 
-            CompareElements(metadataProperty.FullName, metadataProperty, reflectionProperty, errors);
+            CompareElementProperties(metadataProperty.FullName, metadataProperty, reflectionProperty, errors);
         }
 
         private static void CompareTypes(string sourceName, TypeBase metadataType, Type reflectionType, ICollection<string> errors)
@@ -232,10 +232,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                     continue;
                 }
                 CompareTypes($"The parameter named {reflectionParameter.Name} with position {reflectionParameter.Position} on {metadataMethodBase.FullName}", metadataParameter.ParameterType, reflectionParameter.ParameterType, errors);
-                CompareElements(metadataParameter.FullName, metadataParameter, reflectionParameter, errors);
+                CompareElementProperties(metadataParameter.FullName, metadataParameter, reflectionParameter, errors);
             }
 
-            CompareElements(metadataMethodBase.FullName, metadataMethodBase, reflectionMethodBase, errors);
+            CompareElementProperties(metadataMethodBase.FullName, metadataMethodBase, reflectionMethodBase, errors);
         }
 
         private static void CompareCodeElementsToReflectionData(EventDefinition metadataEvent, EventInfo reflectionEvent, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
@@ -245,7 +245,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                 return;
             }
 
-            CompareElements(metadataEvent.FullName, metadataEvent, reflectionEvent, errors);
+            CompareElementProperties(metadataEvent.FullName, metadataEvent, reflectionEvent, errors);
         }
 
         private static void CompareCodeElementsToReflectionData(FieldDefinition metadataField, FieldInfo reflectionField, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
@@ -255,7 +255,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                 return;
             }
 
-            CompareElements(metadataField.FullName, metadataField, reflectionField, errors);
+            CompareElementProperties(metadataField.FullName, metadataField, reflectionField, errors);
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for ModuleDefinition clases")]
@@ -266,10 +266,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                 return;
             }
 
-            CompareElements("<module>", metadataModule, reflectionModule, errors);
+            CompareElementProperties("<module>", metadataModule, reflectionModule, errors);
         }
 
-        private static void CompareElements(string elementName, object metadataElement, object reflectionElement, ICollection<string> errors)
+        private static void CompareElementProperties(string elementName, object metadataElement, object reflectionElement, ICollection<string> errors)
         {
             foreach (var propertyToCompare in FindPropertiesToCompare(metadataElement.GetType(), reflectionElement.GetType()))
             {
@@ -388,7 +388,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
         private static string GetTextSignature(TypeInfo reflectedType, MethodInfo methodInfo) => $"{reflectedType.FullName}.{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for ConstructorInfo clases")]
-        private static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo) => $"{reflectedType.FullName}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
+        private static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo) => $"{reflectedType.FullName}{constructorInfo.Name}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
 
         private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
         {
