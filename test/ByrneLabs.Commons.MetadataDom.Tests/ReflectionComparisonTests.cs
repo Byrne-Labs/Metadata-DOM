@@ -82,7 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = CopyAllGacAssemblies();
             var startTime = DateTime.Now;
             var pass = true;
-            Parallel.ForEach(assemblyFiles, assemblyFile => { pass &= CheckMetadataOutOfProcess(assemblyFile, null); });
+            Parallel.ForEach(assemblyFiles, assemblyFile => pass &= CheckMetadataOutOfProcess(assemblyFile, null));
 
             var executionTime = DateTime.Now.Subtract(startTime);
             _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
@@ -110,7 +110,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         public void TestReflectionComparisonOnPrebuiltAssemblies()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
-            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Equals("Interop.Mock01.Impl.dll")).ToList();
+            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
             foreach (var assemblyFile in assemblyFiles)
             {
                 Assert.True(CheckMetadataInProcess(assemblyFile, null));
@@ -128,7 +128,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
-            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.visualstudio.tools.office.project.word\v4.0_14.0.0.0__b03f5f7f11d50a3a\microsoft.visualstudio.tools.office.project.word.dll"), null));
+            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ReadFailedTests\InvalidOperationException\gac\bcl.easyconverterlib.interop\1.3.0.0__481e0cb772795aa9\bcl.easyconverterlib.interop.dll"), null));
         }
     }
 }

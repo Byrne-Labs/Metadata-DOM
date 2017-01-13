@@ -44,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Name = AsString(MetadataToken.Name);
             Attributes = MetadataToken.Attributes;
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            Position = MetadataToken.SequenceNumber;
+            Position = MetadataToken.SequenceNumber - 1;
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
             _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.GetMarshallingDescriptor())));
         }
