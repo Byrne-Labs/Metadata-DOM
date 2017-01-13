@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint" />
     //[PublicAPI]
-    public class GenericParameterConstraint : RuntimeCodeElement, ICodeElementWithHandle<GenericParameterConstraintHandle, System.Reflection.Metadata.GenericParameterConstraint>
+    public class GenericParameterConstraint : RuntimeCodeElement, ICodeElementWithTypedHandle<GenericParameterConstraintHandle, System.Reflection.Metadata.GenericParameterConstraint>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<GenericParameter> _parameter;
@@ -15,10 +15,10 @@ namespace ByrneLabs.Commons.MetadataDom
         internal GenericParameterConstraint(GenericParameterConstraintHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetGenericParameterConstraint(metadataHandle);
+            RawMetadata = Reader.GetGenericParameterConstraint(metadataHandle);
             _type = new Lazy<TypeBase>(() =>
             {
-                var constrainedType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.Type);
+                var constrainedType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.Type);
                 var constrainedTypeSpecification = constrainedType as TypeSpecification;
                 if (constrainedTypeSpecification != null)
                 {
@@ -33,8 +33,8 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 return constrainedType;
             });
-            _parameter = MetadataState.GetLazyCodeElement<GenericParameter>(MetadataToken.Parameter);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _parameter = MetadataState.GetLazyCodeElement<GenericParameter>(RawMetadata.Parameter);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.GetCustomAttributes" />
@@ -48,10 +48,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <summary>Handle (<see cref="TypeDefinition" />, <see cref="TypeReference" />, or <see cref="TypeSpecification" />) specifying from which type this generic parameter is constrained to derive, or which interface this generic parameter is constrained to implement.</summary>
         public TypeBase Type => _type.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.GenericParameterConstraint RawMetadata { get; }
 
         public GenericParameterConstraintHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.GenericParameterConstraint MetadataToken { get; }
     }
 }

@@ -14,7 +14,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
             {
-                var genericParameters = MetadataState.GetCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
+                var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
                 var index = 0;
                 foreach (var genericParameter in genericParameters)
                 {

@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute" />
     //[PublicAPI]
-    public class DeclarativeSecurityAttribute : RuntimeCodeElement, ICodeElementWithHandle<DeclarativeSecurityAttributeHandle, System.Reflection.Metadata.DeclarativeSecurityAttribute>
+    public class DeclarativeSecurityAttribute : RuntimeCodeElement, ICodeElementWithTypedHandle<DeclarativeSecurityAttributeHandle, System.Reflection.Metadata.DeclarativeSecurityAttribute>
     {
         private readonly Lazy<CodeElement> _parent;
         private readonly Lazy<Blob> _permissionSet;
@@ -14,10 +14,10 @@ namespace ByrneLabs.Commons.MetadataDom
         internal DeclarativeSecurityAttribute(DeclarativeSecurityAttributeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
-            Action = MetadataToken.Action;
-            _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.PermissionSet)));
+            RawMetadata = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
+            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
+            Action = RawMetadata.Action;
+            _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.PermissionSet)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.Action" />
@@ -29,10 +29,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.DeclarativeSecurityAttribute.PermissionSet" />
         public Blob PermissionSet => _permissionSet.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.DeclarativeSecurityAttribute RawMetadata { get; }
 
         public DeclarativeSecurityAttributeHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.DeclarativeSecurityAttribute MetadataToken { get; }
     }
 }

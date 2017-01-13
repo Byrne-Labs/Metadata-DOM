@@ -8,11 +8,22 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal RuntimeCodeElement(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
+            if (key.Handle.HasValue)
+            {
+                DowncastMetadataHandle = key.Handle.Value;
+                MetadataToken = DowncastMetadataHandle.GetHashCode();
+            }
         }
 
         internal RuntimeCodeElement(Handle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
+            DowncastMetadataHandle = metadataHandle;
+            MetadataToken = metadataHandle.GetHashCode();
         }
+
+        public Handle DowncastMetadataHandle { get; }
+
+        public int MetadataToken { get; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader;

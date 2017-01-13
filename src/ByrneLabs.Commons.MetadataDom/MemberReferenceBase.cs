@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MemberReference" />
     //[PublicAPI]
-    public abstract class MemberReferenceBase : RuntimeCodeElement, ICodeElementWithHandle<MemberReferenceHandle, MemberReference>
+    public abstract class MemberReferenceBase : RuntimeCodeElement, ICodeElementWithTypedHandle<MemberReferenceHandle, MemberReference>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _parent;
@@ -14,11 +14,11 @@ namespace ByrneLabs.Commons.MetadataDom
         internal MemberReferenceBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
             MetadataHandle = (MemberReferenceHandle) key.UpcastHandle;
-            MetadataToken = Reader.GetMemberReference(MetadataHandle);
-            Name = AsString(MetadataToken.Name);
-            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            Kind = MetadataToken.GetKind();
+            RawMetadata = Reader.GetMemberReference(MetadataHandle);
+            Name = AsString(RawMetadata.Name);
+            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            Kind = RawMetadata.GetKind();
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.GetCustomAttributes" />
@@ -35,10 +35,8 @@ namespace ByrneLabs.Commons.MetadataDom
         ///     <see cref="TypeSpecification" />.</summary>
         public CodeElement Parent => _parent.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public MemberReference RawMetadata { get; }
 
         public MemberReferenceHandle MetadataHandle { get; }
-
-        public MemberReference MetadataToken { get; }
     }
 }

@@ -128,7 +128,11 @@ namespace ByrneLabs.Commons.MetadataDom
         public static Handle? DowncastHandle(object handle)
         {
             Handle? downcastHandle;
-            if (handle is AssemblyDefinitionHandle)
+            if (handle is Handle)
+            {
+                downcastHandle = (Handle) handle;
+            }
+            else if (handle is AssemblyDefinitionHandle)
             {
                 downcastHandle = (AssemblyDefinitionHandle) handle;
             }

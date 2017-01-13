@@ -14,8 +14,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal ModuleReference(ModuleReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            ScopedName = AsString(MetadataToken.Name);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            ScopedName = AsString(RawMetadata.Name);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         public override IAssembly Assembly => null;

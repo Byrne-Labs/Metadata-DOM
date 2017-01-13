@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource" />
     //[PublicAPI]
-    public class ManifestResource : RuntimeCodeElement, ICodeElementWithHandle<ManifestResourceHandle, System.Reflection.Metadata.ManifestResource>
+    public class ManifestResource : RuntimeCodeElement, ICodeElementWithTypedHandle<ManifestResourceHandle, System.Reflection.Metadata.ManifestResource>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
@@ -15,12 +15,12 @@ namespace ByrneLabs.Commons.MetadataDom
         internal ManifestResource(ManifestResourceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetManifestResource(metadataHandle);
-            Name = AsString(MetadataToken.Name);
-            Attributes = MetadataToken.Attributes;
-            _implementation = MetadataState.GetLazyCodeElement(MetadataToken.Implementation);
-            Offset = MetadataToken.Offset;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            RawMetadata = Reader.GetManifestResource(metadataHandle);
+            Name = AsString(RawMetadata.Name);
+            Attributes = RawMetadata.Attributes;
+            _implementation = MetadataState.GetLazyCodeElement(RawMetadata.Implementation);
+            Offset = RawMetadata.Offset;
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource.Attributes" />
@@ -41,10 +41,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource.Offset" />
         public long Offset { get; }
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.ManifestResource RawMetadata { get; }
 
         public ManifestResourceHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.ManifestResource MetadataToken { get; }
     }
 }

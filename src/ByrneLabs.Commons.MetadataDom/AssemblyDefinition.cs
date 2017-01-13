@@ -21,21 +21,21 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             var name = new AssemblyName
             {
-                Name = AsString(MetadataToken.Name),
-                CultureName = AsString(MetadataToken.Culture),
-                Flags = (MetadataToken.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (MetadataToken.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
-                ContentType = MetadataToken.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
-                Version = MetadataToken.Version
+                Name = AsString(RawMetadata.Name),
+                CultureName = AsString(RawMetadata.Culture),
+                Flags = (RawMetadata.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (RawMetadata.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
+                ContentType = RawMetadata.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
+                Version = RawMetadata.Version
             };
-            name.SetPublicKey(Reader.GetBlobBytes(MetadataToken.PublicKey));
+            name.SetPublicKey(Reader.GetBlobBytes(RawMetadata.PublicKey));
             Name = name;
 
             _entryPoint = new Lazy<MethodDefinition>(() => MetadataState.HasDebugMetadata ? MetadataState.GetCodeElement<MethodDefinition>(MetadataState.PdbReader.DebugMetadataHeader.EntryPoint) : null);
             _assemblyReferences = MetadataState.GetLazyCodeElements<AssemblyReference>(Reader.AssemblyReferences);
-            Flags = MetadataToken.Flags;
-            HashAlgorithm = MetadataToken.HashAlgorithm;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
+            Flags = RawMetadata.Flags;
+            HashAlgorithm = RawMetadata.HashAlgorithm;
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _moduleDefinition = MetadataState.GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
         }
 

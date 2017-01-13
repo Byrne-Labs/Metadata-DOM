@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.Document" />
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     //[PublicAPI]
-    public class Document : DebugCodeElement, ICodeElementWithHandle<DocumentHandle, System.Reflection.Metadata.Document>
+    public class Document : DebugCodeElement, ICodeElementWithTypedHandle<DocumentHandle, System.Reflection.Metadata.Document>
     {
         private static readonly IDictionary<Guid, HashAlgorithm> KnownHashAlgorithms = new Dictionary<Guid, HashAlgorithm>
         {
@@ -39,12 +39,12 @@ namespace ByrneLabs.Commons.MetadataDom
         internal Document(DocumentHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetDocument(metadataHandle);
-            Name = Reader.GetString(MetadataToken.Name);
-            _hash = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Hash)));
-            HashAlgorithmGuid = AsGuid(MetadataToken.HashAlgorithm);
+            RawMetadata = Reader.GetDocument(metadataHandle);
+            Name = Reader.GetString(RawMetadata.Name);
+            _hash = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.Hash)));
+            HashAlgorithmGuid = AsGuid(RawMetadata.HashAlgorithm);
             HashAlgorithm = HashAlgorithmGuid.Equals(Guid.Empty) ? (HashAlgorithm?) null : KnownHashAlgorithms[HashAlgorithmGuid];
-            LanguageGuid = AsGuid(MetadataToken.Language);
+            LanguageGuid = AsGuid(RawMetadata.Language);
             Language = KnownLanguages[LanguageGuid];
             _sourceCode = new Lazy<string>(() => File.Exists(Name) ? File.ReadAllText(Name) : null);
             _sourceCodeLines = new Lazy<string[]>(() => SourceCode == null ? null : Regex.Split(SourceCode, "\r\n|\r|\n"));
@@ -73,10 +73,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal string[] SourceCodeLines => _sourceCodeLines.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.Document RawMetadata { get; }
 
         public DocumentHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.Document MetadataToken { get; }
     }
 }

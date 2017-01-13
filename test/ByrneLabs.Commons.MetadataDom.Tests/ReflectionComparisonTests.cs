@@ -1,10 +1,10 @@
-﻿using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -128,7 +128,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
-            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ReadFailedTests\InvalidOperationException\gac\bcl.easyconverterlib.interop\1.3.0.0__481e0cb772795aa9\bcl.easyconverterlib.interop.dll"), null));
+            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.sqlserver.management.helpviewer\13.0.0.0__89845dcd8080cc91\microsoft.sqlserver.management.helpviewer.dll"), null));
         }
     }
 }

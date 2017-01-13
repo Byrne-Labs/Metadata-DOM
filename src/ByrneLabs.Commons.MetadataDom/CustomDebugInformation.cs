@@ -5,7 +5,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.CustomDebugInformation" />
     //[PublicAPI]
-    public class CustomDebugInformation : DebugCodeElement, ICodeElementWithHandle<CustomDebugInformationHandle, System.Reflection.Metadata.CustomDebugInformation>
+    public class CustomDebugInformation : DebugCodeElement, ICodeElementWithTypedHandle<CustomDebugInformationHandle, System.Reflection.Metadata.CustomDebugInformation>
     {
         private readonly Lazy<CodeElement> _parent;
         private readonly Lazy<Blob> _value;
@@ -13,10 +13,10 @@ namespace ByrneLabs.Commons.MetadataDom
         internal CustomDebugInformation(CustomDebugInformationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetCustomDebugInformation(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
-            Kind = AsGuid(MetadataToken.Kind);
-            _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Value)));
+            RawMetadata = Reader.GetCustomDebugInformation(metadataHandle);
+            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
+            Kind = AsGuid(RawMetadata.Kind);
+            _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.Value)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.CustomDebugInformation.Kind" />
@@ -28,10 +28,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.CustomDebugInformation.Value" />
         public Blob Value => _value.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.CustomDebugInformation RawMetadata { get; }
 
         public CustomDebugInformationHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.CustomDebugInformation MetadataToken { get; }
     }
 }

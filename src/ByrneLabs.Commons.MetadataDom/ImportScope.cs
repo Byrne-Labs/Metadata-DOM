@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ImportScope" />
     //[PublicAPI]
-    public class ImportScope : DebugCodeElement, ICodeElementWithHandle<ImportScopeHandle, System.Reflection.Metadata.ImportScope>
+    public class ImportScope : DebugCodeElement, ICodeElementWithTypedHandle<ImportScopeHandle, System.Reflection.Metadata.ImportScope>
     {
         private readonly Lazy<IEnumerable<ImportDefinition>> _imports;
         private readonly Lazy<Blob> _importsBlob;
@@ -15,10 +15,10 @@ namespace ByrneLabs.Commons.MetadataDom
         internal ImportScope(ImportScopeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetImportScope(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement<ImportScope>(MetadataToken.Parent);
-            _importsBlob = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.ImportsBlob)));
-            _imports = MetadataState.GetLazyCodeElements<ImportDefinition>(MetadataToken.GetImports());
+            RawMetadata = Reader.GetImportScope(metadataHandle);
+            _parent = MetadataState.GetLazyCodeElement<ImportScope>(RawMetadata.Parent);
+            _importsBlob = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.ImportsBlob)));
+            _imports = MetadataState.GetLazyCodeElements<ImportDefinition>(RawMetadata.GetImports());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ImportScope.GetImports" />
@@ -30,10 +30,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ImportScope.Parent" />
         public ImportScope Parent => _parent.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.ImportScope RawMetadata { get; }
 
         public ImportScopeHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.ImportScope MetadataToken { get; }
     }
 }

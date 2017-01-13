@@ -148,7 +148,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     throw new InvalidOperationException($"The parent type {Parent?.GetType().FullName} is not recognized");
                 }
 
-                fieldSignature = MetadataToken.DecodeFieldSignature(MetadataState.TypeProvider, genericContext);
+                fieldSignature = RawMetadata.DecodeFieldSignature(MetadataState.TypeProvider, genericContext);
             }
 
             return fieldSignature;

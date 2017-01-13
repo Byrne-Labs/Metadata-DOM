@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
-    public class PropertyDefinition : RuntimeCodeElement, IMember, ICodeElementWithHandle<PropertyDefinitionHandle, System.Reflection.Metadata.PropertyDefinition>
+    public class PropertyDefinition : RuntimeCodeElement, IMember, ICodeElementWithTypedHandle<PropertyDefinitionHandle, System.Reflection.Metadata.PropertyDefinition>
     {
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<MethodDefinition> _getMethod;
@@ -20,12 +20,12 @@ namespace ByrneLabs.Commons.MetadataDom
         internal PropertyDefinition(PropertyDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetPropertyDefinition(metadataHandle);
-            Name = AsString(MetadataToken.Name);
-            Attributes = MetadataToken.Attributes;
+            RawMetadata = Reader.GetPropertyDefinition(metadataHandle);
+            Name = AsString(RawMetadata.Name);
+            Attributes = RawMetadata.Attributes;
             _getMethod = new Lazy<MethodDefinition>(() =>
             {
-                var getMethod = MetadataState.GetCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Getter);
+                var getMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Getter);
                 if (getMethod != null)
                 {
                     getMethod.RelatedProperty = this;
@@ -34,15 +34,15 @@ namespace ByrneLabs.Commons.MetadataDom
             });
             _setMethod = new Lazy<MethodDefinition>(() =>
             {
-                var setMethod = MetadataState.GetCodeElement<MethodDefinition>(MetadataToken.GetAccessors().Setter);
+                var setMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Setter);
                 if (setMethod != null)
                 {
                     setMethod.RelatedProperty = this;
                 }
                 return setMethod;
             });
-            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
-            _signature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(((TypeDefinition) DeclaringType).GenericTypeParameters, new TypeBase[] { })));
+            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
+            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(((TypeDefinition) DeclaringType).GenericTypeParameters, new TypeBase[] { })));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Attributes" />
@@ -69,11 +69,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal MethodSignature<TypeBase> Signature => _signature.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.PropertyDefinition RawMetadata { get; }
 
         public PropertyDefinitionHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.PropertyDefinition MetadataToken { get; }
 
         public TypeBase DeclaringType => GetMethod?.DeclaringType ?? SetMethod?.DeclaringType;
 

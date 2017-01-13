@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -26,6 +26,8 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
+
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
 
         public override TypeBase DeclaringType => null;
 

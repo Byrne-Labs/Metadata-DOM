@@ -24,18 +24,18 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal MethodDefinitionBase(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            Name = AsString(MetadataToken.Name);
-            Attributes = MetadataToken.Attributes;
-            MethodImplementationFlags = MetadataToken.ImplAttributes;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(MetadataToken.GetDeclaringType());
-            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
-            _genericParameters = MetadataState.GetLazyCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
-            _import = MetadataState.GetLazyCodeElement<MethodImport>(MetadataToken.GetImport());
-            _methodBody = new Lazy<MethodBody>(() => MetadataToken.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(MetadataToken.RelativeVirtualAddress)));
+            Name = AsString(RawMetadata.Name);
+            Attributes = RawMetadata.Attributes;
+            MethodImplementationFlags = RawMetadata.ImplAttributes;
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
+            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
+            _genericParameters = MetadataState.GetLazyCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
+            _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
+            _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
             _parameters = new Lazy<IEnumerable<Parameter>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
-            _signature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
+            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Attributes" />
@@ -113,7 +113,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private IEnumerable<Parameter> LoadParameters()
         {
-            var allParameters = MetadataState.GetCodeElements<Parameter>(MetadataToken.GetParameters()).ToList();
+            var allParameters = MetadataState.GetCodeElements<Parameter>(RawMetadata.GetParameters()).ToList();
             var parameters = allParameters.Where(parameter => parameter.Position >= 0).ToList();
             if (Signature.ParameterTypes.Any() && parameters.Count == 0)
             {

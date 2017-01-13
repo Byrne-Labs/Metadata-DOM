@@ -15,11 +15,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal ExportedType(ExportedTypeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            Attributes = MetadataToken.Attributes;
-            _implementation = MetadataState.GetLazyCodeElement(MetadataToken.Implementation);
-            IsForwarder = MetadataToken.IsForwarder;
-            _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            Attributes = RawMetadata.Attributes;
+            _implementation = MetadataState.GetLazyCodeElement(RawMetadata.Implementation);
+            IsForwarder = RawMetadata.IsForwarder;
+            _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(RawMetadata.NamespaceDefinition);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public TypeAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override TypeBase DeclaringType { get; } = null;
 
@@ -54,11 +54,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        public override string Namespace => AsString(MetadataToken.Namespace);
+        public override string Namespace => AsString(RawMetadata.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.NamespaceDefinition" />
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(RawMetadata.Name);
     }
 }

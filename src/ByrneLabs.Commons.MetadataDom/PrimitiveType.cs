@@ -22,7 +22,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string AssemblyQualifiedName { get; } = null;
 
-        public IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
 
         public override TypeBase DeclaringType { get; } = null;
 

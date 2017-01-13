@@ -4,15 +4,15 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable" />
     //[PublicAPI]
-    public class LocalVariable : DebugCodeElement, ICodeElementWithHandle<LocalVariableHandle, System.Reflection.Metadata.LocalVariable>
+    public class LocalVariable : DebugCodeElement, ICodeElementWithTypedHandle<LocalVariableHandle, System.Reflection.Metadata.LocalVariable>
     {
         internal LocalVariable(LocalVariableHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetLocalVariable(metadataHandle);
-            Name = AsString(MetadataToken.Name);
-            Attributes = MetadataToken.Attributes;
-            Index = MetadataToken.Index;
+            RawMetadata = Reader.GetLocalVariable(metadataHandle);
+            Name = AsString(RawMetadata.Name);
+            Attributes = RawMetadata.Attributes;
+            Index = RawMetadata.Index;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable.Attributes" />
@@ -24,10 +24,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.LocalVariable.Name" />
         public string Name { get; }
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.LocalVariable RawMetadata { get; }
 
         public LocalVariableHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.LocalVariable MetadataToken { get; }
     }
 }

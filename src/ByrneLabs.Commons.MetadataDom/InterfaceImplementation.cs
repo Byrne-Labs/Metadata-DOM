@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {ImplementingType.FullName,nq} : {Interface.FullName}")]
-    public class InterfaceImplementation : RuntimeCodeElement, ICodeElementWithHandle<InterfaceImplementationHandle, System.Reflection.Metadata.InterfaceImplementation>
+    public class InterfaceImplementation : RuntimeCodeElement, ICodeElementWithTypedHandle<InterfaceImplementationHandle, System.Reflection.Metadata.InterfaceImplementation>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<TypeBase> _interface;
@@ -16,10 +16,10 @@ namespace ByrneLabs.Commons.MetadataDom
         internal InterfaceImplementation(InterfaceImplementationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetInterfaceImplementation(metadataHandle);
+            RawMetadata = Reader.GetInterfaceImplementation(metadataHandle);
             _interface = new Lazy<TypeBase>(() =>
             {
-                var interfaceDefinition = (TypeBase) MetadataState.GetCodeElement(MetadataToken.Interface);
+                var interfaceDefinition = (TypeBase) MetadataState.GetCodeElement(RawMetadata.Interface);
                 var typeSpecification = interfaceDefinition as TypeSpecification;
                 if (typeSpecification != null)
                 {
@@ -27,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 return interfaceDefinition;
             });
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation.GetCustomAttributes" />
@@ -40,10 +40,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// </summary>
         public TypeBase Interface => _interface.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.InterfaceImplementation RawMetadata { get; }
 
         public InterfaceImplementationHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.InterfaceImplementation MetadataToken { get; }
     }
 }

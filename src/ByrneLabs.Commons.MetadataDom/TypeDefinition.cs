@@ -50,7 +50,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public TypeBase BaseType => _baseType.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetDeclarativeSecurityAttributes" />
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
@@ -136,7 +136,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
         public IEnumerable<IMethodBase> Methods => _methods.Value;
 
-        public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(MetadataToken.Namespace);
+        public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(RawMetadata.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.NamespaceDefinition" />
         /// <summary>The definition handle of the namespace where the type is defined, or null if the type is nested or defined in a root namespace.</summary>
@@ -148,17 +148,17 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetProperties" />
         public IEnumerable<PropertyDefinition> Properties => _properties.Value;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(RawMetadata.Name);
 
         private void Initialize()
         {
-            _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(MetadataToken.NamespaceDefinition);
-            _methods = MetadataState.GetLazyCodeElements<IMethodBase>(MetadataToken.GetMethods());
-            _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(MetadataToken.GetMethodImplementations());
-            Attributes = MetadataToken.Attributes;
+            _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(RawMetadata.NamespaceDefinition);
+            _methods = MetadataState.GetLazyCodeElements<IMethodBase>(RawMetadata.GetMethods());
+            _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(RawMetadata.GetMethodImplementations());
+            Attributes = RawMetadata.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
             {
-                var baseType = (TypeBase) MetadataState.GetCodeElement(MetadataToken.BaseType);
+                var baseType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.BaseType);
                 var typeSpecification = baseType as TypeSpecification;
                 if (typeSpecification != null)
                 {
@@ -166,14 +166,14 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 return baseType;
             });
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(MetadataToken.GetDeclarativeSecurityAttributes());
-            _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(MetadataToken.GetDeclaringType());
-            _events = MetadataState.GetLazyCodeElements<EventDefinition>(MetadataToken.GetEvents());
-            _fields = MetadataState.GetLazyCodeElements<FieldDefinition>(MetadataToken.GetFields());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
+            _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
+            _events = MetadataState.GetLazyCodeElements<EventDefinition>(RawMetadata.GetEvents());
+            _fields = MetadataState.GetLazyCodeElements<FieldDefinition>(RawMetadata.GetFields());
             _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
             {
-                var genericParameters = MetadataState.GetCodeElements<GenericParameter>(MetadataToken.GetGenericParameters());
+                var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
                 var index = 0;
                 foreach (var genericParameter in genericParameters)
                 {
@@ -185,7 +185,7 @@ namespace ByrneLabs.Commons.MetadataDom
             });
             _interfaceImplementations = new Lazy<IEnumerable<InterfaceImplementation>>(() =>
             {
-                var interfaceImplementations = MetadataState.GetCodeElements<InterfaceImplementation>(MetadataToken.GetInterfaceImplementations());
+                var interfaceImplementations = MetadataState.GetCodeElements<InterfaceImplementation>(RawMetadata.GetInterfaceImplementations());
                 foreach (var interfaceImplementation in interfaceImplementations)
                 {
                     interfaceImplementation.ImplementingType = this;
@@ -193,9 +193,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 return interfaceImplementations;
             });
-            Layout = MetadataToken.GetLayout();
-            _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition>(MetadataToken.GetNestedTypes());
-            _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(MetadataToken.GetProperties());
+            Layout = RawMetadata.GetLayout();
+            _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition>(RawMetadata.GetNestedTypes());
+            _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(RawMetadata.GetProperties());
             _members = new Lazy<IEnumerable<IMember>>(() => Methods.Union<IMember>(Fields).Union(Events).Union(Properties).Union(NestedTypes).ToList());
         }
     }

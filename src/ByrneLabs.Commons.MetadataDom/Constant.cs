@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.Constant" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Parent.FullName,nq} = {Value}")]
-    public class Constant : RuntimeCodeElement, ICodeElementWithHandle<ConstantHandle, System.Reflection.Metadata.Constant>
+    public class Constant : RuntimeCodeElement, ICodeElementWithTypedHandle<ConstantHandle, System.Reflection.Metadata.Constant>
     {
         private readonly Lazy<IMember> _parent;
         private readonly Lazy<object> _value;
@@ -15,15 +15,15 @@ namespace ByrneLabs.Commons.MetadataDom
         internal Constant(ConstantHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetConstant(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement<IMember>(MetadataToken.Parent);
-            TypeCode = MetadataToken.TypeCode;
-            _value = new Lazy<object>(() => new Blob(Reader.GetBlobBytes(MetadataToken.Value)));
+            RawMetadata = Reader.GetConstant(metadataHandle);
+            _parent = MetadataState.GetLazyCodeElement<IMember>(RawMetadata.Parent);
+            TypeCode = RawMetadata.TypeCode;
+            _value = new Lazy<object>(() => new Blob(Reader.GetBlobBytes(RawMetadata.Value)));
 
             _value = new Lazy<object>(() =>
             {
                 object value;
-                var blobBytes = Reader.GetBlobBytes(MetadataToken.Value);
+                var blobBytes = Reader.GetBlobBytes(RawMetadata.Value);
                 switch (TypeCode)
                 {
                     case ConstantTypeCode.Byte:
@@ -75,7 +75,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 return value;
             });
 
-            MetadataState.GetLazyCodeElement<TypeBase>((PrimitiveTypeCode) MetadataToken.TypeCode);
+            MetadataState.GetLazyCodeElement<TypeBase>((PrimitiveTypeCode) RawMetadata.TypeCode);
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.Constant.Parent" />
@@ -88,10 +88,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.Constant.Value" />
         public object Value => _value.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.Constant RawMetadata { get; }
 
         public ConstantHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.Constant MetadataToken { get; }
     }
 }

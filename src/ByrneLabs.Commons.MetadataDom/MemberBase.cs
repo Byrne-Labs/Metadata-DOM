@@ -6,24 +6,19 @@ using System.Reflection.Metadata;
 namespace ByrneLabs.Commons.MetadataDom
 {
     //[PublicAPI]
-    public abstract class MemberBase<TMemberBase, THandle, TToken> : RuntimeCodeElement, IMember, ICodeElementWithHandle<THandle, TToken> where TMemberBase : MemberBase<TMemberBase, THandle, TToken>
+    public abstract class MemberBase : RuntimeCodeElement, IMember
     {
-        internal MemberBase(THandle handle, MetadataState metadataState) : base(new CodeElementKey<TMemberBase>(handle), metadataState)
+        internal MemberBase(Handle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            MetadataHandle = handle;
-            DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+        }
+
+        internal MemberBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
+        {
         }
 
         public abstract IEnumerable<CustomAttribute> CustomAttributes { get; }
 
         public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
-
-        public Handle DowncastMetadataHandle { get; }
-
-        public THandle MetadataHandle { get; }
-
-        public TToken MetadataToken { get; }
 
         public abstract TypeBase DeclaringType { get; }
 

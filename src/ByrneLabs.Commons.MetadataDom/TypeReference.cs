@@ -57,13 +57,15 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+
         public override TypeBase DeclaringType => ResolutionScope is TypeReference ? (TypeBase) ResolutionScope : null;
 
         public override bool IsGenericParameter { get; } = false;
 
         public override MemberTypes MemberType => ResolutionScope is TypeReference ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
-        public override string Namespace => AsString(MetadataToken.Namespace);
+        public override string Namespace => AsString(RawMetadata.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeReference.ResolutionScope" />
         /// <summary>Resolution scope in which the target type is defined and is uniquely identified by the specified
@@ -90,12 +92,12 @@ namespace ByrneLabs.Commons.MetadataDom
         /// </remarks>
         public object ResolutionScope => _resolutionScope.Value;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(RawMetadata.Name);
 
         private void Initialize()
         {
-            _resolutionScope = new Lazy<object>(() => !MetadataToken.ResolutionScope.IsNil ?
-                MetadataState.GetCodeElement(MetadataToken.ResolutionScope) :
+            _resolutionScope = new Lazy<object>(() => !RawMetadata.ResolutionScope.IsNil ?
+                MetadataState.GetCodeElement(RawMetadata.ResolutionScope) :
                 MetadataState.DefinedTypes.SingleOrDefault(exportedType => exportedType.Name.Equals(Name) && exportedType.Namespace.Equals(Namespace)));
         }
     }

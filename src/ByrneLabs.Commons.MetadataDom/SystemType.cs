@@ -19,6 +19,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override IAssembly Assembly { get; } = null;
 
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+
         public override TypeBase DeclaringType { get; } = null;
 
         public override bool IsGenericParameter { get; } = false;

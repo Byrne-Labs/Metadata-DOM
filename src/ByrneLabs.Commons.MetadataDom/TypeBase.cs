@@ -2,36 +2,29 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    public abstract class TypeBase<TTypeBase, THandle, TToken> : TypeBase<TTypeBase, THandle>, ICodeElementWithHandle<THandle, TToken> where TTypeBase : TypeBase
+    public abstract class TypeBase<TTypeBase, THandle, TToken> : TypeBase<TTypeBase, THandle>, ICodeElementWithTypedHandle<THandle, TToken> where TTypeBase : TypeBase
     {
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
-            DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
-            DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
-        public Handle DowncastMetadataHandle { get; }
+        public TToken RawMetadata { get; }
 
         public THandle MetadataHandle => KeyValue;
-
-        public TToken MetadataToken { get; }
     }
 
     public abstract class TypeBase<TTypeBase, TKey> : TypeBase where TTypeBase : TypeBase
@@ -56,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullNameWithoutAssemblies}")]
     //[PublicAPI]
-    public abstract class TypeBase : RuntimeCodeElement, IMember
+    public abstract class TypeBase : MemberBase
     {
         private Lazy<string> _fullName;
         private Lazy<string> _fullNameWithoutAssemblies;
@@ -107,6 +100,8 @@ namespace ByrneLabs.Commons.MetadataDom
         ///     <see cref="TypeBase" /> is not an array or a pointer, or is not passed by reference, or represents a generic type or a type parameter in the definition of a generic type or generic method.</returns>
         public TypeBase ElementType { get; }
 
+        public override string FullName => _fullName.Value;
+
         public virtual string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
 
         public IEnumerable<TypeBase> GenericTypeArguments { get; }
@@ -125,17 +120,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPointer { get; }
 
+        public override string Name => _name.Value;
+
+        public override string TextSignature => FullName;
+
         internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
-
-        public abstract TypeBase DeclaringType { get; }
-
-        public virtual string FullName => _fullName.Value;
-
-        public abstract MemberTypes MemberType { get; }
-
-        public string Name => _name.Value;
-
-        public string TextSignature => FullName;
 
         private void Initialize()
         {
@@ -166,7 +155,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 return fullName;
             });
 
-            _name = new Lazy<string>(() =>  UndecoratedName + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty));
+            _name = new Lazy<string>(() => UndecoratedName + (IsArray ? "[]" : string.Empty) + (IsByRef ? "&" : string.Empty) + (IsPointer ? "*" : string.Empty));
         }
     }
 }

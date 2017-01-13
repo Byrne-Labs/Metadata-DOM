@@ -5,7 +5,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition" />
     //[PublicAPI]
-    public class ImportDefinition : DebugCodeElement, ICodeElementWithToken<System.Reflection.Metadata.ImportDefinition>
+    public class ImportDefinition : DebugCodeElement, ICodeElementWithRawMetadata<System.Reflection.Metadata.ImportDefinition>
     {
         private readonly Lazy<Blob> _alias;
         private readonly Lazy<AssemblyReference> _targetAssembly;
@@ -14,7 +14,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal ImportDefinition(System.Reflection.Metadata.ImportDefinition importDefinition, MetadataState metadataState) : base(new CodeElementKey<ImportDefinition>(importDefinition), metadataState)
         {
-            MetadataToken = importDefinition;
+            RawMetadata = importDefinition;
             Kind = importDefinition.Kind;
             switch (importDefinition.Kind)
             {
@@ -69,6 +69,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ImportDefinition.TargetType" />
         public TypeBase TargetType => _targetType?.Value;
 
-        public System.Reflection.Metadata.ImportDefinition MetadataToken { get; }
+        public System.Reflection.Metadata.ImportDefinition RawMetadata { get; }
     }
 }

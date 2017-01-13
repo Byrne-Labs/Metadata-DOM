@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Constructor.DeclaringType.FullName}")]
-    public class CustomAttribute : RuntimeCodeElement, ICodeElementWithHandle<CustomAttributeHandle, System.Reflection.Metadata.CustomAttribute>
+    public class CustomAttribute : RuntimeCodeElement, ICodeElementWithTypedHandle<CustomAttributeHandle, System.Reflection.Metadata.CustomAttribute>
     {
         private readonly Lazy<IConstructor> _constructor;
         private readonly Lazy<CodeElement> _parent;
@@ -16,9 +16,9 @@ namespace ByrneLabs.Commons.MetadataDom
         internal CustomAttribute(CustomAttributeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetCustomAttribute(metadataHandle);
-            _constructor = MetadataState.GetLazyCodeElement<IConstructor>(MetadataToken.Constructor, null);
-            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
+            RawMetadata = Reader.GetCustomAttribute(metadataHandle);
+            _constructor = MetadataState.GetLazyCodeElement<IConstructor>(RawMetadata.Constructor, null);
+            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
             _value = new Lazy<CustomAttributeValue<TypeBase>?>(() =>
             {
                 CustomAttributeValue<TypeBase>? value;
@@ -26,10 +26,10 @@ namespace ByrneLabs.Commons.MetadataDom
                 /*
                  * I cannot figure out why, but the DecodeValue call will throw an exception if the argument kind is not field or property. -- Jonathan Byrne 12/19/2016
                  */
-                var valueKind = (CustomAttributeNamedArgumentKind) Reader.GetBlobReader(MetadataToken.Value).ReadSerializationTypeCode();
+                var valueKind = (CustomAttributeNamedArgumentKind) Reader.GetBlobReader(RawMetadata.Value).ReadSerializationTypeCode();
                 if (valueKind == CustomAttributeNamedArgumentKind.Field || valueKind == CustomAttributeNamedArgumentKind.Property)
                 {
-                    value = MetadataToken.DecodeValue(MetadataState.TypeProvider);
+                    value = RawMetadata.DecodeValue(MetadataState.TypeProvider);
                 }
                 else
                 {
@@ -52,10 +52,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.CustomAttribute.Value" />
         public CustomAttributeValue<TypeBase>? Value => _value.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.CustomAttribute RawMetadata { get; }
 
         public CustomAttributeHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.CustomAttribute MetadataToken { get; }
     }
 }

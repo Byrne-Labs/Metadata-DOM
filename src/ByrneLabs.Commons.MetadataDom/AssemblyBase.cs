@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -29,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract AssemblyName Name { get; }
     }
 
-    public abstract class AssemblyBase<TAssemblyBase, THandle, TToken> : AssemblyBase, ICodeElementWithHandle<THandle, TToken> where TAssemblyBase : AssemblyBase<TAssemblyBase, THandle, TToken>
+    public abstract class AssemblyBase<TAssemblyBase, THandle, TToken> : AssemblyBase, ICodeElementWithTypedHandle<THandle, TToken> where TAssemblyBase : AssemblyBase<TAssemblyBase, THandle, TToken>
     {
         internal AssemblyBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
@@ -38,14 +37,11 @@ namespace ByrneLabs.Commons.MetadataDom
         internal AssemblyBase(THandle metadataHandle, MetadataState metadataState) : base(new CodeElementKey<TAssemblyBase>(metadataHandle), metadataState)
         {
             MetadataHandle = metadataHandle;
-            DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(metadataHandle);
         }
 
-        public Handle DowncastMetadataHandle { get; }
+        public TToken RawMetadata { get; }
 
         public THandle MetadataHandle { get; }
-
-        public TToken MetadataToken { get; }
     }
 }

@@ -10,11 +10,11 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal ModuleDefinition(ModuleDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            ScopedName = AsString(MetadataToken.Name);
-            BaseGenerationId = AsGuid(MetadataToken.BaseGenerationId);
-            Generation = MetadataToken.Generation;
-            GenerationId = AsGuid(MetadataToken.GenerationId);
-            Mvid = AsGuid(MetadataToken.Mvid);
+            ScopedName = AsString(RawMetadata.Name);
+            BaseGenerationId = AsGuid(RawMetadata.BaseGenerationId);
+            Generation = RawMetadata.Generation;
+            GenerationId = AsGuid(RawMetadata.GenerationId);
+            Mvid = AsGuid(RawMetadata.Mvid);
         }
 
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;

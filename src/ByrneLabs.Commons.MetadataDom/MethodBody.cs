@@ -6,32 +6,32 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock" />
     //[PublicAPI]
-    public class MethodBody : RuntimeCodeElement, ICodeElementWithToken<MethodBodyBlock>
+    public class MethodBody : RuntimeCodeElement, ICodeElementWithRawMetadata<MethodBodyBlock>
     {
         private readonly Lazy<IEnumerable<ExceptionRegion>> _exceptionRegions;
         private readonly Lazy<StandaloneSignature> _localSignature;
 
         internal MethodBody(int relativeVirtualAddress, MetadataState metadataState) : base(new CodeElementKey<MethodBody>(relativeVirtualAddress), metadataState)
         {
-            MetadataToken = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
-            _exceptionRegions = MetadataState.GetLazyCodeElements<ExceptionRegion>(MetadataToken.ExceptionRegions);
+            RawMetadata = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
+            _exceptionRegions = MetadataState.GetLazyCodeElements<ExceptionRegion>(RawMetadata.ExceptionRegions);
             _localSignature = new Lazy<StandaloneSignature>(() =>
             {
                 StandaloneSignature localSignature;
-                if (MetadataToken.LocalSignature.IsNil)
+                if (RawMetadata.LocalSignature.IsNil)
                 {
                     localSignature = null;
                 }
                 else
                 {
-                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(MetadataToken.LocalSignature);
+                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(RawMetadata.LocalSignature);
                     localSignature.GenericContext = GenericContext;
                 }
                 return localSignature;
             });
-            LocalVariablesInitialized = MetadataToken.LocalVariablesInitialized;
-            MaxStack = MetadataToken.MaxStack;
-            Size = MetadataToken.Size;
+            LocalVariablesInitialized = RawMetadata.LocalVariablesInitialized;
+            MaxStack = RawMetadata.MaxStack;
+            Size = RawMetadata.Size;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.ExceptionRegions" />
@@ -51,6 +51,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal GenericContext GenericContext { get; set; }
 
-        public MethodBodyBlock MetadataToken { get; }
+        public MethodBodyBlock RawMetadata { get; }
     }
 }

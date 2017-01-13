@@ -63,14 +63,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                     }
                     catch (Exception exception)
                     {
-                        var realException = exception;
-                        while (realException is TargetInvocationException && realException.InnerException != null)
-                        {
-                            realException = realException.InnerException;
-                        }
-
-                        errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{realException}");
-                        readException = readException ?? realException;
+                        readException = readException ?? HandleException(exception, assemblyFile, errors);
                     }
 
                     try
@@ -79,20 +72,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                     }
                     catch (Exception exception)
                     {
-                        readException = exception;
-                        while (readException is TargetInvocationException && readException.InnerException != null)
-                        {
-                            readException = readException.InnerException;
-                        }
-
-                        errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{readException}");
+                        readException = readException ?? HandleException(exception, assemblyFile, errors);
                     }
                 }
             }
             catch (Exception exception)
             {
-                readException = exception;
-                errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{exception}");
+                readException = readException ?? HandleException(exception, assemblyFile, errors);
             }
 
             if (readException != null)
@@ -149,35 +135,34 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 
             foreach (var reflectionMember in reflectionType.DeclaredMembers)
             {
-                var reflectionMemberSignature = GetTextSignature(reflectionType, reflectionMember);
-                var metadataMember = metadataType.Members.SingleOrDefault(codeElement => codeElement.GetType() == GetMetadataType(reflectionMember) && codeElement.TextSignature.Equals(reflectionMemberSignature));
+                var metadataMember = metadataType.Members.SingleOrDefault(member => member.MetadataToken == reflectionMember.MetadataToken);
                 if (metadataMember == null)
                 {
                     errors.Add($"Could not find member {reflectionMember.Name} on type {metadataType.FullName}");
                 }
                 else if (reflectionMember is TypeInfo)
                 {
-                    CompareCodeElementsToReflectionData((TypeDefinition)metadataMember, (TypeInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((TypeDefinition) metadataMember, (TypeInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is PropertyInfo)
                 {
-                    CompareCodeElementsToReflectionData((PropertyDefinition)metadataMember, (PropertyInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((PropertyDefinition) metadataMember, (PropertyInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is ConstructorInfo)
                 {
-                    CompareCodeElementsToReflectionData((ConstructorDefinition)metadataMember, (ConstructorInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((ConstructorDefinition) metadataMember, (ConstructorInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is MethodInfo)
                 {
-                    CompareCodeElementsToReflectionData((MethodDefinition)metadataMember, (MethodInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((MethodDefinition) metadataMember, (MethodInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is EventInfo)
                 {
-                    CompareCodeElementsToReflectionData((EventDefinition)metadataMember, (EventInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((EventDefinition) metadataMember, (EventInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else if (reflectionMember is FieldInfo)
                 {
-                    CompareCodeElementsToReflectionData((FieldDefinition)metadataMember, (FieldInfo)reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
+                    CompareCodeElementsToReflectionData((FieldDefinition) metadataMember, (FieldInfo) reflectionMember, checkedMetadataElements, checkedReflectionElements, errors);
                 }
                 else
                 {
@@ -197,19 +182,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 
             CompareElementProperties(metadataProperty.FullName, metadataProperty, reflectionProperty, errors);
         }
-
-        private static void CompareTypes(string sourceName, TypeBase metadataType, Type reflectionType, ICollection<string> errors)
-        {
-            if (!Equals(metadataType.Namespace, reflectionType.Namespace))
-            {
-                errors.Add($"{sourceName} reflection type namespace \"{reflectionType.Namespace}\" does not match metadata type namespace \"{metadataType.Namespace}\"");
-            }
-            if (!Equals(metadataType.Name, reflectionType.Name))
-            {
-                errors.Add($"{sourceName} reflection type name \"{reflectionType.Name}\" does not match metadata type name \"{metadataType.Name}\"");
-            }
-        }
-
 
         private static void CompareCodeElementsToReflectionData(MethodBase metadataMethodBase, System.Reflection.MethodBase reflectionMethodBase, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements, ICollection<string> errors)
         {
@@ -231,6 +203,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                     errors.Add($"The parameter named {reflectionParameter.Name} with position {reflectionParameter.Position} on {metadataMethodBase.FullName} could not be found in metadata");
                     continue;
                 }
+
                 CompareTypes($"The parameter named {reflectionParameter.Name} with position {reflectionParameter.Position} on {metadataMethodBase.FullName}", metadataParameter.ParameterType, reflectionParameter.ParameterType, errors);
                 CompareElementProperties(metadataParameter.FullName, metadataParameter, reflectionParameter, errors);
             }
@@ -279,6 +252,18 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                 {
                     errors.Add($"{elementName}.{propertyToCompare.Item1.Name} has a value of {metadataPropertyValue} in metadata but a value of {reflectionPropertyValue} in reflection");
                 }
+            }
+        }
+
+        private static void CompareTypes(string sourceName, TypeBase metadataType, Type reflectionType, ICollection<string> errors)
+        {
+            if (!Equals(metadataType.Namespace, reflectionType.Namespace))
+            {
+                errors.Add($"{sourceName} reflection type namespace \"{reflectionType.Namespace}\" does not match metadata type namespace \"{metadataType.Namespace}\"");
+            }
+            if (!Equals(metadataType.Name, reflectionType.Name))
+            {
+                errors.Add($"{sourceName} reflection type name \"{reflectionType.Name}\" does not match metadata type name \"{metadataType.Name}\"");
             }
         }
 
@@ -340,56 +325,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             return metadataType;
         }
 
-        private static string GetTextSignature(TypeInfo reflectedType, MemberInfo memberInfo)
-        {
-            string textSignature;
-            if (memberInfo is TypeInfo)
-            {
-                textSignature = GetTextSignature((TypeInfo)memberInfo);
-            }
-            else if (memberInfo is PropertyInfo)
-            {
-                textSignature = GetTextSignature(reflectedType, (PropertyInfo)memberInfo);
-            }
-            else if (memberInfo is FieldInfo)
-            {
-                textSignature = GetTextSignature(reflectedType, (FieldInfo)memberInfo);
-            }
-            else if (memberInfo is EventInfo)
-            {
-                textSignature = GetTextSignature(reflectedType, (EventInfo)memberInfo);
-            }
-            else if (memberInfo is MethodInfo)
-            {
-                textSignature = GetTextSignature(reflectedType, (MethodInfo)memberInfo);
-            }
-            else if (memberInfo is ConstructorInfo)
-            {
-                textSignature = GetTextSignature(reflectedType, (ConstructorInfo)memberInfo);
-            }
-            else
-            {
-                throw new InvalidOperationException($"Unknown member info type {memberInfo.GetType().FullName}");
-            }
-
-            return textSignature;
-        }
-
-        private static string GetTextSignature(TypeInfo typeInfo) => typeInfo.FullName;
-
-        private static string GetTextSignature(TypeInfo reflectedType, PropertyInfo propertyInfo) =>
-            $"{reflectedType.FullName}.{propertyInfo.Name}" + ("Item".Equals(propertyInfo.Name) && propertyInfo.GetMethod.GetParameters().Any() ? $"[{string.Join(", ", propertyInfo.GetMethod.GetParameters().Select(parameter => parameter.ParameterType.Namespace + "." + parameter.ParameterType.Name))}]" : string.Empty);
-
-        private static string GetTextSignature(TypeInfo reflectedType, FieldInfo fieldInfo) => $"{reflectedType.FullName}.{fieldInfo.Name}";
-
-        private static string GetTextSignature(TypeInfo reflectedType, EventInfo eventInfo) => $"{reflectedType.FullName}.{eventInfo.Name}";
-
-        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for MethodInfo clases")]
-        private static string GetTextSignature(TypeInfo reflectedType, MethodInfo methodInfo) => $"{reflectedType.FullName}.{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
-
-        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for ConstructorInfo clases")]
-        private static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo) => $"{reflectedType.FullName}{constructorInfo.Name}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTypeFullNameWithoutAssemblies(parameter.ParameterType.GetTypeInfo())))})";
-
         private static string GetTypeFullNameWithoutAssemblies(TypeInfo type)
         {
             string parent;
@@ -406,6 +341,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             var fullName = parent + type.Name + genericArgumentsText;
 
             return fullName;
+        }
+
+        private static Exception HandleException(Exception exception, FileInfo assemblyFile, ICollection<string> errors)
+        {
+            var realException = exception;
+            while (realException is TargetInvocationException && realException.InnerException != null)
+            {
+                realException = realException.InnerException;
+            }
+
+            errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{realException}");
+
+            return realException;
         }
 
         private static bool WasChecked(CodeElement metadataElement, object reflectionElement, ICollection<CodeElement> checkedMetadataElements, ICollection<object> checkedReflectionElements)

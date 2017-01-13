@@ -16,8 +16,8 @@ namespace ByrneLabs.Commons.MetadataDom
         internal MethodSpecification(MethodSpecificationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             _method = new Lazy<MethodBase>(() => (MethodBase) MetadataState.GetCodeElement(new CodeElementKey(Method.GetType(), Method, Signature)));
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            _signature = new Lazy<ImmutableArray<TypeBase>>(() => MetadataToken.DecodeSignature(MetadataState.TypeProvider, null));
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            _signature = new Lazy<ImmutableArray<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, null));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.GetCustomAttributes" />

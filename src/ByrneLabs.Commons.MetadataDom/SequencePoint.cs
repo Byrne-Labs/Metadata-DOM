@@ -6,14 +6,14 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint" />
     //[PublicAPI]
-    public class SequencePoint : RuntimeCodeElement, ICodeElementWithToken<System.Reflection.Metadata.SequencePoint>, IContainsSourceCode
+    public class SequencePoint : RuntimeCodeElement, ICodeElementWithRawMetadata<System.Reflection.Metadata.SequencePoint>, IContainsSourceCode
     {
         private readonly Lazy<Document> _document;
         private readonly Lazy<string> _sourceCode;
 
         internal SequencePoint(System.Reflection.Metadata.SequencePoint sequencePoint, MetadataState metadataState) : base(new CodeElementKey<SequencePoint>(sequencePoint), metadataState)
         {
-            MetadataToken = sequencePoint;
+            RawMetadata = sequencePoint;
             _document = MetadataState.GetLazyCodeElement<Document>(sequencePoint.Document);
             EndColumn = sequencePoint.EndColumn;
             EndLine = sequencePoint.EndLine;
@@ -42,7 +42,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.StartLine" />
         public int StartLine { get; }
 
-        public System.Reflection.Metadata.SequencePoint MetadataToken { get; }
+        public System.Reflection.Metadata.SequencePoint RawMetadata { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.SequencePoint.Document" />
         public Document Document => _document.Value;

@@ -18,13 +18,13 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             var name = new AssemblyName
             {
-                Name = AsString(MetadataToken.Name),
-                CultureName = AsString(MetadataToken.Culture),
-                Flags = (MetadataToken.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (MetadataToken.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
-                ContentType = MetadataToken.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
-                Version = MetadataToken.Version
+                Name = AsString(RawMetadata.Name),
+                CultureName = AsString(RawMetadata.Culture),
+                Flags = (RawMetadata.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (RawMetadata.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
+                ContentType = RawMetadata.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
+                Version = RawMetadata.Version
             };
-            var publicKeyOrToken = Reader.GetBlobBytes(MetadataToken.PublicKeyOrToken);
+            var publicKeyOrToken = Reader.GetBlobBytes(RawMetadata.PublicKeyOrToken);
             if (publicKeyOrToken.Length == 8)
             {
                 name.SetPublicKeyToken(publicKeyOrToken);
@@ -35,10 +35,10 @@ namespace ByrneLabs.Commons.MetadataDom
             }
             Name = name;
 
-            _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.HashValue)));
-            Flags = MetadataToken.Flags;
+            _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.HashValue)));
+            Flags = RawMetadata.Flags;
 
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.GetCustomAttributes" />

@@ -7,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature" />
     //[PublicAPI]
-    public class StandaloneSignature : RuntimeCodeElement, ICodeElementWithHandle<StandaloneSignatureHandle, System.Reflection.Metadata.StandaloneSignature>
+    public class StandaloneSignature : RuntimeCodeElement, ICodeElementWithTypedHandle<StandaloneSignatureHandle, System.Reflection.Metadata.StandaloneSignature>
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<ImmutableArray<TypeBase>> _localSignature;
@@ -16,11 +16,11 @@ namespace ByrneLabs.Commons.MetadataDom
         internal StandaloneSignature(StandaloneSignatureHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetStandaloneSignature(metadataHandle);
-            _localSignature = new Lazy<ImmutableArray<TypeBase>>(() => MetadataToken.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
-            _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => MetadataToken.DecodeMethodSignature(MetadataState.TypeProvider, GenericContext));
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            Kind = MetadataToken.GetKind();
+            RawMetadata = Reader.GetStandaloneSignature(metadataHandle);
+            _localSignature = new Lazy<ImmutableArray<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
+            _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeMethodSignature(MetadataState.TypeProvider, GenericContext));
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            Kind = RawMetadata.GetKind();
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetCustomAttributes" />
@@ -35,10 +35,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal GenericContext GenericContext { get; set; }
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.StandaloneSignature RawMetadata { get; }
 
         public StandaloneSignatureHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.StandaloneSignature MetadataToken { get; }
     }
 }

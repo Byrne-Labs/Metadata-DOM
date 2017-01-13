@@ -5,20 +5,20 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion" />
     //[PublicAPI]
-    public class ExceptionRegion : RuntimeCodeElement, ICodeElementWithToken<System.Reflection.Metadata.ExceptionRegion>
+    public class ExceptionRegion : RuntimeCodeElement, ICodeElementWithRawMetadata<System.Reflection.Metadata.ExceptionRegion>
     {
         private readonly Lazy<TypeBase> _catchType;
 
         internal ExceptionRegion(System.Reflection.Metadata.ExceptionRegion exceptionRegion, MetadataState metadataState) : base(new CodeElementKey<ExceptionRegion>(exceptionRegion), metadataState)
         {
-            MetadataToken = exceptionRegion;
-            _catchType = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(MetadataToken.CatchType));
-            FilterOffset = MetadataToken.FilterOffset;
-            HandlerLength = MetadataToken.HandlerLength;
-            HandlerOffset = MetadataToken.HandlerOffset;
-            Kind = MetadataToken.Kind;
-            TryLength = MetadataToken.TryLength;
-            TryOffset = MetadataToken.TryOffset;
+            RawMetadata = exceptionRegion;
+            _catchType = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(RawMetadata.CatchType));
+            FilterOffset = RawMetadata.FilterOffset;
+            HandlerLength = RawMetadata.HandlerLength;
+            HandlerOffset = RawMetadata.HandlerOffset;
+            Kind = RawMetadata.Kind;
+            TryLength = RawMetadata.TryLength;
+            TryOffset = RawMetadata.TryOffset;
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.CatchType" />
@@ -44,6 +44,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ExceptionRegion.TryOffset" />
         public int TryOffset { get; }
 
-        public System.Reflection.Metadata.ExceptionRegion MetadataToken { get; }
+        public System.Reflection.Metadata.ExceptionRegion RawMetadata { get; }
     }
 }

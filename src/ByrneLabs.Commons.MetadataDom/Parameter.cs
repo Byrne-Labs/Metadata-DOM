@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.Parameter" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{ParameterType.FullName,nq} {Name,nq}\"")]
-    public class Parameter : RuntimeCodeElement, ICodeElementWithHandle<ParameterHandle, System.Reflection.Metadata.Parameter>, IParameter
+    public class Parameter : RuntimeCodeElement, ICodeElementWithTypedHandle<ParameterHandle, System.Reflection.Metadata.Parameter>, IParameter
     {
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Constant> _defaultValue;
@@ -40,13 +40,13 @@ namespace ByrneLabs.Commons.MetadataDom
         internal Parameter(ParameterHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            MetadataToken = Reader.GetParameter(metadataHandle);
-            Name = AsString(MetadataToken.Name);
-            Attributes = MetadataToken.Attributes;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
-            Position = MetadataToken.SequenceNumber - 1;
-            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(MetadataToken.GetDefaultValue());
-            _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(MetadataToken.GetMarshallingDescriptor())));
+            RawMetadata = Reader.GetParameter(metadataHandle);
+            Name = AsString(RawMetadata.Name);
+            Attributes = RawMetadata.Attributes;
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            Position = RawMetadata.SequenceNumber - 1;
+            _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
+            _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.GetMarshallingDescriptor())));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.Attributes" />
@@ -62,11 +62,9 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetMarshallingDescriptor" />
         public Blob MarshallingDescriptor => _marshallingDescriptor.Value;
 
-        public Handle DowncastMetadataHandle => MetadataHandle;
+        public System.Reflection.Metadata.Parameter RawMetadata { get; }
 
         public ParameterHandle MetadataHandle { get; }
-
-        public System.Reflection.Metadata.Parameter MetadataToken { get; }
 
         public TypeBase DeclaringType => Member.DeclaringType;
 

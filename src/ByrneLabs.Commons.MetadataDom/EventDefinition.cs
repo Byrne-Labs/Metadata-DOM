@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
-    public class EventDefinition : MemberBase<EventDefinition, EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
+    public class EventDefinition : MemberBase, ICodeElementWithTypedHandle<EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
     {
         private readonly Lazy<IMethod> _addMethod;
         private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
@@ -20,13 +20,15 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            _type = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(MetadataToken.Type));
-            Attributes = MetadataToken.Attributes;
-            Name = AsString(MetadataToken.Name);
-            _addMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Adder);
-            _raiseMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Raiser);
-            _removeMethod = MetadataState.GetLazyCodeElement<IMethod>(MetadataToken.GetAccessors().Remover);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            MetadataHandle = metadataHandle;
+            RawMetadata = (System.Reflection.Metadata.EventDefinition) MetadataState.GetTokenForHandle(metadataHandle);
+            _type = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(RawMetadata.Type));
+            Attributes = RawMetadata.Attributes;
+            Name = AsString(RawMetadata.Name);
+            _addMethod = MetadataState.GetLazyCodeElement<IMethod>(RawMetadata.GetAccessors().Adder);
+            _raiseMethod = MetadataState.GetLazyCodeElement<IMethod>(RawMetadata.GetAccessors().Raiser);
+            _removeMethod = MetadataState.GetLazyCodeElement<IMethod>(RawMetadata.GetAccessors().Remover);
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Adder" />
@@ -62,5 +64,9 @@ namespace ByrneLabs.Commons.MetadataDom
          * HACK:  This should probably come from MetadataToken.Type but it is unclear how to create the generic context for a type specification when this is done.  It is much easier to get the type from the adder method.
          */
         public TypeBase Type => AddMethod.Parameters.Single().ParameterType;
+
+        public System.Reflection.Metadata.EventDefinition RawMetadata { get; }
+
+        public EventDefinitionHandle MetadataHandle { get; }
     }
 }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests
 {

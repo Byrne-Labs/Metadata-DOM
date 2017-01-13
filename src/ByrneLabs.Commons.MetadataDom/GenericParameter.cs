@@ -40,7 +40,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<GenericParameterConstraint> Constraints => _constraints.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public MethodDefinition DeclaringMethod { get; internal set; }
 
@@ -62,17 +62,17 @@ namespace ByrneLabs.Commons.MetadataDom
         ///     <see cref="TypeDefinition" /> or <see cref="MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
 
-        internal override string UndecoratedName => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(RawMetadata.Name);
 
         internal void SetDeclaringType(TypeBase declaringType) => _declaringType = declaringType;
 
         private void Initialize()
         {
-            Attributes = MetadataToken.Attributes;
-            Index = MetadataToken.Index;
-            _parent = MetadataState.GetLazyCodeElement(MetadataToken.Parent);
-            _constraints = MetadataState.GetLazyCodeElements<GenericParameterConstraint>(MetadataToken.GetConstraints());
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            Attributes = RawMetadata.Attributes;
+            Index = RawMetadata.Index;
+            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
+            _constraints = MetadataState.GetLazyCodeElements<GenericParameterConstraint>(RawMetadata.GetConstraints());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
     }
 }

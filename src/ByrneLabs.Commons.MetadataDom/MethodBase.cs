@@ -1,48 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     //[PublicAPI]
-    public abstract class MethodBase<TMethodBase, THandle, TToken> : MethodBase, ICodeElementWithHandle<THandle, TToken> where TMethodBase : MethodBase<TMethodBase, THandle, TToken>
+    public abstract class MethodBase<TMethodBase, THandle, TToken> : MethodBase, ICodeElementWithTypedHandle<THandle, TToken> where TMethodBase : MethodBase<TMethodBase, THandle, TToken>
     {
         internal MethodBase(THandle handle, MetadataState metadataState) : base(new CodeElementKey<TMethodBase>(handle), metadataState)
         {
-            DowncastMetadataHandle = MetadataState.DowncastHandle(MetadataHandle).Value;
             MetadataHandle = handle;
-            MetadataToken = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(handle);
         }
 
         public override MemberTypes MemberType => this is IConstructor ? MemberTypes.Constructor : MemberTypes.Method;
 
-        public Handle DowncastMetadataHandle { get; }
+        public TToken RawMetadata { get; }
 
         public THandle MetadataHandle { get; }
-
-        public TToken MetadataToken { get; }
     }
 
-    public abstract class MethodBase : RuntimeCodeElement, IMethodBase
+    public abstract class MethodBase : MemberBase, IMethodBase
     {
         internal MethodBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
         }
 
-        public abstract IEnumerable<CustomAttribute> CustomAttributes { get; }
-
         public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
-
-        public abstract TypeBase DeclaringType { get; }
-
-        public abstract string FullName { get; }
-
-        public abstract MemberTypes MemberType { get; }
-
-        public abstract string Name { get; }
-
-        public abstract string TextSignature { get; }
 
         public abstract IEnumerable<TypeBase> GenericArguments { get; }
 

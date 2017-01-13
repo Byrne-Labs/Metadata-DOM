@@ -30,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override TypeBase DeclaringType { get; } = null;
 
@@ -52,7 +52,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private void Initialize()
         {
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(MetadataToken.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _signature = new Lazy<TypeBase>(() =>
             {
                 GenericContext genericContext;
@@ -69,7 +69,7 @@ namespace ByrneLabs.Commons.MetadataDom
                     throw new InvalidOperationException("No generic type parameters found for type specification");
                 }
 
-                var signature = MetadataToken.DecodeSignature(MetadataState.TypeProvider, genericContext);
+                var signature = RawMetadata.DecodeSignature(MetadataState.TypeProvider, genericContext);
                 return signature;
             });
         }
