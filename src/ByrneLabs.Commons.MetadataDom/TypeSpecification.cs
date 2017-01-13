@@ -40,7 +40,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        public override string Name => Signature.Name;
+        internal override string UndecoratedName => Signature.Name;
 
         public override string Namespace => Signature.Namespace;
 

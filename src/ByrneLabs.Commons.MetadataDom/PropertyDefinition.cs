@@ -77,7 +77,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase DeclaringType => GetMethod?.DeclaringType ?? SetMethod?.DeclaringType;
 
-        public string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod.Parameters.Count() > 0 ? $"[{ string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
+        public string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod != null && GetMethod.Parameters.Count() > 0 ? $"[{ string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
 
         public MemberTypes MemberType { get; } = MemberTypes.Property;
 

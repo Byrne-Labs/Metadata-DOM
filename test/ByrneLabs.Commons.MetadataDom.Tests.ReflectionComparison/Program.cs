@@ -7,23 +7,24 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
     {
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length < 2)
             {
-                throw new ArgumentException("An assembly file name must be provided");
+                throw new ArgumentException("A base directory and assembly file name must be provided");
             }
-            if (args.Length > 2)
+            if (args.Length > 3)
             {
-                throw new ArgumentException("Only an assembly file name and PDB file name can be provided");
+                throw new ArgumentException("Only a base directory, assembly file name, and PDB file name can be provided");
             }
 
+            ReflectionChecker.BaseDirectory = args[0];
             bool success;
-            if (args.Length == 1)
+            if (args.Length == 2)
             {
-                success = ReflectionChecker.Check(new FileInfo(args[0]));
+                success = ReflectionChecker.Check(new FileInfo(args[1]));
             }
             else
             {
-                success = ReflectionChecker.Check(new FileInfo(args[0]), new FileInfo(args[0]));
+                success = ReflectionChecker.Check(new FileInfo(args[1]), new FileInfo(args[2]));
             }
 
             Environment.Exit(success ? 0 : 1);

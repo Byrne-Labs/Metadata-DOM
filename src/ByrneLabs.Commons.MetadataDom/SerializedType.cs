@@ -25,13 +25,13 @@ namespace ByrneLabs.Commons.MetadataDom
                 var declaringTypeName = $"{nameParse.Groups[1].Value}.{nameParse.Groups[2].Value}, {nameParse.Groups[4].Value}";
                 _declaringType = MetadataState.GetLazyCodeElement<SerializedType>(declaringTypeName);
                 MemberType = MemberTypes.NestedType;
-                Name = nameParse.Groups[3].Value;
+                UndecoratedName = nameParse.Groups[3].Value;
             }
             else
             {
                 _declaringType = new Lazy<SerializedType>(() => null);
                 MemberType = MemberTypes.TypeInfo;
-                Name = nameParse.Groups[2].Value;
+                UndecoratedName = nameParse.Groups[2].Value;
             }
             Namespace = nameParse.Groups[1].Value.TrimEnd('.');
             var assemblyName = new AssemblyName(nameParse.Groups[4].Value);
@@ -46,7 +46,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; }
 
-        public override string Name { get; }
+        internal override string UndecoratedName { get; }
 
         public override string Namespace { get; }
     }

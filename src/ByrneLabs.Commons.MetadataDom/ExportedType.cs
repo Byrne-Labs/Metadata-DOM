@@ -54,7 +54,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        public override string Name => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
 
         public override string Namespace => AsString(MetadataToken.Namespace);
 

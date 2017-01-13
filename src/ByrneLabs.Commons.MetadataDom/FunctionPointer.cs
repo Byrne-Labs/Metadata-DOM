@@ -37,7 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType => MemberTypes.Method;
 
-        public override string Name => null;
+        internal override string UndecoratedName => null;
 
         public override string Namespace => null;
 

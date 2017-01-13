@@ -63,7 +63,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType => ResolutionScope is TypeReference ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
-        public override string Name => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
 
         public override string Namespace => AsString(MetadataToken.Namespace);
 

@@ -35,7 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 var assemblyFiles = ReadFailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
                 foreach (var assemblyFile in assemblyFiles)
                 {
-                    Assert.True(CheckMetadata(assemblyFile, null));
+                    Assert.True(CheckMetadataInProcess(assemblyFile, null));
                 }
             }
         }
@@ -44,14 +44,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
-            Assert.True(CheckMetadata(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ReadFailedTests\NullReferenceException\gac_32\intuit.spc.map.windowsfirewallutilities\v4.0_6.0.39.0__30bbd97113d631f1\intuit.spc.map.windowsfirewallutilities.dll"), null));
+            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.teamfoundation.diff\v4.0_12.0.0.0__b03f5f7f11d50a3a\microsoft.teamfoundation.diff.dll"), null));
         }
 
         [Fact]
         [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnSampleAssembly()
         {
-            Assert.True(CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")), null));
+            Assert.True(CheckMetadataOutOfProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")), null));
         }
 
         [Fact]
@@ -61,7 +61,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = CopyAllGacAssemblies();
             var startTime = DateTime.Now;
             var pass = true;
-            Parallel.ForEach(assemblyFiles, assemblyFile => { pass &= CheckMetadata(assemblyFile, null); });
+            Parallel.ForEach(assemblyFiles, assemblyFile =>
+            {
+                pass &= CheckMetadataOutOfProcess(assemblyFile, null);
+            });
 
             var executionTime = DateTime.Now.Subtract(startTime);
             _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
@@ -75,19 +78,25 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         public void TestReflectionComparisonOnPrebuiltAssemblies()
         {
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
-            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file=>!file.Name.Equals("Interop.Mock01.Impl.dll")).ToList();
+            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Equals("Interop.Mock01.Impl.dll")).ToList();
             foreach (var assemblyFile in assemblyFiles)
             {
-                Assert.True(CheckMetadata(assemblyFile, null));
+                Assert.True(CheckMetadataInProcess(assemblyFile, null));
             }
         }
 
-        private bool CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile)
+        private bool CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile)
+        {
+            ReflectionChecker.BaseDirectory = AppContext.BaseDirectory;
+            return ReflectionChecker.Check(assemblyFile, pdbFile);
+        }
+
+        private bool CheckMetadataOutOfProcess(FileInfo assemblyFile, FileInfo pdbFile)
         {
             var reflectionComparisonDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison/bin/Debug/netcoreapp1.0"));
             var processStartInfo = new ProcessStartInfo("dotnet")
             {
-                Arguments = $"exec \"{Path.Combine(reflectionComparisonDirectory.FullName, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{assemblyFile.FullName}\"" + (pdbFile==null?string.Empty : $" \"{pdbFile.FullName}\""),
+                Arguments = $"exec \"{Path.Combine(reflectionComparisonDirectory.FullName, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{AppContext.BaseDirectory}\" \"{assemblyFile.FullName}\"" + (pdbFile == null ? string.Empty : $" \"{pdbFile.FullName}\""),
                 WorkingDirectory = reflectionComparisonDirectory.FullName
             };
             var process = Process.Start(processStartInfo);
@@ -126,7 +135,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 });
             }
 
-            return TestAssemblyDirectory.EnumerateFiles("*", SearchOption.AllDirectories);
+            return TestAssemblyDirectory.EnumerateFiles("*", SearchOption.AllDirectories).Where(file => file.Extension.Equals(".dll") || file.Extension.Equals(".exe")).ToList();
         }
 
     }

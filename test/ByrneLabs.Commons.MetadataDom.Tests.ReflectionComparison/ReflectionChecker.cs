@@ -10,10 +10,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
     public static class ReflectionChecker
     {
         private static readonly Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<PropertyInfo, PropertyInfo>>> _propertiesToCompare = new Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<PropertyInfo, PropertyInfo>>>();
-        private static readonly DirectoryInfo PassedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../PassedTests"));
-        private static readonly DirectoryInfo ReadFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../ReadFailedTests"));
-        private static readonly DirectoryInfo ValidationFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../ValidationFailedTests"));
-        private static readonly DirectoryInfo TestAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../TestAssemblies"));
+        private static DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../PassedTests"));
+        private static DirectoryInfo ReadFailedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../ReadFailedTests"));
+        private static DirectoryInfo ValidationFailedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../ValidationFailedTests"));
+        private static DirectoryInfo TestAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory, "../TestAssemblies"));
+        public static string BaseDirectory { get; set; }
 
         public static bool Check(FileInfo assemblyFile)
         {
@@ -26,57 +27,65 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             var errors = new List<string>();
             Exception readException = null;
             DirectoryInfo newFileDirectory;
-
-            using (var metadata = pdbFile == null ? new Metadata(assemblyFile) : new Metadata(assemblyFile, pdbFile))
+            try
             {
-                try
+                using (var metadata = pdbFile == null ? new Metadata(assemblyFile) : new Metadata(assemblyFile, pdbFile))
                 {
-                    MetadataChecker.CheckMetadata(metadata);
-                }
-                catch (Exception exception)
-                {
-                    readException = exception;
-                    while (readException is TargetInvocationException && readException.InnerException != null)
+                    try
                     {
-                        readException = readException.InnerException;
+                        MetadataChecker.CheckMetadata(metadata);
                     }
-                    errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{readException}");
-                }
-
-                try
-                {
-                    var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyFile.FullName);
-                    var checkedMetadataElements = new List<CodeElement>();
-                    var checkedReflectionElements = new List<object>();
-
-                    foreach (var reflectionType in assembly.DefinedTypes)
+                    catch (Exception exception)
                     {
-                        var metadataType = metadata.TypeDefinitions.SingleOrDefault(codeElement => codeElement.FullName.Equals(reflectionType.FullName));
-                        if (metadataType == null)
+                        readException = exception;
+                        while (readException is TargetInvocationException && readException.InnerException != null)
                         {
-                            errors.Add($"Could not find type {reflectionType.FullName}");
+                            readException = readException.InnerException;
                         }
-                        else
+                        errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{readException}");
+                    }
+
+                    try
+                    {
+                        var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyFile.FullName);
+                        var checkedMetadataElements = new List<CodeElement>();
+                        var checkedReflectionElements = new List<object>();
+
+                        foreach (var reflectionType in assembly.DefinedTypes)
                         {
-                            CompareCodeElementsToReflectionData(metadataType, reflectionType, checkedMetadataElements, checkedReflectionElements, errors);
+                            var metadataType = metadata.TypeDefinitions.SingleOrDefault(codeElement => codeElement.FullName.Equals(reflectionType.FullName));
+                            if (metadataType == null)
+                            {
+                                errors.Add($"Could not find type {reflectionType.FullName} with metadata");
+                            }
+                            else
+                            {
+                                CompareCodeElementsToReflectionData(metadataType, reflectionType, checkedMetadataElements, checkedReflectionElements, errors);
+                            }
                         }
+                        foreach (var module in assembly.Modules)
+                        {
+                            CompareCodeElementsToReflectionData(metadata.ModuleDefinition, module, checkedMetadataElements, checkedReflectionElements, errors);
+                        }
+                        var missingMembers = metadata.MemberDefinitions.Except(checkedMetadataElements.OfType<IMember>()).Select(member => $"Could not find member {member.FullName} with reflection").ToList();
+                        errors.AddRange(missingMembers);
                     }
-                    foreach (var module in assembly.Modules)
+                    catch (Exception exception)
                     {
-                        CompareCodeElementsToReflectionData(metadata.ModuleDefinition, module, checkedMetadataElements, checkedReflectionElements, errors);
+                        var realException = exception;
+                        while (realException is TargetInvocationException && realException.InnerException != null)
+                        {
+                            realException = realException.InnerException;
+                        }
+                        errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{realException}");
+                        readException = readException ?? realException;
                     }
-                    errors.AddRange(metadata.MemberDefinitions.Except(checkedMetadataElements.OfType<IMember>()).Select(member => $"Did not find member {member.FullName} in assembly reflection"));
                 }
-                catch (Exception exception)
-                {
-                    var realException = exception;
-                    while (realException is TargetInvocationException && realException.InnerException != null)
-                    {
-                        realException = realException.InnerException;
-                    }
-                    errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{realException}");
-                    readException = readException ?? realException;
-                }
+            }
+            catch (Exception exception)
+            {
+                readException = exception;
+                errors.Add($"Assembly {assemblyFile.FullName} failed with exception:\r\n{exception}");
             }
 
             if (readException != null)
@@ -176,7 +185,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
             {
                 parent = string.IsNullOrEmpty(type.Namespace) ? string.Empty : type.Namespace + ".";
             }
-            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{parent}{type.Name}+{genericTypeArgument.Name}]")) + "]" : string.Empty;
+            var genericArgumentsText = type.GenericTypeArguments.Any() ? "[" + string.Join(",", type.GenericTypeArguments.Select(genericTypeArgument => $"[{GetTypeFullNameWithoutAssemblies(genericTypeArgument.GetTypeInfo())}]")) + "]" : string.Empty;
 
             var fullName = parent + type.Name + genericArgumentsText;
 

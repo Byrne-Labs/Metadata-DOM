@@ -136,7 +136,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
         public IEnumerable<IMethodBase> Methods => _methods.Value;
 
-        public override string Name => AsString(MetadataToken.Name);
+        internal override string UndecoratedName => AsString(MetadataToken.Name);
 
         public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(MetadataToken.Namespace);
 
