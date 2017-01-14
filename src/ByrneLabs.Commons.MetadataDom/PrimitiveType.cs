@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -29,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string AssemblyQualifiedName { get; } = null;
 
-        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
 
         public override TypeBase DeclaringType { get; } = null;
 

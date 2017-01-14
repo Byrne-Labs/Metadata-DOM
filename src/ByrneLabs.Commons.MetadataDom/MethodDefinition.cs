@@ -19,6 +19,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 foreach (var genericParameter in genericParameters)
                 {
                     genericParameter.DeclaringMethod = this;
+                    genericParameter.SetDeclaringType(DeclaringType);
                     genericParameter.Index = index++;
                 }
 
@@ -26,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom
             });
         }
 
-        public IEnumerable<GenericParameter> GenericTypeParameters => _genericParameters.Value;
+        public override IEnumerable<GenericParameter> GenericTypeParameters => _genericParameters.Value;
 
         public PropertyDefinition RelatedProperty { get; internal set; }
 
@@ -34,5 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <summary>Returns <see cref="TypeDefinition" />, <see cref="TypeReference" />, <see cref="TypeSpecification" />, <see cref="GenericParameter" />, or null when void</summary>
         public TypeBase ReturnType => Signature.ReturnType;
+
+        public override bool IsGenericMethod => GenericTypeParameters.Any();
     }
 }

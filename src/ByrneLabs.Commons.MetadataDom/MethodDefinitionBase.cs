@@ -16,7 +16,6 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<MethodDebugInformation> _debugInformation;
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
-        private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
@@ -30,12 +29,11 @@ namespace ByrneLabs.Commons.MetadataDom
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
-            _genericParameters = MetadataState.GetLazyCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
             _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
             _parameters = new Lazy<IEnumerable<Parameter>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
-            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
+            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, GenericTypeParameters)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.Attributes" />
@@ -56,8 +54,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public override TypeBase DeclaringType => _declaringType.Value;
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.FullName))})";
-
-        public override IEnumerable<TypeBase> GenericArguments => _genericParameters.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetImport" />
         public MethodImport Import => _import.Value;

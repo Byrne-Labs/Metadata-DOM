@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
 {
-    public class MetadataChecker
+    public static class MetadataChecker
     {
         public static void CheckCodeElement(CodeElement codeElement, ICollection<CodeElement> checkedMetadataElements, bool excludeAssemblies)
         {
@@ -25,7 +25,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                         {
                             discoveredCodeElements.Add(codeElementPropertyValue);
                         }
-                        else if (codeElementsPropertyValue != null && codeElementsPropertyValue.Any() && codeElementsPropertyValue.GetType().IsConstructedGenericType && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
+                        else if (codeElementsPropertyValue?.Any() == true && codeElementsPropertyValue.GetType().IsConstructedGenericType && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
                         {
                             discoveredCodeElements.AddRange(codeElementsPropertyValue.Cast<CodeElement>());
                         }

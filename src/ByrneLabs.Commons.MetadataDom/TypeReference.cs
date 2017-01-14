@@ -57,7 +57,7 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
-        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
 
         public override TypeBase DeclaringType => ResolutionScope is TypeReference ? (TypeBase) ResolutionScope : null;
 

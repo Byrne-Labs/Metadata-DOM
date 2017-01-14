@@ -58,6 +58,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal TypeBase(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
         {
+            BaseType = baseType;
             IsArray = baseType.IsArray || typeElementModifiers.HasFlag(TypeElementModifiers.Array);
             IsByRef = baseType.IsByRef || typeElementModifiers.HasFlag(TypeElementModifiers.ByRef);
             IsGenericType = baseType.IsGenericType || typeElementModifiers.HasFlag(TypeElementModifiers.GenericType);
@@ -123,6 +124,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public override string Name => _name.Value;
 
         public override string TextSignature => FullName;
+
+        internal TypeBase BaseType { get; }
 
         internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 

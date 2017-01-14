@@ -52,7 +52,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool CanWrite => SetMethod != null;
 
-        public IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+        public IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;

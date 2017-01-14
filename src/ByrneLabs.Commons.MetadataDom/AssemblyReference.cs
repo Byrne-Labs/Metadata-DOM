@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -44,9 +45,9 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.GetCustomAttributes" />
         public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; } = new List<DeclarativeSecurityAttribute>();
+        public override IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; } = Enumerable.Empty<DeclarativeSecurityAttribute>();
 
-        public override IEnumerable<TypeBase> DefinedTypes { get; } = new List<TypeBase>();
+        public override IEnumerable<TypeBase> DefinedTypes { get; } = Enumerable.Empty<TypeBase>();
 
         public override IMethod EntryPoint { get; } = null;
 
@@ -60,6 +61,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override AssemblyName Name { get; }
 
-        public override IEnumerable<IAssembly> ReferencedAssemblies { get; } = new List<IAssembly>();
+        public override IEnumerable<IAssembly> ReferencedAssemblies { get; } = Enumerable.Empty<IAssembly>();
     }
 }

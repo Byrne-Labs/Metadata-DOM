@@ -44,8 +44,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsAssembly => Attributes.HasFlag(FieldAttributes.Assembly);
 
-        public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
-
         public bool IsFamily => Attributes.HasFlag(FieldAttributes.Family) && !IsPublic;
 
         public bool IsFamilyAndAssembly => Attributes.HasFlag(FieldAttributes.FamANDAssem) && !IsPublic && !IsAssembly;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -28,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal Parameter(IMember member, TypeBase parameterType, int position, bool optional, MetadataState metadataState) : base(new CodeElementKey<Parameter>(member, position, parameterType), metadataState)
         {
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => new List<CustomAttribute>());
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(Enumerable.Empty<CustomAttribute>);
             Position = position;
             _optional = optional;
             _defaultValue = new Lazy<Constant>(() => null);

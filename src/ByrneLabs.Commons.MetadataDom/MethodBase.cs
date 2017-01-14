@@ -26,13 +26,11 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
-
-        public abstract IEnumerable<TypeBase> GenericArguments { get; }
+        public abstract IEnumerable<GenericParameter> GenericTypeParameters { get; }
 
         public bool IsConstructor => this is IConstructor && ".ctor".Equals(Name);
 
-        public bool IsGenericMethod => GenericArguments.Any();
+        public abstract bool IsGenericMethod { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetParameters" />
         public abstract IEnumerable<IParameter> Parameters { get; }

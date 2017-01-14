@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 else
                 {
                     methodBody = MetadataState.GetCodeElement<MethodBody>(RawMetadata.MethodBody);
-                    methodBody.GenericContext = new GenericContext(Type.GenericTypeArguments, MethodDeclaration.GenericArguments);
+                    methodBody.GenericContext = new GenericContext(Type.GenericTypeParameters, MethodDeclaration.GenericTypeParameters);
                 }
 
                 return methodBody;
@@ -44,7 +44,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
-        public override IEnumerable<TypeBase> GenericArguments => MethodDefinition.GenericArguments;
+        public override IEnumerable<GenericParameter> GenericTypeParameters => MethodDefinition.GenericTypeParameters;
+
+        public override bool IsGenericMethod => MethodDefinition.IsGenericMethod;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodImplementation.MethodBody" />
         public CodeElement MethodBody => _methodBody.Value;

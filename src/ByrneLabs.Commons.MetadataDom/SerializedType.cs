@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -40,7 +41,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override IAssembly Assembly { get; }
 
-        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = new List<CustomAttribute>();
+        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
 
         public override TypeBase DeclaringType => _declaringType.Value;
 

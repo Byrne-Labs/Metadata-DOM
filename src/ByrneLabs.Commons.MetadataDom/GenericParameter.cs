@@ -18,6 +18,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal GenericParameter(GenericParameter baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
+            _declaringType = baseType.DeclaringType;
+            DeclaringMethod = baseType.DeclaringMethod;
             Initialize();
         }
 
@@ -46,7 +48,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeBase DeclaringType => _declaringType;
 
-        public override string FullName => null;
+        public override string FullName { get; } = null;
+
+        public override string FullNameWithoutAssemblies { get; } = null;
+
+        internal override string FullNameWithoutGenericArguments { get; } = null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Index" />
         public int Index { get; internal set; }
