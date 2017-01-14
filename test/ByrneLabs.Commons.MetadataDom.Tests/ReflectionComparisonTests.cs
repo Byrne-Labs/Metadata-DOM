@@ -22,7 +22,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly DirectoryInfo TestAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../TestAssemblies"));
         private static readonly DirectoryInfo ValidationFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../ValidationFailedTests"));
 
-        private bool CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile)
+        private static bool CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile)
         {
             ReflectionChecker.BaseDirectory = AppContext.BaseDirectory;
             return ReflectionChecker.Check(assemblyFile, pdbFile);
