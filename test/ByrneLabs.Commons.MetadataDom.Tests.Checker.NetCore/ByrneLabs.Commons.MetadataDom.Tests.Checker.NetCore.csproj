@@ -1,12 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
-  <PropertyGroup Label="Configuration">
-    <AssemblyName>ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison</AssemblyName>
-  </PropertyGroup>
   <PropertyGroup>
-    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
     <OutputType>exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
-    <DebugType>Portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
@@ -14,9 +9,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App" Version="1.1.0" />
-    <PackageReference Include="System.Runtime.Loader" Version="4.4.0-beta-24814-01" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
+    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
   </ItemGroup>
 </Project>

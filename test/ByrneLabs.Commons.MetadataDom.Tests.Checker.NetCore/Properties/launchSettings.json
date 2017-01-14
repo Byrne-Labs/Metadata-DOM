@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison": {
+    "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.NetCore": {
       "commandName": "Project",
       "commandLineArgs": "\"C:\\dev\\code\\Byrne-Labs\\Metadata-DOM\\test\\ByrneLabs.Commons.MetadataDom.Tests\\bin\\Debug\\netcoreapp1.0\" \"C:\\dev\\code\\Byrne-Labs\\Metadata-DOM\\test\\ByrneLabs.Commons.MetadataDom.Tests\\bin\\Debug\\netcoreapp1.0\\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll\""
     }

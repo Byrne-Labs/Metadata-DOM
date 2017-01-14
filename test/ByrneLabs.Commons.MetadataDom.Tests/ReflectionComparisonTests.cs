@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison;
+using ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore;
+using ByrneLabs.Commons.MetadataDom.Tests.Checker;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -22,31 +23,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly DirectoryInfo TestAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../TestAssemblies"));
         private static readonly DirectoryInfo ValidationFailedAssemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../ValidationFailedTests"));
 
-        private static bool CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile)
+        private void CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
-            ReflectionChecker.BaseDirectory = AppContext.BaseDirectory;
-            return ReflectionChecker.Check(assemblyFile, pdbFile);
+            var checkState = NetCoreChecker.Check(assemblyFile, pdbFile);
+            _output.WriteLine(checkState.LogText);
+            Assert.True(checkState.Success);
         }
 
-        private bool CheckMetadataOutOfProcess(FileInfo assemblyFile, FileInfo pdbFile)
+        private bool CheckMetadataOutOfProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
-            var reflectionComparisonDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison/bin/Debug/netcoreapp1.0"));
-            var processStartInfo = new ProcessStartInfo("dotnet")
-            {
-                Arguments = $"exec \"{Path.Combine(reflectionComparisonDirectory.FullName, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{AppContext.BaseDirectory}\" \"{assemblyFile.FullName}\"" + (pdbFile == null ? string.Empty : $" \"{pdbFile.FullName}\""),
-                WorkingDirectory = reflectionComparisonDirectory.FullName
-            };
-            var process = Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                _output.WriteLine($"{assemblyFile.FullName} failed with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
-            }
-            else
-            {
-                _output.WriteLine($"{assemblyFile.FullName} succeeded with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
-            }
-            return process.ExitCode == 0;
+            return NetCoreCheckMetadataOutOfProcess(assemblyFile, pdbFile);
         }
 
         private static IEnumerable<FileInfo> CopyAllGacAssemblies()
@@ -75,6 +61,47 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             return TestAssemblyDirectory.EnumerateFiles("*", SearchOption.AllDirectories).Where(file => file.Extension.Equals(".dll") || file.Extension.Equals(".exe")).ToList();
         }
 
+        private bool NetCoreCheckMetadataOutOfProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
+        {
+            var checkerDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore/bin/Debug/netcoreapp1.0"));
+            var processStartInfo = new ProcessStartInfo("dotnet")
+            {
+                Arguments = $"exec \"{Path.Combine(checkerDirectory.FullName, "ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.dll")}\" \"{AppContext.BaseDirectory}\" \"{assemblyFile.FullName}\"" + (pdbFile == null ? string.Empty : $" \"{pdbFile.FullName}\""),
+                WorkingDirectory = checkerDirectory.FullName
+            };
+            var process = Process.Start(processStartInfo);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                _output.WriteLine($"{assemblyFile.FullName} failed with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
+            }
+            else
+            {
+                _output.WriteLine($"{assemblyFile.FullName} succeeded with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
+            }
+            return process.ExitCode == 0;
+        }
+
+        private bool NetFrameworkCheckMetadataOutOfProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
+        {
+            var processStartInfo = new ProcessStartInfo("ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.exe")
+            {
+                Arguments = $"\"{AppContext.BaseDirectory}\" \"{assemblyFile.FullName}\"" + (pdbFile == null ? string.Empty : $" \"{pdbFile.FullName}\""),
+                WorkingDirectory = Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework/bin/Debug/")
+            };
+            var process = Process.Start(processStartInfo);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                _output.WriteLine($"{assemblyFile.FullName} failed with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
+            }
+            else
+            {
+                _output.WriteLine($"{assemblyFile.FullName} succeeded with processor time: {process.TotalProcessorTime.TotalSeconds} seconds");
+            }
+            return process.ExitCode == 0;
+        }
+
         [Fact]
         [Trait("Category", "Slow")]
         public void TestReflectionComparisonOnCopiedAssemblies()
@@ -82,7 +109,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = CopyAllGacAssemblies();
             var startTime = DateTime.Now;
             var pass = true;
-            Parallel.ForEach(assemblyFiles, assemblyFile => pass &= CheckMetadataOutOfProcess(assemblyFile, null));
+            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 6 };
+            Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile => pass &= CheckMetadataOutOfProcess(assemblyFile));
 
             var executionTime = DateTime.Now.Subtract(startTime);
             _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
@@ -100,7 +128,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 var assemblyFiles = ReadFailedAssemblyDirectory.EnumerateFiles("*.*", SearchOption.AllDirectories);
                 foreach (var assemblyFile in assemblyFiles)
                 {
-                    Assert.True(CheckMetadataInProcess(assemblyFile, null));
+                    CheckMetadataInProcess(assemblyFile);
                 }
             }
         }
@@ -113,7 +141,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
             foreach (var assemblyFile in assemblyFiles)
             {
-                Assert.True(CheckMetadataInProcess(assemblyFile, null));
+                CheckMetadataInProcess(assemblyFile, null);
             }
         }
 
@@ -121,14 +149,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnSampleAssembly()
         {
-            Assert.True(CheckMetadataOutOfProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")), null));
+            CheckMetadataOutOfProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
         }
 
         [Fact]
         [Trait("Category", "Debug helper")]
         public void TestReflectionComparisonOnSpecificAssembly()
         {
-            Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.practices.objectbuilder2\2.2.0.0__31bf3856ad364e35\microsoft.practices.objectbuilder2.dll"), null));
+            CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\ValidationFailedTests\gac_msil\microsoft.practices.objectbuilder2\2.2.0.0__31bf3856ad364e35\microsoft.practices.objectbuilder2.dll"));
         }
     }
 }

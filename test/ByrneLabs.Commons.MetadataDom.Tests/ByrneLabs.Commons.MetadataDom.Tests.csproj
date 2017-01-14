@@ -33,7 +33,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison\ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison.csproj" />
+    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore.csproj" />
+    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.csproj" />
+    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
     <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj" />
   </ItemGroup>
   <ItemGroup />

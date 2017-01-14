@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
+namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
-    public static class MetadataChecker
+    public class MetadataChecker
     {
-        public static void CheckCodeElement(CodeElement codeElement, ICollection<CodeElement> checkedMetadataElements, bool excludeAssemblies)
+
+        private readonly CheckState _checkState;
+
+        public MetadataChecker(CheckState checkState)
         {
-            if (!checkedMetadataElements.Contains(codeElement))
+            _checkState = checkState;
+        }
+
+        private void CheckCodeElement(CodeElement codeElement, bool excludeAssemblies)
+        {
+            if (!_checkState.HasBeenChecked(codeElement))
             {
-                checkedMetadataElements.Add(codeElement);
                 var discoveredCodeElements = new List<CodeElement>();
                 foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties())
                 {
@@ -30,33 +38,29 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.ReflectionComparison
                             discoveredCodeElements.AddRange(codeElementsPropertyValue.Cast<CodeElement>());
                         }
                     }
-                    catch (TargetInvocationException exception)
+                    catch (Exception exception)
                     {
-                        if (!(exception.InnerException is NotSupportedException || exception.InnerException is NotImplementedException))
-                        {
-                            throw;
-                        }
+                        _checkState.AddException(exception, codeElement, CheckPhase.MetadataCheck);
                     }
                 }
-                foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null && !(excludeAssemblies && discoveredCodeElement is AssemblyDefinition)).Except(checkedMetadataElements).Distinct())
+                foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null && !(excludeAssemblies && discoveredCodeElement is AssemblyDefinition)).Except(_checkState.CheckedMetadataElements).Distinct())
                 {
-                    CheckCodeElement(discoveredCodeElement, checkedMetadataElements, excludeAssemblies);
+                    CheckCodeElement(discoveredCodeElement, excludeAssemblies);
                 }
             }
         }
 
-        public static void CheckMetadata(Metadata metadata)
+        public void Check()
         {
-            var checkedMetadataElements = new List<CodeElement>();
             /*
              * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
              */
-            foreach (var typeDefinition in metadata.TypeDefinitions)
+            foreach (var typeDefinition in _checkState.Metadata.TypeDefinitions)
             {
-                CheckCodeElement(typeDefinition, checkedMetadataElements, true);
+                CheckCodeElement(typeDefinition, true);
             }
 
-            CheckCodeElement(metadata, checkedMetadataElements, false);
+            CheckCodeElement(_checkState.Metadata, false);
         }
     }
 }
