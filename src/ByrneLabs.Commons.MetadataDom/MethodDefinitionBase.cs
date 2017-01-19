@@ -110,6 +110,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private IEnumerable<Parameter> LoadParameters()
         {
             var allParameters = MetadataState.GetCodeElements<Parameter>(RawMetadata.GetParameters()).ToList();
+
             var parameters = allParameters.Where(parameter => parameter.Position >= 0).ToList();
             if (Signature.ParameterTypes.Any() && parameters.Count == 0)
             {

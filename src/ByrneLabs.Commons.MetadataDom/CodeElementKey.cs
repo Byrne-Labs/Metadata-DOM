@@ -89,7 +89,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 var hash = 91;
                 foreach (var keyValue in KeyValues)
                 {
-                    hash = hash * 17 + (keyValue == null ? 0 : keyValue.GetHashCode());
+                    hash = hash * 17 + (keyValue == null ? 0 : keyValue.GetHashCode()) * keyValue.GetType().GetHashCode();
                 }
 
                 hash = hash * 17 + CodeElementType.GetHashCode();

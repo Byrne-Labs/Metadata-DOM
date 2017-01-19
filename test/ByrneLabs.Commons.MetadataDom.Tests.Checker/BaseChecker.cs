@@ -23,10 +23,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
 
             BaseDirectory = new DirectoryInfo(args[0]);
-            AssemblyFile = new FileInfo(args[0]);
+            AssemblyFile = new FileInfo(args[1]);
             if (args.Count == 3)
             {
-                PdbFile = new FileInfo(args[3]);
+                PdbFile = new FileInfo(args[2]);
             }
         }
 
@@ -43,19 +43,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         protected FileInfo PdbFile { get; }
 
-        private DirectoryInfo FailedValidationDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../FailedValidationTests"));
+        private DirectoryInfo FailedValidationDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FailedValidation"));
 
-        private DirectoryInfo FaultedLoadAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../FaultedLoadAssemblyTests"));
+        private DirectoryInfo FaultedLoadAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedLoadAssembly"));
 
-        private DirectoryInfo FaultedMetadataCheckDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../FaultedMetadataCheckTests"));
+        private DirectoryInfo FaultedMetadataCheckDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedMetadataCheck"));
 
-        private DirectoryInfo FaultedMetadataLoadDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../FaultedMetadataLoadTests"));
+        private DirectoryInfo FaultedMetadataLoadDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedMetadataLoad"));
 
-        private DirectoryInfo FaultedReflectionComparisonDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../FaultedMetadataComparisonTests"));
+        private DirectoryInfo FaultedReflectionComparisonDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedMetadataComparison"));
 
-        private DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../PassedTests"));
+        private DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "Passed"));
 
-        private DirectoryInfo TestAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "../TestAssemblies"));
+        private DirectoryInfo TestAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NotRun"));
 
         public static CheckState CheckOnlyMetadata(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
@@ -69,11 +69,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             if (!_checkState.Faulted)
             {
-                CheckPhaseAssemblyLoad();
+                CheckPhaseMetadataCheck();
             }
             if (!_checkState.Faulted)
             {
-                CheckPhaseMetadataCheck();
+                CheckPhaseAssemblyLoad();
             }
             if (!_checkState.Faulted)
             {
@@ -82,7 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             _checkState.FinishTime = DateTime.Now;
 
-            if (BaseDirectory != null)
+            if (BaseDirectory != null && AssemblyFile.DirectoryName.StartsWith(BaseDirectory.FullName))
             {
                 if (_checkState.FaultedAssemblyLoad)
                 {
@@ -100,7 +100,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 {
                     CopyAssembly(FaultedReflectionComparisonDirectory);
                 }
-                if (_checkState.FailedValidation)
+                if (_checkState.FailedValidation && !_checkState.Faulted)
                 {
                     CopyAssembly(FailedValidationDirectory);
                 }
@@ -108,14 +108,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 {
                     CopyAssembly(PassedAssemblyDirectory);
                 }
-
-                var assemblyDirectory = AssemblyFile.Directory;
-                while (!assemblyDirectory.GetFileSystemInfos().Any())
-                {
-                    assemblyDirectory.Delete();
-                    assemblyDirectory = assemblyDirectory.Parent;
-                }
             }
+            Console.WriteLine(_checkState.LogText);
 
             return _checkState;
         }
@@ -141,6 +135,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             try
             {
                 _checkState.Assembly = LoadAssembly();
+                // get all types to see if it can resolve everything
+                // ReSharper disable once UnusedVariable
+                var definedTypes = _checkState.Assembly.DefinedTypes;
+            }
+            catch (ReflectionTypeLoadException exception)
+            {
+                _checkState.AddException(exception, null, CheckPhase.AssemblyLoad);
+                foreach (var loadException in exception.LoaderExceptions)
+                {
+                    _checkState.AddException(loadException, null, CheckPhase.AssemblyLoad);
+                }
             }
             catch (Exception exception)
             {
@@ -191,7 +196,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             var newFileLocation = new FileInfo(AssemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), baseDirectory.FullName));
             newFileLocation.Directory.Create();
-            AssemblyFile.MoveTo(newFileLocation.FullName);
+            AssemblyFile.CopyTo(newFileLocation.FullName, true);
 
             var logFileName = newFileLocation.FullName.Substring(0, newFileLocation.FullName.Length - 4) + ".log";
 

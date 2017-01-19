@@ -44,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsAssembly => Attributes.HasFlag(FieldAttributes.Assembly);
 
-        public bool IsFamily => Attributes.HasFlag(FieldAttributes.Family) && !IsPublic;
+        public bool IsFamily => Attributes.HasFlag(FieldAttributes.Family) && !IsPublic && !IsFamilyOrAssembly;
 
         public bool IsFamilyAndAssembly => Attributes.HasFlag(FieldAttributes.FamANDAssem) && !IsPublic && !IsAssembly;
 
@@ -58,7 +58,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPinvokeImpl => Attributes.HasFlag(FieldAttributes.PinvokeImpl);
 
-        public bool IsPrivate => Attributes.HasFlag(FieldAttributes.Private) && !IsAssembly;
+        public bool IsPrivate => Attributes.HasFlag(FieldAttributes.Private) && !IsAssembly && !IsFamilyOrAssembly;
 
         public bool IsPublic => Attributes.HasFlag(FieldAttributes.Public);
 
@@ -68,8 +68,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetMarshallingDescriptor" />
         public Blob MarshallingDescriptor => _marshallingDescriptor.Value;
-
-        public IModule Module { get; internal set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetOffset" />
         public int Offset { get; }

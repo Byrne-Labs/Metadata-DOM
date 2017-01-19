@@ -20,7 +20,6 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<IEnumerable<ManifestResource>> _manifestResources;
         private readonly Lazy<IEnumerable<IMember>> _memberDefinitions;
         private readonly Lazy<IEnumerable<MethodDefinitionBase>> _methodDefinitions;
-        private readonly Lazy<ModuleDefinition> _moduleDefinition;
         private readonly Lazy<IEnumerable<PropertyDefinition>> _propertyDefinitions;
         private readonly Lazy<IEnumerable<TypeDefinition>> _typeDefinitions;
         private readonly Lazy<IEnumerable<TypeReference>> _typeReferences;
@@ -51,9 +50,8 @@ namespace ByrneLabs.Commons.MetadataDom
                 _importScopes = MetadataState.GetLazyCodeElements<ImportScope>(Reader.ImportScopes);
                 _manifestResources = MetadataState.GetLazyCodeElements<ManifestResource>(Reader.ManifestResources);
                 _methodDefinitions = new Lazy<IEnumerable<MethodDefinitionBase>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).Cast<MethodDefinitionBase>());
-                _moduleDefinition = MetadataState.GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
                 _propertyDefinitions = MetadataState.GetLazyCodeElements<PropertyDefinition>(Reader.PropertyDefinitions);
-                _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() => { return MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToList(); });
+                _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() => MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToList());
                 _typeReferences = MetadataState.GetLazyCodeElements<TypeReference>(Reader.TypeReferences);
                 _memberDefinitions = new Lazy<IEnumerable<IMember>>(() => MethodDefinitions.Union<IMember>(FieldDefinitions).Union(EventDefinitions).Union(PropertyDefinitions).Union(TypeDefinitions).ToList());
                 MetadataKind = Reader.MetadataKind;
@@ -115,7 +113,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public IEnumerable<MethodDefinitionBase> MethodDefinitions => !HasMetadata ? new List<MethodDefinitionBase>() : _methodDefinitions.Value;
 
         /// <inheritdoc cref="MetadataReader.GetModuleDefinition" />
-        public ModuleDefinition ModuleDefinition => !HasMetadata ? null : _moduleDefinition.Value;
+        public ModuleDefinition ModuleDefinition => MetadataState.ModuleDefinition;
 
         public FileInfo PdbFile { get; }
 

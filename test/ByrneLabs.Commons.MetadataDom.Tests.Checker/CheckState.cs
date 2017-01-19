@@ -21,7 +21,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public string ErrorLogText => string.Join(Environment.NewLine, Errors);
 
-        public string LogText => ErrorLogText + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
+        public string LogText => ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
 
         public Assembly Assembly { get; set; }
 
@@ -64,7 +64,20 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_errors)
                 {
-                    return new ReadOnlyCollection<string>(_errors.Union(_exceptions.Select(exception => $"Assembly {Assembly?.Location} failed on code element {exception.Item2} with exception:{Environment.NewLine}{exception.Item1}")).ToList());
+                    var errorMessages = _errors.ToList();
+                    foreach (var exception in _exceptions)
+                    {
+                        try
+                        {
+                            errorMessages.Add($"On code element \"{exception.Item3}\", exception was thrown:{Environment.NewLine}{exception.Item2}");
+                        }
+                        catch
+                        {
+                            errorMessages.Add($"On a code element of type \"{exception.Item3.GetType().FullName}\", exception was thrown:{Environment.NewLine}{exception.Item2}");
+                        }
+                    }
+
+                    return errorMessages;
                 }
             }
         }

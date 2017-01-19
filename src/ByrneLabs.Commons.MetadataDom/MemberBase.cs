@@ -26,6 +26,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract MemberTypes MemberType { get; }
 
+        public ModuleDefinition Module => MetadataState.ModuleDefinition;
+
         public abstract string Name { get; }
 
         public abstract string TextSignature { get; }
