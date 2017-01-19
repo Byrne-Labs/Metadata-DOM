@@ -21,6 +21,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IEnumerable<IAssembly> ReferencedAssemblies { get; }
 
+        public string FullName => Name.FullName;
+
         public abstract IEnumerable<CustomAttribute> CustomAttributes { get; }
 
         public abstract AssemblyFlags Flags { get; }

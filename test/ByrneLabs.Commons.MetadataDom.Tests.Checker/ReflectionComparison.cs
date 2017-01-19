@@ -44,6 +44,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             try
             {
+                CompareCodeElementsToReflectionData(_checkState.Metadata.AssemblyDefinition, _checkState.Assembly);
+
                 foreach (var reflectionType in _checkState.Assembly.DefinedTypes)
                 {
                     try
@@ -126,6 +128,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 CompareCodeElementsToReflectionData((ModuleDefinition)metadataElement, (Module)reflectionElement);
             }
+            else if (metadataElement is AssemblyDefinition && reflectionElement is Assembly)
+            {
+                CompareCodeElementsToReflectionData((AssemblyDefinition)metadataElement, (Assembly)reflectionElement);
+            }
             else
             {
                 _checkState.AddError($"Could not handle metadata element type {metadataElement.GetType().FullName} and reflection element type {reflectionElement.GetType().FullName}");
@@ -158,6 +164,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 _checkState.AddException(exception, metadataType, CheckPhase.ReflectionComparison);
             }
+
+            CompareElementProperties(metadataType.FullNameWithoutAssemblies, metadataType, reflectionType);
         }
 
         private void CompareCodeElementsToReflectionData(Parameter metadataParameter, ParameterInfo reflectionParameter)
@@ -257,6 +265,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
 
             CompareElementProperties("<module>", metadataModule, reflectionModule);
+        }
+
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This method is only for AssemblyDefinition clases")]
+        private void CompareCodeElementsToReflectionData(AssemblyDefinition metadataAssembly, Assembly reflectionAssembly)
+        {
+            if (_checkState.HaveBeenCompared(metadataAssembly, reflectionAssembly))
+            {
+                return;
+            }
+
+            CompareElementProperties("<module>", metadataAssembly, reflectionAssembly);
         }
 
         private void CompareElementProperties(string elementName, object metadataElement, object reflectionElement)

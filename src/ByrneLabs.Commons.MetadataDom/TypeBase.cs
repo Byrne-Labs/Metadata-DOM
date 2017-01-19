@@ -116,7 +116,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsByRef => BaseType?.IsByRef == true || IsThisByRef;
 
-        public bool IsGenericType => BaseType?.IsGenericType == true || IsThisGenericType;
+        public virtual bool IsGenericType => BaseType?.IsGenericType == true || IsThisGenericType;
 
         public bool IsNested => DeclaringType != null;
 

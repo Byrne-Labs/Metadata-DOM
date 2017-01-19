@@ -73,53 +73,59 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetInterfaceImplementations" />
         public IEnumerable<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
 
-        public bool IsAbstract => Attributes.HasFlag(TypeAttributes.Abstract);
+        public bool IsAbstract => (Attributes & TypeAttributes.Abstract) != 0;
 
-        public bool IsAnsiClass => Attributes.HasFlag(TypeAttributes.AnsiClass);
+        public bool IsAnsiClass => (Attributes & TypeAttributes.StringFormatMask) == TypeAttributes.AnsiClass;
 
-        public bool IsAutoClass => Attributes.HasFlag(TypeAttributes.AutoClass);
+        public bool IsAutoClass => (Attributes & TypeAttributes.StringFormatMask) == TypeAttributes.AutoClass;
 
-        public bool IsAutoLayout => Attributes.HasFlag(TypeAttributes.AutoLayout);
+        public bool IsAutoLayout => (Attributes & TypeAttributes.LayoutMask) == TypeAttributes.AutoLayout;
 
-        public bool IsClass => Attributes.HasFlag(TypeAttributes.Class);
+        public bool IsClass => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Class && !IsValueType;
+
+        public bool IsDelegate => "System.Delegate".Equals(BaseType?.FullName) || "System.MulticastDelegate".Equals(BaseType?.FullName);
 
         public bool IsEnum => "System.Enum".Equals(BaseType?.FullName);
 
-        public bool IsExplicitLayout => Attributes.HasFlag(TypeAttributes.ExplicitLayout);
+        public bool IsExplicitLayout => (Attributes & TypeAttributes.LayoutMask) == TypeAttributes.ExplicitLayout;
 
         public override bool IsGenericParameter { get; } = false;
 
+        public override bool IsGenericType => base.IsGenericType || GenericTypeParameters.Any();
+
         public bool IsGenericTypeDefinition => GenericTypeParameters.Any();
 
-        public bool IsImport => Attributes.HasFlag(TypeAttributes.Import);
+        public bool IsImport => (Attributes & TypeAttributes.Import) != 0;
 
-        public bool IsInterface => Attributes.HasFlag(TypeAttributes.Interface);
+        public bool IsInterface => (Attributes & TypeAttributes.ClassSemanticsMask) == TypeAttributes.Interface;
 
-        public bool IsNestedAssembly => Attributes.HasFlag(TypeAttributes.NestedAssembly);
+        public bool IsLayoutSequential => (Attributes & TypeAttributes.LayoutMask) == TypeAttributes.SequentialLayout;
 
-        public bool IsNestedFamANDAssem => Attributes.HasFlag(TypeAttributes.NestedFamANDAssem);
+        public bool IsNestedAssembly => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedAssembly;
 
-        public bool IsNestedFamily => Attributes.HasFlag(TypeAttributes.NestedFamily);
+        public bool IsNestedFamANDAssem => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamANDAssem;
 
-        public bool IsNestedFamORAssem => Attributes.HasFlag(TypeAttributes.NestedFamORAssem);
+        public bool IsNestedFamily => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamily;
 
-        public bool IsNestedPrivate => Attributes.HasFlag(TypeAttributes.NestedPrivate);
+        public bool IsNestedFamORAssem => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedFamORAssem;
 
-        public bool IsNestedPublic => Attributes.HasFlag(TypeAttributes.NestedPublic);
+        public bool IsNestedPrivate => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPrivate;
 
-        public bool IsNotPublic => Attributes.HasFlag(TypeAttributes.NotPublic);
+        public bool IsNestedPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NestedPublic;
 
-        public bool IsPublic => Attributes.HasFlag(TypeAttributes.Public);
+        public bool IsNotPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.NotPublic;
 
-        public bool IsSealed => Attributes.HasFlag(TypeAttributes.Sealed);
+        public bool IsPublic => (Attributes & TypeAttributes.VisibilityMask) == TypeAttributes.Public;
 
-        public bool IsSerializable => Attributes.HasFlag(TypeAttributes.Serializable);
+        public bool IsSealed => (Attributes & TypeAttributes.Sealed) != 0;
 
-        public bool IsSpecialName => Attributes.HasFlag(TypeAttributes.SpecialName);
+        public virtual bool IsSerializable =>  (Attributes & TypeAttributes.Serializable) != 0 || IsEnum || IsDelegate;
 
-        public bool IsUnicodeClass => Attributes.HasFlag(TypeAttributes.UnicodeClass);
+        public bool IsSpecialName => (Attributes & TypeAttributes.SpecialName) != 0;
 
-        public bool IsValueType => "System.ValueType".Equals(BaseType?.FullName);
+        public bool IsUnicodeClass => (Attributes & TypeAttributes.StringFormatMask) == TypeAttributes.UnicodeClass;
+
+        public bool IsValueType => IsEnum || "System.ValueType".Equals(BaseType?.FullName);
 
         public IEnumerable<Language> Languages { get; private set; }
 

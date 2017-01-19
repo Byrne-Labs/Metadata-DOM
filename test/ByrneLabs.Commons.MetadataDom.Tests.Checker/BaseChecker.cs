@@ -53,9 +53,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         private DirectoryInfo FaultedReflectionComparisonDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedMetadataComparison"));
 
+        private DirectoryInfo IncompleteAssemblyLoadDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "IncompleteAssemblyLoad"));
+
         private DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "Passed"));
 
-        private DirectoryInfo TestAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NotRun"));
+        private DirectoryInfo NotRunTestDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NotRun"));
 
         public static CheckState CheckOnlyMetadata(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
@@ -84,30 +86,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             if (BaseDirectory != null && AssemblyFile.DirectoryName.StartsWith(BaseDirectory.FullName))
             {
-                if (_checkState.FaultedAssemblyLoad)
-                {
-                    CopyAssembly(FaultedLoadAssemblyDirectory);
-                }
-                if (_checkState.FaultedMetadataLoad)
-                {
-                    CopyAssembly(FaultedMetadataLoadDirectory);
-                }
-                if (_checkState.FaultedMetadataCheck)
-                {
-                    CopyAssembly(FaultedMetadataCheckDirectory);
-                }
-                if (_checkState.FaultedReflectionComparison)
-                {
-                    CopyAssembly(FaultedReflectionComparisonDirectory);
-                }
-                if (_checkState.FailedValidation && !_checkState.Faulted)
-                {
-                    CopyAssembly(FailedValidationDirectory);
-                }
-                if (_checkState.Success)
-                {
-                    CopyAssembly(PassedAssemblyDirectory);
-                }
+                MoveAssembly();
             }
             Console.WriteLine(_checkState.LogText);
 
@@ -135,6 +114,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             try
             {
                 _checkState.Assembly = LoadAssembly();
+
+                if (!_checkState.Metadata.AssemblyDefinition.FullName.Equals(_checkState.Assembly.FullName))
+                {
+                    throw new InvalidOperationException($"The metadata assembly has the name \"{_checkState.Metadata.AssemblyDefinition.FullName}\", but the reflection assembly has the name \"{_checkState.Assembly.FullName}\"");
+                }
+
                 // get all types to see if it can resolve everything
                 // ReSharper disable once UnusedVariable
                 var definedTypes = _checkState.Assembly.DefinedTypes;
@@ -194,13 +179,48 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "Must be a directory, not a file")]
         private void CopyAssembly(DirectoryInfo baseDirectory)
         {
-            var newFileLocation = new FileInfo(AssemblyFile.FullName.ToLower().Replace(TestAssemblyDirectory.FullName.ToLower(), baseDirectory.FullName));
-            newFileLocation.Directory.Create();
-            AssemblyFile.CopyTo(newFileLocation.FullName, true);
+            var newDirectory = new DirectoryInfo(baseDirectory.FullName + AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length));
+            newDirectory.Create();
+            foreach (var file in AssemblyFile.Directory.EnumerateFiles())
+            {
+                file.CopyTo(Path.Combine(newDirectory.FullName, file.Name));
+            }
 
-            var logFileName = newFileLocation.FullName.Substring(0, newFileLocation.FullName.Length - 4) + ".log";
+            var logFileName = Path.Combine(newDirectory.FullName, "tests.log");
 
             File.WriteAllText(logFileName, _checkState.LogText);
+        }
+
+        private void MoveAssembly()
+        {
+            if (_checkState.FaultedAssemblyLoad)
+            {
+                CopyAssembly(FaultedLoadAssemblyDirectory);
+            }
+            if (_checkState.FaultedMetadataLoad)
+            {
+                CopyAssembly(FaultedMetadataLoadDirectory);
+            }
+            if (_checkState.FaultedMetadataCheck)
+            {
+                CopyAssembly(FaultedMetadataCheckDirectory);
+            }
+            if (_checkState.IncompleteAssemblyLoad)
+            {
+                CopyAssembly(IncompleteAssemblyLoadDirectory);
+            }
+            if (_checkState.FaultedReflectionComparison)
+            {
+                CopyAssembly(FaultedReflectionComparisonDirectory);
+            }
+            if (_checkState.FailedValidation)
+            {
+                CopyAssembly(FailedValidationDirectory);
+            }
+            if (_checkState.Success)
+            {
+                CopyAssembly(PassedAssemblyDirectory);
+            }
         }
     }
 }

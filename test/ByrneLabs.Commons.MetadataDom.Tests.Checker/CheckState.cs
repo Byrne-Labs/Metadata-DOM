@@ -19,10 +19,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             StartTime = DateTime.Now;
         }
 
-        public string ErrorLogText => string.Join(Environment.NewLine, Errors);
-
-        public string LogText => ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
-
         public Assembly Assembly { get; set; }
 
         public IEnumerable<CodeElement> CheckedMetadataElements
@@ -58,6 +54,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
+        public string ErrorLogText => string.Join(Environment.NewLine, Errors);
+
         public IEnumerable<string> Errors
         {
             get
@@ -82,7 +80,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?)null;
+        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?) null;
 
         public bool FailedValidation
         {
@@ -90,7 +88,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_errors)
                 {
-                    return _errors.Any();
+                    return _errors.Any() && !Faulted;
                 }
             }
         }
@@ -112,7 +110,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_exceptions)
                 {
-                    return _exceptions.Any(exception => exception.Item1 == CheckPhase.AssemblyLoad);
+                    return !IncompleteAssemblyLoad && _exceptions.Any(exception => exception.Item1 == CheckPhase.AssemblyLoad);
                 }
             }
         }
@@ -145,12 +143,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_exceptions)
                 {
-                    return _exceptions.Any(exception => exception.Item1 == CheckPhase.ReflectionComparison);
+                    return !IncompleteAssemblyLoad && _exceptions.Any(exception => exception.Item1 == CheckPhase.ReflectionComparison);
                 }
             }
         }
 
         public DateTime? FinishTime { get; set; }
+
+        public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly");
+
+        public string LogText => ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
 
         public Metadata Metadata { get; set; }
 

@@ -40,6 +40,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 var output = new StringBuilder();
                 var error = new StringBuilder();
 
+                var possiblePdbFile = new FileInfo(assemblyFile.FullName.Substring(0, assemblyFile.FullName.Length - 4) + ".pdb");
+                pdbFile = pdbFile ?? (possiblePdbFile.Exists ? possiblePdbFile : null);
+
                 process.StartInfo = GetNetFrameworkProcess(assemblyFile, pdbFile);
                 process.OutputDataReceived += (sender, e) =>
                 {
@@ -82,8 +85,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
                 if (assemblyFile.FullName.ToLower().StartsWith(BaseTestsDirectory.FullName.ToLower()))
                 {
-                    assemblyFile.Delete();
-                    var assemblyDirectory = assemblyFile.Directory;
+                    assemblyFile.Directory.Delete(true);
+                    var assemblyDirectory = assemblyFile.Directory.Parent;
                     while (!assemblyDirectory.GetFileSystemInfos().Any())
                     {
                         assemblyDirectory.Delete();
@@ -99,22 +102,30 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         {
             if (!TestsNotRunDirectory.Exists)
             {
-                TestsNotRunDirectory.Create();
+
+                var filesToTest = new List<FileInfo>();
                 var oldGacDirectory = new DirectoryInfo($"{Environment.GetEnvironmentVariable("systemroot")}\\assembly");
-
-                Parallel.ForEach(oldGacDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories), assembly =>
-                {
-                    var newAssemblyLocation = new FileInfo(assembly.FullName.Replace(oldGacDirectory.FullName, TestsNotRunDirectory.FullName));
-                    newAssemblyLocation.Directory.Create();
-                    assembly.CopyTo(newAssemblyLocation.FullName);
-                });
-
                 var newGacDirectory = new DirectoryInfo($"{Environment.GetEnvironmentVariable("windir")}\\Microsoft.NET\\assembly");
-                Parallel.ForEach(newGacDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories), assembly =>
+                var nugetDirectory = new DirectoryInfo($"{Environment.GetEnvironmentVariable("userprofile")}\\.nuget\\packages");
+
+                filesToTest.AddRange(oldGacDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories));
+                filesToTest.AddRange(oldGacDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories));
+                filesToTest.AddRange(newGacDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories));
+                filesToTest.AddRange(newGacDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories));
+                filesToTest.AddRange(nugetDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories));
+                filesToTest.AddRange(nugetDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories));
+
+                Parallel.ForEach(filesToTest, fileToTest =>
                 {
-                    var newAssemblyLocation = new FileInfo(assembly.FullName.Replace(newGacDirectory.FullName, TestsNotRunDirectory.FullName));
+                    var newAssemblyLocation = new FileInfo(Path.Combine(TestsNotRunDirectory.FullName, Guid.NewGuid().ToString(), fileToTest.Name));
                     newAssemblyLocation.Directory.Create();
-                    assembly.CopyTo(newAssemblyLocation.FullName);
+                    File.WriteAllText(Path.Combine(newAssemblyLocation.DirectoryName, "info.txt"), $"Original location: {fileToTest.FullName}");
+                    fileToTest.CopyTo(newAssemblyLocation.FullName);
+                    var pdbFile = new FileInfo(fileToTest.FullName.Substring(0, fileToTest.FullName.Length - 4) + ".pdb");
+                    if (pdbFile.Exists)
+                    {
+                        pdbFile.CopyTo(newAssemblyLocation.FullName.Substring(0, newAssemblyLocation.FullName.Length - 4) + ".pdb");
+                    }
                 });
             }
 
@@ -155,7 +166,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = CopyAllGacAssemblies().OrderBy(file => file.Length).ToList();
             var startTime = DateTime.Now;
             var pass = true;
-            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 12 };
+            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 24 };
             Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile => pass &= CheckMetadataOutOfProcess(assemblyFile));
 
             var executionTime = DateTime.Now.Subtract(startTime);
