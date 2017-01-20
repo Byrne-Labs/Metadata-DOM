@@ -123,6 +123,9 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="MetadataReader.TypeDefinitions" />
         public IEnumerable<TypeDefinition> TypeDefinitions => !HasMetadata ? new List<TypeDefinition>() : _typeDefinitions.Value;
 
+        /// <inheritdoc cref="MetadataReader.TypeReferences" />
+        public IEnumerable<TypeReference> TypeReferences => !HasMetadata ? new List<TypeReference>() : _typeReferences.Value;
+
         protected override sealed MetadataReader Reader => MetadataState.AssemblyReader ?? MetadataState.PdbReader;
 
         /// <inheritdoc />

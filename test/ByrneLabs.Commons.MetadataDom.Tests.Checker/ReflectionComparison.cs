@@ -45,8 +45,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             try
             {
                 CompareCodeElementsToReflectionData(_checkState.Metadata.AssemblyDefinition, _checkState.Assembly);
-
-                foreach (var reflectionType in _checkState.Assembly.DefinedTypes)
+                foreach (var reflectionType in _checkState.Assembly.DefinedTypes.Where(type => Equals(type.Assembly, _checkState.Assembly)))
                 {
                     try
                     {
@@ -83,7 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 _checkState.AddException(exception, _checkState.Assembly, CheckPhase.ReflectionComparison);
             }
 
-            _checkState.AddErrors(_checkState.Metadata.MemberDefinitions.Except(_checkState.ComparedMetadataMembers).Select(member => $"Could not find member {member.FullName} with reflection"));
+            _checkState.AddErrors(_checkState.Metadata.MemberDefinitions.Except(_checkState.ComparedMetadataMembers).Select(member => $"Could not find {member.MemberType} {member.TextSignature} with reflection"));
         }
 
         private void CompareCodeElementsToReflectionData(CodeElement metadataElement, object reflectionElement)
@@ -149,14 +148,22 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 foreach (var reflectionMember in reflectionType.DeclaredMembers)
                 {
-                    var metadataMember = metadataType.Members.SingleOrDefault(member => member.MetadataToken == reflectionMember.MetadataToken) ?? metadataType.Members.SingleOrDefault(member => member.MemberType == reflectionMember.MemberType && member.TextSignature.Equals(SignatureCreater.GetTextSignature(reflectionType, reflectionMember)));
-                    if (metadataMember == null)
+                    var byToken = metadataType.Members.Where(member => member.MetadataToken == reflectionMember.MetadataToken).ToArray();
+                    var byName = metadataType.Members.Where(member => member.MemberType == reflectionMember.MemberType && member.TextSignature.Equals(SignatureCreater.GetTextSignature(reflectionType, reflectionMember))).ToArray();
+                    if (byToken.Length == 0)
                     {
-                        _checkState.AddError($"Could not find member {reflectionMember.Name} on type {metadataType.FullName}");
+                        if (byName.Length == 0)
+                        {
+                            _checkState.AddError($"Could not find {reflectionMember.MemberType} {SignatureCreater.GetTextSignature(reflectionType, reflectionMember)} with metadata by token or name");
+                        }
+                        else
+                        {
+                            _checkState.AddError($"Could not find {reflectionMember.MemberType} {SignatureCreater.GetTextSignature(reflectionType, reflectionMember)} with metadata by token");
+                        }
                     }
-                    else
+                    if (byName.Length == 1 || byName.Length == 1)
                     {
-                        CompareCodeElementsToReflectionData((CodeElement)metadataMember, reflectionMember);
+                        CompareCodeElementsToReflectionData((CodeElement)(byToken.SingleOrDefault() ?? byName.SingleOrDefault()), reflectionMember);
                     }
                 }
             }

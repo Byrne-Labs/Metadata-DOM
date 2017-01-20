@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private void Initialize()
         {
-            _metadataToken = new Lazy<int>(() => Type.GetType(FullName).GetTypeInfo().MetadataToken);
+            _metadataToken = new Lazy<int>(() => Type.GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
         }
 
     }

@@ -166,7 +166,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var assemblyFiles = CopyAllGacAssemblies().OrderBy(file => file.Length).ToList();
             var startTime = DateTime.Now;
             var pass = true;
-            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 24 };
+            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 8 };
             Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile => pass &= CheckMetadataOutOfProcess(assemblyFile));
 
             var executionTime = DateTime.Now.Subtract(startTime);

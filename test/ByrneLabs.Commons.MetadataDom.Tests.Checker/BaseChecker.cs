@@ -123,6 +123,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 // get all types to see if it can resolve everything
                 // ReSharper disable once UnusedVariable
                 var definedTypes = _checkState.Assembly.DefinedTypes;
+
+                if (definedTypes.Count() != _checkState.Metadata.AssemblyDefinition.DefinedTypes.Count())
+                {
+                    throw new InvalidOperationException($"The metadata assembly has {_checkState.Metadata.AssemblyDefinition.DefinedTypes.Count()} defined types but the reflection assembly has {definedTypes.Count()} defined.  This suggests the assembly also has a native image assembly.");
+                }
             }
             catch (ReflectionTypeLoadException exception)
             {

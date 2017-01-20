@@ -81,7 +81,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 pdbFile = new FileInfo(assemblyFile.FullName.Substring(0, assemblyFile.FullName.Length - assemblyFile.Extension.Length) + ".pdb");
             }
-            else if (!pdbFile.Exists && !AssemblyFile.PEReader.PEHeaders.IsCoffOnly)
+            if (!pdbFile.Exists && !AssemblyFile.PEReader.PEHeaders.IsCoffOnly)
             {
                 var debugDirectoryEntries = AssemblyFile.PEReader.ReadDebugDirectory();
                 var debugDirectoryDataEntries = debugDirectoryEntries.Where(debugDirectoryEntry => debugDirectoryEntry.Type == DebugDirectoryEntryType.CodeView).Select(debugDirectoryEntry => AssemblyFile.PEReader.ReadCodeViewDebugDirectoryData(debugDirectoryEntry)).ToList();

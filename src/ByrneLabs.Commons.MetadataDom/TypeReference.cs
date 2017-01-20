@@ -65,7 +65,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType => ResolutionScope is TypeReference ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
-        public override string Namespace => AsString(RawMetadata.Namespace);
+        public override string Namespace => IsNested ? DeclaringType?.Namespace : AsString(RawMetadata.Namespace);
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeReference.ResolutionScope" />
         /// <summary>Resolution scope in which the target type is defined and is uniquely identified by the specified
