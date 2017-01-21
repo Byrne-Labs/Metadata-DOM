@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -26,16 +27,19 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<ImmutableArray<TypeDefinition>> _nestedTypes;
         private Lazy<ImmutableArray<PropertyDefinition>> _properties;
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinition genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinitionHandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             Initialize();
@@ -60,7 +64,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <summary>Returns the enclosing type of a specified nested type or null if the type is not nested.</summary>
         public override TypeBase DeclaringType => _declaringType.Value;
 
-        public ImmutableArray<Document> Documents { get; private set; }= ImmutableArray<Document>.Empty;
+        public ImmutableArray<Document> Documents { get; private set; } = ImmutableArray<Document>.Empty;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetEvents" />
         public ImmutableArray<EventDefinition> Events => _events.Value;
@@ -120,7 +124,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsSealed => (Attributes & TypeAttributes.Sealed) != 0;
 
-        public virtual bool IsSerializable =>  (Attributes & TypeAttributes.Serializable) != 0 || IsEnum || IsDelegate;
+        public virtual bool IsSerializable => (Attributes & TypeAttributes.Serializable) != 0 || IsEnum || IsDelegate;
 
         public bool IsSpecialName => (Attributes & TypeAttributes.SpecialName) != 0;
 

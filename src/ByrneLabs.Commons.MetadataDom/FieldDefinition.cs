@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -36,9 +34,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Attributes" />
         public FieldAttributes Attributes { get; }
-
-        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetCustomAttributes" />
-        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
@@ -87,6 +82,9 @@ namespace ByrneLabs.Commons.MetadataDom
         public string SourceCode { get; }
 
         public TypeBase FieldType => _fieldType.Value;
+
+        /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetCustomAttributes" />
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDeclaringType" />
         public override TypeBase DeclaringType => _declaringType.Value;

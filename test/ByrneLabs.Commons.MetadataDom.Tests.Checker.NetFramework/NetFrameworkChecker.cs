@@ -14,12 +14,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
         {
         }
 
-        public static CheckState Check(FileInfo assemblyFile, FileInfo pdbFile = null)
-        {
-            var checker = new NetFrameworkChecker(null, assemblyFile, pdbFile);
-            return checker.Check();
-        }
-
         protected override Assembly LoadAssembly() => Assembly.LoadFile(AssemblyFile.FullName);
     }
 }

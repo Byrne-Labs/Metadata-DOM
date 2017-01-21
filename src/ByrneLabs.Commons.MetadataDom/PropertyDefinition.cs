@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -55,34 +54,34 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
+        public override TypeBase DeclaringType => GetMethod?.DeclaringType ?? SetMethod?.DeclaringType;
+
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
+
+        public override string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod?.Parameters.Any() == true ? $"[{string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyAccessors.Getter" />
         public MethodDefinition GetMethod => _getMethod.Value;
 
         public bool IsSpecialName => Attributes.HasFlag(PropertyAttributes.SpecialName);
 
+        public override MemberTypes MemberType { get; } = MemberTypes.Property;
+
+        /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Name" />
+        public override string Name { get; }
+
         public TypeBase PropertyType => Signature.ReturnType;
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyAccessors.Setter" />
         public MethodDefinition SetMethod => _setMethod.Value;
+
+        public override string TextSignature => FullName;
 
         internal MethodSignature<TypeBase> Signature => _signature.Value;
 
         public System.Reflection.Metadata.PropertyDefinition RawMetadata { get; }
 
         public PropertyDefinitionHandle MetadataHandle { get; }
-
-        public override TypeBase DeclaringType => GetMethod?.DeclaringType ?? SetMethod?.DeclaringType;
-
-        public override string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod != null && GetMethod.Parameters.Count() > 0 ? $"[{string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
-
-        public override MemberTypes MemberType { get; } = MemberTypes.Property;
-
-        /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Name" />
-        public override string Name { get; }
-
-        public override string TextSignature => FullName;
     }
 }

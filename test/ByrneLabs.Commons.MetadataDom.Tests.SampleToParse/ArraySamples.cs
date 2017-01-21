@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 #pragma warning disable 169 //We don't care about compiler warnings in the test project
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse

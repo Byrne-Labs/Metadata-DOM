@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     public class SystemType : TypeBase
     {
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal SystemType(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : base(baseType, typeElementModifiers, metadataState, key)
         {
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal SystemType(TypeBase genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState, CodeElementKey key) : base(genericTypeDefinition, genericTypeArguments, metadataState, key)
         {
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal SystemType(MetadataState metadataState) : base(new CodeElementKey<SystemType>(), metadataState)
         {
         }

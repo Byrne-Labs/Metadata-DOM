@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
+﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
 {
     public class ConcreteSuperClassWithOverrideSample : AbstractSuperClassSample
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -13,16 +14,19 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private Lazy<object> _resolutionScope;
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeReference(TypeReference baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeReference(TypeReference genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeReference(TypeReferenceHandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             Initialize();
@@ -33,6 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom
             get
             {
                 IAssembly assembly;
+                // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull -- Using try cast for all possible classes would be slower than checking the type. -- Jonathan Byrne 01/21/2017
                 if (ResolutionScope is AssemblyReference)
                 {
                     assembly = (AssemblyReference) ResolutionScope;

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -10,12 +8,24 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
     public class MetadataChecker
     {
-
         private readonly CheckState _checkState;
 
         public MetadataChecker(CheckState checkState)
         {
             _checkState = checkState;
+        }
+
+        public void Check()
+        {
+            /*
+             * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
+             */
+            foreach (var typeDefinition in _checkState.Metadata.TypeDefinitions)
+            {
+                CheckCodeElement(typeDefinition, true);
+            }
+
+            CheckCodeElement(_checkState.Metadata, false);
         }
 
         private void CheckCodeElement(CodeElement codeElement, bool excludeAssemblies)
@@ -55,19 +65,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     CheckCodeElement(discoveredCodeElement, excludeAssemblies);
                 }
             }
-        }
-
-        public void Check()
-        {
-            /*
-             * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
-             */
-            foreach (var typeDefinition in _checkState.Metadata.TypeDefinitions)
-            {
-                CheckCodeElement(typeDefinition, true);
-            }
-
-            CheckCodeElement(_checkState.Metadata, false);
         }
     }
 }

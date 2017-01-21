@@ -43,22 +43,22 @@ namespace ByrneLabs.Commons.MetadataDom
         public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.GetDeclarativeSecurityAttributes" />
-        public override ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
-        public override ImmutableArray<TypeBase> DefinedTypes => MetadataState.DefinedTypes;
+        public ImmutableArray<TypeBase> DefinedTypes => MetadataState.DefinedTypes;
 
-        public override IMethod EntryPoint => _entryPoint.Value;
+        public IMethod EntryPoint => _entryPoint.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.Flags" />
         public override AssemblyFlags Flags { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.HashAlgorithm" />
-        public override AssemblyHashAlgorithm HashAlgorithm { get; }
+        public AssemblyHashAlgorithm HashAlgorithm { get; }
 
         public IModule Module => _moduleDefinition.Value;
 
         public override AssemblyName Name { get; }
 
-        public override ImmutableArray<AssemblyReference> ReferencedAssemblies => _assemblyReferences.Value;
+        public ImmutableArray<AssemblyReference> ReferencedAssemblies => _assemblyReferences.Value;
     }
 }

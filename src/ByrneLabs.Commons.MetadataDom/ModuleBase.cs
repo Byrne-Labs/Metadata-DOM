@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -18,6 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
     public abstract class ModuleBase<TModuleBase, THandle, TToken> : ModuleBase, ICodeElementWithTypedHandle<THandle, TToken> where TModuleBase : ModuleBase<TModuleBase, THandle, TToken>
     {
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal ModuleBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
         }

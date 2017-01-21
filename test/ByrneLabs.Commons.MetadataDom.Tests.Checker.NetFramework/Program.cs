@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
 {
-    class Program
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Entry point for application")]
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var checker = new NetFrameworkChecker(args);
             var exitCode = checker.Check().Success ? 0 : 1;

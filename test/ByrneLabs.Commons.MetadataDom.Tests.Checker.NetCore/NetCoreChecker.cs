@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.Loader;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore

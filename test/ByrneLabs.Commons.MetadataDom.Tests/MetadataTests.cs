@@ -10,18 +10,18 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 {
     public class MetadataTests
     {
+        public MetadataTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
+        private readonly ITestOutputHelper _output;
         private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
 
         [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
         public static void AssertHasMetadata(Metadata metadata)
         {
         }
-
-        public MetadataTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
-        private readonly ITestOutputHelper _output;
 
         private void CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
@@ -33,7 +33,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 Assert.NotNull(checkState.Metadata.AssemblyDefinition);
                 Assert.True(checkState.Metadata.TypeDefinitions.Any());
             }
-            if (pdbFile != null )
+            if (pdbFile != null)
             {
                 Assert.True(checkState.Metadata.Documents.Any());
             }
@@ -41,17 +41,15 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnOwnAssemblyAndPdb() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
-
-
-        [Fact]
-        [Trait("Category", "Fast")]
         public void TestOnOwnAssembly() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnOwnPdb() => CheckMetadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+        public void TestOnOwnAssemblyAndPdb() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
 
+        [Fact]
+        [Trait("Category", "Fast")]
+        public void TestOnOwnPdb() => CheckMetadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
 
         [Fact]
         [Trait("Category", "Fast")]

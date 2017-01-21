@@ -10,17 +10,17 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         public TToken RawMetadata { get; }

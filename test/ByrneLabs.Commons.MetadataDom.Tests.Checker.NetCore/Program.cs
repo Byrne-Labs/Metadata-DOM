@@ -1,11 +1,14 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore
 {
-    class Program
+    [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Entry point for program")]
+    internal class Program
     {
-        static void Main(string[] args)
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "Entry point for program must be string array")]
+        private static void Main(string[] args)
         {
             var checker = new NetCoreChecker(args);
             var exitCode = checker.Check().Success ? 0 : 1;

@@ -38,6 +38,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     throw new ArgumentException($"The file {pdbFile.FullName} does not exist", nameof(pdbFile));
                 }
+
                 var codeViewDebugEntries = debugDirectoryEntries?.Where(debugDirectoryEntry => debugDirectoryEntry.Type == DebugDirectoryEntryType.CodeView);
                 if (codeViewDebugEntries?.Any() == true)
                 {

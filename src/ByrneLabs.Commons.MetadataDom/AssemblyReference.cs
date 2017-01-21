@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -46,22 +44,12 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.GetCustomAttributes" />
         public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; } = ImmutableArray<DeclarativeSecurityAttribute>.Empty;
-
-        public override ImmutableArray<TypeBase> DefinedTypes { get; } = ImmutableArray<TypeBase>.Empty;
-
-        public override IMethod EntryPoint { get; } = null;
-
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.Flags" />
         public override AssemblyFlags Flags { get; }
-
-        public override AssemblyHashAlgorithm HashAlgorithm { get; } = AssemblyHashAlgorithm.None;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.HashValue" />
         public Blob HashValue => _hashValue.Value;
 
         public override AssemblyName Name { get; }
-
-        public override ImmutableArray<AssemblyReference> ReferencedAssemblies { get; } = ImmutableArray<AssemblyReference>.Empty;
     }
 }

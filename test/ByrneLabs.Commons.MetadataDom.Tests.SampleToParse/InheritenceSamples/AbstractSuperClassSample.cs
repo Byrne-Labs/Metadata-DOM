@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
+﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
 {
     public abstract class AbstractSuperClassSample : AbstractBaseClassSample
     {
@@ -11,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
         protected int protectedField;
         internal int internalField;
         private int privateField;
- 
+
         public int PublicProperty { get; set; }
 
         public virtual int PublicVirtualProperty { get; set; }
@@ -47,6 +43,5 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
         internal virtual int InternalVirtualMethod() => 0;
 
         private int PrivateMethod() => 0;
-
     }
 }

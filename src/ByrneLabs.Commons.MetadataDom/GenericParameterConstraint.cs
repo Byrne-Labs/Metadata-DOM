@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
@@ -23,6 +22,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 var constrainedTypeSpecification = constrainedType as TypeSpecification;
                 if (constrainedTypeSpecification != null)
                 {
+                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull -- Using try cast for all possible classes would not be faster than checking the type. -- Jonathan Byrne 01/21/2017
                     if (Parameter.Parent is TypeDefinition)
                     {
                         constrainedTypeSpecification.ParentTypeDefinition = (TypeDefinition) Parameter.Parent;

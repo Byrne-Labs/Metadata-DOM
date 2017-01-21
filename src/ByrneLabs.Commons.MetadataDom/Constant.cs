@@ -68,6 +68,8 @@ namespace ByrneLabs.Commons.MetadataDom
                     case ConstantTypeCode.NullReference:
                         value = null;
                         break;
+                    case ConstantTypeCode.Invalid:
+                        throw new InvalidOperationException("Constant type code is ConstantTypeCode.Invalid");
                     default:
                         throw new InvalidOperationException($"Invalid type code {TypeCode}");
                 }

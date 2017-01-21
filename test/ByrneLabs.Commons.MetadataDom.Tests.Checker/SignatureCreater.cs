@@ -9,6 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         public static string GetTextSignature(TypeInfo reflectedType, MemberInfo memberInfo)
         {
             string textSignature;
+            // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull -- Using try cast for all possible classes would be slower than checking the type. -- Jonathan Byrne 01/21/2017
             if (memberInfo is TypeInfo)
             {
                 textSignature = GetTextSignature(reflectedType, (TypeInfo) memberInfo);

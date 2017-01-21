@@ -29,8 +29,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type)
         {
-            return PrimitiveTypeCode.Int32;
-
             throw new NotImplementedException();
         }
 

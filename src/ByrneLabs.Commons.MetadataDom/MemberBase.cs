@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -17,17 +16,17 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public abstract ImmutableArray<CustomAttribute> CustomAttributes { get; }
-
         public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
+
+        public ModuleDefinition Module => MetadataState.ModuleDefinition;
+
+        public abstract ImmutableArray<CustomAttribute> CustomAttributes { get; }
 
         public abstract TypeBase DeclaringType { get; }
 
         public abstract string FullName { get; }
 
         public abstract MemberTypes MemberType { get; }
-
-        public ModuleDefinition Module => MetadataState.ModuleDefinition;
 
         public abstract string Name { get; }
 

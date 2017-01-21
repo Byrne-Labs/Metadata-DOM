@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -9,19 +9,21 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class PrimitiveType : TypeBase<PrimitiveType, PrimitiveTypeCode>
     {
-
         private Lazy<int> _metadataToken;
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveType baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveType genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveTypeCode primitiveTypeCode, MetadataState metadataState) : base(primitiveTypeCode, metadataState)
         {
             Initialize();
@@ -51,6 +53,5 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             _metadataToken = new Lazy<int>(() => Type.GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
         }
-
     }
 }

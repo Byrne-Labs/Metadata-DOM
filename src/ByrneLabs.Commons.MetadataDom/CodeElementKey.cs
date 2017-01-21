@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -88,6 +87,7 @@ namespace ByrneLabs.Commons.MetadataDom
             unchecked
             {
                 var hash = 91;
+                // ReSharper disable once LoopCanBeConvertedToQuery -- This is much easier to read as a loop. -- Jonathan Byrne 01/21/2017
                 foreach (var keyValue in KeyValues)
                 {
                     hash = hash * 17 + (keyValue == null ? 0 : keyValue.GetHashCode()) * keyValue.GetType().GetHashCode();

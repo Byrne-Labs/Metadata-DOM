@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -17,6 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private TypeBase _declaringType;
         private Lazy<CodeElement> _parent;
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal GenericParameter(GenericParameter baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
             _declaringType = baseType.DeclaringType;
@@ -24,11 +26,13 @@ namespace ByrneLabs.Commons.MetadataDom
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal GenericParameter(GenericParameter genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
             Initialize();
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal GenericParameter(GenericParameterHandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
             Initialize();
@@ -53,8 +57,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string FullNameWithoutAssemblies { get; } = null;
 
-        internal override string FullNameWithoutGenericArguments { get; } = null;
-
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Index" />
         public int Index { get; internal set; }
 
@@ -68,6 +70,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <summary>
         ///     <see cref="TypeDefinition" /> or <see cref="MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
+
+        internal override string FullNameWithoutGenericArguments { get; } = null;
 
         internal override string UndecoratedName => AsString(RawMetadata.Name);
 

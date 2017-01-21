@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -11,14 +11,17 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private readonly Lazy<SerializedType> _declaringType;
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal SerializedType(TypeBase<SerializedType, string> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal SerializedType(TypeBase<SerializedType, string> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
         }
 
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal SerializedType(string assemblyQualifiedName, MetadataState metadataState) : base(assemblyQualifiedName, metadataState)
         {
             var nameParse = Regex.Match(assemblyQualifiedName, @"^((?:.+\.)?)([^\.]+)((?:\+.?)?), (.+?, Version=.+?, Culture=.+?, PublicKeyToken=.+?)$");

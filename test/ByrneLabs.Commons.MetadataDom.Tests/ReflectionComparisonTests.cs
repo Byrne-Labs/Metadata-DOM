@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,7 +102,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         {
             if (!TestsNotRunDirectory.Exists)
             {
-
                 var filesToTest = new List<FileInfo>();
                 var oldGacDirectory = new DirectoryInfo($"{Environment.GetEnvironmentVariable("systemroot")}\\assembly");
                 var newGacDirectory = new DirectoryInfo($"{Environment.GetEnvironmentVariable("windir")}\\Microsoft.NET\\assembly");
@@ -134,7 +132,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "These must be files, not directories")]
-        private ProcessStartInfo GetNetCoreProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
+        private static ProcessStartInfo GetNetCoreProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
             var checkerDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore/bin/Debug/netcoreapp1.0"));
             var processStartInfo = new ProcessStartInfo("dotnet")
@@ -148,7 +146,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "These must be files, not directories")]
-        private ProcessStartInfo GetNetFrameworkProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
+        private static ProcessStartInfo GetNetFrameworkProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
             var processStartInfo = new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\bin\Debug\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.exe"))
             {
@@ -172,7 +170,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
             var executionTime = DateTime.Now.Subtract(startTime);
             _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
-            _output.WriteLine($"\t{assemblyFiles.Count()} files loaded");
+            _output.WriteLine($"\t{assemblyFiles.Count} files loaded");
 
             Assert.True(pass);
         }
@@ -184,10 +182,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
             var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
             var pass = true;
+            // ReSharper disable once LoopCanBeConvertedToQuery -- This is much easier to read as a loop. -- Jonathan Byrne 01/21/2017
             foreach (var assemblyFile in assemblyFiles)
             {
                 pass &= CheckMetadataInProcess(assemblyFile);
             }
+
             Assert.True(pass);
         }
 

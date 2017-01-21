@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -28,14 +27,14 @@ namespace ByrneLabs.Commons.MetadataDom
             });
         }
 
-        public override ImmutableArray<GenericParameter> GenericTypeParameters => _genericParameters.Value;
-
         public PropertyDefinition RelatedProperty { get; internal set; }
 
         public override string TextSignature => $"{DeclaringType.FullName}.{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.FullNameWithoutAssemblies))})";
 
         /// <summary>Returns <see cref="TypeDefinition" />, <see cref="TypeReference" />, <see cref="TypeSpecification" />, <see cref="GenericParameter" />, or null when void</summary>
         public TypeBase ReturnType => Signature.ReturnType;
+
+        public override ImmutableArray<GenericParameter> GenericTypeParameters => _genericParameters.Value;
 
         public override bool IsGenericMethod => GenericTypeParameters.Any();
     }
