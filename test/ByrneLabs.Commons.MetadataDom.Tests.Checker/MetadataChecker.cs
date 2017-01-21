@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,14 +29,20 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     {
                         var propertyValue = property.GetValue(codeElement);
                         var codeElementPropertyValue = propertyValue as CodeElement;
-                        var codeElementsPropertyValue = (propertyValue as IEnumerable)?.Cast<object>();
-                        if (codeElementPropertyValue != null)
+                        var codeElementsPropertyValue = (propertyValue as IEnumerable)?.OfType<CodeElement>();
+                        /*
+                         * The following code is horribly hackish but ImmutableArrays do not support most LINQ methods and as generic structs, are a little clumsy to handle. -- Jonathan Byrne 01/21/2017
+                         */
+                        if (propertyValue?.GetType().FullName.StartsWith("System.Collections.Immutable.ImmutableArray`1") == true && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
+                        {
+                        }
+                        if (codeElementsPropertyValue != null)
+                        {
+                            discoveredCodeElements.AddRange(codeElementsPropertyValue);
+                        }
+                        else if (codeElementPropertyValue != null)
                         {
                             discoveredCodeElements.Add(codeElementPropertyValue);
-                        }
-                        else if (codeElementsPropertyValue?.Any() == true && codeElementsPropertyValue.GetType().IsConstructedGenericType && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(codeElementsPropertyValue.GetType().GetTypeInfo().GetGenericArguments().First()))
-                        {
-                            discoveredCodeElements.AddRange(codeElementsPropertyValue.Cast<CodeElement>());
                         }
                     }
                     catch (Exception exception)

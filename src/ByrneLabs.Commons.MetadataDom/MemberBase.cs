@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -16,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public abstract IEnumerable<CustomAttribute> CustomAttributes { get; }
+        public abstract ImmutableArray<CustomAttribute> CustomAttributes { get; }
 
         public bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 

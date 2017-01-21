@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -32,7 +33,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public MethodDefinitionBase MethodDefinition { get; }
         protected MethodSignature<TypeBase>? MethodSignature => _methodSignature.Value;
 
-        public TypeBase DeclaringType => (TypeBase) Parent;
+        public TypeBase DeclaringType => (TypeBase)Parent;
 
         public string FullName => MethodDefinition?.FullName;
 
@@ -44,8 +45,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsGenericMethod { get; } = false;
 
-        public IEnumerable<IParameter> Parameters => MethodDefinition?.Parameters;
+        public ImmutableArray<IParameter> Parameters => MethodDefinition?.Parameters ?? ImmutableArray<IParameter>.Empty;
 
-        public IEnumerable<GenericParameter> GenericTypeParameters => MethodDefinition?.GenericTypeParameters;
+        public ImmutableArray<GenericParameter> GenericTypeParameters => MethodDefinition?.GenericTypeParameters ?? ImmutableArray<GenericParameter>.Empty;
     }
 }

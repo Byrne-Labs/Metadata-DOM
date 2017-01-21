@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -9,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class TypeSpecification : TypeBase<TypeSpecification, TypeSpecificationHandle, System.Reflection.Metadata.TypeSpecification>
     {
-        private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private Lazy<TypeBase> _signature;
 
         internal TypeSpecification(TypeSpecification baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
@@ -30,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeSpecification.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override TypeBase DeclaringType { get; } = null;
 

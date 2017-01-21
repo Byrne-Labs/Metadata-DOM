@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public abstract class MemberReferenceBase : RuntimeCodeElement, ICodeElementWithTypedHandle<MemberReferenceHandle, MemberReference>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _parent;
 
         internal MemberReferenceBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
@@ -22,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MemberReference.GetKind" />
         public MemberReferenceKind Kind { get; }

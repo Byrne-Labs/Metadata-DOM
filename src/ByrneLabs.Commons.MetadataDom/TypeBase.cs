@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 
@@ -9,17 +10,17 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken)MetadataState.GetTokenForHandle(MetadataHandle);
         }
 
         public TToken RawMetadata { get; }
@@ -69,7 +70,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 ElementType = baseType;
             }
-            GenericTypeArguments = new TypeBase[] { };
+            GenericTypeArguments = ImmutableArray<TypeBase>.Empty;
             Initialize();
         }
 
@@ -77,13 +78,13 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
-            GenericTypeArguments = genericTypeArguments.ToList();
+            GenericTypeArguments = genericTypeArguments.ToImmutableArray();
             Initialize();
         }
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
-            GenericTypeArguments = new TypeBase[] { };
+            GenericTypeArguments = ImmutableArray<TypeBase>.Empty;
             Initialize();
         }
 
@@ -106,7 +107,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public virtual string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
 
-        public IEnumerable<TypeBase> GenericTypeArguments { get; }
+        public ImmutableArray<TypeBase> GenericTypeArguments { get; }
 
         public TypeBase GenericTypeDefinition { get; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 
@@ -10,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {ScopedName}")]
     public class ModuleReference : ModuleBase<ModuleReference, ModuleReferenceHandle, System.Reflection.Metadata.ModuleReference>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
 
         internal ModuleReference(ModuleReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -21,6 +22,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public override IAssembly Assembly => null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleReference.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
     }
 }

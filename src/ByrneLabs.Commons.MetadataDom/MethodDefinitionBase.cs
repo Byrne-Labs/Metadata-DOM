@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -12,13 +13,13 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public abstract class MethodDefinitionBase : MethodBase<MethodDefinitionBase, MethodDefinitionHandle, System.Reflection.Metadata.MethodDefinition>, IContainsSourceCode
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
-        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
-        private readonly Lazy<IEnumerable<Parameter>> _parameters;
+        private readonly Lazy<ImmutableArray<IParameter>> _parameters;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
 
         internal MethodDefinitionBase(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
@@ -31,7 +32,7 @@ namespace ByrneLabs.Commons.MetadataDom
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
             _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
-            _parameters = new Lazy<IEnumerable<Parameter>>(LoadParameters);
+            _parameters = new Lazy<ImmutableArray<IParameter>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
             _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, GenericTypeParameters)));
         }
@@ -40,7 +41,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public MethodAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinitionHandle.ToDebugInformationHandle" />
         /// <summary>Returns a <see cref="MethodDebugInformation" /> corresponding to this handle.</summary>
@@ -48,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetDeclarativeSecurityAttributes" />
-        public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetDeclaringType" />
         public override TypeBase DeclaringType => _declaringType.Value;
@@ -99,7 +100,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Name { get; }
 
-        public override IEnumerable<IParameter> Parameters => _parameters.Value;
+        public override ImmutableArray<IParameter> Parameters => _parameters.Value;
 
         protected MethodSignature<TypeBase> Signature => _signature.Value;
 
@@ -107,7 +108,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public string SourceCode => DebugInformation?.SourceCode;
 
-        private IEnumerable<Parameter> LoadParameters()
+        private ImmutableArray<IParameter> LoadParameters()
         {
             var allParameters = MetadataState.GetCodeElements<Parameter>(RawMetadata.GetParameters()).ToList();
 
@@ -140,7 +141,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
             }
 
-            return parameters;
+            return parameters.Cast<IParameter>().ToImmutableArray();
         }
     }
 }

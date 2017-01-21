@@ -8,8 +8,8 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public GenericContext(IEnumerable<TypeBase> typeParameters, IEnumerable<TypeBase> methodParameters)
         {
-            TypeParameters = typeParameters == null ? Enumerable.Empty<TypeBase>().ToImmutableArray() : typeParameters.ToImmutableArray();
-            MethodParameters = methodParameters == null ? Enumerable.Empty<TypeBase>().ToImmutableArray() : methodParameters.ToImmutableArray();
+            TypeParameters = typeParameters == null ? ImmutableArray<TypeBase>.Empty : typeParameters.ToImmutableArray();
+            MethodParameters = methodParameters == null ? ImmutableArray<TypeBase>.Empty : methodParameters.ToImmutableArray();
         }
 
         public ImmutableArray<TypeBase> MethodParameters { get; }

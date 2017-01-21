@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
@@ -26,13 +27,13 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public abstract IEnumerable<GenericParameter> GenericTypeParameters { get; }
+        public abstract ImmutableArray<GenericParameter> GenericTypeParameters { get; }
 
         public bool IsConstructor => this is IConstructor && ".ctor".Equals(Name);
 
         public abstract bool IsGenericMethod { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetParameters" />
-        public abstract IEnumerable<IParameter> Parameters { get; }
+        public abstract ImmutableArray<IParameter> Parameters { get; }
     }
 }

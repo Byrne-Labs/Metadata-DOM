@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
@@ -20,7 +21,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override IAssembly Assembly { get; } = null;
 
-        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
+        public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
         public override TypeBase DeclaringType { get; } = null;
 

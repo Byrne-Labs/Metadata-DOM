@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -11,19 +12,19 @@ namespace ByrneLabs.Commons.MetadataDom
     public class TypeDefinition : TypeBase<TypeDefinition, TypeDefinitionHandle, System.Reflection.Metadata.TypeDefinition>
     {
         private Lazy<TypeBase> _baseType;
-        private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private Lazy<TypeDefinition> _declaringType;
-        private Lazy<IEnumerable<EventDefinition>> _events;
-        private Lazy<IEnumerable<FieldDefinition>> _fields;
-        private Lazy<IEnumerable<GenericParameter>> _genericParameters;
-        private Lazy<IEnumerable<InterfaceImplementation>> _interfaceImplementations;
-        private Lazy<IEnumerable<IMember>> _members;
-        private Lazy<IEnumerable<MethodImplementation>> _methodImplementations;
-        private Lazy<IEnumerable<IMethodBase>> _methods;
+        private Lazy<ImmutableArray<EventDefinition>> _events;
+        private Lazy<ImmutableArray<FieldDefinition>> _fields;
+        private Lazy<ImmutableArray<GenericParameter>> _genericParameters;
+        private Lazy<ImmutableArray<InterfaceImplementation>> _interfaceImplementations;
+        private Lazy<ImmutableArray<MemberBase>> _members;
+        private Lazy<ImmutableArray<MethodImplementation>> _methodImplementations;
+        private Lazy<ImmutableArray<MethodDefinitionBase>> _methods;
         private Lazy<NamespaceDefinition> _namespaceDefinition;
-        private Lazy<IEnumerable<TypeDefinition>> _nestedTypes;
-        private Lazy<IEnumerable<PropertyDefinition>> _properties;
+        private Lazy<ImmutableArray<TypeDefinition>> _nestedTypes;
+        private Lazy<ImmutableArray<PropertyDefinition>> _properties;
 
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
@@ -50,28 +51,28 @@ namespace ByrneLabs.Commons.MetadataDom
         public TypeBase BaseType => _baseType.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetDeclarativeSecurityAttributes" />
-        public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetDeclaringType" />
         /// <summary>Returns the enclosing type of a specified nested type or null if the type is not nested.</summary>
         public override TypeBase DeclaringType => _declaringType.Value;
 
-        public IEnumerable<Document> Documents { get; private set; }
+        public ImmutableArray<Document> Documents { get; private set; }= ImmutableArray<Document>.Empty;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetEvents" />
-        public IEnumerable<EventDefinition> Events => _events.Value;
+        public ImmutableArray<EventDefinition> Events => _events.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetFields" />
-        public IEnumerable<IField> Fields => _fields.Value;
+        public ImmutableArray<FieldDefinition> Fields => _fields.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetGenericParameters" />
-        public IEnumerable<GenericParameter> GenericTypeParameters => _genericParameters.Value;
+        public ImmutableArray<GenericParameter> GenericTypeParameters => _genericParameters.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetInterfaceImplementations" />
-        public IEnumerable<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
+        public ImmutableArray<InterfaceImplementation> InterfaceImplementations => _interfaceImplementations.Value;
 
         public bool IsAbstract => (Attributes & TypeAttributes.Abstract) != 0;
 
@@ -127,20 +128,20 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsValueType => IsEnum || "System.ValueType".Equals(BaseType?.FullName);
 
-        public IEnumerable<Language> Languages { get; private set; }
+        public ImmutableArray<Language> Languages { get; private set; } = ImmutableArray<Language>.Empty;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetLayout" />
         public TypeLayout Layout { get; private set; }
 
-        public IEnumerable<IMember> Members => _members.Value;
+        public ImmutableArray<MemberBase> Members => _members.Value;
 
         public override MemberTypes MemberType => DeclaringType == null ? MemberTypes.TypeInfo : MemberTypes.NestedType;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethodImplementations" />
-        public IEnumerable<MethodImplementation> MethodImplementations => _methodImplementations.Value;
+        public ImmutableArray<MethodImplementation> MethodImplementations => _methodImplementations.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
-        public IEnumerable<IMethodBase> Methods => _methods.Value;
+        public ImmutableArray<MethodDefinitionBase> Methods => _methods.Value;
 
         public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(RawMetadata.Namespace);
 
@@ -149,17 +150,17 @@ namespace ByrneLabs.Commons.MetadataDom
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetNestedTypes" />
-        public IEnumerable<TypeBase> NestedTypes => _nestedTypes.Value;
+        public ImmutableArray<TypeDefinition> NestedTypes => _nestedTypes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetProperties" />
-        public IEnumerable<PropertyDefinition> Properties => _properties.Value;
+        public ImmutableArray<PropertyDefinition> Properties => _properties.Value;
 
         internal override string UndecoratedName => AsString(RawMetadata.Name);
 
         private void Initialize()
         {
             _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(RawMetadata.NamespaceDefinition);
-            _methods = MetadataState.GetLazyCodeElements<IMethodBase>(RawMetadata.GetMethods());
+            _methods = MetadataState.GetLazyCodeElements<MethodDefinitionBase>(RawMetadata.GetMethods());
             _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(RawMetadata.GetMethodImplementations());
             Attributes = RawMetadata.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
@@ -177,7 +178,7 @@ namespace ByrneLabs.Commons.MetadataDom
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
             _events = MetadataState.GetLazyCodeElements<EventDefinition>(RawMetadata.GetEvents());
             _fields = MetadataState.GetLazyCodeElements<FieldDefinition>(RawMetadata.GetFields());
-            _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
+            _genericParameters = new Lazy<ImmutableArray<GenericParameter>>(() =>
             {
                 var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
                 var index = 0;
@@ -189,7 +190,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 return genericParameters;
             });
-            _interfaceImplementations = new Lazy<IEnumerable<InterfaceImplementation>>(() =>
+            _interfaceImplementations = new Lazy<ImmutableArray<InterfaceImplementation>>(() =>
             {
                 var interfaceImplementations = MetadataState.GetCodeElements<InterfaceImplementation>(RawMetadata.GetInterfaceImplementations());
                 foreach (var interfaceImplementation in interfaceImplementations)
@@ -202,7 +203,7 @@ namespace ByrneLabs.Commons.MetadataDom
             Layout = RawMetadata.GetLayout();
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition>(RawMetadata.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(RawMetadata.GetProperties());
-            _members = new Lazy<IEnumerable<IMember>>(() => Methods.Union<IMember>(Fields).Union(Events).Union(Properties).Union(NestedTypes).ToList());
+            _members = new Lazy<ImmutableArray<MemberBase>>(() => Methods.Union<MemberBase>(Fields).Union(Events).Union(Properties).Union(NestedTypes).ToImmutableArray());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public abstract IEnumerable<CustomAttribute> CustomAttributes { get; }
+        public abstract ImmutableArray<CustomAttribute> CustomAttributes { get; }
 
         public abstract IAssembly Assembly { get; }
 

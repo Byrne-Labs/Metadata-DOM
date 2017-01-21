@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name.FullName}")]
     public class AssemblyReference : AssemblyBase<AssemblyReference, AssemblyReferenceHandle, System.Reflection.Metadata.AssemblyReference>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _hashValue;
 
         internal AssemblyReference(AssemblyReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
@@ -43,11 +44,11 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyReference.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; } = Enumerable.Empty<DeclarativeSecurityAttribute>();
+        public override ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; } = ImmutableArray<DeclarativeSecurityAttribute>.Empty;
 
-        public override IEnumerable<TypeBase> DefinedTypes { get; } = Enumerable.Empty<TypeBase>();
+        public override ImmutableArray<TypeBase> DefinedTypes { get; } = ImmutableArray<TypeBase>.Empty;
 
         public override IMethod EntryPoint { get; } = null;
 
@@ -61,6 +62,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override AssemblyName Name { get; }
 
-        public override IEnumerable<IAssembly> ReferencedAssemblies { get; } = Enumerable.Empty<IAssembly>();
+        public override ImmutableArray<AssemblyReference> ReferencedAssemblies { get; } = ImmutableArray<AssemblyReference>.Empty;
     }
 }

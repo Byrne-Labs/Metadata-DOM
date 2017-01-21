@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection.Metadata;
 
@@ -23,7 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.BaseGenerationId" />
         public Guid BaseGenerationId { get; }
 
-        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
+        public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ModuleDefinition.Generation" />
         public int Generation { get; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 
@@ -10,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {ImplementingType.FullName,nq} : {Interface.FullName}")]
     public class InterfaceImplementation : RuntimeCodeElement, ICodeElementWithTypedHandle<InterfaceImplementationHandle, System.Reflection.Metadata.InterfaceImplementation>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<TypeBase> _interface;
 
         internal InterfaceImplementation(InterfaceImplementationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
@@ -31,7 +32,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.InterfaceImplementation.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public TypeDefinition ImplementingType { get; internal set; }
 

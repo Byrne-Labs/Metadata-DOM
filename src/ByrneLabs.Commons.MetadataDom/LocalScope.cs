@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -8,10 +9,10 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class LocalScope : DebugCodeElement, ICodeElementWithTypedHandle<LocalScopeHandle, System.Reflection.Metadata.LocalScope>
     {
-        private readonly Lazy<IEnumerable<LocalScope>> _children;
+        private readonly Lazy<ImmutableArray<LocalScope>> _children;
         private readonly Lazy<ImportScope> _importScope;
-        private readonly Lazy<IEnumerable<LocalConstant>> _localConstants;
-        private readonly Lazy<IEnumerable<LocalVariable>> _localVariables;
+        private readonly Lazy<ImmutableArray<LocalConstant>> _localConstants;
+        private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
         private readonly Lazy<MethodDefinitionBase> _method;
 
         internal LocalScope(LocalScopeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
@@ -23,13 +24,13 @@ namespace ByrneLabs.Commons.MetadataDom
             Length = RawMetadata.Length;
             _method = MetadataState.GetLazyCodeElement<MethodDefinitionBase>(RawMetadata.Method);
             StartOffset = RawMetadata.StartOffset;
-            _children = new Lazy<IEnumerable<LocalScope>>(LoadChildren);
+            _children = new Lazy<ImmutableArray<LocalScope>>(LoadChildren);
             _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(RawMetadata.GetLocalConstants());
             _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(RawMetadata.GetLocalVariables());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.GetChildren" />
-        public IEnumerable<LocalScope> Children => _children.Value;
+        public ImmutableArray<LocalScope> Children => _children.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.EndOffset" />
         public int EndOffset { get; }
@@ -41,10 +42,10 @@ namespace ByrneLabs.Commons.MetadataDom
         public int Length { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.GetLocalConstants" />
-        public IEnumerable<LocalConstant> LocalConstants => _localConstants.Value;
+        public ImmutableArray<LocalConstant> LocalConstants => _localConstants.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.GetLocalVariables" />
-        public IEnumerable<LocalVariable> LocalVariables => _localVariables.Value;
+        public ImmutableArray<LocalVariable> LocalVariables => _localVariables.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.Method" />
         public MethodDefinitionBase Method => _method.Value;
@@ -56,7 +57,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public LocalScopeHandle MetadataHandle { get; }
 
-        private IEnumerable<LocalScope> LoadChildren()
+        private ImmutableArray<LocalScope> LoadChildren()
         {
             var childrenHandles = new List<LocalScopeHandle>();
             var childrenEnumerator = RawMetadata.GetChildren();

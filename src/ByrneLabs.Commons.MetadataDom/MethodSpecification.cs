@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class MethodSpecification : MethodBase<MethodSpecification, MethodSpecificationHandle, System.Reflection.Metadata.MethodSpecification>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodBase> _method;
         private readonly Lazy<ImmutableArray<TypeBase>> _signature;
 
@@ -21,13 +21,13 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodSpecification.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override TypeBase DeclaringType => Method.DeclaringType;
 
         public override string FullName => Method.FullName;
 
-        public override IEnumerable<GenericParameter> GenericTypeParameters => Method.GenericTypeParameters;
+        public override ImmutableArray<GenericParameter> GenericTypeParameters => Method.GenericTypeParameters;
 
         public override bool IsGenericMethod => Method.IsGenericMethod;
 
@@ -38,7 +38,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Name => Method.Name;
 
-        public override IEnumerable<IParameter> Parameters => Method.Parameters;
+        public override ImmutableArray<IParameter> Parameters => Method.Parameters;
 
         public override string TextSignature => Method.TextSignature;
 

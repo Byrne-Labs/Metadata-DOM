@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -11,8 +12,8 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class GenericParameter : TypeBase<GenericParameter, GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
     {
-        private Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
-        private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private Lazy<ImmutableArray<GenericParameterConstraint>> _constraints;
+        private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private TypeBase _declaringType;
         private Lazy<CodeElement> _parent;
 
@@ -39,10 +40,10 @@ namespace ByrneLabs.Commons.MetadataDom
         public GenericParameterAttributes Attributes { get; protected set; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.GetConstraints" />
-        public IEnumerable<GenericParameterConstraint> Constraints => _constraints.Value;
+        public ImmutableArray<GenericParameterConstraint> Constraints => _constraints.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public MethodDefinition DeclaringMethod { get; internal set; }
 

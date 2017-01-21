@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class GenericParameterConstraint : RuntimeCodeElement, ICodeElementWithTypedHandle<GenericParameterConstraintHandle, System.Reflection.Metadata.GenericParameterConstraint>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<GenericParameter> _parameter;
         private readonly Lazy<TypeBase> _type;
 
@@ -38,7 +39,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameterConstraint.Parameter" />
         /// <summary>The constrained <see cref="GenericParameter" />.</summary>

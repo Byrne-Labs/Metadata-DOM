@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -11,9 +11,9 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name.FullName}")]
     public class AssemblyDefinition : AssemblyBase<AssemblyDefinition, AssemblyDefinitionHandle, System.Reflection.Metadata.AssemblyDefinition>
     {
-        private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
-        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<ImmutableArray<AssemblyReference>> _assemblyReferences;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<MethodDefinition> _entryPoint;
         private readonly Lazy<ModuleDefinition> _moduleDefinition;
 
@@ -40,12 +40,12 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.AssemblyDefinition.GetDeclarativeSecurityAttributes" />
-        public override IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public override ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
-        public override IEnumerable<TypeBase> DefinedTypes => MetadataState.DefinedTypes;
+        public override ImmutableArray<TypeBase> DefinedTypes => MetadataState.DefinedTypes;
 
         public override IMethod EntryPoint => _entryPoint.Value;
 
@@ -59,6 +59,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override AssemblyName Name { get; }
 
-        public override IEnumerable<IAssembly> ReferencedAssemblies => _assemblyReferences.Value;
+        public override ImmutableArray<AssemblyReference> ReferencedAssemblies => _assemblyReferences.Value;
     }
 }

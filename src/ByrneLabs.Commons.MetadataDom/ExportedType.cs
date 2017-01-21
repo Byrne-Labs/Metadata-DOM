@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -9,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class ExportedType : TypeBase<ExportedType, ExportedTypeHandle, System.Reflection.Metadata.ExportedType>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
         private readonly Lazy<NamespaceDefinition> _namespaceDefinition;
 
@@ -28,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public TypeAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ExportedType.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override TypeBase DeclaringType { get; } = null;
 

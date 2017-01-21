@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public class FunctionPointer : TypeBase<FunctionPointer, MethodSignature<TypeBase>>
     {
-        private Lazy<IEnumerable<Parameter>> _parameters;
+        private Lazy<ImmutableArray<Parameter>> _parameters;
 
         internal FunctionPointer(FunctionPointer baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
@@ -27,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override IAssembly Assembly => MetadataState.AssemblyDefinition;
 
-        public override IEnumerable<CustomAttribute> CustomAttributes { get; } = Enumerable.Empty<CustomAttribute>();
+        public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
         public override TypeBase DeclaringType => null;
 
@@ -41,7 +42,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Namespace => null;
 
-        public IEnumerable<Parameter> Parameters => _parameters.Value;
+        public ImmutableArray<Parameter> Parameters => _parameters.Value;
 
         public TypeBase ReturnType { get; protected set; }
 
@@ -50,7 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private void Initialize()
         {
             var position = 0;
-            _parameters = new Lazy<IEnumerable<Parameter>>(() => KeyValue.ParameterTypes.Select(parameterType => new Parameter(this, parameterType, ++position, position > KeyValue.RequiredParameterCount, MetadataState)).ToList());
+            _parameters = new Lazy<ImmutableArray<Parameter>>(() => KeyValue.ParameterTypes.Select(parameterType => new Parameter(this, parameterType, ++position, position > KeyValue.RequiredParameterCount, MetadataState)).ToImmutableArray());
             ReturnType = KeyValue.ReturnType;
             GenericParameterCount = KeyValue.GenericParameterCount;
         }

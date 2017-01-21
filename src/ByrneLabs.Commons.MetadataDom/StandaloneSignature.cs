@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class StandaloneSignature : RuntimeCodeElement, ICodeElementWithTypedHandle<StandaloneSignatureHandle, System.Reflection.Metadata.StandaloneSignature>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<ImmutableArray<TypeBase>> _localSignature;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
 
@@ -24,7 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.StandaloneSignature.GetKind" />
         /// <summary>Determines the kind of signature, which can be <see cref="System.Reflection.Metadata.SignatureKind.Method" /> or

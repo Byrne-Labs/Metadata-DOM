@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public class FieldDefinition : MemberBase, ICodeElementWithTypedHandle<FieldDefinitionHandle, System.Reflection.Metadata.FieldDefinition>, IContainsSourceCode, IField
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<TypeBase> _fieldType;
@@ -37,7 +38,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public FieldAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;

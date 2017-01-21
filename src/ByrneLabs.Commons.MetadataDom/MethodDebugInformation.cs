@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection.Metadata;
 
@@ -11,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         private readonly Lazy<Document> _document;
         private readonly Lazy<StandaloneSignature> _localSignature;
-        private readonly Lazy<IEnumerable<SequencePoint>> _sequencePoints;
+        private readonly Lazy<ImmutableArray<SequencePoint>> _sequencePoints;
         private readonly Lazy<Blob> _sequencePointsBlob;
         private readonly Lazy<string> _sourceCode;
         private readonly Lazy<MethodDefinition> _stateMachineKickoffMethod;
@@ -32,7 +33,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public StandaloneSignature LocalSignature => _localSignature.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.GetSequencePoints" />
-        public IEnumerable<SequencePoint> SequencePoints => _sequencePoints.Value;
+        public ImmutableArray<SequencePoint> SequencePoints => _sequencePoints.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDebugInformation.SequencePointsBlob" />
         /// <summary></summary>

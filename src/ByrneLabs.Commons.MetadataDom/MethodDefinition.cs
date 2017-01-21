@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection.Metadata;
 
@@ -8,11 +9,11 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class MethodDefinition : MethodDefinitionBase, IMethod
     {
-        private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
+        private readonly Lazy<ImmutableArray<GenericParameter>> _genericParameters;
 
         internal MethodDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
+            _genericParameters = new Lazy<ImmutableArray<GenericParameter>>(() =>
             {
                 var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
                 var index = 0;
@@ -27,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
             });
         }
 
-        public override IEnumerable<GenericParameter> GenericTypeParameters => _genericParameters.Value;
+        public override ImmutableArray<GenericParameter> GenericTypeParameters => _genericParameters.Value;
 
         public PropertyDefinition RelatedProperty { get; internal set; }
 

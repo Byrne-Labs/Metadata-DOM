@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -6,7 +7,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public interface IMember
     {
-        IEnumerable<CustomAttribute> CustomAttributes { get; }
+        ImmutableArray<CustomAttribute> CustomAttributes { get; }
 
         TypeBase DeclaringType { get; }
 

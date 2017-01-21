@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -25,35 +26,35 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public Assembly Assembly { get; set; }
 
-        public IEnumerable<CodeElement> CheckedMetadataElements
+        public ImmutableArray<CodeElement> CheckedMetadataElements
         {
             get
             {
                 lock (_checkedMetadataElements)
                 {
-                    return new ReadOnlyCollection<CodeElement>(_checkedMetadataElements);
+                    return _checkedMetadataElements.ToImmutableArray();
                 }
             }
         }
 
-        public IEnumerable<IMember> ComparedMetadataMembers
+        public ImmutableArray<IMember> ComparedMetadataMembers
         {
             get
             {
                 lock (_comparedElements)
                 {
-                    return new ReadOnlyCollection<IMember>(_comparedElements.Select(checkedElement => checkedElement.Item1).OfType<IMember>().Distinct().ToList());
+                    return _comparedElements.Select(checkedElement => checkedElement.Item1).OfType<IMember>().Distinct().ToImmutableArray();
                 }
             }
         }
 
-        public IEnumerable<MemberInfo> ComparedReflectionMembers
+        public ImmutableArray<MemberInfo> ComparedReflectionMembers
         {
             get
             {
                 lock (_comparedElements)
                 {
-                    return new ReadOnlyCollection<MemberInfo>(_comparedElements.Select(checkedElement => checkedElement.Item2).OfType<MemberInfo>().Distinct().ToList());
+                    return _comparedElements.Select(checkedElement => checkedElement.Item2).OfType<MemberInfo>().Distinct().ToImmutableArray();
                 }
             }
         }
@@ -77,7 +78,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public IEnumerable<string> Errors
+        public ImmutableArray<string> Errors
         {
             get
             {
@@ -96,7 +97,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         }
                     }
 
-                    return errorMessages;
+                    return errorMessages.ToImmutableArray();
                 }
             }
         }

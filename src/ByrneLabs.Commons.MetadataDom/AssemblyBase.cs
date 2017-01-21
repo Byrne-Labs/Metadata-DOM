@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -11,19 +11,19 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-        public abstract IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; }
+        public abstract ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes { get; }
 
-        public abstract IEnumerable<TypeBase> DefinedTypes { get; }
+        public abstract ImmutableArray<TypeBase> DefinedTypes { get; }
 
         public abstract IMethod EntryPoint { get; }
 
         public abstract AssemblyHashAlgorithm HashAlgorithm { get; }
 
-        public abstract IEnumerable<IAssembly> ReferencedAssemblies { get; }
+        public abstract ImmutableArray<AssemblyReference> ReferencedAssemblies { get; }
 
         public string FullName => Name.FullName;
 
-        public abstract IEnumerable<CustomAttribute> CustomAttributes { get; }
+        public abstract ImmutableArray<CustomAttribute> CustomAttributes { get; }
 
         public abstract AssemblyFlags Flags { get; }
 

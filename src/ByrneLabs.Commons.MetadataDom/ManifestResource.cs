@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -9,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class ManifestResource : RuntimeCodeElement, ICodeElementWithTypedHandle<ManifestResourceHandle, System.Reflection.Metadata.ManifestResource>
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<CodeElement> _implementation;
 
         internal ManifestResource(ManifestResourceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
@@ -27,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public ManifestResourceAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ManifestResource.Implementation" />
         /// <summary><see cref="AssemblyFile" />, <see cref="AssemblyReference" />, or null.</summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -28,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
             }
 
-            KeyValues = rawKeyValues;
+            KeyValues = rawKeyValues.ToImmutableArray();
             Handle = KeyValues.OfType<Handle?>().FirstOrDefault();
 
             UpcastHandle = Handle.HasValue ? MetadataState.UpcastHandle(Handle.Value) : null;
@@ -70,7 +71,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public Handle? Handle { get; }
 
-        public IEnumerable<object> KeyValues { get; }
+        public ImmutableArray<object> KeyValues { get; }
 
         public PrimitiveTypeCode? PrimitiveTypeCode { get; }
 

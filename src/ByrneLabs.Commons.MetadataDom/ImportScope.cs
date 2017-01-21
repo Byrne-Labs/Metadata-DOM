@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class ImportScope : DebugCodeElement, ICodeElementWithTypedHandle<ImportScopeHandle, System.Reflection.Metadata.ImportScope>
     {
-        private readonly Lazy<IEnumerable<ImportDefinition>> _imports;
+        private readonly Lazy<ImmutableArray<ImportDefinition>> _imports;
         private readonly Lazy<Blob> _importsBlob;
         private readonly Lazy<ImportScope> _parent;
 
@@ -22,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.ImportScope.GetImports" />
-        public IEnumerable<ImportDefinition> Imports => _imports.Value;
+        public ImmutableArray<ImportDefinition> Imports => _imports.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.ImportScope.ImportsBlob" />
         public Blob ImportsBlob => _importsBlob.Value;

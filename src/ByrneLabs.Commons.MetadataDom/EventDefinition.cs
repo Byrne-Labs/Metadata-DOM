@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -13,7 +14,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class EventDefinition : MemberBase, ICodeElementWithTypedHandle<EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
     {
         private readonly Lazy<IMethod> _addMethod;
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<IMethod> _raiseMethod;
         private readonly Lazy<IMethod> _removeMethod;
         private readonly Lazy<TypeBase> _type;
@@ -38,7 +39,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public EventAttributes Attributes { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.GetCustomAttributes" />
-        public override IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override TypeBase DeclaringType => AddMethod.DeclaringType;
 

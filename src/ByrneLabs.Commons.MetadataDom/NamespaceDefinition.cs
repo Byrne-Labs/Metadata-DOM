@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 
@@ -10,10 +11,10 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class NamespaceDefinition : RuntimeCodeElement, ICodeElementWithTypedHandle<NamespaceDefinitionHandle, System.Reflection.Metadata.NamespaceDefinition>
     {
-        private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
-        private readonly Lazy<IEnumerable<NamespaceDefinition>> _namespaceDefinitions;
+        private readonly Lazy<ImmutableArray<ExportedType>> _exportedTypes;
+        private readonly Lazy<ImmutableArray<NamespaceDefinition>> _namespaceDefinitions;
         private readonly Lazy<NamespaceDefinition> _parent;
-        private readonly Lazy<IEnumerable<TypeDefinition>> _typeDefinitions;
+        private readonly Lazy<ImmutableArray<TypeDefinition>> _typeDefinitions;
 
         internal NamespaceDefinition(NamespaceDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -27,19 +28,19 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.ExportedTypes" />
-        public IEnumerable<ExportedType> ExportedTypes => _exportedTypes.Value;
+        public ImmutableArray<ExportedType> ExportedTypes => _exportedTypes.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.Name" />
         public string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.NamespaceDefinitions" />
-        public IEnumerable<NamespaceDefinition> NamespaceDefinitions => _namespaceDefinitions.Value;
+        public ImmutableArray<NamespaceDefinition> NamespaceDefinitions => _namespaceDefinitions.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.Parent" />
         public NamespaceDefinition Parent => _parent.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.NamespaceDefinition.TypeDefinitions" />
-        public IEnumerable<TypeDefinition> TypeDefinitions => _typeDefinitions.Value;
+        public ImmutableArray<TypeDefinition> TypeDefinitions => _typeDefinitions.Value;
 
         public System.Reflection.Metadata.NamespaceDefinition RawMetadata { get; }
 

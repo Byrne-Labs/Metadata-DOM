@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -8,9 +9,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         bool IsGenericMethod { get; }
 
-        IEnumerable<IParameter> Parameters { get; }
+        ImmutableArray<IParameter> Parameters { get; }
 
-        IEnumerable<GenericParameter> GenericTypeParameters { get; }
+        ImmutableArray<GenericParameter> GenericTypeParameters { get; }
 
     }
 }

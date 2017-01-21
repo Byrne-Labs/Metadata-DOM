@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{ParameterType.FullName,nq} {Name,nq}\"")]
     public class Parameter : RuntimeCodeElement, ICodeElementWithTypedHandle<ParameterHandle, System.Reflection.Metadata.Parameter>, IParameter
     {
-        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<Blob> _marshallingDescriptor;
         private readonly bool _optional;
@@ -29,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal Parameter(IMember member, TypeBase parameterType, int position, bool optional, MetadataState metadataState) : base(new CodeElementKey<Parameter>(member, position, parameterType), metadataState)
         {
-            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(Enumerable.Empty<CustomAttribute>);
+            _customAttributes = new Lazy<ImmutableArray<CustomAttribute>>(() => ImmutableArray<CustomAttribute>.Empty);
             Position = position;
             _optional = optional;
             _defaultValue = new Lazy<Constant>(() => null);
@@ -79,7 +80,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public string TextSignature => ParameterType == null ? string.Empty : (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetCustomAttributes" />
-        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public bool HasDefaultValue => Attributes.HasFlag(ParameterAttributes.HasDefault);
 

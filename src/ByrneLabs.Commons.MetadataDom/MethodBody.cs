@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class MethodBody : RuntimeCodeElement, ICodeElementWithRawMetadata<MethodBodyBlock>
     {
-        private readonly Lazy<IEnumerable<ExceptionRegion>> _exceptionRegions;
+        private readonly Lazy<ImmutableArray<ExceptionRegion>> _exceptionRegions;
         private readonly Lazy<StandaloneSignature> _localSignature;
 
         internal MethodBody(int relativeVirtualAddress, MetadataState metadataState) : base(new CodeElementKey<MethodBody>(relativeVirtualAddress), metadataState)
@@ -35,7 +36,7 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.ExceptionRegions" />
-        public IEnumerable<ExceptionRegion> ExceptionRegions => _exceptionRegions.Value;
+        public ImmutableArray<ExceptionRegion> ExceptionRegions => _exceptionRegions.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.LocalSignature" />
         public StandaloneSignature LocalSignature => _localSignature.Value;

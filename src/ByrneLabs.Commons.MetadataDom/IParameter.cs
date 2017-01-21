@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     public interface IParameter : IMember
     {
-        IEnumerable<CustomAttribute> CustomAttributes { get; }
+        ImmutableArray<CustomAttribute> CustomAttributes { get; }
 
         bool HasDefaultValue { get; }
 
