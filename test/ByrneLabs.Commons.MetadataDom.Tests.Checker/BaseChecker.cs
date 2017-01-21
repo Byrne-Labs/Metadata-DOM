@@ -69,6 +69,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public CheckState Check()
         {
+            if (!AssemblyFile.Exists)
+            {
+                throw new ArgumentException($"Assembly file does not exist: {AssemblyFile}");
+            }
+
             CheckPhaseMetadataLoad();
 
             if (!_checkState.Faulted)

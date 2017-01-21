@@ -15,7 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom
             _systemType = _metadataState.GetCodeElement<SystemType>();
         }
 
-        public TypeBase GetArrayType(TypeBase elementType, ArrayShape shape) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Array);
+        public TypeBase GetArrayType(TypeBase elementType, ArrayShape shape) => _metadataState.GetCodeElement<ShapedArray>(elementType, shape);
 
         public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.ByRef);
 

@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public CodeElementKey(Type codeElementType, params object[] keyValues)
         {
-            if (keyValues.Length == 0 && codeElementType != typeof(SystemType))
+            if (keyValues.Length == 0 && codeElementType != typeof(SystemType) && codeElementType != typeof(SystemArray))
             {
                 throw new ArgumentException("At least one key value must be provided", nameof(keyValues));
             }

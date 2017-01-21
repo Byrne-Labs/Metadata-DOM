@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
     public class CheckState
     {
+        private static readonly string[] _ignoredErrorsRegex =
+        {
+            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
+            @"^\.HasDefaultValue has a value of False in metadata but a value of True in reflection$",
+            @"^\.MetadataToken has a value of 0 in metadata but a value of 134217728 in reflection$",
+            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$"
+        };
         private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
         private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();
         private readonly List<string> _errors = new List<string>();
@@ -82,7 +90,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_errors)
                 {
-                    var errorMessages = _errors.ToList();
+                    var errorMessages = _errors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex))).ToList();
                     foreach (var exception in _exceptions)
                     {
                         try
@@ -100,18 +108,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?) null;
+        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?)null;
 
-        public bool FailedValidation
-        {
-            get
-            {
-                lock (_errors)
-                {
-                    return _errors.Any() && !Faulted;
-                }
-            }
-        }
+        public bool FailedValidation => Errors.Any() && !Faulted;
 
         public bool Faulted
         {

@@ -70,29 +70,45 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 process.WaitForExit();
+
+                var testMessage = new StringBuilder();
+
+                testMessage.Append('-', 80).AppendLine();
+                testMessage.AppendLine(assemblyFile.FullName);
                 switch (process.ExitCode)
                 {
                     case 0:
-                        _output.WriteLine($"{assemblyFile.FullName} succeeded with processor time {process.TotalProcessorTime.TotalSeconds} seconds");
+                        testMessage.AppendLine($"{assemblyFile.FullName} succeeded with processor time {process.TotalProcessorTime.TotalSeconds} seconds");
                         break;
                     case 1:
-                        _output.WriteLine($"{assemblyFile.FullName} failed with processor time {process.TotalProcessorTime.TotalSeconds} seconds with the errors {output}");
+                        testMessage.AppendLine($"{assemblyFile.FullName} failed with processor time {process.TotalProcessorTime.TotalSeconds} seconds with the errors {output}");
                         break;
                     default:
-                        _output.WriteLine($"{assemblyFile.FullName} faulted with processor time {process.TotalProcessorTime.TotalSeconds} seconds and the error:{Environment.NewLine}{error}");
+                        testMessage.AppendLine($"{assemblyFile.FullName} faulted with processor time {process.TotalProcessorTime.TotalSeconds} seconds and the error:{Environment.NewLine}{error}");
                         break;
                 }
 
-                if (assemblyFile.FullName.ToLower().StartsWith(BaseTestsDirectory.FullName.ToLower()))
+                try
                 {
-                    assemblyFile.Directory.Delete(true);
-                    var assemblyDirectory = assemblyFile.Directory.Parent;
-                    while (!assemblyDirectory.GetFileSystemInfos().Any())
+                    if (assemblyFile.FullName.ToLower().StartsWith(BaseTestsDirectory.FullName.ToLower()))
                     {
-                        assemblyDirectory.Delete();
-                        assemblyDirectory = assemblyDirectory.Parent;
+                        assemblyFile.Directory.Delete(true);
+                        var assemblyDirectory = assemblyFile.Directory.Parent;
+                        while (!assemblyDirectory.GetFileSystemInfos().Any())
+                        {
+                            assemblyDirectory.Delete();
+                            assemblyDirectory = assemblyDirectory.Parent;
+                        }
                     }
                 }
+                catch (Exception exception)
+                {
+                    testMessage.AppendLine("Attempting to delete the assembly directory failed with the exception:").AppendLine(exception.ToString());
+                }
+
+                testMessage.Append('-', 80);
+                _output.WriteLine(testMessage.ToString());
+                Debug.WriteLine(testMessage.ToString());
 
                 return process.ExitCode == 0;
             }

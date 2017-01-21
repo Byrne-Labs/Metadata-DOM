@@ -89,47 +89,47 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             if (metadataElement is TypeBase && reflectionElement is TypeInfo)
             {
-                CompareCodeElementsToReflectionData((TypeDefinition) metadataElement, (TypeInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((TypeDefinition)metadataElement, (TypeInfo)reflectionElement);
             }
             else if (metadataElement is TypeBase && reflectionElement is Type)
             {
-                CompareCodeElementsToReflectionData((TypeDefinition) metadataElement, ((Type) reflectionElement).GetTypeInfo());
+                CompareCodeElementsToReflectionData((TypeDefinition)metadataElement, ((Type)reflectionElement).GetTypeInfo());
             }
             else if (metadataElement is PropertyDefinition && reflectionElement is PropertyInfo)
             {
-                CompareCodeElementsToReflectionData((PropertyDefinition) metadataElement, (PropertyInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((PropertyDefinition)metadataElement, (PropertyInfo)reflectionElement);
             }
             else if (metadataElement is ConstructorDefinition && reflectionElement is ConstructorInfo)
             {
-                CompareCodeElementsToReflectionData((ConstructorDefinition) metadataElement, (ConstructorInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((ConstructorDefinition)metadataElement, (ConstructorInfo)reflectionElement);
             }
             else if (metadataElement is MethodDefinition && reflectionElement is MethodInfo)
             {
-                CompareCodeElementsToReflectionData((MethodDefinition) metadataElement, (MethodInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((MethodDefinition)metadataElement, (MethodInfo)reflectionElement);
             }
             else if (metadataElement is EventDefinition && reflectionElement is EventInfo)
             {
-                CompareCodeElementsToReflectionData((EventDefinition) metadataElement, (EventInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((EventDefinition)metadataElement, (EventInfo)reflectionElement);
             }
             else if (metadataElement is FieldDefinition && reflectionElement is FieldInfo)
             {
-                CompareCodeElementsToReflectionData((FieldDefinition) metadataElement, (FieldInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((FieldDefinition)metadataElement, (FieldInfo)reflectionElement);
             }
             else if (metadataElement is CustomAttribute && reflectionElement is CustomAttributeData)
             {
-                CompareCodeElementsToReflectionData((CustomAttribute) metadataElement, (CustomAttributeData) reflectionElement);
+                CompareCodeElementsToReflectionData((CustomAttribute)metadataElement, (CustomAttributeData)reflectionElement);
             }
             else if (metadataElement is Parameter && reflectionElement is ParameterInfo)
             {
-                CompareCodeElementsToReflectionData((Parameter) metadataElement, (ParameterInfo) reflectionElement);
+                CompareCodeElementsToReflectionData((Parameter)metadataElement, (ParameterInfo)reflectionElement);
             }
             else if (metadataElement is ModuleDefinition && reflectionElement is Module)
             {
-                CompareCodeElementsToReflectionData((ModuleDefinition) metadataElement, (Module) reflectionElement);
+                CompareCodeElementsToReflectionData((ModuleDefinition)metadataElement, (Module)reflectionElement);
             }
             else if (metadataElement is AssemblyDefinition && reflectionElement is Assembly)
             {
-                CompareCodeElementsToReflectionData((AssemblyDefinition) metadataElement, (Assembly) reflectionElement);
+                CompareCodeElementsToReflectionData((AssemblyDefinition)metadataElement, (Assembly)reflectionElement);
             }
             else
             {
@@ -142,6 +142,34 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             if (_checkState.HaveBeenCompared(metadataType, reflectionType))
             {
                 return;
+            }
+            try
+            {
+                var metadataElementType = metadataType.ElementType;
+                var reflectionElementType = reflectionType.GetElementType();
+                if (metadataElementType != null && reflectionElementType != null)
+                {
+                    CompareCodeElementsToReflectionData(metadataElementType, reflectionElementType);
+                }
+                else if (metadataElementType != null || reflectionElementType != null)
+                {
+                    _checkState.AddError($"{metadataType.FullName}.ElementType has a value of {metadataElementType} in metadata but a value of {reflectionElementType} in reflection");
+                }
+            }
+            catch (Exception exception)
+            {
+                _checkState.AddException(exception, metadataType, CheckPhase.ReflectionComparison);
+            }
+            try
+            {
+                if (reflectionType.IsArray && metadataType.ArrayRank != reflectionType.GetArrayRank())
+                {
+                    _checkState.AddError($"{metadataType.FullName}.ArrayRank has a value of {metadataType.ArrayRank} in metadata but a value of {reflectionType.GetArrayRank()} in reflection");
+                }
+            }
+            catch (Exception exception)
+            {
+                _checkState.AddException(exception, metadataType, CheckPhase.ReflectionComparison);
             }
 
             try
@@ -299,7 +327,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     }
                     else if (metadataElement is CodeElement)
                     {
-                        CompareCodeElementsToReflectionData((CodeElement) metadataElement, reflectionElement);
+                        CompareCodeElementsToReflectionData((CodeElement)metadataElement, reflectionElement);
                     }
                     else
                     {

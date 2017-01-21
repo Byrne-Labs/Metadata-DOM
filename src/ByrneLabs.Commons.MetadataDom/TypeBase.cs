@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -70,6 +71,10 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 ElementType = baseType;
             }
+            if (IsArray)
+            {
+                ArrayRank = 1;
+            }
             GenericTypeArguments = ImmutableArray<TypeBase>.Empty;
             Initialize();
         }
@@ -96,12 +101,14 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal abstract string UndecoratedName { get; }
 
+        public int ArrayRank { get; protected set; }
+
         public virtual string AssemblyQualifiedName => Assembly == null ? FullName : $"{FullName}, {Assembly.Name.FullName}";
 
         /// <summary>When overridden in a derived class, returns the <see cref="TypeBase" /> of the object encompassed or referred to by the current array, pointer or reference type.</summary>
         /// <returns>The <see cref="TypeBase" /> of the object encompassed or referred to by the current array, pointer, or reference type, or null if the current
         ///     <see cref="TypeBase" /> is not an array or a pointer, or is not passed by reference, or represents a generic type or a type parameter in the definition of a generic type or generic method.</returns>
-        public TypeBase ElementType { get; }
+        public TypeBase ElementType { get; protected set; }
 
         public override string FullName => _fullName.Value;
 
@@ -110,6 +117,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public ImmutableArray<TypeBase> GenericTypeArguments { get; }
 
         public TypeBase GenericTypeDefinition { get; }
+
+        public bool HasElementType => ElementType != null;
 
         public bool HasGenericTypeArguments => GenericTypeArguments.Any();
 
@@ -139,7 +148,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected int PointerCount => (IsThisPointer ? 1 : 0) + (BaseType?.PointerCount).GetValueOrDefault();
 
-        internal TypeBase BaseType { get; }
+        internal virtual TypeBase BaseType { get; }
 
         internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 
