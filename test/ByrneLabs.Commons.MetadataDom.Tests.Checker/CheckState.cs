@@ -13,6 +13,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();
         private readonly List<string> _errors = new List<string>();
         private readonly List<Tuple<CheckPhase, Exception, object>> _exceptions = new List<Tuple<CheckPhase, Exception, object>>();
+        private string _errorLogText;
+        private bool _errorLogTextDirty = true;
+        private string _logText;
+        private bool _logTextDirty = true;
 
         public CheckState()
         {
@@ -54,7 +58,24 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public string ErrorLogText => string.Join(Environment.NewLine, Errors);
+        public string ErrorLogText
+        {
+            get
+            {
+                lock (_errors)
+                {
+                    lock (_exceptions)
+                    {
+                        if (_errorLogTextDirty)
+                        {
+                            _errorLogText = string.Join(Environment.NewLine, Errors);
+                            _errorLogTextDirty = false;
+                        }
+                        return _errorLogText;
+                    }
+                }
+            }
+        }
 
         public IEnumerable<string> Errors
         {
@@ -110,7 +131,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_exceptions)
                 {
-                    return !IncompleteAssemblyLoad && _exceptions.Any(exception => exception.Item1 == CheckPhase.AssemblyLoad);
+                    return !NonDotNetAssembly && !IncompleteAssemblyLoad && _exceptions.Any(exception => exception.Item1 == CheckPhase.AssemblyLoad);
                 }
             }
         }
@@ -152,9 +173,28 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly") || LogText.Contains("This suggests the assembly also has a native image assembly") || LogText.Contains("System.IO.FileLoadException: Could not load file or assembly");
 
-        public string LogText => ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
+        public string LogText
+        {
+            get
+            {
+                lock (_errors)
+                {
+                    lock (_exceptions)
+                    {
+                        if (_logTextDirty)
+                        {
+                            _logText = ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
+                            _logTextDirty = false;
+                        }
+                        return _logText;
+                    }
+                }
+            }
+        }
 
         public Metadata Metadata { get; set; }
+
+        public bool NonDotNetAssembly => LogText.Contains("The module was expected to contain an assembly manifest");
 
         public DateTime StartTime { get; }
 
@@ -165,6 +205,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             lock (_errors)
             {
                 _errors.Add(error);
+                _errorLogTextDirty = true;
+                _logTextDirty = true;
             }
         }
 
@@ -173,6 +215,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             lock (_errors)
             {
                 _errors.AddRange(errors);
+                _errorLogTextDirty = true;
+                _logTextDirty = true;
             }
         }
 
@@ -187,6 +231,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 }
 
                 _exceptions.Add(new Tuple<CheckPhase, Exception, object>(checkPhase, exception, codeElement));
+                _errorLogTextDirty = true;
+                _logTextDirty = true;
             }
         }
 

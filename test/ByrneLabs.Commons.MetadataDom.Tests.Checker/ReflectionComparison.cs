@@ -161,7 +161,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                             _checkState.AddError($"Could not find {reflectionMember.MemberType} {SignatureCreater.GetTextSignature(reflectionType, reflectionMember)} with metadata by token");
                         }
                     }
-                    if (byName.Length == 1 || byName.Length == 1)
+                    if (byToken.Length == 1 || byName.Length == 1)
                     {
                         CompareCodeElementsToReflectionData((CodeElement)(byToken.SingleOrDefault() ?? byName.SingleOrDefault()), reflectionMember);
                     }

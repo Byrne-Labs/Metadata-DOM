@@ -3,11 +3,10 @@
   <PropertyGroup Label="Configuration">
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <WarningLevel>0</WarningLevel>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>netstandard1.5</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputType>library</OutputType>
   </PropertyGroup>
   <ItemGroup>

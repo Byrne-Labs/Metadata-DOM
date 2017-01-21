@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -7,8 +8,8 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public GenericContext(IEnumerable<TypeBase> typeParameters, IEnumerable<TypeBase> methodParameters)
         {
-            TypeParameters = typeParameters == null ? new ImmutableArray<TypeBase>() : typeParameters.ToImmutableArray();
-            MethodParameters = methodParameters == null ? new ImmutableArray<TypeBase>() : methodParameters.ToImmutableArray();
+            TypeParameters = typeParameters == null ? Enumerable.Empty<TypeBase>().ToImmutableArray() : typeParameters.ToImmutableArray();
+            MethodParameters = methodParameters == null ? Enumerable.Empty<TypeBase>().ToImmutableArray() : methodParameters.ToImmutableArray();
         }
 
         public ImmutableArray<TypeBase> MethodParameters { get; }

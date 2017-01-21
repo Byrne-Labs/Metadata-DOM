@@ -55,9 +55,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         private DirectoryInfo IncompleteAssemblyLoadDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "IncompleteAssemblyLoad"));
 
-        private DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "Passed"));
+        private DirectoryInfo NonDotNetAssembliesDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NonDotNetAssemblies"));
 
         private DirectoryInfo NotRunTestDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NotRun"));
+
+        private DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "Passed"));
 
         public static CheckState CheckOnlyMetadata(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
@@ -115,7 +117,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 _checkState.Assembly = LoadAssembly();
 
-                if (!_checkState.Metadata.AssemblyDefinition.FullName.Equals(_checkState.Assembly.FullName))
+                if (!string.Equals(_checkState.Metadata.AssemblyDefinition.FullName.ToUpperInvariant(), _checkState.Assembly.FullName.ToUpperInvariant()))
                 {
                     throw new InvalidOperationException($"The metadata assembly has the name \"{_checkState.Metadata.AssemblyDefinition.FullName}\", but the reflection assembly has the name \"{_checkState.Assembly.FullName}\"");
                 }
@@ -184,11 +186,28 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "Must be a directory, not a file")]
         private void CopyAssembly(DirectoryInfo baseDirectory)
         {
-            var newDirectory = new DirectoryInfo(baseDirectory.FullName + AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length));
-            newDirectory.Create();
+            string folderName;
+            if (_checkState.Metadata?.AssemblyDefinition != null)
+            {
+                folderName = $"{_checkState.Metadata.AssemblyDefinition.Name.Name}--{_checkState.Metadata.AssemblyDefinition.Name.Version}--{_checkState.Metadata.AssemblyDefinition.Name.CultureName}";
+            }
+            else
+            {
+                folderName = AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length + 1);
+            }
+            var newDirectory = new DirectoryInfo(Path.Combine(baseDirectory.FullName, folderName));
+            try
+            {
+                newDirectory.Create();
+            }
+            catch
+            {
+                newDirectory = new DirectoryInfo(Path.Combine(baseDirectory.FullName, AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length + 1)));
+                newDirectory.Create();
+            }
             foreach (var file in AssemblyFile.Directory.EnumerateFiles())
             {
-                file.CopyTo(Path.Combine(newDirectory.FullName, file.Name));
+                file.CopyTo(Path.Combine(newDirectory.FullName, file.Name), true);
             }
 
             var logFileName = Path.Combine(newDirectory.FullName, "tests.log");

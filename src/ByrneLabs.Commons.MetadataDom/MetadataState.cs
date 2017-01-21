@@ -69,56 +69,41 @@ namespace ByrneLabs.Commons.MetadataDom
                     throw new ArgumentException($"The file {assemblyFile.FullName} does not exist", nameof(assemblyFile));
                 }
 
-                AssemblyFile = new MetadataFile(prefetchMetadata, assemblyFile, MetadataFileType.Assembly);
+                AssemblyFileWrapper = new CompiledFileWrapper(prefetchMetadata, assemblyFile);
             }
 
-            if (!pdbFile?.Exists == true)
+            if (AssemblyFileWrapper != null || pdbFile != null)
             {
-                throw new ArgumentException($"The file {pdbFile.FullName} does not exist", nameof(pdbFile));
-            }
-
-            if (pdbFile == null)
-            {
-                pdbFile = new FileInfo(assemblyFile.FullName.Substring(0, assemblyFile.FullName.Length - assemblyFile.Extension.Length) + ".pdb");
-            }
-            if (!pdbFile.Exists && !AssemblyFile.PEReader.PEHeaders.IsCoffOnly)
-            {
-                var debugDirectoryEntries = AssemblyFile.PEReader.ReadDebugDirectory();
-                var debugDirectoryDataEntries = debugDirectoryEntries.Where(debugDirectoryEntry => debugDirectoryEntry.Type == DebugDirectoryEntryType.CodeView).Select(debugDirectoryEntry => AssemblyFile.PEReader.ReadCodeViewDebugDirectoryData(debugDirectoryEntry)).ToList();
-                pdbFile = debugDirectoryDataEntries.Select(debugDirectoryEntry => new FileInfo(debugDirectoryEntry.Path)).Distinct().SingleOrDefault();
-            }
-            if (pdbFile?.Exists == true)
-            {
-                PdbFile = new MetadataFile(prefetchMetadata, pdbFile, MetadataFileType.Pdb);
+                PdbFileWrapper = new CompiledFileWrapper(prefetchMetadata, AssemblyFileWrapper, pdbFile);
             }
 
             _assemblyReferences = new Lazy<IEnumerable<AssemblyReference>>(() => AssemblyReader == null ? new List<AssemblyReference>() : GetCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences));
             _assemblyDefinition = new Lazy<AssemblyDefinition>(() => AssemblyReader?.IsAssembly == true ? GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition) : null);
             _moduleDefinition = GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
-            _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader == null ? new List<TypeBase>() : AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().ToList());
+            _definedTypes = new Lazy<IEnumerable<TypeBase>>(() => AssemblyReader == null ? new List<TypeBase>() : AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeBase>().Where(type => !"<Module>".Equals(type.FullName)).ToList());
         }
 
         public AssemblyDefinition AssemblyDefinition => _assemblyDefinition.Value;
 
-        public MetadataReader AssemblyReader => AssemblyFile?.Reader;
+        public MetadataReader AssemblyReader => AssemblyFileWrapper?.Reader;
 
         public IEnumerable<AssemblyReference> AssemblyReferences => _assemblyReferences.Value;
 
         public IEnumerable<TypeBase> DefinedTypes => !HasMetadata ? null : _definedTypes.Value;
 
-        public bool HasDebugMetadata => PdbFile?.HasMetadata == true;
+        public bool HasDebugMetadata => PdbFileWrapper?.HasMetadata == true;
 
-        public bool HasMetadata => AssemblyFile?.HasMetadata == true;
+        public bool HasMetadata => AssemblyFileWrapper?.HasMetadata == true;
 
         public ModuleDefinition ModuleDefinition => !HasMetadata ? null : _moduleDefinition.Value;
 
-        public MetadataReader PdbReader => PdbFile?.Reader;
+        public MetadataReader PdbReader => PdbFileWrapper?.Reader;
 
         public TypeProvider TypeProvider { get; }
 
-        private MetadataFile AssemblyFile { get; }
+        private CompiledFileWrapper AssemblyFileWrapper { get; }
 
-        private MetadataFile PdbFile { get; }
+        private CompiledFileWrapper PdbFileWrapper { get; }
 
         /// <inheritdoc />
         public void Dispose()
@@ -543,7 +528,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public Lazy<IEnumerable<T>> GetLazyCodeElements<T>(IEnumerable<CodeElementKey> keys) => new Lazy<IEnumerable<T>>(() => GetCodeElements<T>(keys));
 
-        public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => relativeVirtualAddress == 0 ? null : AssemblyFile.PEReader.GetMethodBody(relativeVirtualAddress);
+        public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => relativeVirtualAddress == 0 ? null : AssemblyFileWrapper.PEReader.GetMethodBody(relativeVirtualAddress);
 
         [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
         public object GetTokenForHandle(object handle)
@@ -698,8 +683,8 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             if (disposeManaged)
             {
-                PdbFile?.Dispose();
-                AssemblyFile?.Dispose();
+                PdbFileWrapper?.Dispose();
+                AssemblyFileWrapper?.Dispose();
             }
         }
     }

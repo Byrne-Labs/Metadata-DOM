@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -7,12 +6,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
 {
     public class NetFrameworkChecker : BaseChecker
     {
-
-        static NetFrameworkChecker()
-        {
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) => Assembly.ReflectionOnlyLoad(args.Name);
-        }
-
         public NetFrameworkChecker(IReadOnlyList<string> args) : base(args)
         {
         }
@@ -27,6 +20,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
             return checker.Check();
         }
 
-        protected override Assembly LoadAssembly() => Assembly.ReflectionOnlyLoadFrom(AssemblyFile.FullName);
+        protected override Assembly LoadAssembly() => Assembly.LoadFile(AssemblyFile.FullName);
     }
 }
