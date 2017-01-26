@@ -1,16 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Label="Configuration">
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="**\*.cs" />
-    <EmbeddedResource Include="**\*.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NETStandard.Library" Version="1.6.1" />
-  </ItemGroup>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup Label="Configuration">
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <WarningLevel>0</WarningLevel>
+        <DefineConstants>CSHARP_V1;CSHARP_V2;CSHARP_V3;CSHARP_V4;CSHARP_V5;CSHARP_V6;CSHARP_V7;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</DefineConstants>
+        <BaseOutputPath>bin\Default\</BaseOutputPath>
+        <BaseIntermediateOutputPath>obj\Default</BaseIntermediateOutputPath>
+        <OutputPath>bin\Default\</OutputPath>
+        <IntermediateOutputPath>obj\Default</IntermediateOutputPath>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <TargetFramework>netstandard1.6</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="**\*.cs" />
+        <EmbeddedResource Include="**\*.resx" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="NETStandard.Library" Version="1.6.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Properties\" />
+    </ItemGroup>
 </Project>

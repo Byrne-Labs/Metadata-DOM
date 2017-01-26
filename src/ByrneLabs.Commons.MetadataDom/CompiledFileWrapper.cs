@@ -25,6 +25,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public CompiledFileWrapper(bool prefetchMetadata, CompiledFileWrapper assemblyFileWrapper, FileInfo pdbFile)
         {
+            File = pdbFile;
+
             var debugDirectoryEntries = assemblyFileWrapper?.PEReader.PEHeaders.IsCoffOnly != false ? null : assemblyFileWrapper?.PEReader.ReadDebugDirectory();
             var pdbDebugEntries = debugDirectoryEntries?.Where(debugDirectoryEntry => debugDirectoryEntry.Type == DebugDirectoryEntryType.EmbeddedPortablePdb);
 

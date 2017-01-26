@@ -123,6 +123,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
+        public bool FaultedAssemblyCopy
+        {
+            get
+            {
+                lock (_exceptions)
+                {
+                    return _exceptions.Any(exception => exception.Item1 == CheckPhase.MoveAssembly);
+                }
+            }
+        }
+
         public bool FaultedAssemblyLoad
         {
             get

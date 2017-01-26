@@ -1,10 +1,10 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using ByrneLabs.Commons.MetadataDom.Tests.Checker;
 using Xunit;
 using Xunit.Abstractions;
+using System.Threading.Tasks;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests
 {
@@ -18,25 +18,33 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private readonly ITestOutputHelper _output;
         private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
 
-        [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = "It is an assert method using the variable only for asserts makes sense")]
-        public static void AssertHasMetadata(Metadata metadata)
-        {
-        }
-
-        private void CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile = null)
+        private bool CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile = null, bool assertSuccess = true)
         {
             var checkState = BaseChecker.CheckOnlyMetadata(assemblyFile, pdbFile);
             _output.WriteLine(checkState.ErrorLogText);
-            Assert.True(checkState.Success);
+            if (assertSuccess)
+            {
+                Assert.True(checkState.Success);
+                if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
+                {
+                    Assert.NotNull(checkState.Metadata.AssemblyDefinition);
+                    Assert.True(checkState.Metadata.TypeDefinitions.Any());
+                }
+                if (pdbFile != null)
+                {
+                    Assert.True(checkState.Metadata.Documents.Any());
+                }
+            }
+            var success = checkState.Success;
             if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
             {
-                Assert.NotNull(checkState.Metadata.AssemblyDefinition);
-                Assert.True(checkState.Metadata.TypeDefinitions.Any());
+                success &= checkState.Metadata.AssemblyDefinition != null && checkState.Metadata.TypeDefinitions.Any();
             }
             if (pdbFile != null)
             {
-                Assert.True(checkState.Metadata.Documents.Any());
+                success &= checkState.Metadata.Documents.Any();
             }
+            return success;
         }
 
         [Fact]
@@ -77,6 +85,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnSampleAssembly() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+        public void TestOnSampleAssemblies()
+        {
+            var sampleAssemblies = SampleBuild.GetSampleAssemblies();
+            Assert.NotEmpty(sampleAssemblies);
+            var success = true;
+            Parallel.ForEach(sampleAssemblies, sampleAssembly => success &= CheckMetadata(sampleAssembly, null, false));
+            Assert.True(success);
+        }
     }
 }

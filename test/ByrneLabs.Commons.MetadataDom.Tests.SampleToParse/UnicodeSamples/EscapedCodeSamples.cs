@@ -18,16 +18,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.UnicodeSamples
         \u217FClass \u217FField;
         \u2095Class \u2095Field;
 
-        \u005F\uFF19Class \u005F\uFF19Property { get; set; }
-        \u005F\u0940Class \u005F\u0940Property { get; set; }
-        \u005F\uFE01Class \u005F\uFE01Property { get; set; }
-        \u005F\u0E52Class \u005F\u0E52Property { get; set; }
-        \u005F\uFE22Class \u005F\uFE22Property { get; set; }
-        \u01FFClass \u01FFProperty { get; set; }
-        \u2188Class \u2188Property { get; set; }
-        \uAB5EClass \uAB5EProperty { get; set; }
-        \u217FClass \u217FProperty { get; set; }
-        \u2095Class \u2095Property { get; set; }
+        \u005F\uFF19Class \u005F\uFF19Property { get { return null; } set { ; } }
+        \u005F\u0940Class \u005F\u0940Property { get { return null; } set { ; } }
+        \u005F\uFE01Class \u005F\uFE01Property { get { return null; } set { ; } }
+        \u005F\u0E52Class \u005F\u0E52Property { get { return null; } set { ; } }
+        \u005F\uFE22Class \u005F\uFE22Property { get { return null; } set { ; } }
+        \u01FFClass \u01FFProperty { get { return null; } set { ; } }
+        \u2188Class \u2188Property { get { return null; } set { ; } }
+        \uAB5EClass \uAB5EProperty { get { return null; } set { ; } }
+        \u217FClass \u217FProperty { get { return null; } set { ; } }
+        \u2095Class \u2095Property { get { return null; } set { ; } }
 
         \u005F\uFF19Class \u005F\uFF19Method(\u005F\uFF19Class \u005F\uFF19Parameter) { return null; }
         \u005F\u0940Class \u005F\u0940Method(\u005F\u0940Class \u005F\u0940Parameter) { return null; }

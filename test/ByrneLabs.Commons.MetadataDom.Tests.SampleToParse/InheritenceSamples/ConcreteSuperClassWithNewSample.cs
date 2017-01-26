@@ -1,4 +1,6 @@
-﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
+﻿using System;
+
+namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
 {
     public class ConcreteSuperClassWithNewSample : AbstractSuperClassSample
     {
@@ -8,56 +10,213 @@
         internal int internalField;
         private int privateField;
 
-        public override int PublicAbstractProperty { get; set; }
+        public int PublicProperty
+        {
+            get
+            {
+                return protectedInternalField;
+            }
+            set
+            {
+                protectedInternalField = value;
+            }
+        }
 
-        public new int PublicProperty { get; set; }
+        public virtual int PublicVirtualProperty
+        {
+            get
+            {
+                return protectedInternalField;
+            }
+            set
+            {
+                protectedInternalField = value;
+            }
+        }
 
-        public new virtual int PublicVirtualProperty { get; set; }
+        protected internal int ProtectedInternalProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
 
-        protected internal override int ProtectedInternalAbstractProperty { get; set; }
+        protected internal virtual int ProtectedInternalVirtualProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
 
-        protected internal new int ProtectedInternalProperty { get; set; }
+        protected int ProtectedProperty
+        {
+            get
+            {
+                return internalField;
+            }
+            set
+            {
+                internalField = value;
+            }
+        }
 
-        protected internal new virtual int ProtectedInternalVirtualProperty { get; set; }
+        protected virtual int ProtectedVirtualProperty
+        {
+            get
+            {
+                return internalField;
+            }
+            set
+            {
+                internalField = value;
+            }
+        }
 
-        protected override int ProtectedAbstractProperty { get; set; }
+        internal int InternalProperty
+        {
+            get
+            {
+                return privateField;
+            }
+            set
+            {
+                privateField = value;
+            }
+        }
 
-        protected new int ProtectedProperty { get; set; }
+        internal virtual int InternalVirtualProperty
+        {
+            get
+            {
+                return privateField;
+            }
+            set
+            {
+                privateField = value;
+            }
+        }
 
-        protected new virtual int ProtectedVirtualProperty { get; set; }
+        private int PrivateProperty
+        {
+            get
+            {
+                return publicField;
+            }
+            set
+            {
+                publicField = value;
+            }
+        }
 
-        internal override int InternalAbstractProperty { get; set; }
+#if CSHARP_V3
+        public int PublicAutoProperty { get; set; }
 
-        internal new int InternalProperty { get; set; }
+        public override int PublicVirtualAutoProperty { get; set; }
 
-        internal new virtual int InternalVirtualProperty { get; set; }
+        protected internal int ProtectedInternalAutoProperty { get; set; }
 
-        private int PrivateProperty { get; set; }
+        protected internal override int ProtectedInternalVirtualAutoProperty { get; set; }
 
-        public override int PublicAbstractMethod() => 0;
+        protected int ProtectedAutoProperty { get; set; }
 
-        public new int PublicMethod() => 0;
+        protected override int ProtectedVirtualAutoProperty { get; set; }
 
-        public new virtual int PublicVirtualMethod() => 0;
+        internal int InternalAutoProperty { get; set; }
 
-        protected internal override int ProtectedInternalAbstractMethod() => 0;
+        internal override int InternalVirtualAutoProperty { get; set; }
 
-        protected internal new int ProtectedInternalMethod() => 0;
+        private int PrivateAutoProperty { get; set; }
+#endif
+#if CSHARP_V7
+        public override int PublicAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        protected internal override int ProtectedInternalAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        protected override int ProtectedAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        internal override int InternalAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+#elif CSHARP_V3
+        public override int PublicAbstractAutoProperty {get;set;}
+        protected internal override int ProtectedInternalAbstractAutoProperty {get;set;}
+        protected override int ProtectedAbstractAutoProperty {get;set;}
+        internal override int InternalAbstractAutoProperty {get;set;}
+#endif
 
-        protected internal new virtual int ProtectedInternalVirtualMethod() => 0;
+        public override int PublicAbstractProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
+        protected internal override int ProtectedInternalAbstractProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
+        protected override int ProtectedAbstractProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
+        internal override int InternalAbstractProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
+        public override int PublicAbstractMethod() { return 0; }
 
-        protected override int ProtectedAbstractMethod() => 0;
+        public new int PublicMethod() { return 0; }
 
-        protected new int ProtectedMethod() => 0;
+        public new virtual int PublicVirtualMethod() { return 0; }
 
-        protected new virtual int ProtectedVirtualMethod() => 0;
+        protected internal override int ProtectedInternalAbstractMethod() { return 0; }
 
-        internal override int InternalAbstractMethod() => 0;
+        protected internal new int ProtectedInternalMethod() { return 0; }
 
-        internal new int InternalMethod() => 0;
+        protected internal new virtual int ProtectedInternalVirtualMethod() { return 0; }
 
-        internal new virtual int InternalVirtualMethod() => 0;
+        protected override int ProtectedAbstractMethod() { return 0; }
 
-        private int PrivateMethod() => 0;
+        protected new int ProtectedMethod() { return 0; }
+
+        protected new virtual int ProtectedVirtualMethod() { return 0; }
+
+        internal override int InternalAbstractMethod() { return 0; }
+
+        internal new int InternalMethod() { return 0; }
+
+        internal new virtual int InternalVirtualMethod() { return 0; }
+
+        private int PrivateMethod() { return 0; }
     }
 }

@@ -93,7 +93,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             if (BaseDirectory != null && AssemblyFile.DirectoryName.StartsWith(BaseDirectory.FullName))
             {
-                MoveAssembly();
+                CopyAssemblyToResultsFolder();
             }
             Console.WriteLine(_checkState.LogText);
 
@@ -191,36 +191,50 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "Must be a directory, not a file")]
         private void CopyAssembly(DirectoryInfo baseDirectory)
         {
-            string folderName;
-            if (_checkState.Metadata?.AssemblyDefinition != null)
-            {
-                folderName = $"{_checkState.Metadata.AssemblyDefinition.Name.Name}--{_checkState.Metadata.AssemblyDefinition.Name.Version}--{_checkState.Metadata.AssemblyDefinition.Name.CultureName}";
-            }
-            else
-            {
-                folderName = AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length + 1);
-            }
-            var newDirectory = new DirectoryInfo(Path.Combine(baseDirectory.FullName, folderName));
             try
             {
-                newDirectory.Create();
-            }
-            catch
-            {
-                newDirectory = new DirectoryInfo(Path.Combine(baseDirectory.FullName, AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length + 1)));
-                newDirectory.Create();
-            }
-            foreach (var file in AssemblyFile.Directory.EnumerateFiles())
-            {
-                file.CopyTo(Path.Combine(newDirectory.FullName, file.Name), true);
-            }
+                string logFileName;
+                if (baseDirectory != null)
+                {
+                    string folderName;
+                    if (_checkState.Metadata?.AssemblyDefinition != null)
+                    {
+                        folderName = $"{_checkState.Metadata.AssemblyDefinition.Name.Name}--{_checkState.Metadata.AssemblyDefinition.Name.Version}--{_checkState.Metadata.AssemblyDefinition.Name.CultureName}";
+                    }
+                    else
+                    {
+                        folderName = AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length + 1);
+                    }
+                    var newDirectory = new DirectoryInfo(Path.Combine(baseDirectory.FullName, folderName));
+                    try
+                    {
+                        newDirectory.Create();
+                    }
+                    catch
+                    {
+                        newDirectory = new DirectoryInfo(Path.Combine(baseDirectory.FullName, AssemblyFile.DirectoryName.Substring(NotRunTestDirectory.FullName.Length + 1)));
+                        newDirectory.Create();
+                    }
+                    foreach (var file in AssemblyFile.Directory.EnumerateFiles())
+                    {
+                        file.CopyTo(Path.Combine(newDirectory.FullName, file.Name), true);
+                    }
+                    logFileName = Path.Combine(newDirectory.FullName, "tests.log");
+                }
+                else
+                {
+                    logFileName = Path.Combine(AssemblyFile.DirectoryName, "tests.log");
+                }
 
-            var logFileName = Path.Combine(newDirectory.FullName, "tests.log");
-
-            File.WriteAllText(logFileName, _checkState.LogText);
+                File.WriteAllText(logFileName, _checkState.LogText);
+            }
+            catch (Exception exception)
+            {
+                _checkState.AddException(exception, baseDirectory, CheckPhase.MoveAssembly);
+            }
         }
 
-        private void MoveAssembly()
+        private void CopyAssemblyToResultsFolder()
         {
             if (_checkState.FaultedAssemblyLoad)
             {
@@ -245,6 +259,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             if (_checkState.FailedValidation)
             {
                 CopyAssembly(FailedValidationDirectory);
+            }
+            if (_checkState.FaultedAssemblyCopy)
+            {
+                CopyAssembly(null);
             }
             if (_checkState.Success)
             {

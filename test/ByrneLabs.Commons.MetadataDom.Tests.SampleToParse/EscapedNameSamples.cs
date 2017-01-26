@@ -25,7 +25,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class abstractPropertyHolder
         {
-            private @abstract @abstract { get; set; }
+            private @abstract @abstract { get { return null; } set { } }
         }
 
         private class @as
@@ -47,7 +47,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class asPropertyHolder
         {
-            private @as @as { get; set; }
+            private @as @as { get { return null; } set { } }
         }
 
         private class @base
@@ -69,7 +69,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class basePropertyHolder
         {
-            private @base @base { get; set; }
+            private @base @base { get { return null; } set { } }
         }
 
         private class @bool
@@ -91,7 +91,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class boolPropertyHolder
         {
-            private @bool @bool { get; set; }
+            private @bool @bool { get { return null; } set { } }
         }
 
         private class @break
@@ -113,7 +113,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class breakPropertyHolder
         {
-            private @break @break { get; set; }
+            private @break @break { get { return null; } set { } }
         }
 
         private class @byte
@@ -135,7 +135,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class bytePropertyHolder
         {
-            private @byte @byte { get; set; }
+            private @byte @byte { get { return null; } set { } }
         }
 
         private class @case
@@ -157,7 +157,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class casePropertyHolder
         {
-            private @case @case { get; set; }
+            private @case @case { get { return null; } set { } }
         }
 
         private class @catch
@@ -179,7 +179,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class catchPropertyHolder
         {
-            private @catch @catch { get; set; }
+            private @catch @catch { get { return null; } set { } }
         }
 
         private class @char
@@ -201,7 +201,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class charPropertyHolder
         {
-            private @char @char { get; set; }
+            private @char @char { get { return null; } set { } }
         }
 
         private class @checked
@@ -223,7 +223,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class checkedPropertyHolder
         {
-            private @checked @checked { get; set; }
+            private @checked @checked { get { return null; } set { } }
         }
 
         private class @class
@@ -245,7 +245,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class classPropertyHolder
         {
-            private @class @class { get; set; }
+            private @class @class { get { return null; } set { } }
         }
 
         private class @const
@@ -267,7 +267,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class constPropertyHolder
         {
-            private @const @const { get; set; }
+            private @const @const { get { return null; } set { } }
         }
 
         private class @continue
@@ -289,7 +289,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class continuePropertyHolder
         {
-            private @continue @continue { get; set; }
+            private @continue @continue { get { return null; } set { } }
         }
 
         private class @decimal
@@ -311,7 +311,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class decimalPropertyHolder
         {
-            private @decimal @decimal { get; set; }
+            private @decimal @decimal { get { return null; } set { } }
         }
 
         private class @default
@@ -333,7 +333,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class defaultPropertyHolder
         {
-            private @default @default { get; set; }
+            private @default @default { get { return null; } set { } }
         }
 
         private class @delegate
@@ -355,7 +355,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class delegatePropertyHolder
         {
-            private @delegate @delegate { get; set; }
+            private @delegate @delegate { get { return null; } set { } }
         }
 
         private class @do
@@ -377,7 +377,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class doPropertyHolder
         {
-            private @do @do { get; set; }
+            private @do @do { get { return null; } set { } }
         }
 
         private class @double
@@ -399,7 +399,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class doublePropertyHolder
         {
-            private @double @double { get; set; }
+            private @double @double { get { return null; } set { } }
         }
 
         private class @else
@@ -421,7 +421,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class elsePropertyHolder
         {
-            private @else @else { get; set; }
+            private @else @else { get { return null; } set { } }
         }
 
         private class @enum
@@ -443,7 +443,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class enumPropertyHolder
         {
-            private @enum @enum { get; set; }
+            private @enum @enum { get { return null; } set { } }
         }
 
         private class @event
@@ -465,7 +465,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class eventPropertyHolder
         {
-            private @event @event { get; set; }
+            private @event @event { get { return null; } set { } }
         }
 
         private class @explicit
@@ -487,7 +487,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class explicitPropertyHolder
         {
-            private @explicit @explicit { get; set; }
+            private @explicit @explicit { get { return null; } set { } }
         }
 
         private class @extern
@@ -509,7 +509,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class externPropertyHolder
         {
-            private @extern @extern { get; set; }
+            private @extern @extern { get { return null; } set { } }
         }
 
         private class @false
@@ -531,7 +531,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class falsePropertyHolder
         {
-            private @false @false { get; set; }
+            private @false @false { get { return null; } set { } }
         }
 
         private class @finally
@@ -553,7 +553,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class finallyPropertyHolder
         {
-            private @finally @finally { get; set; }
+            private @finally @finally { get { return null; } set { } }
         }
 
         private class @fixed
@@ -575,7 +575,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class fixedPropertyHolder
         {
-            private @fixed @fixed { get; set; }
+            private @fixed @fixed { get { return null; } set { } }
         }
 
         private class @float
@@ -597,7 +597,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class floatPropertyHolder
         {
-            private @float @float { get; set; }
+            private @float @float { get { return null; } set { } }
         }
 
         private class @for
@@ -623,7 +623,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class foreachPropertyHolder
         {
-            private @foreach @foreach { get; set; }
+            private @foreach @foreach { get { return null; } set { } }
         }
 
         private class forFieldHolder
@@ -641,7 +641,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class forPropertyHolder
         {
-            private @for @for { get; set; }
+            private @for @for { get { return null; } set { } }
         }
 
         private class @goto
@@ -663,7 +663,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class gotoPropertyHolder
         {
-            private @goto @goto { get; set; }
+            private @goto @goto { get { return null; } set { } }
         }
 
         private class @if
@@ -685,7 +685,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class ifPropertyHolder
         {
-            private @if @if { get; set; }
+            private @if @if { get { return null; } set { } }
         }
 
         private class @implicit
@@ -707,7 +707,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class implicitPropertyHolder
         {
-            private @implicit @implicit { get; set; }
+            private @implicit @implicit { get { return null; } set { } }
         }
 
         private class @in
@@ -729,7 +729,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class inPropertyHolder
         {
-            private @in @in { get; set; }
+            private @in @in { get { return null; } set { } }
         }
 
         private class @int
@@ -755,7 +755,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class interfacePropertyHolder
         {
-            private @interface @interface { get; set; }
+            private @interface @interface { get { return null; } set { } }
         }
 
         private class @internal
@@ -777,7 +777,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class internalPropertyHolder
         {
-            private @internal @internal { get; set; }
+            private @internal @internal { get { return null; } set { } }
         }
 
         private class intFieldHolder
@@ -795,7 +795,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class intPropertyHolder
         {
-            private @int @int { get; set; }
+            private @int @int { get { return null; } set { } }
         }
 
         private class @is
@@ -817,7 +817,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class isPropertyHolder
         {
-            private @is @is { get; set; }
+            private @is @is { get { return null; } set { } }
         }
 
         private class @lock
@@ -839,7 +839,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class lockPropertyHolder
         {
-            private @lock @lock { get; set; }
+            private @lock @lock { get { return null; } set { } }
         }
 
         private class @long
@@ -861,7 +861,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class longPropertyHolder
         {
-            private @long @long { get; set; }
+            private @long @long { get { return null; } set { } }
         }
 
         private class @namespace
@@ -883,7 +883,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class namespacePropertyHolder
         {
-            private @namespace @namespace { get; set; }
+            private @namespace @namespace { get { return null; } set { } }
         }
 
         private class @new
@@ -905,7 +905,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class newPropertyHolder
         {
-            private @new @new { get; set; }
+            private @new @new { get { return null; } set { } }
         }
 
         private class @null
@@ -927,7 +927,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class nullPropertyHolder
         {
-            private @null @null { get; set; }
+            private @null @null { get { return null; } set { } }
         }
 
         private class @object
@@ -949,7 +949,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class objectPropertyHolder
         {
-            private @object @object { get; set; }
+            private @object @object { get { return null; } set { } }
         }
 
         private class @operator
@@ -971,7 +971,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class operatorPropertyHolder
         {
-            private @operator @operator { get; set; }
+            private @operator @operator { get { return null; } set { } }
         }
 
         private class @out
@@ -993,7 +993,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class outPropertyHolder
         {
-            private @out @out { get; set; }
+            private @out @out { get { return null; } set { } }
         }
 
         private class @override
@@ -1015,7 +1015,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class overridePropertyHolder
         {
-            private @override @override { get; set; }
+            private @override @override { get { return null; } set { } }
         }
 
         private class @params
@@ -1037,7 +1037,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class paramsPropertyHolder
         {
-            private @params @params { get; set; }
+            private @params @params { get { return null; } set { } }
         }
 
         private class @private
@@ -1059,7 +1059,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class privatePropertyHolder
         {
-            private @private @private { get; set; }
+            private @private @private { get { return null; } set { } }
         }
 
         private class @protected
@@ -1081,7 +1081,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class protectedPropertyHolder
         {
-            private @protected @protected { get; set; }
+            private @protected @protected { get { return null; } set { } }
         }
 
         private class @public
@@ -1103,7 +1103,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class publicPropertyHolder
         {
-            private @public @public { get; set; }
+            private @public @public { get { return null; } set { } }
         }
 
         private class @readonly
@@ -1125,7 +1125,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class readonlyPropertyHolder
         {
-            private @readonly @readonly { get; set; }
+            private @readonly @readonly { get { return null; } set { } }
         }
 
         private class @ref
@@ -1147,7 +1147,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class refPropertyHolder
         {
-            private @ref @ref { get; set; }
+            private @ref @ref { get { return null; } set { } }
         }
 
         private class @return
@@ -1169,7 +1169,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class returnPropertyHolder
         {
-            private @return @return { get; set; }
+            private @return @return { get { return null; } set { } }
         }
 
         private class @sbyte
@@ -1191,7 +1191,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class sbytePropertyHolder
         {
-            private @sbyte @sbyte { get; set; }
+            private @sbyte @sbyte { get { return null; } set { } }
         }
 
         private class @sealed
@@ -1213,7 +1213,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class sealedPropertyHolder
         {
-            private @sealed @sealed { get; set; }
+            private @sealed @sealed { get { return null; } set { } }
         }
 
         private class @short
@@ -1235,7 +1235,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class shortPropertyHolder
         {
-            private @short @short { get; set; }
+            private @short @short { get { return null; } set { } }
         }
 
         private class @sizeof
@@ -1257,7 +1257,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class sizeofPropertyHolder
         {
-            private @sizeof @sizeof { get; set; }
+            private @sizeof @sizeof { get { return null; } set { } }
         }
 
         private class @stackalloc
@@ -1279,7 +1279,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class stackallocPropertyHolder
         {
-            private @stackalloc @stackalloc { get; set; }
+            private @stackalloc @stackalloc { get { return null; } set { } }
         }
 
         private class @static
@@ -1301,7 +1301,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class staticPropertyHolder
         {
-            private @static @static { get; set; }
+            private @static @static { get { return null; } set { } }
         }
 
         private class @string
@@ -1323,7 +1323,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class stringPropertyHolder
         {
-            private @string @string { get; set; }
+            private @string @string { get { return null; } set { } }
         }
 
         private class @struct
@@ -1345,7 +1345,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class structPropertyHolder
         {
-            private @struct @struct { get; set; }
+            private @struct @struct { get { return null; } set { } }
         }
 
         private class @switch
@@ -1367,7 +1367,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class switchPropertyHolder
         {
-            private @switch @switch { get; set; }
+            private @switch @switch { get { return null; } set { } }
         }
 
         private class @this
@@ -1389,7 +1389,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class thisPropertyHolder
         {
-            private @this @this { get; set; }
+            private @this @this { get { return null; } set { } }
         }
 
         private class @throw
@@ -1411,7 +1411,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class throwPropertyHolder
         {
-            private @throw @throw { get; set; }
+            private @throw @throw { get { return null; } set { } }
         }
 
         private class @true
@@ -1433,7 +1433,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class truePropertyHolder
         {
-            private @true @true { get; set; }
+            private @true @true { get { return null; } set { } }
         }
 
         private class @try
@@ -1455,7 +1455,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class tryPropertyHolder
         {
-            private @try @try { get; set; }
+            private @try @try { get { return null; } set { } }
         }
 
         private class @typeof
@@ -1477,7 +1477,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class typeofPropertyHolder
         {
-            private @typeof @typeof { get; set; }
+            private @typeof @typeof { get { return null; } set { } }
         }
 
         private class @uint
@@ -1499,7 +1499,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class uintPropertyHolder
         {
-            private @uint @uint { get; set; }
+            private @uint @uint { get { return null; } set { } }
         }
 
         private class @ulong
@@ -1521,7 +1521,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class ulongPropertyHolder
         {
-            private @ulong @ulong { get; set; }
+            private @ulong @ulong { get { return null; } set { } }
         }
 
         private class @unchecked
@@ -1543,7 +1543,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class uncheckedPropertyHolder
         {
-            private @unchecked @unchecked { get; set; }
+            private @unchecked @unchecked { get { return null; } set { } }
         }
 
         private class @unsafe
@@ -1565,7 +1565,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class unsafePropertyHolder
         {
-            private @unsafe @unsafe { get; set; }
+            private @unsafe @unsafe { get { return null; } set { } }
         }
 
         private class @ushort
@@ -1587,7 +1587,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class ushortPropertyHolder
         {
-            private @ushort @ushort { get; set; }
+            private @ushort @ushort { get { return null; } set { } }
         }
 
         private class @using
@@ -1609,7 +1609,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class usingPropertyHolder
         {
-            private @using @using { get; set; }
+            private @using @using { get { return null; } set { } }
         }
 
         private class @virtual
@@ -1631,7 +1631,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class virtualPropertyHolder
         {
-            private @virtual @virtual { get; set; }
+            private @virtual @virtual { get { return null; } set { } }
         }
 
         private class @void
@@ -1653,7 +1653,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class voidPropertyHolder
         {
-            private @void @void { get; set; }
+            private @void @void { get { return null; } set { } }
         }
 
         private class @volatile
@@ -1675,7 +1675,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class volatilePropertyHolder
         {
-            private @volatile @volatile { get; set; }
+            private @volatile @volatile { get { return null; } set { } }
         }
 
         private class @while
@@ -1697,7 +1697,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class whilePropertyHolder
         {
-            private @while @while { get; set; }
+            private @while @while { get { return null; } set { } }
         }
     }
 }

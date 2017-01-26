@@ -8,40 +8,150 @@
         internal int internalField;
         private int privateField;
 
-        public int PublicProperty { get; set; }
+        public int PublicProperty
+        {
+            get
+            {
+                return protectedInternalField;
+            }
+            set
+            {
+                protectedInternalField = value;
+            }
+        }
 
-        public override int PublicVirtualProperty { get; set; }
+        public virtual int PublicVirtualProperty
+        {
+            get
+            {
+                return protectedInternalField;
+            }
+            set
+            {
+                protectedInternalField = value;
+            }
+        }
 
-        protected internal int ProtectedInternalProperty { get; set; }
+        protected internal int ProtectedInternalProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
 
-        protected internal override int ProtectedInternalVirtualProperty { get; set; }
+        protected internal virtual int ProtectedInternalVirtualProperty
+        {
+            get
+            {
+                return protectedField;
+            }
+            set
+            {
+                protectedField = value;
+            }
+        }
 
-        protected int ProtectedProperty { get; set; }
+        protected int ProtectedProperty
+        {
+            get
+            {
+                return internalField;
+            }
+            set
+            {
+                internalField = value;
+            }
+        }
 
-        protected override int ProtectedVirtualProperty { get; set; }
+        protected virtual int ProtectedVirtualProperty
+        {
+            get
+            {
+                return internalField;
+            }
+            set
+            {
+                internalField = value;
+            }
+        }
 
-        internal int InternalProperty { get; set; }
+        internal int InternalProperty
+        {
+            get
+            {
+                return privateField;
+            }
+            set
+            {
+                privateField = value;
+            }
+        }
 
-        internal override int InternalVirtualProperty { get; set; }
+        internal virtual int InternalVirtualProperty
+        {
+            get
+            {
+                return privateField;
+            }
+            set
+            {
+                privateField = value;
+            }
+        }
 
-        private int PrivateProperty { get; set; }
+        private int PrivateProperty
+        {
+            get
+            {
+                return publicField;
+            }
+            set
+            {
+                publicField = value;
+            }
+        }
 
-        public int PublicMethod() => 0;
+        #if CSHARP_V3
+        public int PublicAutoProperty { get; set; }
 
-        public override int PublicVirtualMethod() => 0;
+        public override int PublicVirtualAutoProperty { get; set; }
 
-        protected internal int ProtectedInternalMethod() => 0;
+        protected internal int ProtectedInternalAutoProperty { get; set; }
 
-        protected internal override int ProtectedInternalVirtualMethod() => 0;
+        protected internal override int ProtectedInternalVirtualAutoProperty { get; set; }
 
-        protected int ProtectedMethod() => 0;
+        protected int ProtectedAutoProperty { get; set; }
 
-        protected override int ProtectedVirtualMethod() => 0;
+        protected override int ProtectedVirtualAutoProperty { get; set; }
 
-        internal int InternalMethod() => 0;
+        internal int InternalAutoProperty { get; set; }
 
-        internal override int InternalVirtualMethod() => 0;
+        internal override int InternalVirtualAutoProperty { get; set; }
 
-        private int PrivateMethod() => 0;
+        private int PrivateAutoProperty { get; set; }
+        #endif
+
+        public int PublicMethod() { return 0; }
+
+        public override int PublicVirtualMethod() { return 0; }
+
+        protected internal int ProtectedInternalMethod() { return 0; }
+
+        protected internal override int ProtectedInternalVirtualMethod() { return 0; }
+
+        protected int ProtectedMethod() { return 0; }
+
+        protected override int ProtectedVirtualMethod() { return 0; }
+
+        internal int InternalMethod() { return 0; }
+
+        internal override int InternalVirtualMethod() { return 0; }
+
+        private int PrivateMethod() { return 0; }
     }
 }

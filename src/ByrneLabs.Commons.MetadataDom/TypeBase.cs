@@ -154,7 +154,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private void Initialize()
         {
-            _nameModifiers = new Lazy<string>(() => string.Concat(Enumerable.Repeat("[]", ArrayDimensionCount)) + (IsByRef ? "&" : string.Empty) + new string('*', PointerCount));
+            _nameModifiers = new Lazy<string>(() => string.Concat(Enumerable.Repeat("[]", ArrayDimensionCount)) + new string('*', PointerCount) + (IsByRef ? "&" : string.Empty));
             _fullName = new Lazy<string>(() =>
             {
                 var parent = IsNested && !IsGenericParameter ? DeclaringType.FullName + "+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");

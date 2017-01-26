@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+    <PropertyGroup Label="Set Defaults">
+        <TargetFramework Condition="'$(TargetFramework)' == ''">netcoreapp1.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Set Compiler Constants">
+        <LanguageVersionConstant Condition="'$(LangVersion)' == '2'">CSHARP_V2</LanguageVersionConstant>
+        <LanguageVersionConstant Condition="'$(LangVersion)' == '3'">CSHARP_V2;CSHARP_V3</LanguageVersionConstant>
+        <LanguageVersionConstant Condition="'$(LangVersion)' == '4'">CSHARP_V2;CSHARP_V3;CSHARP_V4</LanguageVersionConstant>
+        <LanguageVersionConstant Condition="'$(LangVersion)' == '5'">CSHARP_V2;CSHARP_V3;CSHARP_V4;CSHARP_V5</LanguageVersionConstant>
+        <LanguageVersionConstant Condition="'$(LangVersion)' == '6'">CSHARP_V2;CSHARP_V3;CSHARP_V4;CSHARP_V5;CSHARP_V6</LanguageVersionConstant>
+        <LanguageVersionConstant Condition="'$(LangVersion)' == '7'">CSHARP_V2;CSHARP_V3;CSHARP_V4;CSHARP_V5;CSHARP_V6;CSHARP_V7</LanguageVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.0'">DOTNET_STANDARD;NETSTANDARD_1_0;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.1'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.2'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.3'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.4'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.5'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;NETSTANDARD_1_5;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.6'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;NETSTANDARD_1_5;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netcoreapp1.0'">DOTNET_CORE;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netcoreapp1.1'">DOTNET_CORE;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Configuration">
+        <AssemblyName>ByrneLabs.Commons.MetadataDom.Tests.SampleToParse</AssemblyName>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <OutputType>library</OutputType>
+        <WarningLevel>0</WarningLevel>
+        <BaseOutputPath>bin\$(BuildName)\</BaseOutputPath>
+        <BaseIntermediateOutputPath>obj\$(BuildName)\</BaseIntermediateOutputPath>
+        <OutputPath>bin\$(BuildName)\</OutputPath>
+        <IntermediateOutputPath>obj\$(BuildName)\</IntermediateOutputPath>
+        <DefineConstants>$(FrameworkVersionConstant);$(LanguageVersionConstant);DOTNET_FRAMEWORK</DefineConstants>
+        <RestorePackages>true</RestorePackages>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="**\*.cs" />
+        <Compile Remove="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Condition="$(TargetFramework.StartsWith('netcoreapp1'))" Include="Microsoft.NETCore.App" Version="1.0.1" />
+        <PackageReference Condition="$(TargetFramework.StartsWith('netstandard1'))" Include="NETStandard.Library" Version="1.6" />
+    </ItemGroup>
+</Project>

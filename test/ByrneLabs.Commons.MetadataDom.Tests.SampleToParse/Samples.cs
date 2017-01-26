@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public int IntValue = 1;
         public string[] StringArray = { "asdf", null, string.Empty };
 
-        public GenericClass<Samples, Exception, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance { get; set; }
+        public GenericClass<Samples, Exception, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance { get { return null; } set { } }
 
         public void DoStuff()
         {
@@ -61,16 +61,22 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             }
             set
             {
+#if CSHARP_V3
                 var a = "a";
+#else
+                string a = "a";
+#endif
                 DoSomething(ref a);
             }
         }
 
-        public ByteEnum ByteEnumValue { get; protected internal set; }
+        public ByteEnum ByteEnumValue { get { return default(ByteEnum); } protected internal set { } }
 
-        public int SomeInt { get; set; }
+        public int SomeInt { get { return 0; } }
 
+#if CSHARP_V6
         public int SomeRedirectedInt => SomeInt;
+#endif
 
         public event BasicDelegate BasicEvent;
 
@@ -110,7 +116,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         protected virtual void OnEventWithoutDeclaredAccessors()
         {
+#if CSHARP_V6
             EventWithoutDeclaredAccessors?.Invoke(this, EventArgs.Empty);
+#endif
         }
     }
 }

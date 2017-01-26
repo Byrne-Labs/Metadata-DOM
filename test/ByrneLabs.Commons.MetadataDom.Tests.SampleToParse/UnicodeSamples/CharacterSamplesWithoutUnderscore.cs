@@ -13,16 +13,16 @@
         ⰾClass ⰾField;
         ⅩClass ⅩField;
 
-        ǿClass ǿProperty { get; set; }
-        ↈClass ↈProperty { get; set; }
-        ꭞClass ꭞProperty { get; set; }
-        ⅿClass ⅿProperty { get; set; }
-        ₕClass ₕProperty { get; set; }
-        ⰸClass ⰸProperty { get; set; }
-        ᵨClass ᵨProperty { get; set; }
-        ⅻClass ⅻProperty { get; set; }
-        ⰾClass ⰾProperty { get; set; }
-        ⅩClass ⅩProperty { get; set; }
+        ǿClass ǿProperty { get { return null; } set { ; } }
+        ↈClass ↈProperty { get { return null; } set { ; } }
+        ꭞClass ꭞProperty { get { return null; } set { ; } }
+        ⅿClass ⅿProperty { get { return null; } set { ; } }
+        ₕClass ₕProperty { get { return null; } set { ; } }
+        ⰸClass ⰸProperty { get { return null; } set { ; } }
+        ᵨClass ᵨProperty { get { return null; } set { ; } }
+        ⅻClass ⅻProperty { get { return null; } set { ; } }
+        ⰾClass ⰾProperty { get { return null; } set { ; } }
+        ⅩClass ⅩProperty { get { return null; } set { ; } }
 
         ǿClass ǿMethod(ǿClass ǿParameter) { return null; }
         ↈClass ↈMethod(ↈClass ↈParameter) { return null; }

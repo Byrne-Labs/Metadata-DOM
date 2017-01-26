@@ -2,16 +2,16 @@
 {
     internal class PropertySamplesWithNoBounds
     {
-        private int[][][] ArrayOfArrayOfArrayProperty => null;
+        private int[][][] ArrayOfArrayOfArrayProperty { get { return null; } }
 
-        private int[][] ArrayOfArrayProperty => null;
+        private int[][] ArrayOfArrayProperty { get { return null; } }
 
-        private int[] ArrayProperty => null;
+        private int[] ArrayProperty { get { return null; } }
 
-        private int[,,] ThreeDimensionalArrayProperty => null;
+        private int[,,] ThreeDimensionalArrayProperty { get { return null; } }
 
-        private int[,][,] TwoDimensionalArrayOfTwoDimensionalArrayProperty => null;
+        private int[,][,] TwoDimensionalArrayOfTwoDimensionalArrayProperty { get { return null; } }
 
-        private int[,] TwoDimensionalArrayProperty => null;
+        private int[,] TwoDimensionalArrayProperty { get { return null; } }
     }
 }

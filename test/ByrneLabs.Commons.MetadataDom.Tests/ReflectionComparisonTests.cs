@@ -176,9 +176,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Slow")]
-        public void TestReflectionComparisonOnCopiedAssemblies()
+        public void TestReflectionComparisonOnCopiedAssemblies() => TestReflectionComparison(CopyAllGacAssemblies().OrderBy(file => file.Length).ToList());
+
+        private void TestReflectionComparison(IEnumerable<FileInfo> assemblyFiles)
         {
-            var assemblyFiles = CopyAllGacAssemblies().OrderBy(file => file.Length).ToList();
             var startTime = DateTime.Now;
             var pass = true;
             var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 8 };
@@ -186,10 +187,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
             var executionTime = DateTime.Now.Subtract(startTime);
             _output.WriteLine($"Total execution time: {executionTime.TotalSeconds} seconds");
-            _output.WriteLine($"\t{assemblyFiles.Count} files loaded");
+            _output.WriteLine($"\t{assemblyFiles.Count()} files loaded");
 
             Assert.True(pass);
         }
+
 
         [Fact]
         [Trait("Category", "Fast")]
@@ -209,7 +211,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestReflectionComparisonOnSampleAssembly() => Assert.True(CheckMetadataOutOfProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll"))));
+        public void TestReflectionComparisonOnSampleAssemblies()=> TestReflectionComparison(SampleBuild.GetSampleAssemblies());
 
         [Fact]
         [Trait("Category", "Debug helper")]

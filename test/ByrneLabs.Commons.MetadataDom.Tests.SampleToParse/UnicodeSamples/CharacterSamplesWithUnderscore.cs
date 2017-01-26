@@ -17,16 +17,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.UnicodeSamples
         _８Class _８Field;
         _﹍Class _﹍Field;
 
-        _︫Class _︫Property { get; set; }
-        _ೀClass _ೀProperty { get; set; }
-        _︪Class _︪Property { get; set; }
-        _᧕Class _᧕Property { get; set; }
-        _꘤Class _꘤Property { get; set; }
-        _︩Class _︩Property { get; set; }
-        _ᯮClass _ᯮProperty { get; set; }
-        _୭Class _୭Property { get; set; }
-        _８Class _８Property { get; set; }
-        _﹍Class _﹍Property { get; set; }
+        _︫Class _︫Property { get { return null; } set { ; } }
+        _ೀClass _ೀProperty { get { return null; } set { ; } }
+        _︪Class _︪Property { get { return null; } set { ; } }
+        _᧕Class _᧕Property { get { return null; } set { ; } }
+        _꘤Class _꘤Property { get { return null; } set { ; } }
+        _︩Class _︩Property { get { return null; } set { ; } }
+        _ᯮClass _ᯮProperty { get { return null; } set { ; } }
+        _୭Class _୭Property { get { return null; } set { ; } }
+        _８Class _８Property { get { return null; } set { ; } }
+        _﹍Class _﹍Property { get { return null; } set { ; } }
 
         _︫Class _︫Method(_︫Class _︫Parameter) { return null; }
         _ೀClass _ೀMethod(_ೀClass _ೀParameter) { return null; }
