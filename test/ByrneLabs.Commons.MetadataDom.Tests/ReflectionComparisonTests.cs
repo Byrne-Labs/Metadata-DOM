@@ -108,7 +108,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
                 testMessage.Append('-', 80);
                 _output.WriteLine(testMessage.ToString());
-                Debug.WriteLine(testMessage.ToString());
+                if (process.ExitCode != 0)
+                {
+                    Debug.WriteLine(testMessage.ToString());
+                }
 
                 return process.ExitCode == 0;
             }
@@ -192,7 +195,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             Assert.True(pass);
         }
 
-
         [Fact]
         [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnPrebuiltAssemblies()
@@ -211,10 +213,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestReflectionComparisonOnSampleAssemblies()=> TestReflectionComparison(SampleBuild.GetSampleAssemblies());
+        public void TestReflectionComparisonOnOneSample() => TestReflectionComparison(SampleBuild.GetSampleAssemblies(1));
+
+        [Fact]
+        [Trait("Category", "Slow")]
+        public void TestReflectionComparisonOnSampleAssemblies() => TestReflectionComparison(SampleBuild.GetSampleAssemblies(500));
 
         [Fact]
         [Trait("Category", "Debug helper")]
-        public void TestReflectionComparisonOnSpecificAssembly() => Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\Tests\FailedValidation\gac_64\msbuild\v4.0_14.0.0.0__b03f5f7f11d50a3a\msbuild.exe")));
+        public void TestReflectionComparisonOnSpecificAssembly() => Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\bin\v4.6-CSharp4-Debug-Optimized-full-512-Library\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
     }
 }

@@ -13,17 +13,24 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         protected BaseChecker(IReadOnlyList<string> args)
         {
-            if (args.Count < 2)
+            if (args.Count == 0)
             {
-                throw new ArgumentException("A base directory and assembly file name must be provided");
+                throw new ArgumentException("An assembly file name must be provided");
             }
             if (args.Count > 3)
             {
                 throw new ArgumentException("Only a base directory, assembly file name, and PDB file name can be provided");
             }
 
-            BaseDirectory = new DirectoryInfo(args[0]);
-            AssemblyFile = new FileInfo(args[1]);
+            if (args.Count > 1)
+            {
+                BaseDirectory = new DirectoryInfo(args[0]);
+                AssemblyFile = new FileInfo(args[1]);
+            }
+            else
+            {
+                AssemblyFile = new FileInfo(args[0]);
+            }
             if (args.Count == 3)
             {
                 PdbFile = new FileInfo(args[2]);

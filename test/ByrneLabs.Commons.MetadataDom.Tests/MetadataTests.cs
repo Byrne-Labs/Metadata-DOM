@@ -5,6 +5,7 @@ using ByrneLabs.Commons.MetadataDom.Tests.Checker;
 using Xunit;
 using Xunit.Abstractions;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests
 {
@@ -21,7 +22,32 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private bool CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile = null, bool assertSuccess = true)
         {
             var checkState = BaseChecker.CheckOnlyMetadata(assemblyFile, pdbFile);
-            _output.WriteLine(checkState.ErrorLogText);
+            var outputMessage = new StringBuilder();
+            outputMessage.Append('-', 120).AppendLine();
+            outputMessage.AppendLine(assemblyFile?.FullName ?? pdbFile?.FullName).AppendLine();
+            var success = checkState.Success;
+
+            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
+            {
+                if (checkState.Metadata?.TypeDefinitions.Any() != true)
+                {
+                    outputMessage.AppendLine("No type definitions loaded from metadata");
+                    success = false;
+                }
+            }
+            if (pdbFile != null && checkState.Metadata?.Documents.Any() != true)
+            {
+                outputMessage.AppendLine("No type documents loaded from metadata");
+                success = false;
+            }
+
+            outputMessage.AppendLine(checkState.ErrorLogText);
+
+            if (!success)
+            {
+                _output.WriteLine(outputMessage.ToString());
+            }
+
             if (assertSuccess)
             {
                 Assert.True(checkState.Success);
@@ -35,15 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                     Assert.True(checkState.Metadata.Documents.Any());
                 }
             }
-            var success = checkState.Success;
-            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
-            {
-                success &= checkState.Metadata.AssemblyDefinition != null && checkState.Metadata.TypeDefinitions.Any();
-            }
-            if (pdbFile != null)
-            {
-                success &= checkState.Metadata.Documents.Any();
-            }
+
             return success;
         }
 
@@ -85,9 +103,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnSampleAssemblies()
+        public void TestOnOneSampleAssembly()
         {
-            var sampleAssemblies = SampleBuild.GetSampleAssemblies();
+            var sampleAssemblies = SampleBuild.GetSampleAssemblies(1);
             Assert.NotEmpty(sampleAssemblies);
             var success = true;
             Parallel.ForEach(sampleAssemblies, sampleAssembly => success &= CheckMetadata(sampleAssembly, null, false));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -12,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public CompiledFileWrapper(bool prefetchMetadata, FileInfo assemblyFile)
         {
-            File = assemblyFile;
+            CompiledFile = assemblyFile;
             var fileStream = assemblyFile.OpenRead();
 
             PEReader = new PEReader(fileStream, prefetchMetadata ? PEStreamOptions.PrefetchEntireImage : PEStreamOptions.Default);
@@ -25,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public CompiledFileWrapper(bool prefetchMetadata, CompiledFileWrapper assemblyFileWrapper, FileInfo pdbFile)
         {
-            File = pdbFile;
+            CompiledFile = pdbFile;
 
             var debugDirectoryEntries = assemblyFileWrapper?.PEReader.PEHeaders.IsCoffOnly != false ? null : assemblyFileWrapper?.PEReader.ReadDebugDirectory();
             var pdbDebugEntries = debugDirectoryEntries?.Where(debugDirectoryEntry => debugDirectoryEntry.Type == DebugDirectoryEntryType.EmbeddedPortablePdb);
@@ -49,12 +50,13 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 if (pdbFile?.Exists == false)
                 {
-                    pdbFile = new FileInfo(assemblyFileWrapper.File.FullName.Substring(0, assemblyFileWrapper.File.FullName.Length - assemblyFileWrapper.File.Extension.Length) + ".pdb");
+                    pdbFile = new FileInfo(assemblyFileWrapper.CompiledFile.FullName.Substring(0, assemblyFileWrapper.CompiledFile.FullName.Length - assemblyFileWrapper.CompiledFile.Extension.Length) + ".pdb");
                 }
                 if (pdbFile?.Exists == true)
                 {
                     var fileStream = pdbFile.OpenRead();
-                    _metadataReaderProvider = MetadataReaderProvider.FromPortablePdbStream(fileStream, prefetchMetadata ? MetadataStreamOptions.PrefetchMetadata : MetadataStreamOptions.Default);
+                    var bytes=File.ReadAllBytes(pdbFile.FullName);
+                    _metadataReaderProvider = MetadataReaderProvider.FromPortablePdbImage(bytes.ToImmutableArray());
                 }
             }
 
@@ -65,7 +67,7 @@ namespace ByrneLabs.Commons.MetadataDom
             }
         }
 
-        public FileInfo File { get; }
+        public FileInfo CompiledFile { get; }
 
         public bool HasMetadata { get; }
 

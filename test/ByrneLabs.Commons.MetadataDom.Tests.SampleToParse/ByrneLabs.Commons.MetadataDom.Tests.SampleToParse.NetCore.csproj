@@ -2,6 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
     <PropertyGroup Label="Set Defaults">
         <TargetFramework Condition="'$(TargetFramework)' == ''">netcoreapp1.0</TargetFramework>
+        <OutputType Condition="'$(OutputType)' == ''">Library</OutputType>
     </PropertyGroup>
 
     <PropertyGroup Label="Set Compiler Constants">

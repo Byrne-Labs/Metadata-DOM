@@ -94,10 +94,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public event EventHandler EventWithoutDeclaredAccessors;
 
-        public static void Main(string[] args)
-        {
-        }
-
         public void BasicEventHandler1(string value)
         {
         }

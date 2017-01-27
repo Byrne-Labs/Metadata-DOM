@@ -11,6 +11,7 @@
         <LangVersion Condition="'$(LangVersion)' == ''">7</LangVersion>
         <FileAlignment Condition="'$(FileAlignment)' == ''">512</FileAlignment>
         <BuildName Condition="'$(BuildName)' == ''">Debug</BuildName>
+        <OutputType Condition="'$(OutputType)' == ''">Library</OutputType>
     </PropertyGroup>
 
     <PropertyGroup Label="Set Compiler Constants">
@@ -34,7 +35,7 @@
 
     <PropertyGroup>
         <ProjectGuid>{235A9619-F89E-4E9B-98B3-77F50A2829B1}</ProjectGuid>
-        <OutputType>Library</OutputType>
+        <StartupObject Condition="'$(OutputType)' == 'exe'">Program</StartupObject>
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <AssemblyName>ByrneLabs.Commons.MetadataDom.Tests.SampleToParse</AssemblyName>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -85,6 +86,7 @@
         <Compile Include="UnicodeSamples\CharacterSamplesWithUnderscore.cs" />
         <Compile Include="UnicodeSamples\EscapedCodeSamples.cs" />
         <Compile Include="ExtensionsSamples.cs" />
+        <Compile Include="Program.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
