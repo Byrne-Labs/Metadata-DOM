@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup Label="Configuration">
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -8,8 +8,8 @@
         <BaseIntermediateOutputPath>obj\Default</BaseIntermediateOutputPath>
         <OutputPath>bin\Default\</OutputPath>
         <IntermediateOutputPath>obj\Default</IntermediateOutputPath>
+        <DebugType>portable</DebugType>
     </PropertyGroup>
-    
     <PropertyGroup>
         <TargetFramework>netstandard1.6</TargetFramework>
     </PropertyGroup>

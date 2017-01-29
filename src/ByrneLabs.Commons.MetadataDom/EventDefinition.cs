@@ -21,7 +21,7 @@ namespace ByrneLabs.Commons.MetadataDom
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            RawMetadata = (System.Reflection.Metadata.EventDefinition) MetadataState.GetTokenForHandle(metadataHandle);
+            RawMetadata = (System.Reflection.Metadata.EventDefinition) MetadataState.GetRawMetadataForHandle(metadataHandle);
             _type = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(RawMetadata.Type));
             Attributes = RawMetadata.Attributes;
             Name = AsString(RawMetadata.Name);

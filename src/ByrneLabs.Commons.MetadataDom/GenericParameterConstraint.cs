@@ -18,19 +18,14 @@ namespace ByrneLabs.Commons.MetadataDom
             RawMetadata = Reader.GetGenericParameterConstraint(metadataHandle);
             _type = new Lazy<TypeBase>(() =>
             {
-                var constrainedType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.Type);
-                var constrainedTypeSpecification = constrainedType as TypeSpecification;
-                if (constrainedTypeSpecification != null)
+                TypeBase constrainedType;
+                if (RawMetadata.Type.Kind == HandleKind.TypeSpecification)
                 {
-                    // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull -- Using try cast for all possible classes would not be faster than checking the type. -- Jonathan Byrne 01/21/2017
-                    if (Parameter.Parent is TypeDefinition)
-                    {
-                        constrainedTypeSpecification.ParentTypeDefinition = (TypeDefinition) Parameter.Parent;
-                    }
-                    else if (Parameter.Parent is MethodDefinition)
-                    {
-                        constrainedTypeSpecification.ParentMethodDefinition = (MethodDefinition) Parameter.Parent;
-                    }
+                    constrainedType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.Type, Parameter.Parent);
+                }
+                else
+                {
+                    constrainedType = (TypeBase)MetadataState.GetCodeElement(RawMetadata.Type);
                 }
                 return constrainedType;
             });

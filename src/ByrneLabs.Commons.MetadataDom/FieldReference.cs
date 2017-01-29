@@ -4,114 +4,18 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    public class FieldReference : MemberReferenceBase, IField
+    public class FieldReference : MemberReferenceBase
     {
-        private readonly Lazy<TypeBase> _fieldSignature;
+        private readonly Lazy<TypeBase> _signature;
 
         internal FieldReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : base(new CodeElementKey<FieldReference>(metadataHandle), metadataState)
         {
-            _fieldSignature = new Lazy<TypeBase>(CreateFieldSignature);
+            _signature = new Lazy<TypeBase>(CreateFieldSignature);
         }
 
-        public FieldAttributes Attributes
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public TypeBase FieldType => _signature.Value;
 
-        public bool IsAssembly
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsFamily
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsFamilyAndAssembly
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsFamilyOrAssembly
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsInitOnly
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsLiteral
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsNotSerialized
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsPinvokeImpl
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsPrivate
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsStatic
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        internal TypeBase FieldSignature => _fieldSignature.Value;
-
-        public TypeBase FieldType
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public TypeBase DeclaringType => FieldSignature?.DeclaringType;
+        public TypeBase DeclaringType => FieldType?.DeclaringType;
 
         public string FullName => DeclaringType == null ? Name : $"{DeclaringType.FullName}.{Name}";
 
@@ -122,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
         internal TypeBase CreateFieldSignature()
         {
             TypeBase fieldSignature;
-            if (Kind == MemberReferenceKind.Method || Parent is TypeSpecification)
+            if (Kind == MemberReferenceKind.Method)
             {
                 fieldSignature = null;
             }

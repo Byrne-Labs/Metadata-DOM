@@ -11,22 +11,27 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(baseType.DowncastMetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(genericTypeDefinition.DowncastMetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(MetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(handle);
+        }
+
+        internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
+        {
+            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(key.Handle.Value);
         }
 
         public TToken RawMetadata { get; }
 
-        public THandle MetadataHandle => KeyValue;
+        public virtual THandle MetadataHandle => KeyValue;
     }
 
     public abstract class TypeBase<TTypeBase, TKey> : TypeBase where TTypeBase : TypeBase
@@ -45,6 +50,11 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             KeyValue = keyValue;
         }
+
+        internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
+        {
+        }
+
 
         protected TKey KeyValue { get; }
     }
@@ -81,6 +91,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal TypeBase(TypeBase genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
         {
+            if (genericTypeArguments.Any(x => x == null))
+            {
+                throw new ArgumentException();
+            }
             IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
             GenericTypeArguments = genericTypeArguments.ToImmutableArray();
@@ -165,7 +179,25 @@ namespace ByrneLabs.Commons.MetadataDom
 
             _fullNameWithoutAssemblies = new Lazy<string>(() =>
             {
-                var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                string parent;
+                if (this is TypeSpecification)
+                {
+                    var typeSpecification = this as TypeSpecification;
+                    var signature = typeSpecification.Signature;
+                }
+                if (IsGenericParameter && DeclaringType != null || IsNested)
+                {
+                    parent = $"{DeclaringType.FullNameWithoutGenericArguments}+";
+                }
+                else if (string.IsNullOrEmpty(Namespace))
+                {
+                    parent = string.Empty;
+                }
+                else
+                {
+                    parent = Namespace + ".";
+                }
+               // var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
                 var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.FullNameWithoutAssemblies}]")) + "]" : string.Empty;
                 var name = UndecoratedName + genericArgumentsText + _nameModifiers.Value;
                 var fullName = parent + name;

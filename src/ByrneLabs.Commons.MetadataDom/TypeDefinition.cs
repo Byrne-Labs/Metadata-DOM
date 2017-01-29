@@ -169,11 +169,14 @@ namespace ByrneLabs.Commons.MetadataDom
             Attributes = RawMetadata.Attributes;
             _baseType = new Lazy<TypeBase>(() =>
             {
-                var baseType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.BaseType);
-                var typeSpecification = baseType as TypeSpecification;
-                if (typeSpecification != null)
+                TypeBase baseType;
+                if (RawMetadata.BaseType.Kind == HandleKind.TypeSpecification)
                 {
-                    typeSpecification.ParentTypeDefinition = this;
+                    baseType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.BaseType, this);
+                }
+                else
+                {
+                    baseType = (TypeBase)MetadataState.GetCodeElement(RawMetadata.BaseType);
                 }
                 return baseType;
             });
@@ -194,16 +197,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 return genericParameters;
             });
-            _interfaceImplementations = new Lazy<ImmutableArray<InterfaceImplementation>>(() =>
-            {
-                var interfaceImplementations = MetadataState.GetCodeElements<InterfaceImplementation>(RawMetadata.GetInterfaceImplementations());
-                foreach (var interfaceImplementation in interfaceImplementations)
-                {
-                    interfaceImplementation.ImplementingType = this;
-                }
-
-                return interfaceImplementations;
-            });
+            _interfaceImplementations = new Lazy<ImmutableArray<InterfaceImplementation>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this)).ToImmutableArray());
             Layout = RawMetadata.GetLayout();
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition>(RawMetadata.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(RawMetadata.GetProperties());

@@ -15,11 +15,17 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<ImmutableArray<Document>> _documents;
         private readonly Lazy<ImmutableArray<EventDefinition>> _eventDefinitions;
+        private readonly Lazy<ImmutableArray<ExportedType>> _exportedTypes;
         private readonly Lazy<ImmutableArray<FieldDefinition>> _fieldDefinitions;
         private readonly Lazy<ImmutableArray<ImportScope>> _importScopes;
         private readonly Lazy<ImmutableArray<Language>> _languages;
+        private readonly Lazy<ImmutableArray<LocalConstant>> _localConstants;
+        private readonly Lazy<ImmutableArray<LocalScope>> _localScopes;
+        private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
         private readonly Lazy<ImmutableArray<ManifestResource>> _manifestResources;
         private readonly Lazy<ImmutableArray<IMember>> _memberDefinitions;
+        private readonly Lazy<ImmutableArray<MemberReferenceBase>> _memberReferences;
+        private readonly Lazy<ImmutableArray<MethodDebugInformation>> _methodDebugInformation;
         private readonly Lazy<ImmutableArray<MethodDefinitionBase>> _methodDefinitions;
         private readonly Lazy<ImmutableArray<PropertyDefinition>> _propertyDefinitions;
         private readonly Lazy<ImmutableArray<TypeDefinition>> _typeDefinitions;
@@ -47,6 +53,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 _assemblyFiles = MetadataState.GetLazyCodeElements<AssemblyFile>(Reader.AssemblyFiles);
                 _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(Reader.DeclarativeSecurityAttributes);
                 _eventDefinitions = MetadataState.GetLazyCodeElements<EventDefinition>(Reader.EventDefinitions);
+                _exportedTypes = MetadataState.GetLazyCodeElements<ExportedType>(Reader.ExportedTypes);
                 _fieldDefinitions = MetadataState.GetLazyCodeElements<FieldDefinition>(Reader.FieldDefinitions);
                 _importScopes = MetadataState.GetLazyCodeElements<ImportScope>(Reader.ImportScopes);
                 _manifestResources = MetadataState.GetLazyCodeElements<ManifestResource>(Reader.ManifestResources);
@@ -55,6 +62,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 _typeDefinitions = new Lazy<ImmutableArray<TypeDefinition>>(() => MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToImmutableArray());
                 _typeReferences = MetadataState.GetLazyCodeElements<TypeReference>(Reader.TypeReferences);
                 _memberDefinitions = new Lazy<ImmutableArray<IMember>>(() => MethodDefinitions.Union<IMember>(FieldDefinitions).Union(EventDefinitions).Union(PropertyDefinitions).Union(TypeDefinitions).ToImmutableArray());
+                _memberReferences = MetadataState.GetLazyCodeElements<MemberReferenceBase>(Reader.MemberReferences);
                 MetadataKind = Reader.MetadataKind;
             }
             else
@@ -62,6 +70,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 _assemblyFiles = new Lazy<ImmutableArray<AssemblyFile>>(() => ImmutableArray<AssemblyFile>.Empty);
                 _declarativeSecurityAttributes = new Lazy<ImmutableArray<DeclarativeSecurityAttribute>>(() => ImmutableArray<DeclarativeSecurityAttribute>.Empty);
                 _eventDefinitions = new Lazy<ImmutableArray<EventDefinition>>(() => ImmutableArray<EventDefinition>.Empty);
+                _exportedTypes = new Lazy<ImmutableArray<ExportedType>>(() => ImmutableArray<ExportedType>.Empty);
                 _fieldDefinitions = new Lazy<ImmutableArray<FieldDefinition>>(() => ImmutableArray<FieldDefinition>.Empty);
                 _importScopes = new Lazy<ImmutableArray<ImportScope>>(() => ImmutableArray<ImportScope>.Empty);
                 _manifestResources = new Lazy<ImmutableArray<ManifestResource>>(() => ImmutableArray<ManifestResource>.Empty);
@@ -70,6 +79,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 _typeDefinitions = new Lazy<ImmutableArray<TypeDefinition>>(() => ImmutableArray<TypeDefinition>.Empty);
                 _typeReferences = new Lazy<ImmutableArray<TypeReference>>(() => ImmutableArray<TypeReference>.Empty);
                 _memberDefinitions = new Lazy<ImmutableArray<IMember>>(() => ImmutableArray<IMember>.Empty);
+                _memberReferences = new Lazy<ImmutableArray<MemberReferenceBase>>(() => ImmutableArray<MemberReferenceBase>.Empty);
             }
             if (MetadataState.HasDebugMetadata)
             {
@@ -77,12 +87,20 @@ namespace ByrneLabs.Commons.MetadataDom
                 _customDebugInformation = MetadataState.GetLazyCodeElements<CustomDebugInformation>(MetadataState.PdbReader.CustomDebugInformation);
                 _documents = MetadataState.GetLazyCodeElements<Document>(MetadataState.PdbReader.Documents);
                 _languages = new Lazy<ImmutableArray<Language>>(() => Documents.Select(document => document.Language).Distinct().ToImmutableArray());
+                _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(MetadataState.PdbReader.LocalConstants);
+                _localScopes = MetadataState.GetLazyCodeElements<LocalScope>(MetadataState.PdbReader.LocalScopes);
+                _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(MetadataState.PdbReader.LocalVariables);
+                _methodDebugInformation = MetadataState.GetLazyCodeElements<MethodDebugInformation>(MetadataState.PdbReader.MethodDebugInformation);
             }
             else
             {
                 _customDebugInformation = new Lazy<ImmutableArray<CustomDebugInformation>>(() => ImmutableArray<CustomDebugInformation>.Empty);
                 _documents = new Lazy<ImmutableArray<Document>>(() => ImmutableArray<Document>.Empty);
                 _languages = new Lazy<ImmutableArray<Language>>(() => ImmutableArray<Language>.Empty);
+                _localConstants = new Lazy<ImmutableArray<LocalConstant>>(() => ImmutableArray<LocalConstant>.Empty);
+                _localScopes = new Lazy<ImmutableArray<LocalScope>>(() => ImmutableArray<LocalScope>.Empty);
+                _localVariables = new Lazy<ImmutableArray<LocalVariable>>(() => ImmutableArray<LocalVariable>.Empty);
+                _methodDebugInformation = new Lazy<ImmutableArray<MethodDebugInformation>>(() => ImmutableArray<MethodDebugInformation>.Empty);
             }
         }
 
@@ -109,6 +127,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="MetadataReader.EventDefinitions" />
         public ImmutableArray<EventDefinition> EventDefinitions => !HasMetadata ? ImmutableArray<EventDefinition>.Empty : _eventDefinitions.Value;
 
+        public ImmutableArray<ExportedType> ExportedTypes => _exportedTypes.Value;
+
         public ImmutableArray<FieldDefinition> FieldDefinitions => _fieldDefinitions.Value;
 
         /// <summary>False if no PDB file found or if data could not be decoded; else true</summary>
@@ -122,13 +142,23 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public ImmutableArray<Language> Languages => _languages.Value;
 
+        public ImmutableArray<LocalConstant> LocalConstants => _localConstants.Value;
+
+        public ImmutableArray<LocalScope> LocalScopes => _localScopes.Value;
+
+        public ImmutableArray<LocalVariable> LocalVariables => _localVariables.Value;
+
         /// <inheritdoc cref="MetadataReader.ManifestResources" />
         public ImmutableArray<ManifestResource> ManifestResources => _manifestResources.Value;
 
         public ImmutableArray<IMember> MemberDefinitions => _memberDefinitions.Value;
 
+        public ImmutableArray<MemberReferenceBase> MemberReferences => _memberReferences.Value;
+
         /// <inheritdoc cref="MetadataReader.MetadataKind" />
         public MetadataKind MetadataKind { get; }
+
+        public ImmutableArray<MethodDebugInformation> MethodDebugInformation => _methodDebugInformation.Value;
 
         /// <inheritdoc cref="MetadataReader.MethodDefinitions" />
         public ImmutableArray<MethodDefinitionBase> MethodDefinitions => _methodDefinitions.Value;

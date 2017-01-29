@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
@@ -17,11 +18,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetArrayType(TypeBase elementType, ArrayShape shape) => _metadataState.GetCodeElement<ShapedArray>(elementType, shape);
 
-        public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.ByRef);
+        public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.ByRef);
 
-        public TypeBase GetGenericInstantiation(TypeBase genericType, ImmutableArray<TypeBase> typeArguments) => (TypeBase) _metadataState.GetCodeElement(new CodeElementKey(genericType.GetType(), genericType, typeArguments));
+        public TypeBase GetGenericInstantiation(TypeBase genericType, ImmutableArray<TypeBase> typeArguments) => typeArguments.All(typeArgument => typeArgument == null) ? genericType : (TypeBase)_metadataState.GetCodeElement(new CodeElementKey(genericType.GetType(), genericType, typeArguments));
 
-        public TypeBase GetPointerType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Pointer);
+        public TypeBase GetPointerType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Pointer);
 
         public TypeBase GetSystemType() => _systemType;
 
@@ -36,9 +37,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetFunctionPointerType(MethodSignature<TypeBase> signature) => _metadataState.GetCodeElement<FunctionPointer>(signature);
 
-        public TypeBase GetGenericMethodParameter(GenericContext genericContext, int index) => genericContext.MethodParameters[index];
+        public TypeBase GetGenericMethodParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable ? genericContext.MethodParameters[index] : null;
 
-        public TypeBase GetGenericTypeParameter(GenericContext genericContext, int index) => genericContext.TypeParameters[index];
+        public TypeBase GetGenericTypeParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable ? genericContext.TypeParameters[index] : null;
 
         public TypeBase GetModifiedType(TypeBase modifier, TypeBase unmodifiedType, bool isRequired) => unmodifiedType;
 
@@ -47,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom
             throw new NotImplementedException();
         }
 
-        public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeSpecification>(handle);
+        public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
 
         public TypeBase GetPrimitiveType(PrimitiveTypeCode typeCode) => _metadataState.GetCodeElement<PrimitiveType>(new CodeElementKey<PrimitiveType>(typeCode));
 
@@ -55,6 +56,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeReference>(handle);
 
-        public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Array);
+        public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Array);
     }
 }

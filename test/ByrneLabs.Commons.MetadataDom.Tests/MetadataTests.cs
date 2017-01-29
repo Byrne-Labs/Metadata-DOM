@@ -103,13 +103,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnOneSampleAssembly()
-        {
-            var sampleAssemblies = SampleBuild.GetSampleAssemblies(1);
-            Assert.NotEmpty(sampleAssemblies);
-            var success = true;
-            Parallel.ForEach(sampleAssemblies, sampleAssembly => success &= CheckMetadata(sampleAssembly, null, false));
-            Assert.True(success);
-        }
+        public void TestOnSampleAssembly() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
     }
 }

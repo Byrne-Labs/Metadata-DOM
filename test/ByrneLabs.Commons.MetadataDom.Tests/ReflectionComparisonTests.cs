@@ -213,7 +213,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestReflectionComparisonOnOneSample() => TestReflectionComparison(SampleBuild.GetSampleAssemblies(1));
+        public void TestReflectionComparisonSampleAssembly() => Assert.True(CheckMetadataInProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll"))));
 
         [Fact]
         [Trait("Category", "Slow")]

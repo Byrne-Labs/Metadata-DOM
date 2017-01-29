@@ -13,10 +13,23 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal MemberReferenceBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
-            MetadataHandle = (MemberReferenceHandle) key.UpcastHandle;
+            MetadataHandle = (MemberReferenceHandle)key.UpcastHandle;
             RawMetadata = Reader.GetMemberReference(MetadataHandle);
             Name = AsString(RawMetadata.Name);
-            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
+            _parent = new Lazy<CodeElement>(() =>
+              {
+                  CodeElement parent;
+                  if (RawMetadata.Parent.Kind == HandleKind.TypeSpecification)
+                  {
+                      parent = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.Parent, this);
+                  }
+                  else
+                  {
+                      parent = MetadataState.GetCodeElement(RawMetadata.Parent);
+                  }
+
+                  return parent;
+              });
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             Kind = RawMetadata.GetKind();
         }

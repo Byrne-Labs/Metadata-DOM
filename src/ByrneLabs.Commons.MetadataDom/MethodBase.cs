@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
         internal MethodBase(THandle handle, MetadataState metadataState) : base(new CodeElementKey<TMethodBase>(handle), metadataState)
         {
             MetadataHandle = handle;
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(handle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(handle);
         }
 
         public override MemberTypes MemberType => this is IConstructor ? MemberTypes.Constructor : MemberTypes.Method;

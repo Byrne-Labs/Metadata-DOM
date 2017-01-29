@@ -530,7 +530,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => relativeVirtualAddress == 0 ? null : AssemblyFileWrapper.PEReader.GetMethodBody(relativeVirtualAddress);
 
         [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
-        public object GetTokenForHandle(object handle)
+        public object GetRawMetadataForHandle(object handle)
         {
             object token;
             var upcastHandle = handle is Handle ? UpcastHandle((Handle) handle) : handle;

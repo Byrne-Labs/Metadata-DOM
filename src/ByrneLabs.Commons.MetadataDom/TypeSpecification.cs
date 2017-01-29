@@ -11,6 +11,8 @@ namespace ByrneLabs.Commons.MetadataDom
     //[PublicAPI]
     public class TypeSpecification : TypeBase<TypeSpecification, TypeSpecificationHandle, System.Reflection.Metadata.TypeSpecification>
     {
+        private readonly GenericContext _genericContext;
+        private readonly RuntimeCodeElement _referencingCodeElement;
         private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private Lazy<TypeBase> _signature;
 
@@ -27,8 +29,18 @@ namespace ByrneLabs.Commons.MetadataDom
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal TypeSpecification(TypeSpecificationHandle handle, MetadataState metadataState) : base(handle, metadataState)
+        internal TypeSpecification(TypeSpecificationHandle handle, GenericContext genericContext, MetadataState metadataState) : base(new CodeElementKey<TypeSpecification>(handle, genericContext), metadataState)
         {
+            MetadataHandle = handle;
+            _genericContext = genericContext;
+            Initialize();
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
+        internal TypeSpecification(TypeSpecificationHandle handle, RuntimeCodeElement referencingCodeElement, MetadataState metadataState) : base(new CodeElementKey<TypeSpecification>(handle, referencingCodeElement), metadataState)
+        {
+            MetadataHandle = handle;
+            _referencingCodeElement = referencingCodeElement;
             Initialize();
         }
 
@@ -45,11 +57,15 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
+        public override TypeSpecificationHandle MetadataHandle { get; }
+
         public override string Namespace => Signature.Namespace;
 
-        public MethodDefinition ParentMethodDefinition { get; internal set; }
+        public FieldReference ReferencingField => _referencingCodeElement as FieldReference;
 
-        public TypeDefinition ParentTypeDefinition { get; internal set; }
+        public IMethodBase ReferencingMethod => _referencingCodeElement as IMethodBase;
+
+        public TypeDefinition ReferencingTypeDefinition => _referencingCodeElement as TypeDefinition;
 
         public TypeBase Signature => _signature.Value;
 
@@ -61,17 +77,25 @@ namespace ByrneLabs.Commons.MetadataDom
             _signature = new Lazy<TypeBase>(() =>
             {
                 GenericContext genericContext;
-                if (ParentTypeDefinition != null)
+                if (_genericContext != null)
                 {
-                    genericContext = new GenericContext(ParentTypeDefinition.GenericTypeParameters, null);
+                    genericContext = _genericContext;
                 }
-                else if (ParentMethodDefinition != null)
+                else if (ReferencingTypeDefinition != null)
                 {
-                    genericContext = new GenericContext(null, ParentMethodDefinition.GenericTypeParameters);
+                    genericContext = new GenericContext(ReferencingTypeDefinition.GenericTypeParameters, null);
+                }
+                else if (ReferencingMethod != null)
+                {
+                    genericContext = new GenericContext(null, ReferencingMethod.GenericTypeParameters);
+                }
+                else if (ReferencingField?.FieldType is TypeDefinition)
+                {
+                    genericContext = new GenericContext(null, ((TypeDefinition) ReferencingField.FieldType).GenericTypeParameters);
                 }
                 else
                 {
-                    throw new InvalidOperationException("No generic type parameters found for type specification");
+                    genericContext = new GenericContext();
                 }
 
                 var signature = RawMetadata.DecodeSignature(MetadataState.TypeProvider, genericContext);

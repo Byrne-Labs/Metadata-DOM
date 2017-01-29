@@ -110,11 +110,6 @@ namespace ByrneLabs.Commons.MetadataDom
         private ImmutableArray<IParameter> LoadParameters()
         {
             var allParameters = MetadataState.GetCodeElements<Parameter>(RawMetadata.GetParameters()).ToList();
-
-            if (DeclaringType.FullName.Contains("MethodSamplesWithNoBounds"))
-            {
-                var signature = DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, GenericTypeParameters));
-            }
             var parameters = allParameters.Where(parameter => parameter.Position >= 0).ToList();
             if (Signature.ParameterTypes.Any() && parameters.Count == 0)
             {

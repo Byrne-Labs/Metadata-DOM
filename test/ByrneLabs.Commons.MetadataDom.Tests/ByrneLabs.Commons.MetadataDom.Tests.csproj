@@ -37,6 +37,7 @@
     <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore.csproj" />
     <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.csproj" />
     <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
+    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -26,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
         internal ModuleBase(THandle metadataHandle, MetadataState metadataState) : base(new CodeElementKey<TModuleBase>(metadataHandle), metadataState)
         {
             MetadataHandle = metadataHandle;
-            RawMetadata = (TToken) MetadataState.GetTokenForHandle(metadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(metadataHandle);
         }
 
         public TToken RawMetadata { get; }
