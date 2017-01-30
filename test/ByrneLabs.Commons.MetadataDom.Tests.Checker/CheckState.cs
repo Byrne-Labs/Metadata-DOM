@@ -14,7 +14,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
             @"^\.HasDefaultValue has a value of False in metadata but a value of True in reflection$",
             @"^\.MetadataToken has a value of 0 in metadata but a value of 134217728 in reflection$",
-            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$",
+            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$"
+        };
+        private static readonly string[] _likelyFrameworkBugErrorsRegex =
+        {
             @"ByrneLabs\.Commons\.MetadataDom\.BadMetadataException: Method .+ has \d+ parameters but \d+ parameter types were found"
         };
         private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
@@ -25,6 +28,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private bool _errorLogTextDirty = true;
         private string _logText;
         private bool _logTextDirty = true;
+        private string _unfilteredErrorLogText;
+        private bool _unfilteredErrorLogTextDirty = true;
+        private string _unfilteredLogText;
+        private bool _unfilteredLogTextDirty = true;
 
         public CheckState()
         {
@@ -85,13 +92,32 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public ImmutableArray<string> Errors
+        public string UnfilteredErrorLogText
         {
             get
             {
                 lock (_errors)
                 {
-                    var errorMessages = _errors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex))).ToList();
+                    lock (_exceptions)
+                    {
+                        if (_unfilteredErrorLogTextDirty)
+                        {
+                            _unfilteredErrorLogText = string.Join(Environment.NewLine, UnfilteredErrors);
+                            _unfilteredErrorLogTextDirty = false;
+                        }
+                        return _unfilteredErrorLogText;
+                    }
+                }
+            }
+        }
+
+        public ImmutableArray<string> UnfilteredErrors
+        {
+            get
+            {
+                lock (_errors)
+                {
+                    var errorMessages = _errors.ToList();
                     foreach (var exception in _exceptions)
                     {
                         try
@@ -106,6 +132,15 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
                     return errorMessages.ToImmutableArray();
                 }
+            }
+        }
+
+        public ImmutableArray<string> Errors
+        {
+            get
+            {
+                var filteredErrorMessages = UnfilteredErrors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)) && !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+                return filteredErrorMessages.ToImmutableArray();
             }
         }
 
@@ -179,6 +214,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
+        public bool LikelyFrameworkBugFound
+        {
+            get
+            {
+                lock (_exceptions)
+                {
+                    return Errors.Any(errorMessage => !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+                }
+            }
+        }
+
         public DateTime? FinishTime { get; set; }
 
         public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly") || LogText.Contains("This suggests the assembly also has a native image assembly") || LogText.Contains("System.IO.FileLoadException: Could not load file or assembly");
@@ -202,13 +248,32 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
+        public string UnfilteredLogText
+        {
+            get
+            {
+                lock (_errors)
+                {
+                    lock (_exceptions)
+                    {
+                        if (_unfilteredLogTextDirty)
+                        {
+                            _unfilteredLogText = UnfilteredErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
+                            _unfilteredLogTextDirty = false;
+                        }
+                        return _unfilteredLogText;
+                    }
+                }
+            }
+        }
+
         public Metadata Metadata { get; set; }
 
         public bool NonDotNetAssembly => LogText.Contains("The module was expected to contain an assembly manifest");
 
         public DateTime StartTime { get; }
 
-        public bool Success => !Errors.Any();
+        public bool Success => !Errors.Any() && !LikelyFrameworkBugFound;
 
         public void AddError(string error)
         {
@@ -226,7 +291,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 _errors.AddRange(errors);
                 _errorLogTextDirty = true;
+                _unfilteredErrorLogTextDirty = true;
                 _logTextDirty = true;
+                _unfilteredLogTextDirty = true;
             }
         }
 
@@ -242,7 +309,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
                 _exceptions.Add(new Tuple<CheckPhase, Exception, object>(checkPhase, exception, codeElement));
                 _errorLogTextDirty = true;
+                _unfilteredErrorLogTextDirty = true;
                 _logTextDirty = true;
+                _unfilteredLogTextDirty = true;
             }
         }
 

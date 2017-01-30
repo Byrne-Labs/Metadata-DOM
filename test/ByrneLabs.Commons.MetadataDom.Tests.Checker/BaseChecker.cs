@@ -61,6 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private DirectoryInfo FaultedReflectionComparisonDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedMetadataComparison"));
 
         private DirectoryInfo IncompleteAssemblyLoadDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "IncompleteAssemblyLoad"));
+        private DirectoryInfo LikelyFrameworkBugFoundDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "LikelyFrameworkBugFound"));
 
         private DirectoryInfo NonDotNetAssembliesDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NonDotNetAssemblies"));
 
@@ -196,7 +197,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "Must be a directory, not a file")]
-        private void CopyAssembly(DirectoryInfo baseDirectory)
+        private void CopyAssembly(DirectoryInfo baseDirectory, bool useUnfilteredLog = false)
         {
             try
             {
@@ -233,7 +234,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     logFileName = Path.Combine(AssemblyFile.DirectoryName, "tests.log");
                 }
 
-                File.WriteAllText(logFileName, _checkState.LogText);
+                File.WriteAllText(logFileName, useUnfilteredLog ? _checkState.UnfilteredLogText : _checkState.LogText);
             }
             catch (Exception exception)
             {
@@ -270,6 +271,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             if (_checkState.FaultedAssemblyCopy)
             {
                 CopyAssembly(null);
+            }
+            if (_checkState.LikelyFrameworkBugFound)
+            {
+                CopyAssembly(LikelyFrameworkBugFoundDirectory, true);
             }
             if (_checkState.Success)
             {
