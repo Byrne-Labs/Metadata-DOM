@@ -41,12 +41,34 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetGenericTypeParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable ? genericContext.TypeParameters[index] : null;
 
+        private static readonly string[] _ignoredModifierNames = new string[]
+            {
+                "System.Runtime.CompilerServices.CallConvCdecl",
+                "System.Runtime.CompilerServices.CallConvStdcall",
+                "System.Runtime.CompilerServices.CallConvThiscall",
+                "System.Runtime.CompilerServices.IsExplicitlyDereferenced",
+                "System.Runtime.CompilerServices.IsImplicitlyDereferenced",
+                "System.Runtime.InteropServices.GCHandle"
+            };
+
         public TypeBase GetModifiedType(TypeBase modifier, TypeBase unmodifiedType, bool isRequired)
         {
             TypeBase modifiedType;
             if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsVolatile"))
             {
-                modifiedType= (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, TypeElementModifiers.Volatile);
+                modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, TypeElementModifiers.Volatile);
+            }
+            else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsConst"))
+            {
+                modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, TypeElementModifiers.Constant);
+            }
+            else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsLong"))
+            {
+                modifiedType = GetPrimitiveType(PrimitiveTypeCode.Int64);
+            }
+            else if (_ignoredModifierNames.Contains(modifier.FullName))
+            {
+                modifiedType = unmodifiedType;
             }
             else
             {

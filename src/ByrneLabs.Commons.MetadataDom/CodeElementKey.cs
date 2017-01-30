@@ -29,7 +29,12 @@ namespace ByrneLabs.Commons.MetadataDom
             }
 
             KeyValues = rawKeyValues.ToImmutableArray();
-            Handle = KeyValues.OfType<Handle?>().FirstOrDefault();
+            var declaredHandle = KeyValues.OfType<Handle?>().FirstOrDefault();
+            if (declaredHandle == null && KeyValues.OfType<TypeBase>().Any())
+            {
+                declaredHandle = KeyValues.OfType<TypeBase>().First().DowncastMetadataHandle;
+            }
+            Handle = declaredHandle;
 
             UpcastHandle = Handle.HasValue ? MetadataState.UpcastHandle(Handle.Value) : null;
 

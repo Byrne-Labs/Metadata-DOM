@@ -9,6 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
         ByRef = 2,
         GenericType = 4,
         Volatile = 8,
-        Pointer = 16
+        Pointer = 16,
+        Constant = 32
     }
 }

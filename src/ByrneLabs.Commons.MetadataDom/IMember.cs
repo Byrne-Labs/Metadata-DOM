@@ -11,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         TypeBase DeclaringType { get; }
 
-        Handle DowncastMetadataHandle { get; }
+        Handle? DowncastMetadataHandle { get; }
 
         string FullName { get; }
 
