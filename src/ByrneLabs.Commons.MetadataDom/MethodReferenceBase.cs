@@ -32,7 +32,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected MethodSignature<TypeBase>? MethodSignature => _methodSignature.Value;
 
-        public TypeBase DeclaringType => (TypeBase) Parent;
+        public TypeBase DeclaringType => Parent as TypeBase;
 
         public string FullName => MethodDefinition?.FullName;
 
