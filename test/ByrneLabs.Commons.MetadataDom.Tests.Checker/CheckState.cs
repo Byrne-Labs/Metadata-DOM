@@ -14,7 +14,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
             @"^\.HasDefaultValue has a value of False in metadata but a value of True in reflection$",
             @"^\.MetadataToken has a value of 0 in metadata but a value of 134217728 in reflection$",
-            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$"
+            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$",
+            @"ByrneLabs\.Commons\.MetadataDom\.BadMetadataException: Method .+ has \d+ parameters but \d+ parameter types were found"
         };
         private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
         private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();

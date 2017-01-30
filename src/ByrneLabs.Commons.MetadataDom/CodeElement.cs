@@ -29,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected Guid AsGuid(GuidHandle guidHandle) => Reader.GetGuid(guidHandle);
 
-        protected string AsString(StringHandle stringHandle) => Reader.GetString(stringHandle);
+        protected string AsString(StringHandle stringHandle) => stringHandle.IsNil ? null : Reader.GetString(stringHandle);
 
         internal SignatureDecoder<TypeBase, GenericContext> CreateSignatureDecoder(TypeDefinition genericContext) => new SignatureDecoder<TypeBase, GenericContext>(MetadataState.TypeProvider, Reader, new GenericContext(genericContext?.GenericTypeParameters, null));
     }

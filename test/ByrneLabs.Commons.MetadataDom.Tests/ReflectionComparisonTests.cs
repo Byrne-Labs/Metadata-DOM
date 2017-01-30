@@ -221,6 +221,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Debug helper")]
-        public void TestReflectionComparisonOnSpecificAssembly() => Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\bin\v4.6-CSharp4-Debug-Optimized-full-512-Library\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+        public void TestReflectionComparisonOnSpecificAssembly() => Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\Tests\FaultedMetadataCheck\Microsoft.GroupPolicy.Management.Interop--2.0.0.0--\Microsoft.GroupPolicy.Management.Interop.dll")));
     }
 }

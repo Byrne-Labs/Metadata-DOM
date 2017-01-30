@@ -22,7 +22,7 @@ namespace ByrneLabs.Commons.MetadataDom
             var name = new AssemblyName
             {
                 Name = AsString(RawMetadata.Name),
-                CultureName = AsString(RawMetadata.Culture),
+                CultureName = AsString(RawMetadata.Culture) ?? string.Empty,
                 Flags = (RawMetadata.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (RawMetadata.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
                 ContentType = RawMetadata.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
                 Version = RawMetadata.Version
