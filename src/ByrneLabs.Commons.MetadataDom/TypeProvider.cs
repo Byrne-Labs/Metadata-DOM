@@ -20,7 +20,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.ByRef);
 
-        public TypeBase GetGenericInstantiation(TypeBase genericType, ImmutableArray<TypeBase> typeArguments) => typeArguments.All(typeArgument => typeArgument == null) ? genericType : (TypeBase)_metadataState.GetCodeElement(new CodeElementKey(genericType.GetType(), genericType, typeArguments));
+        public TypeBase GetGenericInstantiation(TypeBase genericType, ImmutableArray<TypeBase> typeArguments) => typeArguments.Any(typeArgument => typeArgument == null) ? genericType : (TypeBase)_metadataState.GetCodeElement(new CodeElementKey(genericType.GetType(), genericType, typeArguments));
 
         public TypeBase GetPointerType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Pointer);
 
@@ -48,13 +48,13 @@ namespace ByrneLabs.Commons.MetadataDom
             throw new NotImplementedException();
         }
 
-        public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
+        public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
 
         public TypeBase GetPrimitiveType(PrimitiveTypeCode typeCode) => _metadataState.GetCodeElement<PrimitiveType>(new CodeElementKey<PrimitiveType>(typeCode));
 
-        public TypeBase GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeDefinition>(handle);
+        public TypeBase GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeDefinition>(handle);
 
-        public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeReference>(handle);
+        public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeReference>(handle);
 
         public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Array);
     }
