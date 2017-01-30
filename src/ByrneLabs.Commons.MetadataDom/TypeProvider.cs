@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -46,29 +47,34 @@ namespace ByrneLabs.Commons.MetadataDom
                 "System.Runtime.CompilerServices.CallConvCdecl",
                 "System.Runtime.CompilerServices.CallConvStdcall",
                 "System.Runtime.CompilerServices.CallConvThiscall",
+                "System.Runtime.CompilerServices.IsSignUnspecifiedByte",
                 "System.Runtime.CompilerServices.IsExplicitlyDereferenced",
                 "System.Runtime.CompilerServices.IsImplicitlyDereferenced",
                 "System.Runtime.InteropServices.GCHandle"
             };
 
+        private static readonly Dictionary<string, TypeElementModifiers> _modifierMap = new Dictionary<string, TypeElementModifiers>
+        {
+            {"System.Runtime.CompilerServices.IsVolatile", TypeElementModifiers.Volatile },
+            {"System.Runtime.CompilerServices.IsBoxed", TypeElementModifiers.Boxed },
+            {"System.Runtime.CompilerServices.IsConst", TypeElementModifiers.Constant },
+            {"System.Runtime.CompilerServices.IsByValue",TypeElementModifiers.ByValue }
+        };
+
         public TypeBase GetModifiedType(TypeBase modifier, TypeBase unmodifiedType, bool isRequired)
         {
             TypeBase modifiedType;
-            if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsVolatile"))
+            if (_ignoredModifierNames.Contains(modifier.FullName))
             {
-                modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, TypeElementModifiers.Volatile);
+                modifiedType = unmodifiedType;
             }
-            else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsConst"))
+            else if (_modifierMap.ContainsKey(modifier.FullName))
             {
-                modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, TypeElementModifiers.Constant);
+                modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, _modifierMap[modifier.FullName]);
             }
             else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsLong"))
             {
                 modifiedType = GetPrimitiveType(PrimitiveTypeCode.Int64);
-            }
-            else if (_ignoredModifierNames.Contains(modifier.FullName))
-            {
-                modifiedType = unmodifiedType;
             }
             else
             {

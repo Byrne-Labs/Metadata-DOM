@@ -10,6 +10,8 @@ namespace ByrneLabs.Commons.MetadataDom
         GenericType = 4,
         Volatile = 8,
         Pointer = 16,
-        Constant = 32
+        Constant = 32,
+        ByValue = 64,
+        Boxed = 128
     }
 }

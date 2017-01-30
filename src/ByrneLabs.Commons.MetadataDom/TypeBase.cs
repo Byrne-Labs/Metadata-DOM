@@ -72,7 +72,9 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             BaseType = baseType;
             IsThisArray = typeElementModifiers.HasFlag(TypeElementModifiers.Array);
+            IsThisBoxed = typeElementModifiers.HasFlag(TypeElementModifiers.Boxed);
             IsThisByRef = typeElementModifiers.HasFlag(TypeElementModifiers.ByRef);
+            IsThisByValue= typeElementModifiers.HasFlag(TypeElementModifiers.ByValue);
             IsThisGenericType = typeElementModifiers.HasFlag(TypeElementModifiers.GenericType);
             IsThisPointer = typeElementModifiers.HasFlag(TypeElementModifiers.Pointer);
             IsThisVolatile = typeElementModifiers.HasFlag(TypeElementModifiers.Volatile);
@@ -139,7 +141,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsArray => BaseType?.IsArray == true || IsThisArray;
 
+        public bool IsBoxed => BaseType?.IsBoxed == true || IsThisBoxed;
         public bool IsByRef => BaseType?.IsByRef == true || IsThisByRef;
+        public bool IsByValue => BaseType?.IsByValue == true || IsThisByValue;
+
 
         public virtual bool IsGenericType => BaseType?.IsGenericType == true || IsThisGenericType;
 
@@ -158,7 +163,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected bool IsThisArray { get; }
 
+        protected bool IsThisBoxed { get; }
         protected bool IsThisByRef { get; }
+        protected bool IsThisByValue { get; }
 
         protected bool IsThisGenericType { get; }
 
