@@ -50,11 +50,14 @@ namespace ByrneLabs.Commons.MetadataDom
                 "System.Runtime.CompilerServices.IsSignUnspecifiedByte",
                 "System.Runtime.CompilerServices.IsExplicitlyDereferenced",
                 "System.Runtime.CompilerServices.IsImplicitlyDereferenced",
-                "System.Runtime.InteropServices.GCHandle"
+                "System.Runtime.CompilerServices.IsUdtReturn",
+                "System.Runtime.InteropServices.GCHandle",
+                "System.Security.Permissions.SecurityPermissionAttribute"
             };
 
         private static readonly Dictionary<string, TypeElementModifiers> _modifierMap = new Dictionary<string, TypeElementModifiers>
         {
+            {"Microsoft.VisualC.IsConstModifier", TypeElementModifiers.Constant },
             {"System.Runtime.CompilerServices.IsVolatile", TypeElementModifiers.Volatile },
             {"System.Runtime.CompilerServices.IsBoxed", TypeElementModifiers.Boxed },
             {"System.Runtime.CompilerServices.IsConst", TypeElementModifiers.Constant },
@@ -72,7 +75,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, _modifierMap[modifier.FullName]);
             }
-            else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsLong"))
+            else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsLong") || modifier.FullName.Equals("Microsoft.VisualC.IsLongModifier"))
             {
                 modifiedType = GetPrimitiveType(PrimitiveTypeCode.Int64);
             }
