@@ -5,6 +5,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
     public unsafe class Samples
     {
+        private volatile int volatileInt;
+        private readonly int readonlyInt = 1;
+        private const int constInt = 1;
         public int IntValue = 1;
         public string[] StringArray = { "asdf", null, string.Empty };
 
@@ -17,9 +20,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
                 StringArray[1] = intPointer->ToString();
             }
         }
+
+        public event EventHandler EventWithoutDeclaredAccessors;
+
+        protected virtual void OnEventWithoutDeclaredAccessors()
+        {
+#if CSHARP_V6
+            EventWithoutDeclaredAccessors?.Invoke(this, EventArgs.Empty);
+#endif
+        }
+
     }
 
-    public class MoreSamples : Samples
+    public sealed class MoreSamples : Samples
     {
         public delegate void BasicDelegate(string value);
 
@@ -92,8 +105,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             }
         }
 
-        public event EventHandler EventWithoutDeclaredAccessors;
-
         public void BasicEventHandler1(string value)
         {
         }
@@ -108,13 +119,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public void EventHandler(object sender, EventArgs e)
         {
-        }
-
-        protected virtual void OnEventWithoutDeclaredAccessors()
-        {
-#if CSHARP_V6
-            EventWithoutDeclaredAccessors?.Invoke(this, EventArgs.Empty);
-#endif
         }
     }
 }

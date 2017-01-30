@@ -91,7 +91,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 else if (ReferencingField?.FieldType is TypeDefinition)
                 {
-                    genericContext = new GenericContext(null, ((TypeDefinition) ReferencingField.FieldType).GenericTypeParameters);
+                    genericContext = new GenericContext(((TypeDefinition) ReferencingField.FieldType).GenericTypeParameters, null);
                 }
                 else
                 {

@@ -26,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(key.Handle.Value);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(key.Handle.Value);
         }
 
         public TToken RawMetadata { get; }
@@ -55,7 +55,6 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
-
         protected TKey KeyValue { get; }
     }
 
@@ -76,7 +75,7 @@ namespace ByrneLabs.Commons.MetadataDom
             IsThisByRef = typeElementModifiers.HasFlag(TypeElementModifiers.ByRef);
             IsThisGenericType = typeElementModifiers.HasFlag(TypeElementModifiers.GenericType);
             IsThisPointer = typeElementModifiers.HasFlag(TypeElementModifiers.Pointer);
-
+            IsThisVolatile = typeElementModifiers.HasFlag(TypeElementModifiers.Volatile);
             if (IsArray || IsPointer)
             {
                 ElementType = baseType;
@@ -95,6 +94,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 throw new ArgumentException();
             }
+
             IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
             GenericTypeArguments = genericTypeArguments.ToImmutableArray();
@@ -146,6 +146,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPointer => BaseType?.IsPointer == true || IsThisPointer;
 
+        public bool IsVolatile => BaseType?.IsVolatile == true || IsThisVolatile;
+
         public override string Name => _name.Value;
 
         public override string TextSignature => FullName;
@@ -159,6 +161,8 @@ namespace ByrneLabs.Commons.MetadataDom
         protected bool IsThisGenericType { get; }
 
         protected bool IsThisPointer { get; }
+
+        protected bool IsThisVolatile { get; }
 
         protected int PointerCount => (IsThisPointer ? 1 : 0) + (BaseType?.PointerCount).GetValueOrDefault();
 
@@ -180,11 +184,6 @@ namespace ByrneLabs.Commons.MetadataDom
             _fullNameWithoutAssemblies = new Lazy<string>(() =>
             {
                 string parent;
-                if (this is TypeSpecification)
-                {
-                    var typeSpecification = this as TypeSpecification;
-                    var signature = typeSpecification.Signature;
-                }
                 if (IsGenericParameter && DeclaringType != null || IsNested)
                 {
                     parent = $"{DeclaringType.FullNameWithoutGenericArguments}+";
@@ -197,7 +196,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 {
                     parent = Namespace + ".";
                 }
-               // var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
+                // var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : (string.IsNullOrEmpty(Namespace) ? string.Empty : Namespace + ".");
                 var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => $"[{genericTypeArgument.FullNameWithoutAssemblies}]")) + "]" : string.Empty;
                 var name = UndecoratedName + genericArgumentsText + _nameModifiers.Value;
                 var fullName = parent + name;

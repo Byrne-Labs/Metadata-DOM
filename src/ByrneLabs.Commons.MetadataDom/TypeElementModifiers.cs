@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
         Array = 1,
         ByRef = 2,
         GenericType = 4,
-        GenericArgument = 8,
+        Volatile = 8,
         Pointer = 16
     }
 }

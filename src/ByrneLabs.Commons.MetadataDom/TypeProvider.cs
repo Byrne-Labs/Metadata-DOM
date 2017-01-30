@@ -41,7 +41,19 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetGenericTypeParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable ? genericContext.TypeParameters[index] : null;
 
-        public TypeBase GetModifiedType(TypeBase modifier, TypeBase unmodifiedType, bool isRequired) => unmodifiedType;
+        public TypeBase GetModifiedType(TypeBase modifier, TypeBase unmodifiedType, bool isRequired)
+        {
+            TypeBase modifiedType;
+            if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsVolatile"))
+            {
+                modifiedType= (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, TypeElementModifiers.Volatile);
+            }
+            else
+            {
+                throw new ArgumentException($"Unknown modifier type {modifier.FullName}", nameof(modifier));
+            }
+            return modifiedType;
+        }
 
         public TypeBase GetPinnedType(TypeBase elementType)
         {
@@ -54,7 +66,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeDefinition>(handle);
 
-        public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeReference>(handle);
+        public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => rawTypeKind != 0 && rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeReference>(handle);
 
         public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Array);
     }
