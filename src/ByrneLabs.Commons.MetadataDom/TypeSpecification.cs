@@ -91,7 +91,11 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 else if (ReferencingField?.FieldType is TypeDefinition)
                 {
-                    genericContext = new GenericContext(((TypeDefinition) ReferencingField.FieldType).GenericTypeParameters, null);
+                    /*
+                     * For reasons I do not understand, the signature decoder sometimes calls TypeProvider.GetGenericMethodParameter and other times calls TypeProvider.GetGenericTypeParameter.  Passing the generic 
+                     * paramaters as both type parameters and method parameters keeps an exception from being thrown but may be incorrect. -- Jonathan Byrne 01/30/2017
+                     */
+                    genericContext = new GenericContext(((TypeDefinition) ReferencingField.FieldType).GenericTypeParameters, ((TypeDefinition)ReferencingField.FieldType).GenericTypeParameters);
                 }
                 else
                 {
