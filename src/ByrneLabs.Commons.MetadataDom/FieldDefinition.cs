@@ -29,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
             _marshallingDescriptor = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.GetMarshallingDescriptor())));
             Offset = RawMetadata.GetOffset();
             RelativeVirtualAddress = RawMetadata.GetRelativeVirtualAddress();
-            _fieldType = new Lazy<TypeBase>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(_declaringType.Value.GenericTypeParameters, new TypeBase[] { })));
+            _fieldType = new Lazy<TypeBase>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, _declaringType.Value.GenericTypeParameters, null)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.FieldDefinition.Attributes" />

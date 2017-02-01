@@ -31,6 +31,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected string AsString(StringHandle stringHandle) => stringHandle.IsNil ? null : Reader.GetString(stringHandle);
 
-        internal SignatureDecoder<TypeBase, GenericContext> CreateSignatureDecoder(TypeDefinition genericContext) => new SignatureDecoder<TypeBase, GenericContext>(MetadataState.TypeProvider, Reader, new GenericContext(genericContext?.GenericTypeParameters, null));
+        internal SignatureDecoder<TypeBase, GenericContext> CreateSignatureDecoder(TypeDefinition genericContext) => new SignatureDecoder<TypeBase, GenericContext>(MetadataState.TypeProvider, Reader, new GenericContext(this, genericContext?.GenericTypeParameters, null));
     }
 }

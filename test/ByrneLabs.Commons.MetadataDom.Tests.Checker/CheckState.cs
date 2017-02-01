@@ -11,14 +11,15 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
     {
         private static readonly string[] _ignoredErrorsRegex =
         {
-            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
-            @"^\.HasDefaultValue has a value of False in metadata but a value of True in reflection$",
-            @"^\.MetadataToken has a value of 0 in metadata but a value of 134217728 in reflection$",
-            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$"
+            @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$",
+            @"System\.BadImageFormatException: Invalid method header: 0x[0-9A-F][0-9A-F](?: 0x[0-9A-F][0-9A-F])?\s*at System\.Reflection\.Metadata\.MethodBodyBlock\.Create\(BlobReader reader\)"
         };
         private static readonly string[] _likelyFrameworkBugErrorsRegex =
         {
-            @"ByrneLabs\.Commons\.MetadataDom\.BadMetadataException: Method .+ has \d+ parameters but \d+ parameter types were found"
+            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
+            @"ByrneLabs\.Commons\.MetadataDom\.BadMetadataException: Method .+ has \d+ parameters but \d+ parameter types were found",
+            @"HasDefaultValue has a value of False in metadata but a value of True in reflection",
+            @"MetadataToken has a value of \d+ in metadata but a value of \d+ in reflection"
         };
         private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
         private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();
@@ -92,6 +93,64 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
+        public ImmutableArray<string> Errors
+        {
+            get
+            {
+                var filteredErrorMessages = UnfilteredErrors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)) && !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+                return filteredErrorMessages.ToImmutableArray();
+            }
+        }
+
+        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?)null;
+
+        public bool FailedValidation => Errors.Any() && !Faulted;
+
+        public bool Faulted => FilteredExceptions.Any();
+
+        public bool FaultedAssemblyCopy => FilteredExceptions.Any(exception => exception.Item1 == CheckPhase.MoveAssembly);
+
+        public bool FaultedAssemblyLoad => !NonDotNetAssembly && !IncompleteAssemblyLoad && FilteredExceptions.Any(exception => exception.Item1 == CheckPhase.AssemblyLoad);
+
+        public bool FaultedMetadataCheck => FilteredExceptions.Any(exception => exception.Item1 == CheckPhase.MetadataCheck);
+
+        public bool FaultedMetadataLoad => FilteredExceptions.Any(exception => exception.Item1 == CheckPhase.MetadataLoad);
+
+        public bool FaultedReflectionComparison => !IncompleteAssemblyLoad && FilteredExceptions.Any(exception => exception.Item1 == CheckPhase.ReflectionComparison);
+
+        public DateTime? FinishTime { get; set; }
+
+        public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly") || LogText.Contains("This suggests the assembly also has a native image assembly") || LogText.Contains("System.IO.FileLoadException: Could not load file or assembly");
+
+        public bool LikelyFrameworkBugFound => Errors.Any(errorMessage => !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+
+        public string LogText
+        {
+            get
+            {
+                lock (_errors)
+                {
+                    lock (_exceptions)
+                    {
+                        if (_logTextDirty)
+                        {
+                            _logText = ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
+                            _logTextDirty = false;
+                        }
+                        return _logText;
+                    }
+                }
+            }
+        }
+
+        public Metadata Metadata { get; set; }
+
+        public bool NonDotNetAssembly => LogText.Contains("The module was expected to contain an assembly manifest");
+
+        public DateTime StartTime { get; }
+
+        public bool Success => !Errors.Any() && !LikelyFrameworkBugFound;
+
         public string UnfilteredErrorLogText
         {
             get
@@ -135,119 +194,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public ImmutableArray<string> Errors
-        {
-            get
-            {
-                var filteredErrorMessages = UnfilteredErrors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)) && !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
-                return filteredErrorMessages.ToImmutableArray();
-            }
-        }
-
-        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?)null;
-
-        public bool FailedValidation => Errors.Any() && !Faulted;
-
-        public bool Faulted
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return _exceptions.Any();
-                }
-            }
-        }
-
-        public bool FaultedAssemblyCopy
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return _exceptions.Any(exception => exception.Item1 == CheckPhase.MoveAssembly);
-                }
-            }
-        }
-
-        public bool FaultedAssemblyLoad
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return !NonDotNetAssembly && !IncompleteAssemblyLoad && _exceptions.Any(exception => exception.Item1 == CheckPhase.AssemblyLoad);
-                }
-            }
-        }
-
-        public bool FaultedMetadataCheck
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return _exceptions.Any(exception => exception.Item1 == CheckPhase.MetadataCheck);
-                }
-            }
-        }
-
-        public bool FaultedMetadataLoad
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return _exceptions.Any(exception => exception.Item1 == CheckPhase.MetadataLoad);
-                }
-            }
-        }
-
-        public bool FaultedReflectionComparison
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return !IncompleteAssemblyLoad && _exceptions.Any(exception => exception.Item1 == CheckPhase.ReflectionComparison);
-                }
-            }
-        }
-
-        public bool LikelyFrameworkBugFound
-        {
-            get
-            {
-                lock (_exceptions)
-                {
-                    return Errors.Any(errorMessage => !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
-                }
-            }
-        }
-
-        public DateTime? FinishTime { get; set; }
-
-        public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly") || LogText.Contains("This suggests the assembly also has a native image assembly") || LogText.Contains("System.IO.FileLoadException: Could not load file or assembly");
-
-        public string LogText
-        {
-            get
-            {
-                lock (_errors)
-                {
-                    lock (_exceptions)
-                    {
-                        if (_logTextDirty)
-                        {
-                            _logText = ErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
-                            _logTextDirty = false;
-                        }
-                        return _logText;
-                    }
-                }
-            }
-        }
-
         public string UnfilteredLogText
         {
             get
@@ -267,13 +213,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public Metadata Metadata { get; set; }
-
-        public bool NonDotNetAssembly => LogText.Contains("The module was expected to contain an assembly manifest");
-
-        public DateTime StartTime { get; }
-
-        public bool Success => !Errors.Any() && !LikelyFrameworkBugFound;
+        private IEnumerable<Tuple<CheckPhase, Exception, object>> FilteredExceptions
+        {
+            get
+            {
+                lock (_exceptions)
+                {
+                    return _exceptions.Where(exception => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(exception.ToString(), ignoredErrorRegex)) && !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(exception.ToString(), ignoredErrorRegex)));
+                }
+            }
+        }
 
         public void AddError(string error)
         {

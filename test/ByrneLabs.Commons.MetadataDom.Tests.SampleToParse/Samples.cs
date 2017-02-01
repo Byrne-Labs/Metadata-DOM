@@ -3,15 +3,26 @@ using System.Collections.Generic;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
-    public unsafe class Samples
+    public unsafe class Samples<T>
     {
         private volatile int volatileInt;
         private readonly int readonlyInt = 1;
         private const int constInt = 1;
         public int IntValue = 1;
         public string[] StringArray = { "asdf", null, string.Empty };
+        private GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> _genericClassInstance;
 
-        public GenericClass<Samples, Exception, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance { get { return null; } set { } }
+        public GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance
+        {
+            get
+            {
+                return _genericClassInstance;
+            }
+            set
+            {
+                _genericClassInstance = value;
+            }
+        }
 
         public void DoStuff()
         {
@@ -19,6 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
                 StringArray[1] = intPointer->ToString();
             }
+            _genericClassInstance = new GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>>();
         }
 
         public event EventHandler EventWithoutDeclaredAccessors;
@@ -32,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
     }
 
-    public sealed class MoreSamples : Samples
+    public sealed class MoreSamples : Samples<object[]>
     {
         public delegate void BasicDelegate(string value);
 

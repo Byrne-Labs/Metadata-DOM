@@ -44,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             MetadataHandle = metadataHandle;
             RawMetadata = Reader.GetParameter(metadataHandle);
-            Name = AsString(RawMetadata.Name);
+            Name = AsString(RawMetadata.Name) ?? string.Empty;
             Attributes = RawMetadata.Attributes;
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             Position = RawMetadata.SequenceNumber - 1;

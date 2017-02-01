@@ -36,16 +36,16 @@ namespace ByrneLabs.Commons.MetadataDom
                 if (Parent is MethodDefinition)
                 {
                     var methodDefinitionParent = Parent as MethodDefinition;
-                    genericContext = new GenericContext(methodDefinitionParent.DeclaringType.GenericTypeArguments, methodDefinitionParent.GenericTypeParameters);
+                    genericContext = new GenericContext(this, methodDefinitionParent.DeclaringType.GenericTypeArguments, methodDefinitionParent.GenericTypeParameters);
                 }
                 else if (Parent is ModuleReference)
                 {
-                    genericContext = new GenericContext(null, null);
+                    genericContext = new GenericContext(this, null, null);
                 }
                 else if (Parent is TypeBase)
                 {
                     var typeBaseParent = Parent as TypeBase;
-                    genericContext = new GenericContext(typeBaseParent.GenericTypeArguments, null);
+                    genericContext = new GenericContext(this, typeBaseParent.GenericTypeArguments, null);
                 }
                 else
                 {

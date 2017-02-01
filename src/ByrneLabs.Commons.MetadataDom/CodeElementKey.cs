@@ -84,7 +84,38 @@ namespace ByrneLabs.Commons.MetadataDom
         public override bool Equals(object obj)
         {
             var castObj = obj as CodeElementKey;
-            return ReferenceEquals(this, obj) || castObj != null && castObj.CodeElementType == CodeElementType && castObj.KeyValues.SequenceEqual(KeyValues);
+            var equals = ReferenceEquals(this, obj) || castObj != null && castObj.CodeElementType == CodeElementType && castObj.KeyValues.Length == KeyValues.Length;
+            if (equals)
+            {
+                /*
+                 * :( ArrayShape does not implement the equals method to compare the actual values so we have to manually do it. -- Jonathan Byrne 02/01/2017
+                 */
+                if (KeyValues.OfType<ArrayShape>().Any())
+                {
+                    for (var keyValueIndex = 0; keyValueIndex < KeyValues.Length && equals; keyValueIndex++)
+                    {
+                        var thisKeyValue = KeyValues[keyValueIndex];
+                        var otherKeyValue = castObj.KeyValues[keyValueIndex];
+                        if (thisKeyValue is ArrayShape && otherKeyValue is ArrayShape)
+                        {
+                            var thisArrayShape = (ArrayShape) thisKeyValue;
+                            var otherArrayShape = (ArrayShape) otherKeyValue;
+                            equals = thisArrayShape.Rank == otherArrayShape.Rank && Enumerable.SequenceEqual(thisArrayShape.LowerBounds, otherArrayShape.LowerBounds) && Enumerable.SequenceEqual(thisArrayShape.Sizes, otherArrayShape.Sizes);
+                        }
+                        else
+                        {
+                            equals = Equals(thisKeyValue, otherKeyValue);
+                        }
+
+                    }
+                }
+                else
+                {
+                    equals = Enumerable.SequenceEqual(KeyValues, castObj.KeyValues);
+                }
+            }
+
+            return equals;
         }
 
         public override int GetHashCode()

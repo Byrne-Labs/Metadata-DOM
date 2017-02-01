@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 else
                 {
                     methodBody = MetadataState.GetCodeElement<MethodBody>(RawMetadata.MethodBody);
-                    methodBody.GenericContext = new GenericContext(Type.GenericTypeParameters, MethodDeclaration.GenericTypeParameters);
+                    methodBody.GenericContext = new GenericContext(this, Type.GenericTypeParameters, MethodDeclaration.GenericTypeParameters);
                 }
 
                 return methodBody;

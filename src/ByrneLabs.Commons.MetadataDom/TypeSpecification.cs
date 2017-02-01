@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 
@@ -83,11 +84,12 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 else if (ReferencingTypeDefinition != null)
                 {
-                    genericContext = new GenericContext(ReferencingTypeDefinition.GenericTypeParameters, null);
+                    genericContext = new GenericContext(this, ReferencingTypeDefinition.GenericTypeParameters, null);
                 }
                 else if (ReferencingMethod != null)
                 {
-                    genericContext = new GenericContext(null, ReferencingMethod.GenericTypeParameters);
+                    var declaringTypeDefinition = ReferencingMethod.DeclaringType as TypeDefinition;
+                    genericContext = new GenericContext(this, declaringTypeDefinition?.GenericTypeParameters, ReferencingMethod.GenericTypeParameters);
                 }
                 else if (ReferencingField?.FieldType is TypeDefinition)
                 {
@@ -95,11 +97,11 @@ namespace ByrneLabs.Commons.MetadataDom
                      * For reasons I do not understand, the signature decoder sometimes calls TypeProvider.GetGenericMethodParameter and other times calls TypeProvider.GetGenericTypeParameter.  Passing the generic 
                      * paramaters as both type parameters and method parameters keeps an exception from being thrown but may be incorrect. -- Jonathan Byrne 01/30/2017
                      */
-                    genericContext = new GenericContext(((TypeDefinition) ReferencingField.FieldType).GenericTypeParameters, ((TypeDefinition)ReferencingField.FieldType).GenericTypeParameters);
+                    genericContext = new GenericContext(this, ((TypeDefinition)ReferencingField.FieldType).GenericTypeParameters, ((TypeDefinition)ReferencingField.FieldType).GenericTypeParameters);
                 }
                 else
                 {
-                    genericContext = new GenericContext();
+                    genericContext = new GenericContext(this);
                 }
 
                 var signature = RawMetadata.DecodeSignature(MetadataState.TypeProvider, genericContext);

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -74,7 +75,17 @@ namespace ByrneLabs.Commons.MetadataDom
 
             if (AssemblyFileWrapper != null || pdbFile != null)
             {
-                PdbFileWrapper = new CompiledFileWrapper(prefetchMetadata, AssemblyFileWrapper, pdbFile);
+                try
+                {
+                    PdbFileWrapper = new CompiledFileWrapper(prefetchMetadata, AssemblyFileWrapper, pdbFile);
+                }
+                catch (BadImageFormatException exception)
+                {
+                    if (!exception.Message.Equals("Invalid COR20 header signature."))
+                    {
+                        throw;
+                    }
+                }
             }
 
             _assemblyReferences = new Lazy<ImmutableArray<AssemblyReference>>(() => AssemblyReader == null ? ImmutableArray<AssemblyReference>.Empty : GetCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences));
@@ -527,7 +538,31 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public Lazy<ImmutableArray<T>> GetLazyCodeElements<T>(IEnumerable<CodeElementKey> keys) => new Lazy<ImmutableArray<T>>(() => GetCodeElements<T>(keys));
 
-        public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress) => relativeVirtualAddress == 0 ? null : AssemblyFileWrapper.PEReader.GetMethodBody(relativeVirtualAddress);
+        public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress)
+        {
+            MethodBodyBlock methodBodyBlock;
+            if (relativeVirtualAddress == 0)
+            {
+                methodBodyBlock = null;
+            }
+            else
+            {
+                MethodBodyBlock pdbBlock;
+                try
+                {
+                    pdbBlock = PdbFileWrapper?.PEReader?.GetMethodBody(relativeVirtualAddress);
+                    if (pdbBlock != null)
+                    {
+                        Debug.WriteLine("wow");
+                    }
+                }
+                catch
+                { }
+                methodBodyBlock = AssemblyFileWrapper.PEReader.GetMethodBody(relativeVirtualAddress);
+            }
+
+            return methodBodyBlock;
+        }
 
         [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
         public object GetRawMetadataForHandle(object handle)

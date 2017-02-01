@@ -8,6 +8,33 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     internal class TypeProvider : ISignatureTypeProvider<TypeBase, GenericContext>, ICustomAttributeTypeProvider<TypeBase>
     {
+        private static readonly string[] _ignoredModifierNames =
+        {
+            "Microsoft.VisualC.IsLongModifier",
+            "System.Runtime.CompilerServices.CallConvCdecl",
+            "System.Runtime.CompilerServices.CallConvStdcall",
+            "System.Runtime.CompilerServices.CallConvThiscall",
+            "System.Runtime.CompilerServices.IsCopyConstructed",
+            "System.Runtime.CompilerServices.IsSignUnspecifiedByte",
+            "System.Runtime.CompilerServices.IsExplicitlyDereferenced",
+            "System.Runtime.CompilerServices.IsImplicitlyDereferenced",
+            "System.Runtime.CompilerServices.IsJitIntrinsic",
+            "System.Runtime.CompilerServices.IsLong",
+            "System.Runtime.CompilerServices.IsUdtReturn",
+            "System.Runtime.InteropServices.GCHandle",
+            "System.Security.Permissions.SecurityPermissionAttribute"
+        };
+
+        private static readonly Dictionary<string, TypeElementModifiers> _modifierMap = new Dictionary<string, TypeElementModifiers>
+        {
+            {"Microsoft.VisualC.IsConstModifier", TypeElementModifiers.Constant },
+            {"System.Runtime.CompilerServices.IsVolatile", TypeElementModifiers.Volatile },
+            {"System.Runtime.CompilerServices.IsBoxed", TypeElementModifiers.Boxed },
+            {"System.Runtime.CompilerServices.IsConst", TypeElementModifiers.Constant },
+            {"System.Runtime.CompilerServices.IsByValue",TypeElementModifiers.ByValue },
+            {"System.ValueType", TypeElementModifiers.ValueType }
+        };
+
         private readonly MetadataState _metadataState;
         private readonly SystemType _systemType;
 
@@ -38,31 +65,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetFunctionPointerType(MethodSignature<TypeBase> signature) => _metadataState.GetCodeElement<FunctionPointer>(signature);
 
-        public TypeBase GetGenericMethodParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable ? genericContext.MethodParameters[index] : null;
+        public TypeBase GetGenericMethodParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable && genericContext.MethodParameters.Length > index ? genericContext.MethodParameters[index] : _metadataState.GetCodeElement<GenericParameterPlaceholder>(genericContext.RequestingCodeElement, index);
 
-        public TypeBase GetGenericTypeParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable ? genericContext.TypeParameters[index] : null;
-
-        private static readonly string[] _ignoredModifierNames = new string[]
-            {
-                "System.Runtime.CompilerServices.CallConvCdecl",
-                "System.Runtime.CompilerServices.CallConvStdcall",
-                "System.Runtime.CompilerServices.CallConvThiscall",
-                "System.Runtime.CompilerServices.IsSignUnspecifiedByte",
-                "System.Runtime.CompilerServices.IsExplicitlyDereferenced",
-                "System.Runtime.CompilerServices.IsImplicitlyDereferenced",
-                "System.Runtime.CompilerServices.IsUdtReturn",
-                "System.Runtime.InteropServices.GCHandle",
-                "System.Security.Permissions.SecurityPermissionAttribute"
-            };
-
-        private static readonly Dictionary<string, TypeElementModifiers> _modifierMap = new Dictionary<string, TypeElementModifiers>
-        {
-            {"Microsoft.VisualC.IsConstModifier", TypeElementModifiers.Constant },
-            {"System.Runtime.CompilerServices.IsVolatile", TypeElementModifiers.Volatile },
-            {"System.Runtime.CompilerServices.IsBoxed", TypeElementModifiers.Boxed },
-            {"System.Runtime.CompilerServices.IsConst", TypeElementModifiers.Constant },
-            {"System.Runtime.CompilerServices.IsByValue",TypeElementModifiers.ByValue }
-        };
+        public TypeBase GetGenericTypeParameter(GenericContext genericContext, int index) => genericContext.ContextAvailable && genericContext.TypeParameters.Length > index ? genericContext.TypeParameters[index] : _metadataState.GetCodeElement<GenericParameterPlaceholder>(genericContext.RequestingCodeElement, index);
 
         public TypeBase GetModifiedType(TypeBase modifier, TypeBase unmodifiedType, bool isRequired)
         {
@@ -74,10 +79,6 @@ namespace ByrneLabs.Commons.MetadataDom
             else if (_modifierMap.ContainsKey(modifier.FullName))
             {
                 modifiedType = (TypeBase)_metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, _modifierMap[modifier.FullName]);
-            }
-            else if (modifier.FullName.Equals("System.Runtime.CompilerServices.IsLong") || modifier.FullName.Equals("Microsoft.VisualC.IsLongModifier"))
-            {
-                modifiedType = GetPrimitiveType(PrimitiveTypeCode.Int64);
             }
             else
             {

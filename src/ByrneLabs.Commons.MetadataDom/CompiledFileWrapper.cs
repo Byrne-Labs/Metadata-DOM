@@ -54,8 +54,8 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 if (pdbFile?.Exists == true)
                 {
-                    var fileStream = pdbFile.OpenRead();
-                    var bytes=File.ReadAllBytes(pdbFile.FullName);
+                    var bytes = File.ReadAllBytes(pdbFile.FullName);
+                    PEReader = new PEReader(bytes.ToImmutableArray());
                     _metadataReaderProvider = MetadataReaderProvider.FromPortablePdbImage(bytes.ToImmutableArray());
                 }
             }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -11,22 +10,25 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(baseType.DowncastMetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(baseType.DowncastMetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(genericTypeDefinition.DowncastMetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(genericTypeDefinition.DowncastMetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(handle, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(handle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(handle);
         }
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(key.Handle.Value);
+            if (key.Handle != null)
+            {
+                RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(key.Handle.Value);
+            }
         }
 
         public TToken RawMetadata { get; }
@@ -74,11 +76,12 @@ namespace ByrneLabs.Commons.MetadataDom
             IsThisArray = typeElementModifiers.HasFlag(TypeElementModifiers.Array);
             IsThisBoxed = typeElementModifiers.HasFlag(TypeElementModifiers.Boxed);
             IsThisByRef = typeElementModifiers.HasFlag(TypeElementModifiers.ByRef);
-            IsThisByValue= typeElementModifiers.HasFlag(TypeElementModifiers.ByValue);
+            IsThisByValue = typeElementModifiers.HasFlag(TypeElementModifiers.ByValue);
             IsThisGenericType = typeElementModifiers.HasFlag(TypeElementModifiers.GenericType);
             IsThisPointer = typeElementModifiers.HasFlag(TypeElementModifiers.Pointer);
             IsThisVolatile = typeElementModifiers.HasFlag(TypeElementModifiers.Volatile);
             IsThisConstant = typeElementModifiers.HasFlag(TypeElementModifiers.Constant);
+            IsThisValueType = typeElementModifiers.HasFlag(TypeElementModifiers.ValueType);
             if (IsArray || IsPointer)
             {
                 ElementType = baseType;
@@ -106,6 +109,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
+            var keyHashCode = key.GetHashCode();
             GenericTypeArguments = ImmutableArray<TypeBase>.Empty;
             Initialize();
         }
@@ -142,9 +146,12 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsArray => BaseType?.IsArray == true || IsThisArray;
 
         public bool IsBoxed => BaseType?.IsBoxed == true || IsThisBoxed;
+
         public bool IsByRef => BaseType?.IsByRef == true || IsThisByRef;
+
         public bool IsByValue => BaseType?.IsByValue == true || IsThisByValue;
 
+        public bool IsConstant => BaseType?.IsConstant == true || IsThisConstant;
 
         public virtual bool IsGenericType => BaseType?.IsGenericType == true || IsThisGenericType;
 
@@ -152,8 +159,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPointer => BaseType?.IsPointer == true || IsThisPointer;
 
+        public virtual bool IsValueType => BaseType?.IsValueType == true || IsThisValueType;
+
         public bool IsVolatile => BaseType?.IsVolatile == true || IsThisVolatile;
-        public bool IsConstant => BaseType?.IsConstant == true || IsThisConstant;
 
         public override string Name => _name.Value;
 
@@ -164,8 +172,12 @@ namespace ByrneLabs.Commons.MetadataDom
         protected bool IsThisArray { get; }
 
         protected bool IsThisBoxed { get; }
+
         protected bool IsThisByRef { get; }
+
         protected bool IsThisByValue { get; }
+
+        protected bool IsThisConstant { get; }
 
         protected bool IsThisGenericType { get; }
 
@@ -173,7 +185,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected bool IsThisVolatile { get; }
 
-        protected bool IsThisConstant { get; }
+        protected bool IsThisValueType { get; }
 
         protected int PointerCount => (IsThisPointer ? 1 : 0) + (BaseType?.PointerCount).GetValueOrDefault();
 

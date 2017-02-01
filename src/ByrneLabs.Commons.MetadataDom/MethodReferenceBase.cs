@@ -21,7 +21,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 else
                 {
-                    var genericContext = new GenericContext(methodDefinition.DeclaringType.GenericTypeArguments, methodDefinition.GenericTypeParameters);
+                    var genericContext = new GenericContext(this, methodDefinition.DeclaringType.GenericTypeArguments, methodDefinition.GenericTypeParameters);
                     methodSignature = RawMetadata.DecodeMethodSignature(MetadataState.TypeProvider, genericContext);
                 }
                 return methodSignature;

@@ -12,6 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
         Pointer = 16,
         Constant = 32,
         ByValue = 64,
-        Boxed = 128
+        Boxed = 128,
+        ValueType = 256
     }
 }

@@ -7,20 +7,32 @@ using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    public class ShapedArray : TypeBase<ShapedArray, Tuple<TypeBase, ArrayShape>>
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Created using reflection")]
+    public class ShapedArray : TypeBase
     {
+
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal ShapedArray(ShapedArray baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This constructor is only valid for ShapedArrays")]
+        internal ShapedArray(ShapedArray baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState, new CodeElementKey<ShapedArray>(baseType, typeElementModifiers))
         {
+            BaseType = metadataState.GetCodeElement<SystemArray>();
+            ElementType = baseType.ElementType;
+            ArrayRank = baseType.ArrayRank;
+            UndecoratedName = baseType.UndecoratedName;
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal ShapedArray(ShapedArray genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState)
+        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This constructor is only valid for ShapedArrays")]
+        internal ShapedArray(ShapedArray genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState, new CodeElementKey<ShapedArray>(genericTypeDefinition, genericTypeArguments))
         {
+            BaseType = metadataState.GetCodeElement<SystemArray>();
+            ElementType = genericTypeDefinition.ElementType;
+            ArrayRank = genericTypeDefinition.ArrayRank;
+            UndecoratedName = genericTypeDefinition.UndecoratedName;
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal ShapedArray(TypeBase elementType, ArrayShape arrayShape, MetadataState metadataState) : base(new Tuple<TypeBase, ArrayShape>(elementType, arrayShape), metadataState)
+        internal ShapedArray(TypeBase elementType, ArrayShape arrayShape, MetadataState metadataState) : base(new CodeElementKey<ShapedArray>(elementType, arrayShape), metadataState)
         {
             BaseType = metadataState.GetCodeElement<SystemArray>();
             ElementType = elementType;

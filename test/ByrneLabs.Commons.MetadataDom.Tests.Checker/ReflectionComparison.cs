@@ -143,6 +143,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 return;
             }
+
             try
             {
                 var metadataElementType = metadataType.ElementType;
@@ -319,19 +320,41 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 foreach (var propertyToCompare in FindPropertiesToCompare(metadataElement.GetType(), reflectionElement.GetType()))
                 {
-                    var metadataPropertyValue = propertyToCompare.Item1.GetValue(metadataElement);
-                    var reflectionPropertyValue = propertyToCompare.Item2.GetValue(reflectionElement);
-                    if (propertyToCompare.Item1.PropertyType == propertyToCompare.Item2.PropertyType && !Equals(metadataPropertyValue, reflectionPropertyValue))
+                    object metadataPropertyValue = null;
+                    object reflectionPropertyValue = null;
+                    var valueRetrievalFaulted = false;
+                    try
                     {
-                        _checkState.AddError($"{elementName}.{propertyToCompare.Item1.Name} has a value of {metadataPropertyValue} in metadata but a value of {reflectionPropertyValue} in reflection");
+                        metadataPropertyValue = propertyToCompare.Item1.GetValue(metadataElement);
                     }
-                    else if (metadataElement is CodeElement)
+                    catch (Exception exception)
                     {
-                        CompareCodeElementsToReflectionData((CodeElement)metadataElement, reflectionElement);
+                        valueRetrievalFaulted = true;
+                        _checkState.AddException(exception, $"Property {propertyToCompare.Item1.Name} on {elementName} metadata", CheckPhase.ReflectionComparison);
                     }
-                    else
+                    try
                     {
-                        throw new InvalidOperationException($"Invalid property to compare {elementName}.{propertyToCompare.Item1.Name}");
+                        reflectionPropertyValue = propertyToCompare.Item2.GetValue(reflectionElement);
+                    }
+                    catch (Exception exception)
+                    {
+                        valueRetrievalFaulted = true;
+                        _checkState.AddException(exception, $"Property {propertyToCompare.Item2.Name} on {elementName} reflection", CheckPhase.ReflectionComparison);
+                    }
+                    if (!valueRetrievalFaulted)
+                    {
+                        if (propertyToCompare.Item1.PropertyType == propertyToCompare.Item2.PropertyType && !Equals(metadataPropertyValue, reflectionPropertyValue))
+                        {
+                            _checkState.AddError($"{elementName}.{propertyToCompare.Item1.Name} has a value of {metadataPropertyValue} in metadata but a value of {reflectionPropertyValue} in reflection");
+                        }
+                        else if (metadataElement is CodeElement)
+                        {
+                            CompareCodeElementsToReflectionData((CodeElement)metadataElement, reflectionElement);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"Invalid property to compare {elementName}.{propertyToCompare.Item1.Name}");
+                        }
                     }
                 }
             }

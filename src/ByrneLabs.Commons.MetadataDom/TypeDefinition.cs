@@ -26,6 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<NamespaceDefinition> _namespaceDefinition;
         private Lazy<ImmutableArray<TypeDefinition>> _nestedTypes;
         private Lazy<ImmutableArray<PropertyDefinition>> _properties;
+        private Lazy<string> _namespace;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
@@ -130,7 +131,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsUnicodeClass => (Attributes & TypeAttributes.StringFormatMask) == TypeAttributes.UnicodeClass;
 
-        public bool IsValueType => IsEnum || "System.ValueType".Equals(BaseType?.FullName);
+        public override bool IsValueType => base.IsValueType || IsEnum || "System.ValueType".Equals(BaseType?.FullName);
 
         public ImmutableArray<Language> Languages { get; private set; } = ImmutableArray<Language>.Empty;
 
@@ -147,7 +148,7 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetMethods" />
         public ImmutableArray<MethodDefinitionBase> Methods => _methods.Value;
 
-        public override string Namespace => NamespaceDefinition == null ? DeclaringType?.Namespace : AsString(RawMetadata.Namespace);
+        public override string Namespace => _namespace.Value;
 
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.NamespaceDefinition" />
         /// <summary>The definition handle of the namespace where the type is defined, or null if the type is nested or defined in a root namespace.</summary>
@@ -163,7 +164,45 @@ namespace ByrneLabs.Commons.MetadataDom
 
         private void Initialize()
         {
-            _namespaceDefinition = MetadataState.GetLazyCodeElement<NamespaceDefinition>(RawMetadata.NamespaceDefinition);
+            _namespaceDefinition = new Lazy<NamespaceDefinition>(() =>
+            {
+                NamespaceDefinition namespaceDefinition;
+                /*
+                 * Some assemblies use the namespace string reference also for the namespace definition.  I'm not sure if this is legal IL, but it causes an exception when
+                 * you try to get the namespace definition. -- Jonathan Byrne 02/01/2017
+                 */
+                if (RawMetadata.NamespaceDefinition.GetHashCode() == RawMetadata.Namespace.GetHashCode())
+                {
+                    namespaceDefinition = null;
+                }
+                else
+                {
+                    namespaceDefinition = MetadataState.GetCodeElement<NamespaceDefinition>(RawMetadata.NamespaceDefinition);
+                }
+                return namespaceDefinition;
+            });
+            _namespace=new Lazy<string>(() =>
+            {
+                string @namespace;
+                if (!RawMetadata.Namespace.IsNil)
+                {
+                    @namespace = AsString(RawMetadata.Namespace);
+                }
+                else if (NamespaceDefinition != null)
+                {
+                    @namespace = NamespaceDefinition.Name;
+                }
+                else if (DeclaringType != null)
+                {
+                    @namespace = DeclaringType.Namespace;
+                }
+                else
+                {
+                    @namespace = null;
+                }
+
+                return @namespace;
+            });
             _methods = MetadataState.GetLazyCodeElements<MethodDefinitionBase>(RawMetadata.GetMethods());
             _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(RawMetadata.GetMethodImplementations());
             Attributes = RawMetadata.Attributes;

@@ -42,7 +42,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 return setMethod;
             });
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
-            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(((TypeDefinition) DeclaringType).GenericTypeParameters, new TypeBase[] { })));
+            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, ((TypeDefinition) DeclaringType).GenericTypeParameters, null)));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Attributes" />
