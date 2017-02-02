@@ -19,7 +19,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
             @"ByrneLabs\.Commons\.MetadataDom\.BadMetadataException: Method .+ has \d+ parameters but \d+ parameter types were found",
             @"HasDefaultValue has a value of False in metadata but a value of True in reflection",
-            @"MetadataToken has a value of \d+ in metadata but a value of \d+ in reflection"
+            @"MetadataToken has a value of \d+ in metadata but a value of \d+ in reflection",
+            @"<\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.+?Name has a value of <\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.*? in metadata but a value of <\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.*? in reflection"
         };
         private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
         private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();
@@ -97,7 +98,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             get
             {
-                var filteredErrorMessages = UnfilteredErrors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)) && !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+                var filteredErrorMessages = UnfilteredErrors.Where(errorMessage => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
                 return filteredErrorMessages.ToImmutableArray();
             }
         }
@@ -122,7 +123,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly") || LogText.Contains("This suggests the assembly also has a native image assembly") || LogText.Contains("System.IO.FileLoadException: Could not load file or assembly");
 
-        public bool LikelyFrameworkBugFound => Errors.Any(errorMessage => !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+        public bool LikelyFrameworkBugFound => Errors.All(errorMessage => !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
 
         public string LogText
         {
