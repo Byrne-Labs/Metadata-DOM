@@ -123,7 +123,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public bool IncompleteAssemblyLoad => LogText.Contains("System.IO.FileNotFoundException: Could not load file or assembly") || LogText.Contains("This suggests the assembly also has a native image assembly") || LogText.Contains("System.IO.FileLoadException: Could not load file or assembly");
 
-        public bool LikelyFrameworkBugFound => Errors.All(errorMessage => !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
+        public bool LikelyFrameworkBugFound => Errors.Any() && Errors.All(errorMessage => _likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(errorMessage, ignoredErrorRegex)));
 
         public string LogText
         {
