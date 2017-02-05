@@ -98,6 +98,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// </remarks>
         public object ResolutionScope => _resolutionScope.Value;
 
+        protected override string MetadataNamespace { get; } = null;
+
         internal override string UndecoratedName => AsString(RawMetadata.Name);
 
         private void Initialize()

@@ -32,6 +32,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract bool IsGenericMethod { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.MethodDefinition.GetParameters" />
-        public abstract ImmutableArray<IParameter> Parameters { get; }
+        public abstract ImmutableArray<Parameter> Parameters { get; }
     }
 }

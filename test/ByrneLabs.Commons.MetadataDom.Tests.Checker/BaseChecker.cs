@@ -13,16 +13,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         protected BaseChecker(IReadOnlyList<string> args)
         {
-            if (args.Count == 0)
-            {
-                throw new ArgumentException("An assembly file name must be provided");
-            }
             if (args.Count > 3)
             {
                 throw new ArgumentException("Only a base directory, assembly file name, and PDB file name can be provided");
             }
 
-            if (args.Count > 1)
+            if (args.Count == 0)
+            {
+                AssemblyFile = new FileInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse", "bin", "default", "netstandard1.6", "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll"));
+            }
+            else if (args.Count > 1)
             {
                 BaseDirectory = new DirectoryInfo(args[0]);
                 AssemblyFile = new FileInfo(args[1]);
@@ -278,7 +278,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
             if (_checkState.Success)
             {
-                CopyAssembly(PassedAssemblyDirectory);
+                CopyAssembly(PassedAssemblyDirectory, true);
             }
         }
     }

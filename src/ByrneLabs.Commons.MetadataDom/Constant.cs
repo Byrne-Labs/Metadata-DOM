@@ -9,17 +9,35 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Parent.FullName,nq} = {Value}")]
     public class Constant : RuntimeCodeElement, ICodeElementWithTypedHandle<ConstantHandle, System.Reflection.Metadata.Constant>
     {
-        private readonly Lazy<IMember> _parent;
+        private readonly Lazy<RuntimeCodeElement> _parent;
         private readonly Lazy<object> _value;
 
         internal Constant(ConstantHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
             RawMetadata = Reader.GetConstant(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement<IMember>(RawMetadata.Parent);
-            TypeCode = RawMetadata.TypeCode;
-            _value = new Lazy<object>(() => new Blob(Reader.GetBlobBytes(RawMetadata.Value)));
+            // ReSharper disable once SwitchStatementMissingSomeCases
+            _parent = new Lazy<RuntimeCodeElement>(() =>
+            {
+                RuntimeCodeElement parent;
+                switch (RawMetadata.Parent.Kind)
+                {
+                    case HandleKind.Parameter:
+                        parent = MetadataState.GetCodeElement<Parameter>(RawMetadata.Parent);
+                        break;
+                    case HandleKind.FieldDefinition:
+                        parent = MetadataState.GetCodeElement<FieldDefinition>(RawMetadata.Parent);
+                        break;
+                    case HandleKind.PropertyDefinition:
+                        parent = MetadataState.GetCodeElement<PropertyDefinition>(RawMetadata.Parent);
+                        break;
+                    default:
+                        throw new ArgumentException($"Unexpected parent type {RawMetadata.Parent.Kind}");
+                }
 
+                return parent;
+            });
+            TypeCode = RawMetadata.TypeCode;
             _value = new Lazy<object>(() =>
             {
                 object value;
@@ -36,7 +54,15 @@ namespace ByrneLabs.Commons.MetadataDom
                         value = BitConverter.ToChar(blobBytes, 0);
                         break;
                     case ConstantTypeCode.SByte:
-                        value = Convert.ToSByte(blobBytes[0]);
+                        var byteValue = blobBytes[0];
+                        if (byteValue > sbyte.MaxValue)
+                        {
+                            value = (sbyte) (byteValue - byte.MaxValue - 1);
+                        }
+                        else
+                        {
+                            value = (sbyte) byteValue;
+                        }
                         break;
                     case ConstantTypeCode.Int16:
                         value = BitConverter.ToInt16(blobBytes, 0);
@@ -82,7 +108,13 @@ namespace ByrneLabs.Commons.MetadataDom
 
         /// <inheritdoc cref="System.Reflection.Metadata.Constant.Parent" />
         /// <summary>The parent handle (<see cref="Parameter" />, <see cref="FieldDefinition" />, or <see cref="PropertyDefinition" />).</summary>
-        public IMember Parent => _parent.Value;
+        public RuntimeCodeElement Parent => _parent.Value;
+
+        public FieldDefinition ParentField => Parent as FieldDefinition;
+
+        public Parameter ParentParameter => Parent as Parameter;
+
+        public PropertyDefinition ParentProperty => Parent as PropertyDefinition;
 
         /// <inheritdoc cref="System.Reflection.Metadata.Constant.TypeCode" />
         public ConstantTypeCode TypeCode { get; }

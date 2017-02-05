@@ -50,6 +50,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase ReturnType { get; protected set; }
 
+        protected override string MetadataNamespace { get; } = null;
+
         internal override string UndecoratedName => null;
 
         private void Initialize()

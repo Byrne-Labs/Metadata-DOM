@@ -47,6 +47,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public PrimitiveTypeCode PrimitiveTypeCode => KeyValue;
 
+        protected override string MetadataNamespace { get; } = null;
+
         internal override string UndecoratedName => PrimitiveTypeCode.ToString();
 
         private void Initialize()

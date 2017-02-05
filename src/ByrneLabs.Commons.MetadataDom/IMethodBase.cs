@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         bool IsGenericMethod { get; }
 
-        ImmutableArray<IParameter> Parameters { get; }
+        ImmutableArray<Parameter> Parameters { get; }
 
         ImmutableArray<GenericParameter> GenericTypeParameters { get; }
 

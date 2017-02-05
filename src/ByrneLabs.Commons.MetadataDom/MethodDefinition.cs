@@ -9,6 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class MethodDefinition : MethodDefinitionBase, IMethod
     {
         private readonly Lazy<ImmutableArray<GenericParameter>> _genericParameters;
+        private readonly Lazy<string> _fullName;
 
         internal MethodDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -25,11 +26,23 @@ namespace ByrneLabs.Commons.MetadataDom
 
                 return genericParameters;
             });
+            _fullName = new Lazy<string>(() =>
+            {
+                var basicName = $"{DeclaringType.FullName}.{Name}";
+                var genericParameters = GenericTypeParameters.Any() ? $"<{ string.Join(", ", GenericTypeParameters.Select(genericTypeParameter => genericTypeParameter.Name)) }>" : string.Empty;
+                var parameters = IsSpecialName && RelatedProperty?.IsIndexer != true ? string.Empty : $"({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : parameter.ParameterType.FullNameWithoutAssemblies))})";
+
+                return basicName + genericParameters + parameters;
+            });
         }
 
         public PropertyDefinition RelatedProperty { get; internal set; }
 
-        public override string TextSignature => $"{DeclaringType.FullName}.{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.FullNameWithoutAssemblies))})";
+        public EventDefinition RelatedEvent { get; internal set; }
+
+        public override string FullName => _fullName.Value;
+
+        public override string TextSignature => FullName;
 
         /// <summary>Returns <see cref="TypeDefinition" />, <see cref="TypeReference" />, <see cref="TypeSpecification" />, <see cref="GenericParameter" />, or null when void</summary>
         public TypeBase ReturnType => Signature.ReturnType;

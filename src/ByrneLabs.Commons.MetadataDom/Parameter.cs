@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
     /// <inheritdoc cref="System.Reflection.Metadata.Parameter" />
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{ParameterType.FullName,nq} {Name,nq}\"")]
-    public class Parameter : RuntimeCodeElement, ICodeElementWithTypedHandle<ParameterHandle, System.Reflection.Metadata.Parameter>, IParameter
+    public class Parameter : RuntimeCodeElement, ICodeElementWithTypedHandle<ParameterHandle, System.Reflection.Metadata.Parameter>
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<Constant> _defaultValue;
@@ -58,8 +58,6 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
 
-        public bool IsIndexer { get; internal set; }
-
         public bool IsLcid => Attributes.HasFlag(ParameterAttributes.Lcid);
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.GetMarshallingDescriptor" />
@@ -69,11 +67,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public ParameterHandle MetadataHandle { get; }
 
-        public TypeBase DeclaringType => Member.DeclaringType;
-
         public string FullName => Name;
-
-        public MemberTypes MemberType => MemberTypes.Field;
 
         /// <inheritdoc cref="System.Reflection.Metadata.Parameter.Name" />
         public string Name { get; }

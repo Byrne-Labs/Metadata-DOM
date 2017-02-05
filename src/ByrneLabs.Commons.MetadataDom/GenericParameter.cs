@@ -71,6 +71,8 @@ namespace ByrneLabs.Commons.MetadataDom
         ///     <see cref="TypeDefinition" /> or <see cref="MethodDefinition" />.</summary>
         public CodeElement Parent => _parent.Value;
 
+        protected override string MetadataNamespace { get; } = null;
+
         internal override string FullNameWithoutGenericArguments { get; } = null;
 
         internal override string UndecoratedName => AsString(RawMetadata.Name);

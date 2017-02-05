@@ -23,10 +23,10 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<ImmutableArray<MemberBase>> _members;
         private Lazy<ImmutableArray<MethodImplementation>> _methodImplementations;
         private Lazy<ImmutableArray<MethodDefinitionBase>> _methods;
+        private Lazy<string> _namespace;
         private Lazy<NamespaceDefinition> _namespaceDefinition;
         private Lazy<ImmutableArray<TypeDefinition>> _nestedTypes;
         private Lazy<ImmutableArray<PropertyDefinition>> _properties;
-        private Lazy<string> _namespace;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
@@ -160,6 +160,8 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.TypeDefinition.GetProperties" />
         public ImmutableArray<PropertyDefinition> Properties => _properties.Value;
 
+        protected override string MetadataNamespace => RawMetadata.Namespace.IsNil ? null : AsString(RawMetadata.Namespace);
+
         internal override string UndecoratedName => AsString(RawMetadata.Name);
 
         private void Initialize()
@@ -181,20 +183,20 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 return namespaceDefinition;
             });
-            _namespace=new Lazy<string>(() =>
+            _namespace = new Lazy<string>(() =>
             {
                 string @namespace;
-                if (!RawMetadata.Namespace.IsNil)
+                if (DeclaringType != null)
+                {
+                    @namespace = DeclaringType.Namespace;
+                }
+                else if (!RawMetadata.Namespace.IsNil)
                 {
                     @namespace = AsString(RawMetadata.Namespace);
                 }
                 else if (NamespaceDefinition != null)
                 {
                     @namespace = NamespaceDefinition.Name;
-                }
-                else if (DeclaringType != null)
-                {
-                    @namespace = DeclaringType.Namespace;
                 }
                 else
                 {
@@ -215,7 +217,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 else
                 {
-                    baseType = (TypeBase)MetadataState.GetCodeElement(RawMetadata.BaseType);
+                    baseType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.BaseType);
                 }
                 return baseType;
             });

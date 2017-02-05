@@ -60,5 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
         internal override string UndecoratedName => AsString(RawMetadata.Name);
+
+        protected override string MetadataNamespace { get; } = null;
     }
 }

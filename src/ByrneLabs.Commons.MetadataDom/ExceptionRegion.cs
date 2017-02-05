@@ -12,7 +12,19 @@ namespace ByrneLabs.Commons.MetadataDom
         internal ExceptionRegion(System.Reflection.Metadata.ExceptionRegion exceptionRegion, MetadataState metadataState) : base(new CodeElementKey<ExceptionRegion>(exceptionRegion), metadataState)
         {
             RawMetadata = exceptionRegion;
-            _catchType = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(RawMetadata.CatchType));
+            _catchType = new Lazy<TypeBase>(() =>
+            {
+                TypeBase catchType;
+                if (RawMetadata.CatchType.Kind == HandleKind.TypeSpecification)
+                {
+                    catchType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.CatchType, this);
+                }
+                else
+                {
+                    catchType = (TypeBase)MetadataState.GetCodeElement(RawMetadata.CatchType);
+                }
+                return catchType;
+            });
             FilterOffset = RawMetadata.FilterOffset;
             HandlerLength = RawMetadata.HandlerLength;
             HandlerOffset = RawMetadata.HandlerOffset;

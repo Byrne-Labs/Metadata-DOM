@@ -81,7 +81,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                         testMessage.AppendLine($"{assemblyFile.FullName} succeeded with processor time {process.TotalProcessorTime.TotalSeconds} seconds");
                         break;
                     case 1:
-                        testMessage.AppendLine($"{assemblyFile.FullName} failed with processor time {process.TotalProcessorTime.TotalSeconds} seconds with the errors {output}");
+                        testMessage.AppendLine($"{assemblyFile.FullName} failed with processor time {process.TotalProcessorTime.TotalSeconds} seconds with the errors:{Environment.NewLine}{output}");
                         break;
                     default:
                         testMessage.AppendLine($"{assemblyFile.FullName} faulted with processor time {process.TotalProcessorTime.TotalSeconds} seconds and the error:{Environment.NewLine}{error}");
@@ -218,9 +218,5 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Fact]
         [Trait("Category", "Slow")]
         public void TestReflectionComparisonOnSampleAssemblies() => TestReflectionComparison(SampleBuild.GetSampleAssemblies(500));
-
-        [Fact]
-        [Trait("Category", "Debug helper")]
-        public void TestReflectionComparisonOnSpecificAssembly() => Assert.True(CheckMetadataInProcess(new FileInfo(@"C:\dev\code\Byrne-Labs\Metadata-DOM\test\ByrneLabs.Commons.MetadataDom.Tests\bin\Debug\Tests\FaultedMetadataCheck\Microsoft.GroupPolicy.Management.Interop--2.0.0.0--\Microsoft.GroupPolicy.Management.Interop.dll")));
     }
 }

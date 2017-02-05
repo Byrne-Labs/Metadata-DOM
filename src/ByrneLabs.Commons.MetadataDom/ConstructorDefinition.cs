@@ -11,6 +11,8 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
+        public override string FullName => $"{DeclaringType.FullName}{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.FullName))})";
+
         public override string TextSignature => $"{DeclaringType.FullName}{Name}({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.TextSignature))})";
 
         public override ImmutableArray<GenericParameter> GenericTypeParameters { get; } = ImmutableArray<GenericParameter>.Empty;

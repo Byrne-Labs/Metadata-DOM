@@ -32,7 +32,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public ImmutableArray<GenericParameterConstraint> Constraints { get; } = ImmutableArray<GenericParameterConstraint>.Empty;
 
-        public override ImmutableArray<CustomAttribute> CustomAttributes { get; }= ImmutableArray<CustomAttribute>.Empty;
+        public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
         public MethodDefinition DeclaringMethod => null;
 
@@ -43,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public override string FullNameWithoutAssemblies { get; } = null;
 
         /// <inheritdoc cref="System.Reflection.Metadata.GenericParameter.Index" />
-        public int Index { get;  }
+        public int Index { get; }
 
         public override bool IsGenericParameter { get; } = true;
 
@@ -53,9 +53,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public CodeElement Parent { get; }
 
+        protected override string MetadataNamespace { get; } = null;
+
         internal override string FullNameWithoutGenericArguments { get; } = null;
 
         internal override string UndecoratedName { get; }
-
     }
 }

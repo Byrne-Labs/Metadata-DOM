@@ -18,19 +18,21 @@ namespace ByrneLabs.Commons.MetadataDom
         {
         }
 
+        public override IAssembly Assembly { get; } = null;
+
         public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
         public override TypeBase DeclaringType { get; } = null;
 
+        public override bool IsGenericParameter { get; } = false;
+
         public override MemberTypes MemberType { get; } = MemberTypes.TypeInfo;
 
-        public override IAssembly Assembly { get; } = null;
-
-        public override bool IsGenericParameter { get; } = false;
+        public override string Name { get; } = "Array";
 
         public override string Namespace { get; } = "System";
 
-        public override string Name { get; } = "Array";
+        protected override string MetadataNamespace { get; } = null;
 
         internal override string UndecoratedName { get; } = "System.Array";
     }

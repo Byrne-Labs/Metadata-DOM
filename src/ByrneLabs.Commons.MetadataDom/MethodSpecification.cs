@@ -37,7 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Name => Method.Name;
 
-        public override ImmutableArray<IParameter> Parameters => Method.Parameters;
+        public override ImmutableArray<Parameter> Parameters => Method.Parameters;
 
         public override string TextSignature => Method.TextSignature;
 

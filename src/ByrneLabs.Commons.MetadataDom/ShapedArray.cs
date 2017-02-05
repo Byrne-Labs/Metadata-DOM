@@ -10,7 +10,6 @@ namespace ByrneLabs.Commons.MetadataDom
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Created using reflection")]
     public class ShapedArray : TypeBase
     {
-
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This constructor is only valid for ShapedArrays")]
         internal ShapedArray(ShapedArray baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState, new CodeElementKey<ShapedArray>(baseType, typeElementModifiers))
@@ -37,14 +36,12 @@ namespace ByrneLabs.Commons.MetadataDom
             BaseType = metadataState.GetCodeElement<SystemArray>();
             ElementType = elementType;
             ArrayRank = arrayShape.Rank;
-            UndecoratedName = $"{elementType.Name}[{ new string(',', ArrayRank - 1) }]";
+            UndecoratedName = $"{elementType.Name}[{new string(',', ArrayRank - 1)}]";
         }
 
         public override IAssembly Assembly { get; } = null;
 
         public override string AssemblyQualifiedName { get; } = null;
-
-        internal override TypeBase BaseType { get; }
 
         public override ImmutableArray<CustomAttribute> CustomAttributes { get; } = ImmutableArray<CustomAttribute>.Empty;
 
@@ -57,6 +54,10 @@ namespace ByrneLabs.Commons.MetadataDom
         public override int MetadataToken => 0;
 
         public override string Namespace => ElementType.Namespace;
+
+        protected override string MetadataNamespace { get; } = null;
+
+        internal override TypeBase BaseType { get; }
 
         internal override string UndecoratedName { get; }
     }

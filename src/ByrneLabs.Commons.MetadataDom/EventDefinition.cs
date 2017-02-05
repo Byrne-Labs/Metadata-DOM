@@ -12,27 +12,34 @@ namespace ByrneLabs.Commons.MetadataDom
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
     public class EventDefinition : MemberBase, ICodeElementWithTypedHandle<EventDefinitionHandle, System.Reflection.Metadata.EventDefinition>
     {
-        private readonly Lazy<IMethod> _addMethod;
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private readonly Lazy<IMethod> _raiseMethod;
-        private readonly Lazy<IMethod> _removeMethod;
-        private readonly Lazy<TypeBase> _type;
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
             RawMetadata = (System.Reflection.Metadata.EventDefinition) MetadataState.GetRawMetadataForHandle(metadataHandle);
-            _type = new Lazy<TypeBase>(() => (TypeBase) MetadataState.GetCodeElement(RawMetadata.Type));
             Attributes = RawMetadata.Attributes;
             Name = AsString(RawMetadata.Name);
-            _addMethod = MetadataState.GetLazyCodeElement<IMethod>(RawMetadata.GetAccessors().Adder);
-            _raiseMethod = MetadataState.GetLazyCodeElement<IMethod>(RawMetadata.GetAccessors().Raiser);
-            _removeMethod = MetadataState.GetLazyCodeElement<IMethod>(RawMetadata.GetAccessors().Remover);
+            if (!RawMetadata.GetAccessors().Adder.IsNil)
+            {
+                AddMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Adder);
+                AddMethod.RelatedEvent = this;
+            }
+            if (!RawMetadata.GetAccessors().Raiser.IsNil)
+            {
+                RaiseMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Raiser);
+                RaiseMethod.RelatedEvent = this;
+            }
+            if (!RawMetadata.GetAccessors().Remover.IsNil)
+            {
+                RemoveMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Remover);
+                RemoveMethod.RelatedEvent = this;
+            }
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Adder" />
-        public IMethod AddMethod => _addMethod.Value;
+        public MethodDefinition AddMethod { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventDefinition.Attributes" />
         public EventAttributes Attributes { get; }
@@ -51,10 +58,10 @@ namespace ByrneLabs.Commons.MetadataDom
         public override string Name { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Raiser" />
-        public IMethod RaiseMethod => _raiseMethod.Value;
+        public MethodDefinition RaiseMethod { get; }
 
         /// <inheritdoc cref="System.Reflection.Metadata.EventAccessors.Remover" />
-        public IMethod RemoveMethod => _removeMethod.Value;
+        public MethodDefinition RemoveMethod { get; }
 
         public override string TextSignature => FullName;
 

@@ -23,6 +23,36 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public TStruct TStructValueAutoProperty { get; set; }
 #endif
 
+        public T[] ToArray<T>(T[] a)
+        {
+            return null;
+        }
+
+        public IEnumerable<T> OneLevelEnumerable<T>(IEnumerable<T> a)
+        {
+            return null;
+        }
+
+        public IEnumerable<T> OneLevelEnumerable<T, B>(IEnumerable<T> a)
+        {
+            return null;
+        }
+
+        public IEnumerable<IEnumerable<T>> TwoLevelEnumerable<T>(IEnumerable<IEnumerable<T>> a)
+        {
+            return null;
+        }
+
+        public IEnumerable<IEnumerable<IEnumerable<T>>> ThreeLevelEnumerable<T>(IEnumerable<IEnumerable<IEnumerable<T>>> a)
+        {
+            return null;
+        }
+
+        public IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> FourLevelEnumerable<T>(IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> a)
+        {
+            return null;
+        }
+
         public TAnything1 TAnything1Value { get { return default(TAnything1); } set {; } }
 
         public TAnything2 TAnything2Value { get { return default(TAnything2); } set {; } }

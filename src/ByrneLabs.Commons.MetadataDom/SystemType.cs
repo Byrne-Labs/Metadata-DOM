@@ -34,6 +34,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override string Namespace { get; } = "System";
 
+        protected override string MetadataNamespace { get; } = null;
+
         internal override string UndecoratedName { get; } = "Type";
     }
 }

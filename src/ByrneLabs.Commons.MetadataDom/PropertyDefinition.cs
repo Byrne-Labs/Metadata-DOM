@@ -13,9 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class PropertyDefinition : MemberBase, ICodeElementWithTypedHandle<PropertyDefinitionHandle, System.Reflection.Metadata.PropertyDefinition>
     {
         private readonly Lazy<Constant> _defaultValue;
-        private readonly Lazy<MethodDefinition> _getMethod;
-        private readonly Lazy<MethodDefinition> _setMethod;
-        private readonly Lazy<MethodSignature<TypeBase>> _signature;
+        private readonly MethodSignature<TypeBase> _signature;
 
         internal PropertyDefinition(PropertyDefinitionHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
@@ -23,26 +21,19 @@ namespace ByrneLabs.Commons.MetadataDom
             RawMetadata = Reader.GetPropertyDefinition(metadataHandle);
             Name = AsString(RawMetadata.Name);
             Attributes = RawMetadata.Attributes;
-            _getMethod = new Lazy<MethodDefinition>(() =>
+            if (!RawMetadata.GetAccessors().Getter.IsNil)
             {
-                var getMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Getter);
-                if (getMethod != null)
-                {
-                    getMethod.RelatedProperty = this;
-                }
-                return getMethod;
-            });
-            _setMethod = new Lazy<MethodDefinition>(() =>
+                GetMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Getter);
+                GetMethod.RelatedProperty = this;
+            }
+            if (!RawMetadata.GetAccessors().Setter.IsNil)
             {
-                var setMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Setter);
-                if (setMethod != null)
-                {
-                    setMethod.RelatedProperty = this;
-                }
-                return setMethod;
-            });
+                SetMethod = MetadataState.GetCodeElement<MethodDefinition>(RawMetadata.GetAccessors().Setter);
+                SetMethod.RelatedProperty = this;
+            }
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
-            _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, ((TypeDefinition) DeclaringType).GenericTypeParameters, null)));
+            var declaringType = (TypeDefinition)(GetMethod?.DeclaringType ?? SetMethod?.DeclaringType);
+            _signature = RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, declaringType.GenericTypeParameters, null));
         }
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Attributes" />
@@ -59,10 +50,10 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.GetDefaultValue" />
         public Constant DefaultValue => _defaultValue.Value;
 
-        public override string FullName => $"{DeclaringType.FullName}.{Name}" + ("Item".Equals(Name) && GetMethod?.Parameters.Any() == true ? $"[{string.Join(", ", GetMethod.Parameters.Select(parameter => parameter.ParameterType.FullName))}]" : string.Empty);
+        public override string FullName => $"{DeclaringType.FullName}.{Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyAccessors.Getter" />
-        public MethodDefinition GetMethod => _getMethod.Value;
+        public MethodDefinition GetMethod { get; }
 
         public bool IsSpecialName => Attributes.HasFlag(PropertyAttributes.SpecialName);
 
@@ -71,14 +62,14 @@ namespace ByrneLabs.Commons.MetadataDom
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyDefinition.Name" />
         public override string Name { get; }
 
-        public TypeBase PropertyType => Signature.ReturnType;
+        public TypeBase PropertyType => _signature.ReturnType;
 
         /// <inheritdoc cref="System.Reflection.Metadata.PropertyAccessors.Setter" />
-        public MethodDefinition SetMethod => _setMethod.Value;
+        public MethodDefinition SetMethod { get; }
 
         public override string TextSignature => FullName;
 
-        internal MethodSignature<TypeBase> Signature => _signature.Value;
+        public bool IsIndexer => _signature.ParameterTypes.Any() && "Item".Equals(Name);
 
         public System.Reflection.Metadata.PropertyDefinition RawMetadata { get; }
 

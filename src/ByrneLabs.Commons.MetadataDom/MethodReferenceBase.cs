@@ -46,6 +46,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsGenericMethod { get; } = false;
 
-        public ImmutableArray<IParameter> Parameters => MethodDefinition?.Parameters ?? ImmutableArray<IParameter>.Empty;
+        public ImmutableArray<Parameter> Parameters => MethodDefinition?.Parameters ?? ImmutableArray<Parameter>.Empty;
     }
 }
