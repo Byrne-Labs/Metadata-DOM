@@ -6,7 +6,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public sealed class SystemArray : TypeBase
     {
-        private SystemArray(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : base(baseType, typeElementModifiers, metadataState, key)
+        private SystemArray(TypeBase baseType, TypeElementModifier typeElementModifier, MetadataState metadataState, CodeElementKey key) : base(baseType, typeElementModifier, metadataState, key)
         {
         }
 

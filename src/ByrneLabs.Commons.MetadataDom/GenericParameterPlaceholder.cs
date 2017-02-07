@@ -11,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class GenericParameterPlaceholder : TypeBase<GenericParameterPlaceholder, object, object>
     {
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal GenericParameterPlaceholder(GenericParameterPlaceholder baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal GenericParameterPlaceholder(GenericParameterPlaceholder baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             Parent = baseType.Parent;
             Index = baseType.Index;

@@ -18,7 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<TypeBase> _signature;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal TypeSpecification(TypeSpecification baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal TypeSpecification(TypeSpecification baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             Initialize();
         }

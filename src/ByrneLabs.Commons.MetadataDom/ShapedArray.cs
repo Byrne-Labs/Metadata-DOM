@@ -12,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This constructor is only valid for ShapedArrays")]
-        internal ShapedArray(ShapedArray baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState, new CodeElementKey<ShapedArray>(baseType, typeElementModifiers))
+        internal ShapedArray(ShapedArray baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState, new CodeElementKey<ShapedArray>(baseType, typeElementModifier))
         {
             BaseType = metadataState.GetCodeElement<SystemArray>();
             ElementType = baseType.ElementType;

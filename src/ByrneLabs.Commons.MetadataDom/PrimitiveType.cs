@@ -12,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<int> _metadataToken;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal PrimitiveType(PrimitiveType baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal PrimitiveType(PrimitiveType baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             Initialize();
         }

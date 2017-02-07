@@ -19,7 +19,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<CodeElement> _parent;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal GenericParameter(GenericParameter baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal GenericParameter(GenericParameter baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             _declaringType = baseType.DeclaringType;
             DeclaringMethod = baseType.DeclaringMethod;

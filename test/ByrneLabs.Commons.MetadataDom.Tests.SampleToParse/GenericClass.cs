@@ -1,10 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
 #if CSHARP_V2
     public class GenericClass<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
     {
+        private class NestedA<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
+        {
+        }
+
+        private class NestedB
+        {
+        }
+
+        private class NestedC<TAnything1, TAnything2>
+        {
+        }
+
+        private class NestedD<TSomethingNew, TAnything2>
+        {
+        }
+
+        private class NestedE<TSomethingCompletelyNew>
+        {
+        }
+
+        private class NestedF<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable, TSomethingCompletelyNew> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
+        {
+        }
+
+        private class NestedG<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem> where TClass : struct where TStruct : class where TNewable : TItemBase where TItem : new() where TAnything2 : IEnumerable<TAnything1>
+        {
+        }
+
+
+        public GenericClass(TAnything1 tAnything1)
+        {
+        }
+
+        public GenericClass(TStruct? tStruct)
+        {
+        }
+
+        public GenericClass(TStruct[] a)
+        {
+        }
+
+        public GenericClass(out TimeSpan? a)
+        {
+            a = null;
+        }
+
 #if CSHARP_V3
         public TAnything1 TAnything1ValueAutoProperty { get; set; }
 
@@ -26,6 +73,15 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public T[] ToArray<T>(T[] a)
         {
             return null;
+        }
+
+        public void Something2(TStruct? tStruct)
+        {
+        }
+
+        public void Something1(out TimeSpan? a)
+        {
+            a = null;
         }
 
         public IEnumerable<T> OneLevelEnumerable<T>(IEnumerable<T> a)

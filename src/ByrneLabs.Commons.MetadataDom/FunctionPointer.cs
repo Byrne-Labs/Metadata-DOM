@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<ImmutableArray<Parameter>> _parameters;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal FunctionPointer(FunctionPointer baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal FunctionPointer(FunctionPointer baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             Initialize();
         }

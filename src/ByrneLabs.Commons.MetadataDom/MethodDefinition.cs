@@ -30,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom
             {
                 var basicName = $"{DeclaringType.FullName}.{Name}";
                 var genericParameters = GenericTypeParameters.Any() ? $"<{ string.Join(", ", GenericTypeParameters.Select(genericTypeParameter => genericTypeParameter.Name)) }>" : string.Empty;
-                var parameters = IsSpecialName && RelatedProperty?.IsIndexer != true ? string.Empty : $"({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : parameter.ParameterType.FullNameWithoutAssemblies))})";
+                var parameters = !RelatedProperty?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", Parameters.Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : parameter.ParameterType.FullNameWithoutAssemblies))})";
 
                 return basicName + genericParameters + parameters;
             });

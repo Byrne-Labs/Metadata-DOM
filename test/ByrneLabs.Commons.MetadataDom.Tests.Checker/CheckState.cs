@@ -9,6 +9,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
     public class CheckState
     {
+        private static readonly string[] _invalidErrorsRegex =
+        {
+            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
+            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+ with reflection$"
+        };
         private static readonly string[] _ignoredErrorsRegex =
         {
             @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$",
@@ -16,13 +21,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         };
         private static readonly string[] _likelyFrameworkBugErrorsRegex =
         {
-            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
             @"ByrneLabs\.Commons\.MetadataDom\.BadMetadataException: Method .+ has \d+ parameters but \d+ parameter types were found",
             @"HasDefaultValue has a value of False in metadata but a value of True in reflection",
             @"MetadataToken has a value of \d+ in metadata but a value of \d+ in reflection",
             @"<\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.+?Name has a value of <\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.*? in metadata but a value of <\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.*? in reflection",
             @"System\.FormatException: Encountered an invalid type for a default value\."
         };
+        private static string[] _allFilterRegex;
         private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
         private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();
         private readonly List<string> _errors = new List<string>();
@@ -35,6 +40,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private bool _unfilteredErrorLogTextDirty = true;
         private string _unfilteredLogText;
         private bool _unfilteredLogTextDirty = true;
+
+        static CheckState()
+        {
+            _allFilterRegex = _invalidErrorsRegex.Union(_ignoredErrorsRegex).Union(_likelyFrameworkBugErrorsRegex).ToArray();
+        }
 
         public CheckState()
         {
@@ -157,18 +167,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             get
             {
-                lock (_errors)
+                if (_unfilteredErrorLogTextDirty)
                 {
-                    lock (_exceptions)
-                    {
-                        if (_unfilteredErrorLogTextDirty)
-                        {
-                            _unfilteredErrorLogText = string.Join(Environment.NewLine, UnfilteredErrors);
-                            _unfilteredErrorLogTextDirty = false;
-                        }
-                        return _unfilteredErrorLogText;
-                    }
+                    _unfilteredErrorLogText = string.Join(Environment.NewLine, UnfilteredErrors);
+                    _unfilteredErrorLogTextDirty = false;
                 }
+                return _unfilteredErrorLogText;
             }
         }
 
@@ -178,20 +182,23 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_errors)
                 {
-                    var errorMessages = _errors.ToList();
-                    foreach (var exception in _exceptions)
+                    lock (_exceptions)
                     {
-                        try
+                        var errorMessages = _errors.ToList();
+                        foreach (var exception in _exceptions)
                         {
-                            errorMessages.Add($"On code element \"{exception.Item3}\", exception was thrown:{Environment.NewLine}{exception.Item2}");
+                            try
+                            {
+                                errorMessages.Add($"On code element \"{exception.Item3}\", exception was thrown:{Environment.NewLine}{exception.Item2}");
+                            }
+                            catch
+                            {
+                                errorMessages.Add($"On a code element of type \"{exception.Item3.GetType().FullName}\", exception was thrown:{Environment.NewLine}{exception.Item2}");
+                            }
                         }
-                        catch
-                        {
-                            errorMessages.Add($"On a code element of type \"{exception.Item3.GetType().FullName}\", exception was thrown:{Environment.NewLine}{exception.Item2}");
-                        }
-                    }
 
-                    return errorMessages.ToImmutableArray();
+                        return errorMessages.Where(errorMessage => !_invalidErrorsRegex.Any(invalidErrorRegex => Regex.IsMatch(errorMessage, invalidErrorRegex))).ToImmutableArray();
+                    }
                 }
             }
         }
@@ -200,18 +207,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             get
             {
-                lock (_errors)
+                if (_unfilteredLogTextDirty)
                 {
-                    lock (_exceptions)
-                    {
-                        if (_unfilteredLogTextDirty)
-                        {
-                            _unfilteredLogText = UnfilteredErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
-                            _unfilteredLogTextDirty = false;
-                        }
-                        return _unfilteredLogText;
-                    }
+                    _unfilteredLogText = UnfilteredErrorLogText + Environment.NewLine + Environment.NewLine + (ExecutionTime.HasValue ? $"{Environment.NewLine}Analysis finished in {ExecutionTime.Value.TotalSeconds} seconds{Environment.NewLine}" : Environment.NewLine);
+                    _unfilteredLogTextDirty = false;
                 }
+                return _unfilteredLogText;
             }
         }
 
@@ -221,7 +222,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 lock (_exceptions)
                 {
-                    return _exceptions.Where(exception => !_ignoredErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(exception.ToString(), ignoredErrorRegex)) && !_likelyFrameworkBugErrorsRegex.Any(ignoredErrorRegex => Regex.IsMatch(exception.ToString(), ignoredErrorRegex)));
+                    return _exceptions.Where(exception => !_allFilterRegex.Any(filterRegex => Regex.IsMatch(exception.ToString(), filterRegex)));
                 }
             }
         }

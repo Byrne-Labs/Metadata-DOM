@@ -12,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private readonly Lazy<SerializedType> _declaringType;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal SerializedType(TypeBase<SerializedType, string> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal SerializedType(TypeBase<SerializedType, string> baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
         }
 

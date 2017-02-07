@@ -15,7 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<object> _resolutionScope;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal TypeReference(TypeReference baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal TypeReference(TypeReference baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             Initialize();
         }

@@ -180,29 +180,34 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     var byToken = metadataType.Members.Where(member => member.MetadataToken == reflectionMember.MetadataToken).ToArray();
                     var reflectionTextSignature = SignatureCreater.GetTextSignature(reflectionType, reflectionMember);
                     var byName = metadataType.Members.Where(member => member.MemberType == reflectionMember.MemberType && member.FullName.Equals(reflectionTextSignature)).ToArray();
-                    if (byToken.Length == 0 && byName.Length == 0)
+                    if (byToken.Length == 1 && byName.Length == 1)
                     {
-                        _checkState.AddError($"Could not find {reflectionMember.MemberType} {reflectionTextSignature} with metadata by token or name");
-                    }
-                    else if (byToken.Length > 1)
-                    {
-                        _checkState.AddError($"Found multiple {reflectionMember.MemberType} {reflectionTextSignature} with metadata by token");
-                    }
-                    else if (byName.Length > 1)
-                    {
-                        _checkState.AddError($"Found multiple {reflectionMember.MemberType} {reflectionTextSignature} with metadata by name");
-                    }
-                    else if (byToken.Length == 0)
-                    {
-                        _checkState.AddError($"Found {reflectionMember.MemberType} {reflectionTextSignature} in metadata with the metadata token {byName[0].MetadataToken} instead of {reflectionMember.MetadataToken}");
-                    }
-                    else if (byName.Length == 0)
-                    {
-                        _checkState.AddError($"Found {reflectionMember.MemberType} {reflectionTextSignature} in metadata with the name {byToken[0].FullName}");
+                        CompareCodeElementsToReflectionData(byToken.Single(), reflectionMember);
                     }
                     else
                     {
-                        CompareCodeElementsToReflectionData(byToken.Single(), reflectionMember);
+                        _checkState.ComparedMetadataMembers.AddRange(byToken.Union(byName));
+                        _checkState.ComparedReflectionMembers.Add(reflectionMember);
+                        if (byToken.Length == 0 && byName.Length == 0)
+                        {
+                            _checkState.AddError($"Could not find {reflectionMember.MemberType} {reflectionTextSignature} with metadata by token or name");
+                        }
+                        else if (byToken.Length > 1)
+                        {
+                            _checkState.AddError($"Found multiple {reflectionMember.MemberType} {reflectionTextSignature} with metadata by token");
+                        }
+                        else if (byName.Length > 1)
+                        {
+                            _checkState.AddError($"Found multiple {reflectionMember.MemberType} {reflectionTextSignature} with metadata by name");
+                        }
+                        else if (byToken.Length == 0)
+                        {
+                            _checkState.AddError($"Found {reflectionMember.MemberType} {reflectionTextSignature} in metadata with the metadata token {byName[0].MetadataToken} instead of {reflectionMember.MetadataToken}");
+                        }
+                        else
+                        {
+                            _checkState.AddError($"Found {reflectionMember.MemberType} {reflectionTextSignature} in metadata with the name {byToken[0].FullName}");
+                        }
                     }
                 }
             }

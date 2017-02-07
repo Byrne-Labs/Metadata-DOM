@@ -43,12 +43,16 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             return textSignature;
         }
 
-        public static string GetTextSignature(TypeInfo reflectedType, TypeInfo typeInfo)
+        public static string GetTextSignature(TypeInfo reflectedType, TypeInfo typeInfo, bool includeGenericArguments = false)
         {
             string fullName;
             if (typeInfo.GenericTypeArguments.Length > 0)
             {
                 fullName = $"{(string.IsNullOrEmpty(typeInfo.Namespace) ? string.Empty : typeInfo.Namespace + ".")}{typeInfo.Name}[{string.Join(",", typeInfo.GenericTypeArguments.Select(genericTypeArgument => GetTextSignature(reflectedType, genericTypeArgument.GetTypeInfo())))}]";
+            }
+            else if (typeInfo.GetGenericArguments().Length > 0 && includeGenericArguments)
+            {
+                fullName = $"{(string.IsNullOrEmpty(typeInfo.Namespace) ? string.Empty : typeInfo.Namespace + ".")}{typeInfo.Name}[{string.Join(",", typeInfo.GetGenericArguments().Select(genericTypeArgument => GetTextSignature(reflectedType, genericTypeArgument.GetTypeInfo())))}]";
             }
             else if (typeInfo.FullName != null)
             {
@@ -76,16 +80,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public static string GetTextSignature(TypeInfo reflectedType, MethodInfo methodInfo)
         {
-            var basicName = $"{reflectedType.FullName}.{methodInfo.Name}";
-            var genericParameters = methodInfo.IsSpecialName && !("get_Item".Equals(methodInfo.Name) || "set_Item".Equals(methodInfo.Name)) || !methodInfo.IsGenericMethod ? string.Empty : $"<{ string.Join(", ", methodInfo.GetGenericArguments().Select(genericTypeParameter => genericTypeParameter.Name)) }>";
-            var parameters = methodInfo.IsSpecialName && !("get_Item".Equals(methodInfo.Name) || "set_Item".Equals(methodInfo.Name)) ? string.Empty : $"({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTextSignature(reflectedType, parameter.ParameterType.GetTypeInfo())))})";
+            var basicName = $"{GetTextSignature(reflectedType, reflectedType)}.{methodInfo.Name}";
+            var nonIndexProperty = methodInfo.IsSpecialName && (methodInfo.Name.StartsWith("get_") || methodInfo.Name.StartsWith("set_") || methodInfo.Name.StartsWith("remove_") || methodInfo.Name.StartsWith("add_") || methodInfo.Name.StartsWith("invoke_")) && !("get_Item".Equals(methodInfo.Name) || "set_Item".Equals(methodInfo.Name));
+            var genericParameters = nonIndexProperty || !methodInfo.IsGenericMethod ? string.Empty : $"<{ string.Join(", ", methodInfo.GetGenericArguments().Select(genericTypeParameter => genericTypeParameter.Name)) }>";
+            var parameters = nonIndexProperty ? string.Empty : $"({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTextSignature(reflectedType, parameter.ParameterType.GetTypeInfo(), true)))})";
 
             return basicName + genericParameters + parameters;
         }
 
         public static string GetTextSignature(TypeInfo reflectedType, ConstructorInfo constructorInfo)
         {
-            return $"{reflectedType.FullName}{constructorInfo.Name}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTextSignature(reflectedType, parameter.ParameterType.GetTypeInfo())))})";
+            return $"{reflectedType.FullName}{constructorInfo.Name}({string.Join(", ", constructorInfo.GetParameters().Select(parameter => GetTextSignature(reflectedType, parameter.ParameterType.GetTypeInfo(), true)))})";
         }
     }
 }

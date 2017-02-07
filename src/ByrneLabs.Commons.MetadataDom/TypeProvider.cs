@@ -25,14 +25,14 @@ namespace ByrneLabs.Commons.MetadataDom
             "System.Security.Permissions.SecurityPermissionAttribute"
         };
 
-        private static readonly Dictionary<string, TypeElementModifiers> _modifierMap = new Dictionary<string, TypeElementModifiers>
+        private static readonly Dictionary<string, TypeElementModifier> _modifierMap = new Dictionary<string, TypeElementModifier>
         {
-            {"Microsoft.VisualC.IsConstModifier", TypeElementModifiers.Constant },
-            {"System.Runtime.CompilerServices.IsVolatile", TypeElementModifiers.Volatile },
-            {"System.Runtime.CompilerServices.IsBoxed", TypeElementModifiers.Boxed },
-            {"System.Runtime.CompilerServices.IsConst", TypeElementModifiers.Constant },
-            {"System.Runtime.CompilerServices.IsByValue",TypeElementModifiers.ByValue },
-            {"System.ValueType", TypeElementModifiers.ValueType }
+            {"Microsoft.VisualC.IsConstModifier", TypeElementModifier.Constant },
+            {"System.Runtime.CompilerServices.IsVolatile", TypeElementModifier.Volatile },
+            {"System.Runtime.CompilerServices.IsBoxed", TypeElementModifier.Boxed },
+            {"System.Runtime.CompilerServices.IsConst", TypeElementModifier.Constant },
+            {"System.Runtime.CompilerServices.IsByValue",TypeElementModifier.ByValue },
+            {"System.ValueType", TypeElementModifier.ValueType }
         };
 
         private readonly MetadataState _metadataState;
@@ -46,11 +46,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetArrayType(TypeBase elementType, ArrayShape shape) => _metadataState.GetCodeElement<ShapedArray>(elementType, shape);
 
-        public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.ByRef);
+        public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.ByRef);
 
         public TypeBase GetGenericInstantiation(TypeBase genericType, ImmutableArray<TypeBase> typeArguments) => typeArguments.Any(typeArgument => typeArgument == null) ? genericType : (TypeBase)_metadataState.GetCodeElement(new CodeElementKey(genericType.GetType(), genericType, typeArguments));
 
-        public TypeBase GetPointerType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Pointer);
+        public TypeBase GetPointerType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Pointer);
 
         public TypeBase GetSystemType() => _systemType;
 
@@ -100,6 +100,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => rawTypeKind != 0 && rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeReference>(handle);
 
-        public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifiers.Array);
+        public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase)_metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Array);
     }
 }

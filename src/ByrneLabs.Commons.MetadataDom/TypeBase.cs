@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public abstract class TypeBase<TTypeBase, THandle, TToken> : TypeBase<TTypeBase, THandle>, ICodeElementWithTypedHandle<THandle, TToken> where TTypeBase : TypeBase
     {
-        internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal TypeBase(TypeBase<TTypeBase, THandle> baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(baseType.DowncastMetadataHandle);
         }
@@ -38,7 +38,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
     public abstract class TypeBase<TTypeBase, TKey> : TypeBase where TTypeBase : TypeBase
     {
-        internal TypeBase(TypeBase<TTypeBase, TKey> baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState, new CodeElementKey<TTypeBase>(baseType, typeElementModifiers))
+        internal TypeBase(TypeBase<TTypeBase, TKey> baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState, new CodeElementKey<TTypeBase>(baseType, typeElementModifier))
         {
             KeyValue = baseType.KeyValue;
         }
@@ -69,19 +69,12 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<string> _fullNameWithoutGenericArguments;
         private Lazy<string> _name;
         private Lazy<string> _nameModifiers;
+        private readonly TypeElementModifier? _typeElementModifier;
 
-        internal TypeBase(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
+        internal TypeBase(TypeBase baseType, TypeElementModifier typeElementModifier, MetadataState metadataState, CodeElementKey key) : this(key, metadataState)
         {
             BaseType = baseType;
-            IsThisArray = typeElementModifiers.HasFlag(TypeElementModifiers.Array);
-            IsThisBoxed = typeElementModifiers.HasFlag(TypeElementModifiers.Boxed);
-            IsThisByRef = typeElementModifiers.HasFlag(TypeElementModifiers.ByRef);
-            IsThisByValue = typeElementModifiers.HasFlag(TypeElementModifiers.ByValue);
-            IsThisGenericType = typeElementModifiers.HasFlag(TypeElementModifiers.GenericType);
-            IsThisPointer = typeElementModifiers.HasFlag(TypeElementModifiers.Pointer);
-            IsThisVolatile = typeElementModifiers.HasFlag(TypeElementModifiers.Volatile);
-            IsThisConstant = typeElementModifiers.HasFlag(TypeElementModifiers.Constant);
-            IsThisValueType = typeElementModifiers.HasFlag(TypeElementModifiers.ValueType);
+            _typeElementModifier = typeElementModifier;
             if (IsArray || IsPointer)
             {
                 ElementType = baseType;
@@ -115,11 +108,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IAssembly Assembly { get; }
 
-        protected abstract string MetadataNamespace { get; }
-
         public abstract bool IsGenericParameter { get; }
 
         public abstract string Namespace { get; }
+
+        protected abstract string MetadataNamespace { get; }
 
         internal abstract string UndecoratedName { get; }
 
@@ -170,23 +163,23 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected int ArrayDimensionCount => (IsThisArray ? 1 : 0) + (BaseType?.ArrayDimensionCount).GetValueOrDefault();
 
-        protected bool IsThisArray { get; }
+        protected bool IsThisArray => _typeElementModifier == TypeElementModifier.Array;
 
-        protected bool IsThisBoxed { get; }
+        protected bool IsThisBoxed => _typeElementModifier == TypeElementModifier.Boxed;
 
-        protected bool IsThisByRef { get; }
+        protected bool IsThisByRef => _typeElementModifier == TypeElementModifier.ByRef;
 
-        protected bool IsThisByValue { get; }
+        protected bool IsThisByValue => _typeElementModifier == TypeElementModifier.ByValue;
 
-        protected bool IsThisConstant { get; }
+        protected bool IsThisConstant => _typeElementModifier == TypeElementModifier.Constant;
 
         protected bool IsThisGenericType { get; }
 
-        protected bool IsThisPointer { get; }
+        protected bool IsThisPointer => _typeElementModifier == TypeElementModifier.Pointer;
 
-        protected bool IsThisVolatile { get; }
+        protected bool IsThisValueType => _typeElementModifier == TypeElementModifier.ValueType;
 
-        protected bool IsThisValueType { get; }
+        protected bool IsThisVolatile => _typeElementModifier == TypeElementModifier.Volatile;
 
         protected int PointerCount => (IsThisPointer ? 1 : 0) + (BaseType?.PointerCount).GetValueOrDefault();
 
@@ -194,95 +187,71 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 
+        private string CreateFullName(Func<TypeBase, string> nameGetter, bool includeGenericArguments)
+        {
+            string fullName;
+            if (IsGenericParameter && DeclaringType == null)
+            {
+                fullName = Name;
+            }
+            else
+            {
+                var typeToUse = _typeElementModifier != null ? BaseType : this;
+                string parent;
+                if (typeToUse.IsNested && typeToUse.DeclaringType.IsGenericType)
+                {
+                    parent = (string.IsNullOrEmpty(typeToUse.DeclaringType.Namespace) ? string.Empty : typeToUse.DeclaringType.Namespace + ".") + typeToUse.DeclaringType.UndecoratedName + "+";
+                }
+                else if (typeToUse.IsGenericParameter && typeToUse.DeclaringType != null || typeToUse.IsNested)
+                {
+                    parent = $"{nameGetter(typeToUse.DeclaringType)}+";
+                }
+                else
+                {
+                    parent = string.Empty;
+                }
+                string @namespace;
+                if (typeToUse.IsNested && !typeToUse.IsGenericParameter && typeToUse.MetadataNamespace?.StartsWith("<") == true && typeToUse.Name.Contains(">"))
+                {
+                    @namespace = typeToUse.MetadataNamespace + ".";
+                }
+                else if (string.IsNullOrEmpty(typeToUse.Namespace) || typeToUse.IsNested && !typeToUse.IsGenericParameter)
+                {
+                    @namespace = string.Empty;
+                }
+                else
+                {
+                    @namespace = typeToUse.Namespace + ".";
+                }
+                string genericArgumentsText;
+                if (includeGenericArguments && typeToUse.HasGenericTypeArguments)
+                {
+                    genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.FullNameWithoutAssemblies ?? genericTypeArgument.Name)) + "]";
+                }
+
+                else
+                {
+                    genericArgumentsText = string.Empty;
+                }
+
+                if (typeToUse == this)
+                {
+                    fullName = parent + @namespace + typeToUse.UndecoratedName + genericArgumentsText + _nameModifiers.Value;
+                }
+                else
+                {
+                    fullName = parent + @namespace + typeToUse.UndecoratedName  + _nameModifiers.Value + genericArgumentsText;
+                }
+            }
+            return fullName;
+        }
+
         private void Initialize()
         {
             _nameModifiers = new Lazy<string>(() => string.Concat(Enumerable.Repeat("[]", ArrayDimensionCount)) + new string('*', PointerCount) + (IsByRef ? "&" : string.Empty));
-            _fullName = new Lazy<string>(() =>
-            {
-                string fullName;
-                if (IsGenericParameter && DeclaringType == null)
-                {
-                    fullName = Name;
-                }
-                else
-                {
-                    var parent = IsNested && !IsGenericParameter ? $"{DeclaringType.FullName}+" : string.Empty;
-                    string @namespace;
-                    if (IsNested && !IsGenericParameter && MetadataNamespace?.StartsWith("<") == true && Name.Contains(">"))
-                    {
-                        @namespace = MetadataNamespace + ".";
-                    }
-                    else if (string.IsNullOrEmpty(Namespace) || IsNested && !IsGenericParameter)
-                    {
-                        @namespace = string.Empty;
-                    }
-                    else
-                    {
-                        @namespace = Namespace + ".";
-                    }
-                    var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.FullNameWithoutAssemblies ?? genericTypeArgument.Name)) + "]" : string.Empty;
-                    fullName = parent + @namespace + UndecoratedName + genericArgumentsText + _nameModifiers.Value;
-                }
-                return fullName;
-            });
-
-            _fullNameWithoutAssemblies = new Lazy<string>(() =>
-            {
-                string fullName;
-                if (IsGenericParameter && DeclaringType == null)
-                {
-                    fullName = Name;
-                }
-                else
-                {
-                    var parent = IsGenericParameter && DeclaringType != null || IsNested ? $"{DeclaringType.FullNameWithoutAssemblies}+" : string.Empty;
-                    string @namespace;
-                    if (IsNested && !IsGenericParameter && MetadataNamespace?.StartsWith("<") == true && Name.Contains(">"))
-                    {
-                        @namespace = MetadataNamespace + ".";
-                    }
-                    else if (string.IsNullOrEmpty(Namespace) || IsNested && !IsGenericParameter)
-                    {
-                        @namespace = string.Empty;
-                    }
-                    else
-                    {
-                        @namespace = Namespace + ".";
-                    }
-                    var genericArgumentsText = HasGenericTypeArguments ? "[" + string.Join(",", GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.FullNameWithoutAssemblies ?? genericTypeArgument.Name)) + "]" : string.Empty;
-                    fullName = parent + @namespace + UndecoratedName + genericArgumentsText + _nameModifiers.Value;
-                }
-                return fullName;
-            });
-
-            _fullNameWithoutGenericArguments = new Lazy<string>(() =>
-            {
-                string fullName;
-                if (IsGenericParameter && DeclaringType == null)
-                {
-                    fullName = Name;
-                }
-                else
-                {
-                    var parent = IsGenericParameter && DeclaringType != null || IsNested && !(Namespace.StartsWith("<") && Name.Contains(">")) ? $"{DeclaringType.FullNameWithoutGenericArguments}+" : string.Empty;
-                    string @namespace;
-                    if (IsNested && !IsGenericParameter && MetadataNamespace?.StartsWith("<") == true && Name.Contains(">"))
-                    {
-                        @namespace = MetadataNamespace + ".";
-                    }
-                    else if (string.IsNullOrEmpty(Namespace) || IsNested && !IsGenericParameter)
-                    {
-                        @namespace = string.Empty;
-                    }
-                    else
-                    {
-                        @namespace = Namespace + ".";
-                    }
-                    fullName = parent + @namespace + UndecoratedName + _nameModifiers.Value;
-                }
-                return fullName;
-            });
-
+            _fullName = new Lazy<string>(() => CreateFullName(type => type.FullName, true));
+            _fullNameWithoutAssemblies = new Lazy<string>(() => CreateFullName(type => type.FullNameWithoutAssemblies, true));
+            _fullNameWithoutGenericArguments = new Lazy<string>(() => CreateFullName(type => type.FullNameWithoutGenericArguments, false));
             _name = new Lazy<string>(() => UndecoratedName + _nameModifiers.Value);
         }
     }

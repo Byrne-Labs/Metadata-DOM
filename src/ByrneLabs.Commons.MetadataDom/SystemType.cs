@@ -8,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom
     public class SystemType : TypeBase
     {
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal SystemType(TypeBase baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState, CodeElementKey key) : base(baseType, typeElementModifiers, metadataState, key)
+        internal SystemType(TypeBase baseType, TypeElementModifier typeElementModifier, MetadataState metadataState, CodeElementKey key) : base(baseType, typeElementModifier, metadataState, key)
         {
         }
 

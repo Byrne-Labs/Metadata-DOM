@@ -30,7 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
                 StringArray[1] = intPointer->ToString();
             }
-            _genericClassInstance = new GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>>();
+            _genericClassInstance = new GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>>((int[])null);
         }
 
         public event EventHandler EventWithoutDeclaredAccessors;

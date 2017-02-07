@@ -29,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
         private Lazy<ImmutableArray<PropertyDefinition>> _properties;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal TypeDefinition(TypeDefinition baseType, TypeElementModifiers typeElementModifiers, MetadataState metadataState) : base(baseType, typeElementModifiers, metadataState)
+        internal TypeDefinition(TypeDefinition baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             Initialize();
         }
