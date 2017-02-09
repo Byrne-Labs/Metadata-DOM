@@ -504,6 +504,10 @@ namespace ByrneLabs.Commons.MetadataDom
                 }
                 var constructorParameterValues = key.KeyValues.Select(keyValue => keyValue is Handle ? UpcastHandle((Handle)keyValue) : keyValue).Union(new object[] { this }).ToArray();
                 var constructor = GetConstructor(codeElementType, constructorParameterValues);
+                if (constructor == null)
+                {
+                    throw new ArgumentException($"The key values provided are invalid for creating a {codeElementType.Name} code element");
+                }
                 codeElement = (CodeElement)constructor.Invoke(constructorParameterValues);
             }
 

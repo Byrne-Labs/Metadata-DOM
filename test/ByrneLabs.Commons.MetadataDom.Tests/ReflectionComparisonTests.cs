@@ -186,7 +186,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         {
             var startTime = DateTime.Now;
             var pass = true;
-            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 8 };
+            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 4 };
             Parallel.ForEach(assemblyFiles, parallelOptions, assemblyFile => pass &= CheckMetadataOutOfProcess(assemblyFile));
 
             var executionTime = DateTime.Now.Subtract(startTime);
