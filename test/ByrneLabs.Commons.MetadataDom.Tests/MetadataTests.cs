@@ -16,6 +16,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             _output = output;
         }
 
+        private static readonly DirectoryInfo ResourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.Parent.FullName, "Resources"));
         private readonly ITestOutputHelper _output;
         private static readonly string[] LoadableFileExtensions = { "exe", "dll", "pdb", "mod", "obj", "wmd" };
 
@@ -81,8 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Fast")]
         public void TestOnPrebuiltAssemblyResources()
         {
-            var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
-            var loadableFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
+            var loadableFiles = ResourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles.Where(file => !file.Name.Equals("EmptyType.dll")))
             {
                 CheckMetadata(loadableFile);
@@ -93,8 +93,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Fast")]
         public void TestOnPrebuiltResources()
         {
-            var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
-            var loadableFiles = resourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
+            var loadableFiles = ResourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles)
             {
                 CheckMetadata(loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null);

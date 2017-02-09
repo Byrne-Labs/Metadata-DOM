@@ -4,6 +4,25 @@ using System.Collections.Generic;
 namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
 #if CSHARP_V2
+
+    internal class NonGenericClass
+    {
+        internal delegate int CountGetter<TEntity>(TEntity entity, out int count);
+        internal delegate int ItemsGetter<TEntity, TItem>(TEntity entity, int bufferLength, out int count, TItem[] buffer);
+
+        internal static TItem[] GetItems<TEntity, TItem>(TEntity entity, NonGenericClass.CountGetter<TEntity> countGetter, NonGenericClass.ItemsGetter<TEntity, TItem> itemsGetter)
+        {
+            return null;
+        }
+
+        public void Something(out int?[] a)
+        {
+            a = null;
+        }
+    }
+
+
+
     public class GenericClass<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
     {
         private class NestedA<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
@@ -34,6 +53,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         {
         }
 
+        private Func<TAnything1> getValue;
 
         public GenericClass(TAnything1 tAnything1)
         {
@@ -44,6 +64,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         }
 
         public GenericClass(TStruct[] a)
+        {
+        }
+
+        public GenericClass(Action<IEnumerable<IEnumerable<TAnything1>>, IEnumerable<TAnything1>, TAnything1> a, TAnything1 b)
         {
         }
 
@@ -70,7 +94,29 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public TStruct TStructValueAutoProperty { get; set; }
 #endif
 
+        internal delegate void SomethingDelegate(TAnything1 a);
+
+        internal delegate void SomethingDelegateA(object a);
+
+        internal static void SomethingA(IEnumerable<TAnything1> a, TAnything1 b, GenericClass<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable>.SomethingDelegate c)
+        {
+        }
+
+        internal static void SomethingB(IEnumerable<TAnything1> a, TAnything1 b, SomethingDelegate c)
+        {
+        }
+
+        internal static void SomethingB(SomethingDelegateA[] a, SomethingDelegate[] b)
+        {
+        }
+
         public T[] ToArray<T>(T[] a)
+        {
+            return null;
+        }
+
+
+        public T[] ToArray<T, B>(T[] a)
         {
             return null;
         }
@@ -78,6 +124,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public void Something2(TStruct? tStruct)
         {
         }
+
+        public void Something(Action<IEnumerable<IEnumerable<TAnything1>>, IEnumerable<TAnything1>, TAnything1> a, TAnything1 b)
+        {
+        }
+
 
         public void Something1(out TimeSpan? a)
         {

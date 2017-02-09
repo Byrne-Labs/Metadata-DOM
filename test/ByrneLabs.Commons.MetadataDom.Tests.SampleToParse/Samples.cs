@@ -11,6 +11,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public int IntValue = 1;
         public string[] StringArray = { "asdf", null, string.Empty };
         private GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> _genericClassInstance;
+        private Func<string> getValue;
+
+        public object Item
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                var a = value;
+            }
+        }
 
         public GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance
         {

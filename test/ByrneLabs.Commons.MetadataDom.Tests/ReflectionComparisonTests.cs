@@ -21,8 +21,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         }
 
         private readonly ITestOutputHelper _output;
-        private static readonly DirectoryInfo BaseTestsDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, @"..\Tests"));
-        private static readonly DirectoryInfo TestsNotRunDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, @"..\Tests\NotRun"));
+        private static readonly DirectoryInfo ResourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.Parent.FullName, "Resources"));
+        private static readonly DirectoryInfo BaseTestsDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "Tests"));
+        private static readonly DirectoryInfo TestsNotRunDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "..", "Tests", "NotRun"));
 
         private bool CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
@@ -167,7 +168,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "These must be files, not directories")]
         private static ProcessStartInfo GetNetFrameworkProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
-            var processStartInfo = new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\bin\Debug\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.exe"))
+            var processStartInfo = new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", @"ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\bin\Debug\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.exe"))
             {
                 Arguments = $"\"{BaseTestsDirectory}\" \"{assemblyFile.FullName}\"" + (pdbFile == null ? string.Empty : $" \"{pdbFile.FullName}\""),
                 RedirectStandardError = true,
@@ -199,8 +200,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnPrebuiltAssemblies()
         {
-            var resourceDirectory = new DirectoryInfo(Path.Combine(new DirectoryInfo(AppContext.BaseDirectory).Parent.Parent.Parent.FullName, @"Resources"));
-            var assemblyFiles = resourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
+            var assemblyFiles = ResourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
             var pass = true;
             // ReSharper disable once LoopCanBeConvertedToQuery -- This is much easier to read as a loop. -- Jonathan Byrne 01/21/2017
             foreach (var assemblyFile in assemblyFiles)

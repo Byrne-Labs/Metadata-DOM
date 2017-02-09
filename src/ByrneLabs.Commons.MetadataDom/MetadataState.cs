@@ -547,17 +547,6 @@ namespace ByrneLabs.Commons.MetadataDom
             }
             else
             {
-                MethodBodyBlock pdbBlock;
-                try
-                {
-                    pdbBlock = PdbFileWrapper?.PEReader?.GetMethodBody(relativeVirtualAddress);
-                    if (pdbBlock != null)
-                    {
-                        Debug.WriteLine("wow");
-                    }
-                }
-                catch
-                { }
                 methodBodyBlock = AssemblyFileWrapper.PEReader.GetMethodBody(relativeVirtualAddress);
             }
 

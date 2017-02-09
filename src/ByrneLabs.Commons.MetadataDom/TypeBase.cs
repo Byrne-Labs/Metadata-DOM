@@ -200,7 +200,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 string parent;
                 if (typeToUse.IsNested && typeToUse.DeclaringType.IsGenericType)
                 {
-                    parent = (string.IsNullOrEmpty(typeToUse.DeclaringType.Namespace) ? string.Empty : typeToUse.DeclaringType.Namespace + ".") + typeToUse.DeclaringType.UndecoratedName + "+";
+                    parent = typeToUse.DeclaringType.CreateFullName(nameGetter, includeGenericArguments) + "+";
                 }
                 else if (typeToUse.IsGenericParameter && typeToUse.DeclaringType != null || typeToUse.IsNested)
                 {

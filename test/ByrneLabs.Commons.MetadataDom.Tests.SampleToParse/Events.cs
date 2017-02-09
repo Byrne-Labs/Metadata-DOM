@@ -19,5 +19,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         }
 
         public event EventHandler Disposing2;
+
+        public void add_FakeEvent(EventHandler eventHandler)
+        {
+        }
+
+        public void remove_FakeEvent(EventHandler eventHandler)
+        {
+        }
+
+        public void raise_FakeEvent(EventHandler eventHandler)
+        {
+        }
     }
 }
