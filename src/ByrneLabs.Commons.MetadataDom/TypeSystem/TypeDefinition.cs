@@ -125,11 +125,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsGenericTypeDefinition => GenericTypeParameters.Any();
 
-        public override bool IsSecurityCritical => throw new NotSupportedException();
+        public override bool IsSecurityCritical => false;
 
-        public override bool IsSecuritySafeCritical => throw new NotSupportedException();
+        public override bool IsSecuritySafeCritical => false;
 
-        public override bool IsSecurityTransparent => throw new NotSupportedException();
+        public override bool IsSecurityTransparent => false;
 
         public override bool IsSerializable => (Attributes & TypeAttributes.Serializable) != 0 || IsEnum || IsDelegate;
 

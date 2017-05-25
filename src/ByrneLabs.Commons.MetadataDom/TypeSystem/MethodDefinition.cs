@@ -123,7 +123,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override PropertyInfoToExpose RelatedProperty => _relatedProperty.Value;
 
-        public override TypeInfoToExpose ReturnType => Signature.ReturnType;
+        public override TypeToExpose ReturnType => Signature.ReturnType;
 
         public string SourceCode => DebugInformation?.SourceCode;
 

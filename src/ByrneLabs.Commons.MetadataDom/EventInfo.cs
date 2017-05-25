@@ -23,10 +23,6 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class EventInfo
     {
-        public abstract TypeToExpose EventHandlerType { get; }
-
-        public abstract bool IsMulticast { get; }
-
         public bool IsPublic => AddMethod?.IsPublic != false && RemoveMethod?.IsPublic != false && RaiseMethod?.IsPublic != false;
 
         public bool IsStatic => AddMethod?.IsStatic != false && RemoveMethod?.IsStatic != false && RaiseMethod?.IsStatic != false;
@@ -39,13 +35,9 @@ namespace ByrneLabs.Commons.MetadataDom
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class EventInfo : System.Reflection.EventInfo, IMemberInfo
     {
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
         public abstract string FullName { get; }
 
         public abstract bool IsSpecialName { get; }
-
-        public abstract ModuleToExpose Module { get; }
 
         public abstract string TextSignature { get; }
 
@@ -56,6 +48,10 @@ namespace ByrneLabs.Commons.MetadataDom
 #else
     public abstract partial class EventInfo : MemberInfoToExpose
     {
+        public abstract TypeToExpose EventHandlerType { get; }
+
+        public abstract bool IsMulticast { get; }
+
         public abstract EventAttributes Attributes { get; }
 
         public virtual MethodInfoToExpose AddMethod => GetAddMethod(true);

@@ -56,6 +56,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                             discoveredCodeElements.Add(codeElementPropertyValue);
                         }
                     }
+                    catch (TargetInvocationException exception)
+                    {
+                        //We can ignore not supported exceptions
+                        if (!(exception.InnerException is NotSupportedException))
+                        {
+                            _checkState.AddException(exception.InnerException, codeElement, CheckPhase.MetadataCheck);
+                        }
+                    }
                     catch (Exception exception)
                     {
                         _checkState.AddException(exception, codeElement, CheckPhase.MetadataCheck);

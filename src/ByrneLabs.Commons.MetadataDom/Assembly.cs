@@ -97,24 +97,6 @@ namespace ByrneLabs.Commons.MetadataDom
             return metadataState.AssemblyDefinition;
         }
 
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
-        public abstract TypeToExpose[] GetExportedTypes();
-
-        public abstract ManifestResourceInfo GetManifestResourceInfo(string resourceName);
-
-        public abstract string[] GetManifestResourceNames();
-
-        public abstract ModuleToExpose GetModule(string name);
-
-        public abstract ModuleToExpose[] GetModules(bool getResourceModules);
-
-        public abstract AssemblyName GetName(bool copiedName);
-
-        public abstract AssemblyName[] GetReferencedAssemblies();
-
-        public abstract TypeToExpose[] GetTypes();
-
         public void Dispose()
         {
             Dispose(true);
@@ -149,6 +131,24 @@ namespace ByrneLabs.Commons.MetadataDom
         public virtual bool ReflectionOnly => true;
 
         public virtual IEnumerable<CustomAttributeDataToExpose> CustomAttributes => GetCustomAttributesData();
+
+        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
+
+        public abstract TypeToExpose[] GetExportedTypes();
+
+        public abstract ManifestResourceInfo GetManifestResourceInfo(string resourceName);
+
+        public abstract string[] GetManifestResourceNames();
+
+        public abstract ModuleToExpose GetModule(string name);
+
+        public abstract ModuleToExpose[] GetModules(bool getResourceModules);
+
+        public abstract AssemblyName GetName(bool copiedName);
+
+        public abstract AssemblyName[] GetReferencedAssemblies();
+
+        public abstract TypeToExpose[] GetTypes();
     }
 #endif
 }

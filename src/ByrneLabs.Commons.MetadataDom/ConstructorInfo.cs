@@ -25,11 +25,7 @@ namespace ByrneLabs.Commons.MetadataDom
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class ConstructorInfo : System.Reflection.ConstructorInfo, IMemberInfo
     {
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
         public abstract string FullName { get; }
-
-        public abstract ModuleToExpose Module { get; }
 
         public abstract IEnumerable<ParameterInfoToExpose> Parameters { get; }
 

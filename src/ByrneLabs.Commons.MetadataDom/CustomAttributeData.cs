@@ -18,11 +18,6 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class CustomAttributeData
     {
-        public abstract ConstructorInfoToExpose Constructor { get; }
-
-        public abstract IList<CustomAttributeTypedArgumentToExpose> ConstructorArguments { get; }
-
-        public abstract IList<CustomAttributeNamedArgumentToExpose> NamedArguments { get; }
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
@@ -33,6 +28,12 @@ namespace ByrneLabs.Commons.MetadataDom
     public abstract partial class CustomAttributeData
     {
         public TypeToExpose AttributeType => Constructor.DeclaringType;
+
+        public abstract ConstructorInfoToExpose Constructor { get; }
+
+        public abstract IList<CustomAttributeTypedArgumentToExpose> ConstructorArguments { get; }
+
+        public abstract IList<CustomAttributeNamedArgumentToExpose> NamedArguments { get; }
     }
 #endif
 }

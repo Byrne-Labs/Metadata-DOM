@@ -11,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{CodeElementKey\\}: {KeysToString()}")]
     internal class CodeElementKey
     {
-        public CodeElementKey(System.Type codeElementType, params object[] keyValues)
+        public CodeElementKey(Type codeElementType, params object[] keyValues)
         {
             if (keyValues.Length == 0 && codeElementType != typeof(SystemType) && codeElementType != typeof(SystemArray))
             {
@@ -60,7 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
 
             var primitiveTypeCode = KeyValues.OfType<PrimitiveTypeCode>().FirstOrDefault();
-            PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?)null : primitiveTypeCode;
+            PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?) null : primitiveTypeCode;
         }
 
         public CodeElementKey(Handle handle) : this(MetadataState.GetCodeElementTypeForHandle(handle), handle)
@@ -71,7 +71,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
         }
 
-        public System.Type CodeElementType { get; }
+        public Type CodeElementType { get; }
 
         public Handle? Handle { get; }
 
@@ -106,7 +106,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                         {
                             equals = Equals(thisKeyValue, otherKeyValue);
                         }
-
                     }
                 }
                 else
@@ -126,7 +125,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 // ReSharper disable once LoopCanBeConvertedToQuery -- This is much easier to read as a loop. -- Jonathan Byrne 01/21/2017
                 foreach (var keyValue in KeyValues)
                 {
-                    hash = hash * 17 + (keyValue == null ? 0 : keyValue.GetHashCode()) * keyValue.GetType().GetHashCode();
+                    hash = hash * 17 + (keyValue == null ? 0 : keyValue.GetHashCode() * keyValue.GetType().GetHashCode());
                 }
 
                 hash = hash * 17 + CodeElementType.GetHashCode();

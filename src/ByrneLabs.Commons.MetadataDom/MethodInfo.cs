@@ -33,8 +33,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract PropertyInfoToExpose RelatedProperty { get; }
 
-        public abstract TypeInfoToExpose ReturnType { get; }
-
         public bool IsEventAdder => RelatedEvent != null && RelatedEvent.AddMethod == this;
 
         public bool IsEventRaiser => RelatedEvent != null && RelatedEvent.RaiseMethod == this;
@@ -53,11 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class MethodInfo : MethodInfoToExpose, IMemberInfo
     {
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
         public abstract string FullName { get; }
-
-        public abstract ModuleToExpose Module { get; }
 
         public abstract IEnumerable<ParameterInfoToExpose> Parameters { get; }
 
@@ -72,6 +66,10 @@ namespace ByrneLabs.Commons.MetadataDom
 #else
     public abstract partial class MethodInfo : MethodBase
     {
+        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
+
+        public abstract ModuleToExpose Module { get; }
+
     }
 #endif
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -40,8 +40,6 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal const BindingFlags DefaultLookup = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
 
-        public abstract AssemblyToExpose Assembly { get; }
-
         public abstract Guid BaseGenerationId { get; }
 
         public abstract int Generation { get; }
@@ -49,6 +47,27 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract Guid GenerationId { get; }
 
         public abstract bool Manifest { get; }
+
+        protected abstract FieldInfoToExpose[] GetAllFields();
+
+        protected abstract MethodInfoToExpose[] GetAllMethods();
+
+        private FieldInfoToExpose[] GetFieldsImpl(BindingFlags bindingFlags) => GetAllFields().OfType<FieldInfo>().Where(field => (field.BindingFlags & bindingFlags) == bindingFlags).ToArray();
+
+        private MethodInfoToExpose[] GetMethodsImpl(BindingFlags bindingFlags) => GetAllMethods().Cast<MethodInfo>().Where(method => (method.BindingFlags & bindingFlags) == bindingFlags).ToArray();
+    }
+
+#if NETSTANDARD2_0 || NET_FRAMEWORK
+    public abstract partial class Module : ModuleToExpose
+    {
+        public override FieldInfoToExpose[] GetFields(BindingFlags bindingFlags) => GetFieldsImpl(bindingFlags);
+
+        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingFlags) => GetMethodsImpl(bindingFlags);
+    }
+#else
+    public abstract partial class Module : ICustomAttributeProvider
+    {
+        public abstract AssemblyToExpose Assembly { get; }
 
         public abstract int MetadataToken { get; }
 
@@ -64,26 +83,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract bool IsResource();
 
-        protected abstract FieldInfoToExpose[] GetAllFields();
-
-        protected abstract MethodInfoToExpose[] GetAllMethods();
-
-        private FieldInfoToExpose[] GetFieldsImpl(BindingFlags bindingFlags) => GetAllFields().Cast<ByrneLabs.Commons.MetadataDom.FieldInfo>().Where(field => (field.BindingFlags & bindingFlags) == bindingFlags).ToArray();
-
-        private MethodInfoToExpose[] GetMethodsImpl(BindingFlags bindingFlags) => GetAllMethods().Cast<ByrneLabs.Commons.MetadataDom.MethodInfo>().Where(method => (method.BindingFlags & bindingFlags) == bindingFlags).ToArray();
-    }
-
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-    public abstract partial class Module : ModuleToExpose
-    {
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingFlags) => GetFieldsImpl(bindingFlags);
-
-        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingFlags) => GetMethodsImpl(bindingFlags);
-
-    }
-#else
-    public abstract partial class Module : ICustomAttributeProvider
-    {
         public abstract string FullyQualifiedName { get; }
 
         public virtual IEnumerable<CustomAttributeDataToExpose> CustomAttributes => GetCustomAttributesData();

@@ -25,11 +25,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public abstract ConstantInfo DefaultValue { get; }
 
-        public abstract MethodInfoToExpose GetMethod { get; }
-
         public abstract bool IsIndexer { get; }
-
-        public abstract MethodInfoToExpose SetMethod { get; }
 
         public bool IsPublic => GetMethod?.IsPublic != false && SetMethod?.IsPublic != false;
 
@@ -41,8 +37,6 @@ namespace ByrneLabs.Commons.MetadataDom
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class PropertyInfo : System.Reflection.PropertyInfo, IMemberInfo
     {
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
         public abstract string FullName { get; }
 
         public abstract bool IsSpecialName { get; }
@@ -53,15 +47,21 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
+        public bool IsInherited => DeclaringType == ReflectedType;
+
+        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
+
         public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw new NotSupportedException();
 
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw new NotSupportedException();
-
-        public bool IsInherited => DeclaringType == ReflectedType;
     }
 #else
     public abstract partial class PropertyInfo : MemberInfo
     {
+        public abstract MethodInfoToExpose GetMethod { get; }
+
+        public abstract MethodInfoToExpose SetMethod { get; }
+
         public abstract PropertyAttributes Attributes { get; }
 
         public abstract bool CanRead { get; }

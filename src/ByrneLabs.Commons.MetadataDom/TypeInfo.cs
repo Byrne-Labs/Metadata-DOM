@@ -40,46 +40,6 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public abstract partial class TypeInfo
     {
-        public abstract int ArrayRank { get; }
-
-        public abstract bool ContainsGenericParameters { get; }
-
-        public abstract MethodBaseToExpose DeclaringMethod { get; }
-
-        public abstract IEnumerable<TypeSystem.Document> Documents { get; }
-
-        public abstract TypeInfoToExpose ElementType { get; }
-
-        public abstract TypeInfoToExpose GenericTypeDefinition { get; }
-
-        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
-        public abstract TypeToExpose[] GenericTypeParameters { get; }
-
-        public abstract bool HasGenericTypeArguments { get; }
-
-        public abstract bool IsBoxed { get; }
-
-        public abstract bool IsByValue { get; }
-
-        public abstract bool IsConstant { get; }
-
-        public abstract bool IsDelegate { get; }
-
-        public abstract bool IsGenericTypeDefinition { get; }
-
-        public abstract bool IsSecurityCritical { get; }
-
-        public abstract bool IsSecuritySafeCritical { get; }
-
-        public abstract bool IsSecurityTransparent { get; }
-
-        public abstract bool IsVolatile { get; }
-
-        public abstract IEnumerable<Language> Languages { get; }
-
-        public abstract StructLayoutAttribute StructLayoutAttribute { get; }
-
-        public abstract ConstructorInfoToExpose TypeInitializer { get; }
 
         public bool IsPrimitive => IsPrimitiveImpl();
 
@@ -114,32 +74,36 @@ namespace ByrneLabs.Commons.MetadataDom
 
             return bindingFlags;
         }
+        public abstract IEnumerable<TypeSystem.Document> Documents { get; }
+
+        public abstract bool IsDelegate { get; }
+
+        public abstract IEnumerable<Language> Languages { get; }
+
+        public abstract ConstructorInfoToExpose TypeInitializer { get; }
+
+        public abstract int ArrayRank { get; }
+
+        public abstract TypeInfoToExpose ElementType { get; }
+
+        public abstract TypeInfoToExpose GenericTypeDefinition { get; }
+
+        public abstract bool HasGenericTypeArguments { get; }
+
+        public abstract bool IsBoxed { get; }
+
+        public abstract bool IsByValue { get; }
+
+        public abstract bool IsConstant { get; }
+
+        public abstract bool IsVolatile { get; }
+
     }
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 
     public abstract partial class TypeInfo : TypeDelegator, IMemberInfo
     {
-        protected abstract TypeAttributes GetAttributeFlagsImpl();
-
-        public abstract AssemblyToExpose Assembly { get; }
-
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
-        public abstract bool IsGenericParameter { get; }
-
-        public abstract bool IsGenericType { get; }
-
-        public abstract int MetadataToken { get; }
-
-        public abstract ModuleToExpose Module { get; }
-
-        public abstract string Name { get; }
-
-        public abstract string Namespace { get; }
-
         public abstract string TextSignature { get; }
-
-        public abstract RuntimeTypeHandle TypeHandle { get; }
 
         public override TypeToExpose[] GenericTypeArguments => GetGenericArguments();
 
@@ -151,12 +115,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeToExpose UnderlyingSystemType => throw new NotSupportedException();
 
-        public abstract int GetArrayRank();
-
-        public abstract TypeToExpose[] GetGenericArguments();
-
-        public abstract TypeToExpose GetGenericTypeDefinition();
-
         public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
 
         public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw new NotSupportedException();
@@ -166,6 +124,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
 
         public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw new NotSupportedException();
+
+        public override int GetHashCode() => FullName.GetHashCode() | 12345;
 
         public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw new NotSupportedException();
 
@@ -184,17 +144,34 @@ namespace ByrneLabs.Commons.MetadataDom
         public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw new NotSupportedException();
 
         public override object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters) => throw new NotSupportedException();
-
-        protected abstract ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers);
-
-        protected abstract MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers);
-
-        protected abstract PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers);
-
     }
 #else
     public abstract partial class TypeInfo : Type
     {
+
+        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
+
+        public abstract TypeToExpose[] GetGenericArguments();
+
+        public abstract TypeToExpose GetGenericTypeDefinition();
+
+        public abstract bool ContainsGenericParameters { get; }
+
+        public abstract MethodBaseToExpose DeclaringMethod { get; }
+
+        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
+        public abstract TypeToExpose[] GenericTypeParameters { get; }
+
+        public abstract bool IsGenericTypeDefinition { get; }
+
+        public abstract bool IsSecurityCritical { get; }
+
+        public abstract bool IsSecuritySafeCritical { get; }
+
+        public abstract bool IsSecurityTransparent { get; }
+
+        public abstract StructLayoutAttribute StructLayoutAttribute { get; }
+
         public virtual IEnumerable<ConstructorInfoToExpose> DeclaredConstructors => GetConstructors(DeclaredOnlyLookup);
 
         public virtual IEnumerable<EventInfoToExpose> DeclaredEvents => GetEvents(DeclaredOnlyLookup);

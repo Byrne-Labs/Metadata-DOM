@@ -27,18 +27,6 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class ParameterInfo
     {
-        public abstract ParameterAttributes Attributes { get; }
-
-        public abstract object DefaultValue { get; }
-
-        public abstract bool HasDefaultValue { get; }
-
-        public abstract MemberInfoToExpose Member { get; }
-
-        public abstract TypeToExpose ParameterType { get; }
-
-        public abstract int Position { get; }
-
         public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
 
         public bool IsLcid => (Attributes & ParameterAttributes.Lcid) != 0;
@@ -60,17 +48,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract bool IsSpecialName { get; }
 
-        public abstract int MetadataToken { get; }
-
         public abstract ModuleToExpose Module { get; }
-
-        public abstract string Name { get; }
 
         public MemberTypes MemberType => MemberTypes.Custom;
 
         public abstract bool IsCompilerGenerated { get; }
-
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
 
         public virtual string TextSignature => TextSignatureImpl();
 
@@ -80,6 +62,18 @@ namespace ByrneLabs.Commons.MetadataDom
 #else
     public abstract partial class ParameterInfo : MemberInfo
     {
+        public abstract ParameterAttributes Attributes { get; }
+
+        public abstract object DefaultValue { get; }
+
+        public abstract bool HasDefaultValue { get; }
+
+        public abstract MemberInfoToExpose Member { get; }
+
+        public abstract TypeToExpose ParameterType { get; }
+
+        public abstract int Position { get; }
+
         public override TypeToExpose DeclaringType => Member as TypeToExpose ?? Member.DeclaringType;
 
         public override MemberTypes MemberType => MemberTypes.Custom;
