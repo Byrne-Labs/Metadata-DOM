@@ -9,27 +9,33 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     public class PrimitiveType : EmptyTypeBase
     {
         private readonly Lazy<int> _metadataToken;
+        private readonly Lazy<SystemValueType> _baseType;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveType baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState, new CodeElementKey<PrimitiveType>(baseType, typeElementModifier))
         {
             PrimitiveTypeCode = baseType.PrimitiveTypeCode;
-            _metadataToken = new Lazy<int>(() => System.Type.GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
+            _metadataToken = new Lazy<int>(() => GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
+            _baseType = metadataState.GetLazyCodeElement<SystemValueType>();
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveType genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState, new CodeElementKey<PrimitiveType>(genericTypeDefinition, genericTypeArguments))
         {
             PrimitiveTypeCode = genericTypeDefinition.PrimitiveTypeCode;
-            _metadataToken = new Lazy<int>(() => System.Type.GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
+            _metadataToken = new Lazy<int>(() => GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
+            _baseType = metadataState.GetLazyCodeElement<SystemValueType>();
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveTypeCode primitiveTypeCode, MetadataState metadataState) : base(new CodeElementKey<PrimitiveType>(primitiveTypeCode), metadataState)
         {
             PrimitiveTypeCode = primitiveTypeCode;
-            _metadataToken = new Lazy<int>(() => System.Type.GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
+            _metadataToken = new Lazy<int>(() => GetType($"System.{PrimitiveTypeCode}").GetTypeInfo().MetadataToken);
+            _baseType = metadataState.GetLazyCodeElement<SystemValueType>();
         }
+
+        public override Type BaseType => _baseType.Value;
 
         public override int MetadataToken => _metadataToken.Value;
 

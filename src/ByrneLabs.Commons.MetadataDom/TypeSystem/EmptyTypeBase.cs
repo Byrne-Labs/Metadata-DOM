@@ -143,8 +143,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ConstructorInfoToExpose TypeInitializer => null;
 
-        public override TypeToExpose UnderlyingSystemType => null;
-
         internal override string MetadataNamespace => null;
 
         internal override string UndecoratedName => null;

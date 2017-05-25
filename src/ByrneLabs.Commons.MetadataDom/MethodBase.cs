@@ -53,6 +53,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract MethodImplAttributes GetMethodImplementationFlags();
 
         public abstract ParameterInfo[] GetParameters();
+
+        public abstract ParameterInfo ReturnParameter { get; }
     }
 }
 

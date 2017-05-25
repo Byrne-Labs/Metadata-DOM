@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.InteropServices;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Globalization;
 using System;
@@ -40,6 +39,29 @@ namespace ByrneLabs.Commons.MetadataDom
 {
     public abstract partial class TypeInfo
     {
+        public abstract int ArrayRank { get; }
+
+        public abstract IEnumerable<TypeSystem.Document> Documents { get; }
+
+        public abstract TypeInfoToExpose ElementType { get; }
+
+        public abstract TypeInfoToExpose GenericTypeDefinition { get; }
+
+        public abstract bool HasGenericTypeArguments { get; }
+
+        public abstract bool IsBoxed { get; }
+
+        public abstract bool IsByValue { get; }
+
+        public abstract bool IsConstant { get; }
+
+        public abstract bool IsDelegate { get; }
+
+        public abstract bool IsVolatile { get; }
+
+        public abstract IEnumerable<Language> Languages { get; }
+
+        public abstract ConstructorInfoToExpose TypeInitializer { get; }
 
         public bool IsPrimitive => IsPrimitiveImpl();
 
@@ -48,6 +70,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public override MemberTypes MemberType => IsNested ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
         public override TypeToExpose ReflectedType => DeclaringType;
+
+        public override TypeToExpose UnderlyingSystemType => throw new NotSupportedException();
 
         internal abstract string UndecoratedName { get; }
 
@@ -74,30 +98,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
             return bindingFlags;
         }
-        public abstract IEnumerable<TypeSystem.Document> Documents { get; }
-
-        public abstract bool IsDelegate { get; }
-
-        public abstract IEnumerable<Language> Languages { get; }
-
-        public abstract ConstructorInfoToExpose TypeInitializer { get; }
-
-        public abstract int ArrayRank { get; }
-
-        public abstract TypeInfoToExpose ElementType { get; }
-
-        public abstract TypeInfoToExpose GenericTypeDefinition { get; }
-
-        public abstract bool HasGenericTypeArguments { get; }
-
-        public abstract bool IsBoxed { get; }
-
-        public abstract bool IsByValue { get; }
-
-        public abstract bool IsConstant { get; }
-
-        public abstract bool IsVolatile { get; }
-
     }
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 
@@ -112,8 +112,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
         public override bool IsConstructedGenericType => throw new NotSupportedException();
-
-        public override TypeToExpose UnderlyingSystemType => throw new NotSupportedException();
 
         public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
 

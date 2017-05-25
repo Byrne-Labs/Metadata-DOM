@@ -43,6 +43,12 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsPropertySetter => RelatedProperty != null && RelatedProperty.SetMethod == this;
 
+        public override bool IsSecurityCritical => false;
+
+        public override bool IsSecuritySafeCritical => false;
+
+        public override bool IsSecurityTransparent => false;
+
         public override MemberTypes MemberType => MemberTypes.Method;
 
         internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);

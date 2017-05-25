@@ -53,7 +53,6 @@
         <Compile Remove="TypeSystem\ManifestResource.cs" />
         <Compile Remove="TypeSystem\MethodDefinitionBase.cs" />
         <Compile Remove="TypeSystem\MethodImplementation.cs" />
-        <Compile Remove="TypeSystem\MethodImport.cs" />
         <Compile Remove="TypeSystem\MethodSpecification.cs" />
         <Compile Remove="TypeSystem\RuntimeCodeElement.cs" />
     </ItemGroup>

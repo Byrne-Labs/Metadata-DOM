@@ -157,8 +157,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ConstructorInfoToExpose TypeInitializer => DeclaredConstructors.SingleOrDefault(constructor => !constructor.GetParameters().Any());
 
-        public override TypeToExpose UnderlyingSystemType => throw new NotSupportedException();
-
         internal override string MetadataNamespace => RawMetadata.Namespace.IsNil ? null : MetadataState.AssemblyReader.GetString(RawMetadata.Namespace);
 
         internal override string UndecoratedName => MetadataState.AssemblyReader.GetString(RawMetadata.Name);

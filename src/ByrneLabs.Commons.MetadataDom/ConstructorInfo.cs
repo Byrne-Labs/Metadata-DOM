@@ -35,6 +35,12 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsInherited => DeclaringType == ReflectedType;
 
+        public override bool IsSecurityCritical => false;
+
+        public override bool IsSecuritySafeCritical => false;
+
+        public override bool IsSecurityTransparent => false;
+
         public override ParameterInfoToExpose[] GetParameters() => Parameters.ToArray();
     }
 #else
