@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ByrneLabs.Commons.MetadataDom.TypeSystem;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
-    public class MetadataChecker
+    internal class MetadataChecker
     {
         private readonly CheckState _checkState;
 
@@ -28,22 +29,22 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             CheckCodeElement(_checkState.Metadata, false);
         }
 
-        private void CheckCodeElement(CodeElement codeElement, bool excludeAssemblies)
+        private void CheckCodeElement(IManagedCodeElement codeElement, bool excludeAssemblies)
         {
             if (!_checkState.HasBeenChecked(codeElement))
             {
-                var discoveredCodeElements = new List<CodeElement>();
+                var discoveredCodeElements = new List<IManagedCodeElement>();
                 foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties())
                 {
                     try
                     {
                         var propertyValue = property.GetValue(codeElement);
-                        var codeElementPropertyValue = propertyValue as CodeElement;
-                        var codeElementsPropertyValue = (propertyValue as IEnumerable)?.OfType<CodeElement>();
+                        var codeElementPropertyValue = propertyValue as IManagedCodeElement;
+                        var codeElementsPropertyValue = (propertyValue as IEnumerable)?.OfType<IManagedCodeElement>();
                         /*
                          * The following code is horribly hackish but ImmutableArrays do not support most LINQ methods and as generic structs, are a little clumsy to handle. -- Jonathan Byrne 01/21/2017
                          */
-                        if (propertyValue?.GetType().FullName.StartsWith("System.Collections.Immutable.ImmutableArray`1") == true && typeof(CodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
+                        if (propertyValue?.GetType().FullName.StartsWith("System.Collections.Immutable.ImmutableArray`1") == true && typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
                         {
                         }
                         if (codeElementsPropertyValue != null)

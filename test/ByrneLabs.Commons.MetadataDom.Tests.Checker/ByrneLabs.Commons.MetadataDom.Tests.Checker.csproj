@@ -1,11 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <DebugType>full</DebugType>
+        <DebugSymbols>True</DebugSymbols>
+        <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
+        <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview1-25301-01" />
+    </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard1.6|AnyCPU'">
+        <TargetFramework>netstandard1.6</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
+    </ItemGroup>
 </Project>

@@ -1,72 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Reflection.Metadata;
+﻿using System.Collections.Immutable;
+using JetBrains.Annotations;
+#if NETSTANDARD2_0 || NET_FRAMEWORK
+using MethodBaseToExpose = System.Reflection.MethodBase;
+
+#else
+using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
+
+#endif
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    /// <inheritdoc cref="System.Reflection.Metadata.LocalScope" />
-    //[PublicAPI]
-    public class LocalScope : DebugCodeElement, ICodeElementWithTypedHandle<LocalScopeHandle, System.Reflection.Metadata.LocalScope>
+    [PublicAPI]
+    public abstract class LocalScope
     {
-        private readonly Lazy<ImmutableArray<LocalScope>> _children;
-        private readonly Lazy<ImportScope> _importScope;
-        private readonly Lazy<ImmutableArray<LocalConstant>> _localConstants;
-        private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
-        private readonly Lazy<MethodDefinitionBase> _method;
+        public abstract ImmutableArray<LocalScope> Children { get; }
 
-        internal LocalScope(LocalScopeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
-        {
-            MetadataHandle = metadataHandle;
-            RawMetadata = Reader.GetLocalScope(metadataHandle);
-            EndOffset = RawMetadata.EndOffset;
-            _importScope = MetadataState.GetLazyCodeElement<ImportScope>(RawMetadata.ImportScope);
-            Length = RawMetadata.Length;
-            _method = MetadataState.GetLazyCodeElement<MethodDefinitionBase>(RawMetadata.Method);
-            StartOffset = RawMetadata.StartOffset;
-            _children = new Lazy<ImmutableArray<LocalScope>>(LoadChildren);
-            _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(RawMetadata.GetLocalConstants());
-            _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(RawMetadata.GetLocalVariables());
-        }
+        public abstract int EndOffset { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.GetChildren" />
-        public ImmutableArray<LocalScope> Children => _children.Value;
+        public abstract ImportScope ImportScope { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.EndOffset" />
-        public int EndOffset { get; }
+        public abstract int Length { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.ImportScope" />
-        public ImportScope ImportScope => _importScope.Value;
+        public abstract ImmutableArray<LocalConstantInfo> LocalConstants { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.Length" />
-        public int Length { get; }
+        public abstract ImmutableArray<LocalVariableInfo> LocalVariables { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.GetLocalConstants" />
-        public ImmutableArray<LocalConstant> LocalConstants => _localConstants.Value;
+        public abstract MethodBaseToExpose Method { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.GetLocalVariables" />
-        public ImmutableArray<LocalVariable> LocalVariables => _localVariables.Value;
-
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.Method" />
-        public MethodDefinitionBase Method => _method.Value;
-
-        /// <inheritdoc cref="System.Reflection.Metadata.LocalScope.StartOffset" />
-        public int StartOffset { get; }
-
-        public System.Reflection.Metadata.LocalScope RawMetadata { get; }
-
-        public LocalScopeHandle MetadataHandle { get; }
-
-        private ImmutableArray<LocalScope> LoadChildren()
-        {
-            var childrenHandles = new List<LocalScopeHandle>();
-            var childrenEnumerator = RawMetadata.GetChildren();
-            while (childrenEnumerator.MoveNext())
-            {
-                childrenHandles.Add(childrenEnumerator.Current);
-            }
-
-            return MetadataState.GetCodeElements<LocalScope>(childrenHandles);
-        }
+        public abstract int StartOffset { get; }
     }
 }

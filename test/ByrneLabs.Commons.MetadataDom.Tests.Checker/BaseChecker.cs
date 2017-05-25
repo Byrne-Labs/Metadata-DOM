@@ -4,10 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ByrneLabs.Commons.MetadataDom.TypeSystem;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
-    public class BaseChecker
+    internal class BaseChecker
     {
         private readonly CheckState _checkState = new CheckState();
 
@@ -122,7 +123,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             return _checkState;
         }
 
-        protected virtual Assembly LoadAssembly() => null;
+        protected virtual System.Reflection.Assembly LoadAssembly() => null;
 
         private void CheckPhaseAssemblyLoad()
         {
@@ -209,7 +210,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     string folderName;
                     if (_checkState.Metadata?.AssemblyDefinition != null)
                     {
-                        folderName = $"{_checkState.Metadata.AssemblyDefinition.Name.Name}--{_checkState.Metadata.AssemblyDefinition.Name.Version}--{_checkState.Metadata.AssemblyDefinition.Name.CultureName}";
+                        folderName = $"{_checkState.Metadata.AssemblyDefinition.GetName().Name}--{_checkState.Metadata.AssemblyDefinition.GetName().Version}--{_checkState.Metadata.AssemblyDefinition.GetName().CultureName}";
                     }
                     else
                     {

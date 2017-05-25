@@ -62,6 +62,14 @@
         <BuildWith>core</BuildWith>
       </PropertyGroup>
     </When>
+    <When Condition="'$(BuildFrameworkTarget)' == 'netstandard2.0'">
+      <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <NetStandardImplicitPackageVersion>2.0.0-preview1-25131-01</NetStandardImplicitPackageVersion>
+        <RuntimeFrameworkVersion>2.0.0-preview1-001915-00</RuntimeFrameworkVersion>
+        <BuildWith>core</BuildWith>
+      </PropertyGroup>
+    </When>
     <When Condition="'$(BuildFrameworkTarget)' == 'xamarinios10'">
       <PropertyGroup>
         <ProductVersion>8.0.30703</ProductVersion>

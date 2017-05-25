@@ -1,56 +1,21 @@
-﻿using System;
-using System.Collections.Immutable;
-using System.Reflection.Metadata;
+﻿#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
+using System.Collections.Generic;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock" />
-    //[PublicAPI]
-    public class MethodBody : RuntimeCodeElement, ICodeElementWithRawMetadata<MethodBodyBlock>
+    public abstract class MethodBody
     {
-        private readonly Lazy<ImmutableArray<ExceptionRegion>> _exceptionRegions;
-        private readonly Lazy<StandaloneSignature> _localSignature;
+        public abstract IList<ExceptionHandlingClause> ExceptionHandlingClauses { get; }
 
-        internal MethodBody(int relativeVirtualAddress, MetadataState metadataState) : base(new CodeElementKey<MethodBody>(relativeVirtualAddress), metadataState)
-        {
-            RawMetadata = MetadataState.GetMethodBodyBlock(relativeVirtualAddress);
-            _exceptionRegions = MetadataState.GetLazyCodeElements<ExceptionRegion>(RawMetadata.ExceptionRegions);
-            _localSignature = new Lazy<StandaloneSignature>(() =>
-            {
-                StandaloneSignature localSignature;
-                if (RawMetadata.LocalSignature.IsNil)
-                {
-                    localSignature = null;
-                }
-                else
-                {
-                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(RawMetadata.LocalSignature);
-                    localSignature.GenericContext = GenericContext;
-                }
-                return localSignature;
-            });
-            LocalVariablesInitialized = RawMetadata.LocalVariablesInitialized;
-            MaxStack = RawMetadata.MaxStack;
-            Size = RawMetadata.Size;
-        }
+        public abstract bool InitLocals { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.ExceptionRegions" />
-        public ImmutableArray<ExceptionRegion> ExceptionRegions => _exceptionRegions.Value;
+        public abstract int LocalSignatureMetadataToken { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.LocalSignature" />
-        public StandaloneSignature LocalSignature => _localSignature.Value;
+        public abstract IList<LocalVariableInfo> LocalVariables { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.LocalVariablesInitialized" />
-        public bool LocalVariablesInitialized { get; }
+        public abstract int MaxStackSize { get; }
 
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.MaxStack" />
-        public int MaxStack { get; }
-
-        /// <inheritdoc cref="System.Reflection.Metadata.MethodBodyBlock.Size" />
-        public int Size { get; }
-
-        internal GenericContext GenericContext { get; set; }
-
-        public MethodBodyBlock RawMetadata { get; }
+        public abstract byte[] GetILAsByteArray();
     }
 }
+#endif

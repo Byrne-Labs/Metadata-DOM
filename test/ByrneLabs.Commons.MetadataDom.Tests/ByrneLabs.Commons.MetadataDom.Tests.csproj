@@ -2,24 +2,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp1.1</TargetFramework>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+        <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170125-04" />
-        <PackageReference Include="xunit" Version="2.2.0-beta6-build3482" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta6-build1239" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170427-09" />
+      <PackageReference Include="xunit" Version="2.2.0" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
+      <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore.csproj" />
+      <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.csproj" />
+      <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
+      <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
     </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore.csproj" />
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.csproj" />
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj" />
-  </ItemGroup>
-
 </Project>

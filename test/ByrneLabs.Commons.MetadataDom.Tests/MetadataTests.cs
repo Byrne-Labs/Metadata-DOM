@@ -4,7 +4,6 @@ using System.Linq;
 using ByrneLabs.Commons.MetadataDom.Tests.Checker;
 using Xunit;
 using Xunit.Abstractions;
-using System.Threading.Tasks;
 using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests

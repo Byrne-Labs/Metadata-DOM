@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
 {
-    public class NetFrameworkChecker : BaseChecker
+    internal class NetFrameworkChecker : BaseChecker
     {
         public NetFrameworkChecker(IReadOnlyList<string> args) : base(args)
         {
@@ -14,6 +14,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
         {
         }
 
-        protected override Assembly LoadAssembly() => Assembly.LoadFile(AssemblyFile.FullName);
+        protected override System.Reflection.Assembly LoadAssembly() => Assembly.LoadFile(AssemblyFile.FullName);
     }
 }

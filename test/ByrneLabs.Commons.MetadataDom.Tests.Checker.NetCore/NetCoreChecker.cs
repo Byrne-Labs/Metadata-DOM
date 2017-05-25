@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Runtime.Loader;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore
 {
-    public class NetCoreChecker : BaseChecker
+    internal class NetCoreChecker : BaseChecker
     {
         public NetCoreChecker(IReadOnlyList<string> args) : base(args)
         {
@@ -21,6 +20,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore
             return checker.Check();
         }
 
-        protected override Assembly LoadAssembly() => AssemblyLoadContext.Default.LoadFromAssemblyPath(AssemblyFile.FullName);
+        protected override System.Reflection.Assembly LoadAssembly() => AssemblyLoadContext.Default.LoadFromAssemblyPath(AssemblyFile.FullName);
     }
 }

@@ -1,19 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Label="Configuration">
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <WarningLevel>0</WarningLevel>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
-    <PackageReference Include="System.Reflection.Metadata" Version="1.4.2" />
-  </ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+    <PropertyGroup Label="Configuration">
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <WarningLevel>0</WarningLevel>
+        <DebugSymbols>True</DebugSymbols>
+        <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DebugType>full</DebugType>
+        <DefineConstants>TRACE;DEBUG</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard1.6|AnyCPU'">
+        <TargetFramework>netstandard1.6</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="PortablePdb\**" />
+        <Compile Remove="WindowsPdb\**" />
+        <EmbeddedResource Remove="PortablePdb\**" />
+        <EmbeddedResource Remove="WindowsPdb\**" />
+        <None Remove="PortablePdb\**" />
+        <None Remove="WindowsPdb\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="TypeSystem\AssemblyFile.cs" />
+        <Compile Remove="TypeSystem\Blob.cs" />
+        <Compile Remove="TypeSystem\CodeElement.cs" />
+        <Compile Remove="TypeSystem\CustomDebugInformation.cs" />
+        <Compile Remove="TypeSystem\DebugCodeElement.cs" />
+        <Compile Remove="TypeSystem\DeclarativeSecurityAttribute.cs" />
+        <Compile Remove="TypeSystem\ExportedType.cs" />
+        <Compile Remove="TypeSystem\GenericParameterConstraint.cs" />
+        <Compile Remove="TypeSystem\GlobalSuppressions.cs" />
+        <Compile Remove="TypeSystem\HashAlgorithm.cs" />
+        <Compile Remove="TypeSystem\IAssembly.cs" />
+        <Compile Remove="TypeSystem\ICodeElementWithRawMetadata.cs" />
+        <Compile Remove="TypeSystem\ICodeElementWithTypedHandle.cs" />
+        <Compile Remove="TypeSystem\IConstructor.cs" />
+        <Compile Remove="TypeSystem\IContainsSourceCode.cs" />
+        <Compile Remove="TypeSystem\IField.cs" />
+        <Compile Remove="TypeSystem\IMember.cs" />
+        <Compile Remove="TypeSystem\IMethod.cs" />
+        <Compile Remove="TypeSystem\IMethodBase.cs" />
+        <Compile Remove="TypeSystem\IModule.cs" />
+        <Compile Remove="TypeSystem\ImportDefinition.cs" />
+        <Compile Remove="TypeSystem\ImportScope.cs" />
+        <Compile Remove="TypeSystem\LocalConstant.cs" />
+        <Compile Remove="TypeSystem\LocalScope.cs" />
+        <Compile Remove="TypeSystem\LocalVariable.cs" />
+        <Compile Remove="TypeSystem\ManifestResource.cs" />
+        <Compile Remove="TypeSystem\MethodDefinitionBase.cs" />
+        <Compile Remove="TypeSystem\MethodImplementation.cs" />
+        <Compile Remove="TypeSystem\MethodImport.cs" />
+        <Compile Remove="TypeSystem\MethodSpecification.cs" />
+        <Compile Remove="TypeSystem\RuntimeCodeElement.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
+        <PackageReference Include="System.Reflection.Metadata" Version="1.4.2" />
+    </ItemGroup>
 </Project>

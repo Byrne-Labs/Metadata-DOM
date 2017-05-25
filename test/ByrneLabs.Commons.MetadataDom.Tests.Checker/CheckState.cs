@@ -4,20 +4,22 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ByrneLabs.Commons.MetadataDom.TypeSystem;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
-    public class CheckState
+    internal class CheckState
     {
-        private static readonly string[] _invalidErrorsRegex =
-        {
-            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
-            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+ with reflection$"
-        };
+        private static readonly string[] _allFilterRegex;
         private static readonly string[] _ignoredErrorsRegex =
         {
             @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$",
             @"System\.BadImageFormatException: Invalid method header: 0x[0-9A-F][0-9A-F](?: 0x[0-9A-F][0-9A-F])?\s*at System\.Reflection\.Metadata\.MethodBodyBlock\.Create\(BlobReader reader\)"
+        };
+        private static readonly string[] _invalidErrorsRegex =
+        {
+            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+\(\) with reflection$",
+            @"^Could not find Method [\.\w]+\._VtblGap\d+_\d+ with reflection$"
         };
         private static readonly string[] _likelyFrameworkBugErrorsRegex =
         {
@@ -27,9 +29,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             @"<\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.+?Name has a value of <\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.*? in metadata but a value of <\w+?>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\}.*? in reflection",
             @"System\.FormatException: Encountered an invalid type for a default value\."
         };
-        private static string[] _allFilterRegex;
-        private readonly List<CodeElement> _checkedMetadataElements = new List<CodeElement>();
-        private readonly List<Tuple<CodeElement, object>> _comparedElements = new List<Tuple<CodeElement, object>>();
+        private readonly List<IManagedCodeElement> _checkedMetadataElements = new List<IManagedCodeElement>();
+        private readonly List<Tuple<IManagedCodeElement, object>> _comparedElements = new List<Tuple<IManagedCodeElement, object>>();
         private readonly List<string> _errors = new List<string>();
         private readonly List<Tuple<CheckPhase, Exception, object>> _exceptions = new List<Tuple<CheckPhase, Exception, object>>();
         private string _errorLogText;
@@ -51,9 +52,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             StartTime = DateTime.Now;
         }
 
-        public Assembly Assembly { get; set; }
+        public System.Reflection.Assembly Assembly { get; set; }
 
-        public ImmutableArray<CodeElement> CheckedMetadataElements
+        public ImmutableArray<IManagedCodeElement> CheckedMetadataElements
         {
             get
             {
@@ -64,13 +65,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public ImmutableArray<IMember> ComparedMetadataMembers
+        public ImmutableArray<IMemberInfo> ComparedMetadataMembers
         {
             get
             {
                 lock (_comparedElements)
                 {
-                    return _comparedElements.Select(checkedElement => checkedElement.Item1).OfType<IMember>().Distinct().ToImmutableArray();
+                    return _comparedElements.Select(checkedElement => checkedElement.Item1).OfType<IMemberInfo>().Distinct().ToImmutableArray();
                 }
             }
         }
@@ -114,7 +115,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?)null;
+        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?) null;
 
         public bool FailedValidation => Errors.Any() && !Faulted && !LikelyFrameworkBugFound;
 
@@ -267,7 +268,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public bool HasBeenChecked(CodeElement codeElement)
+        public bool HasBeenChecked(IManagedCodeElement codeElement)
         {
             lock (_checkedMetadataElements)
             {
@@ -281,11 +282,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public bool HaveBeenCompared(CodeElement metadataElement, object reflectionElement)
+        public bool HaveBeenCompared(IManagedCodeElement metadataElement, object reflectionElement)
         {
             lock (_comparedElements)
             {
-                var key = new Tuple<CodeElement, object>(metadataElement, reflectionElement);
+                var key = new Tuple<IManagedCodeElement, object>(metadataElement, reflectionElement);
                 var haveBeenCompared = _comparedElements.Contains(key);
                 if (!haveBeenCompared)
                 {

@@ -1,18 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>exe</OutputType>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+        <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DebugType>full</DebugType>
+        <DebugSymbols>True</DebugSymbols>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="NETStandard.Library">
+            <!-- This package reference is needed because of a bug in MSBuild.  It can be removed as soon as the bug is fixed. -->
+            <Version>2.0.0-preview1-25301-01</Version>
+        </PackageReference>
+        <PackageReference Include="NETStandard.Library.NETFramework">
+            <!-- This package reference is needed because of a bug in MSBuild.  It can be removed as soon as the bug is fixed. -->
+            <Version>2.0.0-preview1-25305-02</Version>
+        </PackageReference>
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
+      <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
+    </ItemGroup>
 </Project>
