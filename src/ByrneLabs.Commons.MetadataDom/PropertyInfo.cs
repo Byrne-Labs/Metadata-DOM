@@ -49,8 +49,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsInherited => DeclaringType == ReflectedType;
 
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
         public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw new NotSupportedException();
 
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw new NotSupportedException();

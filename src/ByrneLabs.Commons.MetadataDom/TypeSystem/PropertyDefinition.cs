@@ -98,7 +98,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override MethodInfoToExpose[] GetAccessors(bool nonPublic) => throw new NotImplementedException();
+        public override MethodInfoToExpose[] GetAccessors(bool nonPublic) => new[] { GetMethod, SetMethod }.Where(method => method != null).Where(method => method.IsPublic || nonPublic).ToArray();
 
         // ReSharper disable once RedundantTypeArgumentsOfMethod
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
@@ -113,11 +113,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public partial class PropertyDefinition
     {
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotImplementedException();
+        public override object[] GetCustomAttributes(bool inherit) => CustomAttributeData.GetCustomAttributes(this, inherit);
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotImplementedException();
+        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => CustomAttributeData.GetCustomAttributes(this, attributeType, inherit);
 
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw new NotImplementedException();
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => CustomAttributeData.IsDefined(this, attributeType, inherit);
     }
 #else
     public partial class PropertyDefinition

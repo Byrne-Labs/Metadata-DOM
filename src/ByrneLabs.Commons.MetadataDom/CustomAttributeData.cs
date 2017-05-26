@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
 using CustomAttributeTypedArgumentToExpose = System.Reflection.CustomAttributeTypedArgument;
 using CustomAttributeNamedArgumentToExpose = System.Reflection.CustomAttributeNamedArgument;
+using TypeToExpose = System.Type;
 
 #else
 using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
@@ -18,6 +19,20 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class CustomAttributeData
     {
+        internal static object[] GetCustomAttributes(IMemberInfo member, bool inherit)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static object[] GetCustomAttributes(IMemberInfo member, TypeToExpose attributeType, bool inherit)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

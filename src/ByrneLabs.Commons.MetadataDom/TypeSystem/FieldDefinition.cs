@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Globalization;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -84,7 +84,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
         public override object GetRawConstantValue() => DefaultValue.Value;
-
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
@@ -92,14 +91,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         public override RuntimeFieldHandle FieldHandle => throw new NotSupportedException();
 
-        public override object GetValue(object obj) => throw new NotSupportedException();
         public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+
+        public override object GetValue(object obj) => throw new NotSupportedException();
+
         public override bool IsDefined(Type attributeType, bool inherit) => throw new NotSupportedException();
 
-        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw new NotImplementedException();
-
+        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw new NotSupportedException();
     }
 #else
     public partial class FieldDefinition

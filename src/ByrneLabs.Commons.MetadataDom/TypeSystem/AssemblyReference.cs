@@ -56,11 +56,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
         }
 
-        public override string CodeBase { get; }
+        public override string CodeBase => throw new NotSupportedException();
 
         public override IEnumerable<TypeInfoToExpose> DefinedTypes { get; } = ImmutableArray<TypeInfoToExpose>.Empty;
 
         public override MethodInfoToExpose EntryPoint => throw new NotSupportedException();
+
+        public override string EscapedCodeBase => throw new NotSupportedException();
 
         public override AssemblyFlags Flags { get; }
 
@@ -75,6 +77,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
 
         public override TypeToExpose[] GetExportedTypes() => throw new NotSupportedException();
+
+        public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw new NotSupportedException();
 
         public override ManifestResourceInfo GetManifestResourceInfo(string resourceName) => throw new NotSupportedException();
 

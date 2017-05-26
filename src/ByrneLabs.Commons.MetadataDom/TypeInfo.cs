@@ -105,6 +105,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeToExpose[] GenericTypeArguments => GetGenericArguments();
 
+        public override Guid GUID => throw new NotSupportedException();
+
         public bool IsCOMObject => throw new NotSupportedException();
 
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));

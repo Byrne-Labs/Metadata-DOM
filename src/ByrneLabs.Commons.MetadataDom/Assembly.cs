@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using ByrneLabs.Commons.MetadataDom.TypeSystem;
@@ -110,6 +109,12 @@ namespace ByrneLabs.Commons.MetadataDom
     public abstract partial class Assembly : AssemblyToExpose, IDisposable
     {
         public override string FullName => GetName().FullName;
+
+        public override bool GlobalAssemblyCache => throw new NotSupportedException();
+
+        public override long HostContext => throw new NotSupportedException();
+
+        public override string ImageRuntimeVersion => throw new NotSupportedException();
 
         public override bool ReflectionOnly => true;
     }

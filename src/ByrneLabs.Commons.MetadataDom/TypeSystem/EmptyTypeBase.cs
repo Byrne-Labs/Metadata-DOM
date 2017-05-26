@@ -147,39 +147,39 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal override string UndecoratedName => null;
 
-        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingAttr) => throw new NotSupportedException();
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => Enumerable.Empty<CustomAttributeDataToExpose>().ToImmutableList();
 
-        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override TypeToExpose[] GetGenericArguments() => throw new NotImplementedException();
+        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
 
-        public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw new NotImplementedException();
+        public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw new NotSupportedException();
 
-        public override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw new NotImplementedException();
+        public override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw new NotSupportedException();
 
-        public override TypeToExpose[] GetInterfaces() => throw new NotImplementedException();
+        public override TypeToExpose[] GetInterfaces() => throw new NotSupportedException();
 
-        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override TypeToExpose GetNestedType(string name, BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override TypeToExpose GetNestedType(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        protected override TypeAttributes GetAttributeFlagsImpl() => throw new NotImplementedException();
+        protected override TypeAttributes GetAttributeFlagsImpl() => throw new NotSupportedException();
 
         protected override bool IsCOMObjectImpl() => throw new NotSupportedException();
 
-        protected override bool IsMarshalByRefImpl() => throw new NotImplementedException();
+        protected override bool IsMarshalByRefImpl() => throw new NotSupportedException();
 
-        protected override bool IsPrimitiveImpl() => throw new NotImplementedException();
+        protected override bool IsPrimitiveImpl() => throw new NotSupportedException();
     }
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 

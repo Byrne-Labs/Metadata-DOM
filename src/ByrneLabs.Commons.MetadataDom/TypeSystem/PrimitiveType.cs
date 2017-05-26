@@ -8,8 +8,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class PrimitiveType : EmptyTypeBase
     {
-        private readonly Lazy<int> _metadataToken;
         private readonly Lazy<SystemValueType> _baseType;
+        private readonly Lazy<int> _metadataToken;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal PrimitiveType(PrimitiveType baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState, new CodeElementKey<PrimitiveType>(baseType, typeElementModifier))
@@ -42,6 +42,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override string Namespace { get; } = "System";
 
         public PrimitiveTypeCode PrimitiveTypeCode { get; }
+
+        public override string TextSignature => FullName;
 
         internal override string MetadataNamespace { get; } = "System";
 

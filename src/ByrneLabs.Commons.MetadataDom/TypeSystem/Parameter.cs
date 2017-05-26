@@ -69,7 +69,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ParameterAttributes Attributes { get; }
 
-        public override object DefaultValue => _defaultValue.Value.Value;
+        public override object DefaultValue => _defaultValue.Value;
 
         public override string FullName => Name;
 

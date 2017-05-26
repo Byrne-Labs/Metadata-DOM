@@ -55,11 +55,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _moduleDefinition = MetadataState.GetLazyCodeElement<Module>(Handle.ModuleDefinition);
         }
 
-        public override string CodeBase { get; }
+        public override string CodeBase => throw new NotImplementedException();
 
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         public override MethodInfoToExpose EntryPoint => _entryPoint.Value;
+
+        public override string EscapedCodeBase => throw new NotImplementedException();
 
         public override AssemblyFlags Flags { get; }
 
@@ -72,6 +74,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
 
         public override TypeToExpose[] GetExportedTypes() => MetadataState.DefinedTypes.Where(type => type.IsPublic).Cast<Type>().ToArray();
+
+        public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw new NotImplementedException();
 
         public override ManifestResourceInfo GetManifestResourceInfo(string resourceName) => throw new NotImplementedException();
 

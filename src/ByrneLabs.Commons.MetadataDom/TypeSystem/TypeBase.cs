@@ -189,13 +189,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed TypeToExpose GetElementType() => ElementType;
 
-        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw new NotSupportedException();
 
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw new NotSupportedException();
 
         public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
 
-        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw new NotImplementedException();
+        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw new NotSupportedException();
 
         protected override sealed bool HasElementTypeImpl() => ElementType != null;
 

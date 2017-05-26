@@ -24,7 +24,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
         private readonly Lazy<ImmutableArray<ManifestResource>> _manifestResources;
         private readonly Lazy<ImmutableArray<IMemberInfo>> _memberDefinitions;
-        private readonly Lazy<ImmutableArray<MemberReferenceBase>> _memberReferences;
         private readonly Lazy<ImmutableArray<MethodDebugInformation>> _methodDebugInformation;
         private readonly Lazy<ImmutableArray<MethodBase>> _methodDefinitions;
         private readonly Lazy<ImmutableArray<PropertyDefinition>> _propertyDefinitions;
@@ -64,7 +63,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 _typeDefinitions = new Lazy<ImmutableArray<TypeDefinition>>(() => MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToImmutableArray());
                 _typeReferences = MetadataState.GetLazyCodeElements<TypeReference>(Reader.TypeReferences);
                 _memberDefinitions = new Lazy<ImmutableArray<IMemberInfo>>(() => MethodDefinitions.Cast<IMemberInfo>().Union(FieldDefinitions).Union(EventDefinitions).Union(PropertyDefinitions).Union(TypeDefinitions).ToImmutableArray());
-                _memberReferences = MetadataState.GetLazyCodeElements<MemberReferenceBase>(Reader.MemberReferences);
                 MetadataKind = Reader.MetadataKind;
             }
             else
@@ -81,7 +79,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 _typeDefinitions = new Lazy<ImmutableArray<TypeDefinition>>(() => ImmutableArray<TypeDefinition>.Empty);
                 _typeReferences = new Lazy<ImmutableArray<TypeReference>>(() => ImmutableArray<TypeReference>.Empty);
                 _memberDefinitions = new Lazy<ImmutableArray<IMemberInfo>>(() => ImmutableArray<IMemberInfo>.Empty);
-                _memberReferences = new Lazy<ImmutableArray<MemberReferenceBase>>(() => ImmutableArray<MemberReferenceBase>.Empty);
             }
             if (MetadataState.HasDebugMetadata)
             {
@@ -143,8 +140,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public ImmutableArray<ManifestResource> ManifestResources => _manifestResources.Value;
 
         public ImmutableArray<IMemberInfo> MemberDefinitions => _memberDefinitions.Value;
-
-        public ImmutableArray<MemberReferenceBase> MemberReferences => _memberReferences.Value;
 
         public MetadataKind MetadataKind { get; }
 

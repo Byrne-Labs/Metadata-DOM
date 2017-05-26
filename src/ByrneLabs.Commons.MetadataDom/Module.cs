@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -47,6 +46,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract Guid GenerationId { get; }
 
         public abstract bool Manifest { get; }
+
+        public override int MDStreamVersion => throw new NotSupportedException();
 
         protected abstract FieldInfoToExpose[] GetAllFields();
 

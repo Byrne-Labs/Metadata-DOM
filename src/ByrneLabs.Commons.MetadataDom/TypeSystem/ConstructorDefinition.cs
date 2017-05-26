@@ -167,7 +167,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotImplementedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
 
         public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
     }

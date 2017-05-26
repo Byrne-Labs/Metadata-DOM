@@ -89,7 +89,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 ImmutableArray<ParameterInfoToExpose> parameters;
                 // ReSharper disable once RedundantEnumerableCastCall
-                parameters = constructorDefinition.GetParameters().Cast<ParameterInfoToExpose>().ToImmutableArray();
+                if (constructorDefinition != null)
+                {
+                    parameters = constructorDefinition.GetParameters().Cast<ParameterInfoToExpose>().ToImmutableArray();
+                }
 
                 return parameters;
             });
@@ -112,6 +115,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public MemberTypes MemberType => IsConstructor ? MemberTypes.Constructor : MemberTypes.Method;
 
         public MemberReferenceHandle MetadataHandle { get; }
+
+        public override ModuleToExpose Module => throw new NotSupportedException();
 
         public override string Name { get; }
 
@@ -153,7 +158,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotImplementedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
 
         public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
 

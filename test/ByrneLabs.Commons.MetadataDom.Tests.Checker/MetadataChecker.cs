@@ -73,22 +73,24 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         private void RecordMemberError(Exception exception, IManagedCodeElement codeElement, MemberInfo property)
         {
+            Exception realException;
             var targetInvocationException = exception as TargetInvocationException;
-            //We can ignore not supported exceptions
             if (targetInvocationException != null)
             {
-                if (targetInvocationException.InnerException is NotSupportedException)
-                {
-                    _ignoredMembers.Add(property);
-                }
-                else
-                {
-                    _checkState.AddException(exception.InnerException, codeElement, CheckPhase.MetadataCheck);
-                }
+                realException = exception.InnerException;
             }
             else
             {
-                _checkState.AddException(exception, codeElement, CheckPhase.MetadataCheck);
+                realException = exception;
+            }
+            if (realException is NotSupportedException)
+            {
+                //We can ignore not supported exceptions
+                _ignoredMembers.Add(property);
+            }
+            else if (!(realException is InvalidOperationException))
+            {
+                _checkState.AddException(realException, codeElement, CheckPhase.MetadataCheck);
             }
 
             if (!_memberErrorCount.ContainsKey(property))

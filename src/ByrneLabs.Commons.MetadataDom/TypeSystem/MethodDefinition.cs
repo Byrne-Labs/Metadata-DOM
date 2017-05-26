@@ -190,13 +190,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodInfoToExpose GetBaseDefinition() => throw new NotImplementedException();
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotImplementedException();
+        public override object[] GetCustomAttributes(bool inherit) => CustomAttributeData.GetCustomAttributes(this, inherit);
 
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw new NotImplementedException();
+        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => CustomAttributeData.GetCustomAttributes(this, attributeType, inherit);
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotImplementedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotImplementedException();
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => CustomAttributeData.IsDefined(this, attributeType, inherit);
     }
 #else
     public partial class MethodDefinition
