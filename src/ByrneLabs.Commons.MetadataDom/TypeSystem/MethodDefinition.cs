@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Diagnostics;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Globalization;
 using TypeInfoToExpose = System.Reflection.TypeInfo;
@@ -32,6 +33,7 @@ using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     //[PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public partial class MethodDefinition : MethodInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;

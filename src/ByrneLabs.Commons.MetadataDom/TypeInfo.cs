@@ -71,8 +71,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeToExpose ReflectedType => DeclaringType;
 
-        public override TypeToExpose UnderlyingSystemType => throw new NotSupportedException();
-
         internal abstract string UndecoratedName { get; }
 
         internal static BindingFlags CalculateBindingFlags(bool isPublic, bool isInherited, bool isStatic)

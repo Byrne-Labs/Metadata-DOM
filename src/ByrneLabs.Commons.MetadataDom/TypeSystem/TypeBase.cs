@@ -83,6 +83,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 ArrayRank = 1;
             }
             GenericTypeArguments = Array.Empty<TypeToExpose>();
+            UnderlyingSystemType = unmodifiedType.UnderlyingSystemType;
             Initialize();
         }
 
@@ -99,6 +100,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
             GenericTypeArguments = genericTypeArguments.Cast<TypeToExpose>().ToArray();
+            UnderlyingSystemType = genericTypeDefinition.UnderlyingSystemType;
             Initialize();
         }
 
@@ -107,6 +109,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Key = key;
             GenericTypeArguments = Array.Empty<TypeToExpose>();
             MetadataState = metadataState;
+            UnderlyingSystemType = this;
             Initialize();
         }
 
@@ -141,6 +144,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override string Name => _name.Value;
 
         public override string TextSignature => FullNameWithoutAssemblies;
+
+        public override TypeToExpose UnderlyingSystemType { get; }
 
         protected bool IsThisArray => TypeElementModifier == TypeSystem.TypeElementModifier.Array;
 

@@ -12,8 +12,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     internal class MetadataState : IDisposable
     {
-        private static readonly IEnumerable<System.Type> DebugMetadataTypes = new List<System.Type> { typeof(CustomDebugInformationHandle), typeof(DocumentHandle), typeof(ImportDefinition), typeof(ImportScopeHandle), typeof(LocalConstantHandle), typeof(LocalScopeHandle), typeof(LocalVariableHandle), typeof(MethodDebugInformationHandle) };
-        private static readonly IDictionary<System.Type, System.Type> HandleTypeMap = new Dictionary<System.Type, System.Type>(new Dictionary<System.Type, System.Type>
+        private static readonly IEnumerable<Type> DebugMetadataTypes = new List<Type> { typeof(CustomDebugInformationHandle), typeof(DocumentHandle), typeof(ImportDefinition), typeof(ImportScopeHandle), typeof(LocalConstantHandle), typeof(LocalScopeHandle), typeof(LocalVariableHandle), typeof(MethodDebugInformationHandle) };
+        private static readonly IDictionary<Type, Type> HandleTypeMap = new Dictionary<Type, Type>(new Dictionary<Type, Type>
         {
             { typeof(AssemblyDefinitionHandle), typeof(AssemblyDefinition) },
             { typeof(AssemblyFileHandle), typeof(AssemblyFile) },
@@ -114,12 +114,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal CompiledFileWrapper PdbFileWrapper { get; }
 
         internal TypeProvider TypeProvider { get; }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
         [SuppressMessage("ReSharper", "CyclomaticComplexity", Justification = "There is no obvious way to reduce the cyclomatic complexity of this method")]
         public static Handle? DowncastHandle(object handle)
@@ -282,7 +276,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return downcastHandle;
         }
 
-        public static System.Type GetCodeElementTypeForHandle(Handle handle)
+        public static Type GetCodeElementTypeForHandle(Handle handle)
         {
             var upcastHandle = UpcastHandle(handle);
             return HandleTypeMap[upcastHandle.GetType()];
@@ -412,7 +406,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return upcastHandle;
         }
 
-        private static System.Reflection.ConstructorInfo GetConstructor(System.Type type, IReadOnlyList<object> parameters)
+        private static System.Reflection.ConstructorInfo GetConstructor(Type type, IReadOnlyList<object> parameters)
         {
             System.Reflection.ConstructorInfo matchingConstructor = null;
             foreach (var constructor in type.GetTypeInfo().DeclaredConstructors.Where(constructor => constructor.GetParameters().Length == parameters.Count))
@@ -442,9 +436,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public void CacheCodeElement(IManagedCodeElement codeElement, CodeElementKey key) => _codeElementCache.Add(key, codeElement);
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         public AssemblyReference FindAssemblyReference(AssemblyName assemblyName) => AssemblyReferences.SingleOrDefault(assemblyReference => assemblyReference.FullName.Equals(assemblyName.FullName));
 
-        public IManagedCodeElement GetCodeElement(System.Type codeElementType, params object[] keyValues) => GetCodeElement(new CodeElementKey(codeElementType, keyValues));
+        public IManagedCodeElement GetCodeElement(Type codeElementType, params object[] keyValues) => GetCodeElement(new CodeElementKey(codeElementType, keyValues));
 
         public IManagedCodeElement GetCodeElement(object handle) => GetCodeElement(new CodeElementKey(handle));
 
@@ -465,7 +465,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else
             {
-                System.Type codeElementType;
+                Type codeElementType;
                 if (key.UpcastHandle is MethodDefinitionHandle)
                 {
                     var methodDefinition = AssemblyReader.GetMethodDefinition((MethodDefinitionHandle) key.UpcastHandle);
@@ -508,6 +508,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
 
                 codeElement = (IManagedCodeElement) constructor.Invoke(constructorParameterValues);
+                if (!_codeElementCache.ContainsKey(key))
+                {
+                    _codeElementCache.Add(key, codeElement);
+                }
             }
 
             return codeElement;

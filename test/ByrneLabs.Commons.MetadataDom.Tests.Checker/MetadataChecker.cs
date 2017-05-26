@@ -9,7 +9,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 {
     internal class MetadataChecker
     {
+        private const int MAX_PROPERTY_ERRORS = 10;
         private readonly CheckState _checkState;
+        private readonly List<MemberInfo> _ignoredMembers = new List<MemberInfo>();
+        private readonly Dictionary<MemberInfo, int> _memberErrorCount = new Dictionary<MemberInfo, int>();
 
         public MetadataChecker(CheckState checkState)
         {
@@ -34,7 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             if (!_checkState.HasBeenChecked(codeElement))
             {
                 var discoveredCodeElements = new List<IManagedCodeElement>();
-                foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties())
+                foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties().Except(_ignoredMembers).Cast<System.Reflection.PropertyInfo>())
                 {
                     try
                     {
@@ -56,23 +59,47 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                             discoveredCodeElements.Add(codeElementPropertyValue);
                         }
                     }
-                    catch (TargetInvocationException exception)
-                    {
-                        //We can ignore not supported exceptions
-                        if (!(exception.InnerException is NotSupportedException))
-                        {
-                            _checkState.AddException(exception.InnerException, codeElement, CheckPhase.MetadataCheck);
-                        }
-                    }
                     catch (Exception exception)
                     {
-                        _checkState.AddException(exception, codeElement, CheckPhase.MetadataCheck);
+                        RecordMemberError(exception, codeElement, property);
                     }
                 }
                 foreach (var discoveredCodeElement in discoveredCodeElements.Where(discoveredCodeElement => discoveredCodeElement != null && !(excludeAssemblies && discoveredCodeElement is AssemblyDefinition)).Except(_checkState.CheckedMetadataElements).Distinct())
                 {
                     CheckCodeElement(discoveredCodeElement, excludeAssemblies);
                 }
+            }
+        }
+
+        private void RecordMemberError(Exception exception, IManagedCodeElement codeElement, MemberInfo property)
+        {
+            var targetInvocationException = exception as TargetInvocationException;
+            //We can ignore not supported exceptions
+            if (targetInvocationException != null)
+            {
+                if (targetInvocationException.InnerException is NotSupportedException)
+                {
+                    _ignoredMembers.Add(property);
+                }
+                else
+                {
+                    _checkState.AddException(exception.InnerException, codeElement, CheckPhase.MetadataCheck);
+                }
+            }
+            else
+            {
+                _checkState.AddException(exception, codeElement, CheckPhase.MetadataCheck);
+            }
+
+            if (!_memberErrorCount.ContainsKey(property))
+            {
+                _memberErrorCount.Add(property, 0);
+            }
+            _memberErrorCount[property]++;
+
+            if (_memberErrorCount[property] > MAX_PROPERTY_ERRORS)
+            {
+                _ignoredMembers.Add(property);
             }
         }
     }
