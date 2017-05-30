@@ -50,13 +50,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
 
-        public override GenericParameterAttributes GenericParameterAttributes => RawMetadata.Attributes;
-
         public ImmutableArray<GenericParameterConstraint> Constraints => _constraints.Value;
 
         public MethodDefinition DeclaringMethod { get; internal set; }
 
         public override TypeToExpose DeclaringType => _declaringType;
+
+        public override GenericParameterAttributes GenericParameterAttributes => RawMetadata.Attributes;
 
         public int Index => RawMetadata.Index;
 

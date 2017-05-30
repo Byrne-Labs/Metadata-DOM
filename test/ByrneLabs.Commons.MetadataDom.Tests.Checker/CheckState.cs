@@ -97,7 +97,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     {
                         if (_errorLogTextDirty)
                         {
-                            _errorLogText = string.Join(Environment.NewLine, Errors);
+                            _errorLogText = string.Join(Environment.NewLine + Environment.NewLine, Errors);
                             _errorLogTextDirty = false;
                         }
                         return _errorLogText;
@@ -115,7 +115,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?) null;
+        public TimeSpan? ExecutionTime => FinishTime.HasValue ? FinishTime.Value.Subtract(StartTime) : (TimeSpan?)null;
 
         public bool FailedValidation => Errors.Any() && !Faulted && !LikelyFrameworkBugFound;
 
@@ -170,7 +170,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 if (_unfilteredErrorLogTextDirty)
                 {
-                    _unfilteredErrorLogText = string.Join(Environment.NewLine, UnfilteredErrors);
+                    _unfilteredErrorLogText = string.Join(Environment.NewLine + Environment.NewLine, UnfilteredErrors);
                     _unfilteredErrorLogTextDirty = false;
                 }
                 return _unfilteredErrorLogText;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -32,6 +31,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _sourceCodeLines = new Lazy<string[]>(() => SourceCode == null ? null : Regex.Split(SourceCode, "\r\n|\r|\n"));
         }
 
+        public string FullName => Name;
+
         public override byte[] Hash => _hash.Value;
 
         public override AssemblyHashAlgorithm? HashAlgorithm { get; }
@@ -46,21 +47,19 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int MetadataToken => MetadataHandle.GetHashCode();
 
+        public override string Name { get; }
+
         public System.Reflection.Metadata.Document RawMetadata { get; }
 
         public override string SourceCode => _sourceCode.Value;
 
         public override string[] SourceCodeLines => _sourceCodeLines.Value;
 
+        public string TextSignature => Name;
+
         internal CodeElementKey Key { get; }
 
         internal MetadataState MetadataState { get; }
-
-        public string FullName => Name;
-
-        public override string Name { get; }
-
-        public string TextSignature => Name;
 
         CodeElementKey IManagedCodeElement.Key => Key;
 

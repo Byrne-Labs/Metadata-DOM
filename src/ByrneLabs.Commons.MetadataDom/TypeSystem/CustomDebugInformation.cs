@@ -1,28 +1,32 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
-    public class CustomDebugInformation : DebugCodeElement, ICodeElementWithTypedHandle<CustomDebugInformationHandle, System.Reflection.Metadata.CustomDebugInformation>
+    [PublicAPI]
+    public class CustomDebugInformation : SimpleCodeElement
     {
-        private readonly Lazy<CodeElement> _parent;
+        private readonly Lazy<object> _parent;
         private readonly Lazy<Blob> _value;
 
         internal CustomDebugInformation(CustomDebugInformationHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            RawMetadata = Reader.GetCustomDebugInformation(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
-            Kind = AsGuid(RawMetadata.Kind);
-            _value = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.Value)));
+            RawMetadata = MetadataState.PdbReader.GetCustomDebugInformation(metadataHandle);
+            _parent = new Lazy<object>(() => MetadataState.GetCodeElement(RawMetadata.Parent));
+            Kind = MetadataState.PdbReader.GetGuid(RawMetadata.Kind);
+            _value = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.Value, true);
         }
+
         public Guid Kind { get; }
-        public CodeElement Parent => _parent.Value;
-        public Blob Value => _value.Value;
+
+        public CustomDebugInformationHandle MetadataHandle { get; }
+
+        public object Parent => _parent.Value;
 
         public System.Reflection.Metadata.CustomDebugInformation RawMetadata { get; }
 
-        public CustomDebugInformationHandle MetadataHandle { get; }
+        public Blob Value => _value.Value;
     }
 }

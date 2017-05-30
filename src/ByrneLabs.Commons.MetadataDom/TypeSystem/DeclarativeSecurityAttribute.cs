@@ -5,25 +5,28 @@ using System.Reflection.Metadata;
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     //[PublicAPI]
-    public class DeclarativeSecurityAttribute : RuntimeCodeElement, ICodeElementWithTypedHandle<DeclarativeSecurityAttributeHandle, System.Reflection.Metadata.DeclarativeSecurityAttribute>
+    public class DeclarativeSecurityAttribute : SimpleCodeElement
     {
-        private readonly Lazy<CodeElement> _parent;
+        private readonly Lazy<object> _parent;
         private readonly Lazy<Blob> _permissionSet;
 
         internal DeclarativeSecurityAttribute(DeclarativeSecurityAttributeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            RawMetadata = Reader.GetDeclarativeSecurityAttribute(metadataHandle);
-            _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
+            RawMetadata = MetadataState.AssemblyReader.GetDeclarativeSecurityAttribute(metadataHandle);
+            _parent = new Lazy<object>(() => MetadataState.GetCodeElement(RawMetadata.Parent));
             Action = RawMetadata.Action;
-            _permissionSet = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.PermissionSet)));
+            _permissionSet = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.PermissionSet, false);
         }
+
         public DeclarativeSecurityAction Action { get; }
-        public CodeElement Parent => _parent.Value;
+
+        public DeclarativeSecurityAttributeHandle MetadataHandle { get; }
+
+        public object Parent => _parent.Value;
+
         public Blob PermissionSet => _permissionSet.Value;
 
         public System.Reflection.Metadata.DeclarativeSecurityAttribute RawMetadata { get; }
-
-        public DeclarativeSecurityAttributeHandle MetadataHandle { get; }
     }
 }

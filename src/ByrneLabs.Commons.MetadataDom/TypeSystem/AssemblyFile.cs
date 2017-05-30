@@ -2,12 +2,13 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
-    public class AssemblyFile : RuntimeCodeElement, ICodeElementWithTypedHandle<AssemblyFileHandle, System.Reflection.Metadata.AssemblyFile>
+    public class AssemblyFile : SimpleCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<Blob> _hashValue;
@@ -15,19 +16,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal AssemblyFile(AssemblyFileHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             MetadataHandle = metadataHandle;
-            RawMetadata = Reader.GetAssemblyFile(metadataHandle);
-            Name = AsString(RawMetadata.Name);
-            _hashValue = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.HashValue)));
+            RawMetadata = MetadataState.AssemblyReader.GetAssemblyFile(metadataHandle);
+            Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
+            _hashValue = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.HashValue, false);
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             ContainsMetadata = RawMetadata.ContainsMetadata;
         }
+
         public bool ContainsMetadata { get; }
+
         public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
+
         public Blob HashValue => _hashValue.Value;
+
+        public AssemblyFileHandle MetadataHandle { get; }
+
         public string Name { get; }
 
         public System.Reflection.Metadata.AssemblyFile RawMetadata { get; }
-
-        public AssemblyFileHandle MetadataHandle { get; }
     }
 }

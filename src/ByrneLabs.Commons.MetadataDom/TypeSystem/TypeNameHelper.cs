@@ -31,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else
             {
-                var typeToUse = type.TypeElementModifier != null ? (TypeBase) type.BaseType.GetTypeInfo() : type;
+                var typeToUse = type.TypeElementModifier != null && type.BaseType != null ? (TypeBase) type.BaseType.GetTypeInfo() : type;
                 string parent;
                 if (typeToUse.IsNested && typeToUse.DeclaringType.GetTypeInfo().IsGenericType)
                 {

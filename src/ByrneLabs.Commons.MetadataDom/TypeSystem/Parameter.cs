@@ -51,7 +51,22 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal Parameter(ParameterHandle metadataHandle, MethodDefinition methodDefinition, MetadataState metadataState)
+        internal Parameter(ParameterHandle metadataHandle, ConstructorDefinition constructorDefinition, MetadataState metadataState) : this(metadataHandle, metadataState)
+        {
+            Member = constructorDefinition;
+            ParameterType = constructorDefinition.Signature.ParameterTypes[Position];
+            _optional = Position > constructorDefinition.Signature.RequiredParameterCount;
+        }
+
+        [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
+        internal Parameter(ParameterHandle metadataHandle, MethodDefinition methodDefinition, MetadataState metadataState):this(metadataHandle,metadataState)
+        {
+            Member = methodDefinition;
+            ParameterType = methodDefinition.Signature.ParameterTypes[Position];
+            _optional = Position > methodDefinition.Signature.RequiredParameterCount;
+        }
+
+        private Parameter(ParameterHandle metadataHandle, MetadataState metadataState)
         {
             MetadataState = metadataState;
             MetadataHandle = metadataHandle;
@@ -61,9 +76,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Attributes = RawMetadata.Attributes;
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             Position = RawMetadata.SequenceNumber - 1;
-            Member = methodDefinition;
-            ParameterType = methodDefinition.Signature.ParameterTypes[Position];
-            _optional = Position > methodDefinition.Signature.RequiredParameterCount;
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
         }
 

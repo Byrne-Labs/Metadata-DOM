@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Diagnostics;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Globalization;
 using TypeInfoToExpose = System.Reflection.TypeInfo;
@@ -57,13 +57,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Key = new CodeElementKey<MethodDefinition>(metadataHandle);
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
             Attributes = RawMetadata.Attributes;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData, CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeInfoToExpose>(RawMetadata.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
             _methodBody = new Lazy<MethodBodyToExpose>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
             _parameters = new Lazy<ImmutableArray<ParameterInfoToExpose>>(LoadParameters);
-            _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
+            _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle(), this, new GenericContext(this, _declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
             _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, _declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
 
             _genericParameters = new Lazy<ImmutableArray<GenericParameter>>(() =>

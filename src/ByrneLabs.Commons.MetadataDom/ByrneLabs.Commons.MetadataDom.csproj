@@ -25,14 +25,7 @@
         <None Remove="WindowsPdb\**" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="TypeSystem\AssemblyFile.cs" />
-        <Compile Remove="TypeSystem\Blob.cs" />
-        <Compile Remove="TypeSystem\CodeElement.cs" />
-        <Compile Remove="TypeSystem\CustomDebugInformation.cs" />
         <Compile Remove="TypeSystem\DebugCodeElement.cs" />
-        <Compile Remove="TypeSystem\DeclarativeSecurityAttribute.cs" />
-        <Compile Remove="TypeSystem\ExportedType.cs" />
-        <Compile Remove="TypeSystem\GenericParameterConstraint.cs" />
         <Compile Remove="TypeSystem\GlobalSuppressions.cs" />
         <Compile Remove="TypeSystem\HashAlgorithm.cs" />
         <Compile Remove="TypeSystem\IAssembly.cs" />
@@ -47,12 +40,7 @@
         <Compile Remove="TypeSystem\IModule.cs" />
         <Compile Remove="TypeSystem\ImportDefinition.cs" />
         <Compile Remove="TypeSystem\ImportScope.cs" />
-        <Compile Remove="TypeSystem\LocalConstant.cs" />
-        <Compile Remove="TypeSystem\LocalScope.cs" />
-        <Compile Remove="TypeSystem\LocalVariable.cs" />
-        <Compile Remove="TypeSystem\ManifestResource.cs" />
         <Compile Remove="TypeSystem\MethodDefinitionBase.cs" />
-        <Compile Remove="TypeSystem\MethodImplementation.cs" />
         <Compile Remove="TypeSystem\MethodSpecification.cs" />
         <Compile Remove="TypeSystem\RuntimeCodeElement.cs" />
     </ItemGroup>

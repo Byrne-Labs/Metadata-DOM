@@ -31,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
         private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
-        private readonly Lazy<TypeInfoToExpose> _declaringType;
+        private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<string> _fullName;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
@@ -54,12 +54,12 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             });
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
-            _declaringType = MetadataState.GetLazyCodeElement<TypeInfoToExpose>(RawMetadata.GetDeclaringType());
+            _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
             _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
             _parameters = new Lazy<ImmutableArray<ParameterInfoToExpose>>(LoadParameters);
-            _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle()));
+            _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle(), this, new GenericContext(this, _declaringType.Value.GenericTypeParameters, null)));
             _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, _declaringType.Value.GenericTypeParameters, GenericTypeParameters)));
         }
 
@@ -105,11 +105,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string TextSignature => FullName;
 
-        protected MethodSignature<TypeBase> Signature => _signature.Value;
-
         internal CodeElementKey Key { get; }
 
         internal MetadataState MetadataState { get; }
+
+        internal MethodSignature<TypeBase> Signature => _signature.Value;
 
         CodeElementKey IManagedCodeElement.Key => Key;
 
@@ -127,7 +127,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         private ImmutableArray<ParameterInfoToExpose> LoadParameters()
         {
-            var allParameters = MetadataState.GetCodeElements<Parameter>(RawMetadata.GetParameters()).ToList();
+            var allParameters = RawMetadata.GetParameters().Select(parameterMetadata => MetadataState.GetCodeElement<Parameter>(parameterMetadata, this)).ToList();
             var parameters = allParameters.Where(parameter => parameter.Position >= 0).ToList();
             if (Signature.ParameterTypes.Any() && parameters.Count == 0)
             {
@@ -165,11 +165,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
-
         public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
 
         public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
     }
 
 #else

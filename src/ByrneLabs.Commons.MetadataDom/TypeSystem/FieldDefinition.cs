@@ -23,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public partial class FieldDefinition : FieldInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<TypeBase> _fieldType;
@@ -35,7 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataState = metadataState;
             RawMetadata = MetadataState.AssemblyReader.GetFieldDefinition(metadataHandle);
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
             _declaringType = new Lazy<TypeDefinition>(() => MetadataState.GetCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType()));
             Offset = RawMetadata.GetOffset();
@@ -81,7 +81,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
 
         public override object GetRawConstantValue() => DefaultValue.Value;
     }

@@ -1,18 +1,18 @@
-﻿using System;
+﻿using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     //[PublicAPI]
-    public class Blob
+    public class Blob : SimpleCodeElement
     {
-        internal Blob(byte[] bytes)
+        internal Blob(BlobHandle metadataHandle, bool debug, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
-            Bytes = bytes;
-            StringValue = BitConverter.ToString(Bytes);
+            MetadataHandle = metadataHandle;
+            Bytes = debug ? MetadataState.PdbReader.GetBlobBytes(metadataHandle) : MetadataState.AssemblyReader.GetBlobBytes(metadataHandle);
         }
 
         public byte[] Bytes { get; }
 
-        public string StringValue { get; }
+        public BlobHandle MetadataHandle { get; }
     }
 }

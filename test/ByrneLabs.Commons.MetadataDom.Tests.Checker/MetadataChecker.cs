@@ -11,6 +11,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
     {
         private const int MAX_PROPERTY_ERRORS = 10;
         private readonly CheckState _checkState;
+        /*
+         * Some properties exists in .NET Core 2.0 but not .NET Standard 2.0.  This means that we do not override it in our .NET Standard class and the .NET Core default implementation throws an exception when called with reflection. -- Jonathan Byrne 05/26/2017
+         */
+        private readonly string[] _coreOnlyProperties = { "IsSZArray", "IsVariableBoundArray" };
         private readonly List<MemberInfo> _ignoredMembers = new List<MemberInfo>();
         private readonly Dictionary<MemberInfo, int> _memberErrorCount = new Dictionary<MemberInfo, int>();
 
@@ -37,7 +41,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             if (!_checkState.HasBeenChecked(codeElement))
             {
                 var discoveredCodeElements = new List<IManagedCodeElement>();
-                foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties().Except(_ignoredMembers).Cast<System.Reflection.PropertyInfo>())
+                foreach (var property in codeElement.GetType().GetTypeInfo().GetProperties().Except(_ignoredMembers).Where(property => !_coreOnlyProperties.Contains(property.Name)).Cast<System.Reflection.PropertyInfo>())
                 {
                     try
                     {
@@ -99,7 +103,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
             _memberErrorCount[property]++;
 
-            if (_memberErrorCount[property] > MAX_PROPERTY_ERRORS)
+            if (_memberErrorCount[property] > MAX_PROPERTY_ERRORS || realException is NotImplementedException)
             {
                 _ignoredMembers.Add(property);
             }

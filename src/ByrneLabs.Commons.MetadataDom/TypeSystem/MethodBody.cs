@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Reflection.Metadata;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Reflection;
+
 #endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
@@ -29,8 +30,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else
                 {
-                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(RawMetadata.LocalSignature);
-                    localSignature.GenericContext = GenericContext;
+                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(RawMetadata.LocalSignature, GenericContext);
                 }
                 return localSignature;
             });
@@ -41,27 +41,27 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<ExceptionHandlingClause> ExceptionHandlingClauses => _exceptionRegions.Value.ToImmutableList<ExceptionHandlingClause>();
 
-        public StandaloneSignature LocalSignature => _localSignature.Value;
+        public string FullName => LocalSignature.FullName;
 
         public override bool InitLocals { get; }
 
+        public StandaloneSignature LocalSignature => _localSignature.Value;
+
         public override int MaxStackSize { get; }
+
+        public string Name => LocalSignature.Name;
 
         public MethodBodyBlock RawMetadata { get; }
 
         public int Size { get; }
+
+        public string TextSignature => LocalSignature.TextSignature;
 
         internal GenericContext GenericContext { get; set; }
 
         internal CodeElementKey Key { get; }
 
         internal MetadataState MetadataState { get; }
-
-        public string FullName => LocalSignature.FullName;
-
-        public string Name => LocalSignature.Name;
-
-        public string TextSignature => LocalSignature.TextSignature;
 
         CodeElementKey IManagedCodeElement.Key => Key;
 
@@ -82,5 +82,4 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override byte[] GetILAsByteArray() => throw new NotImplementedException();
     }
 #endif
-
 }

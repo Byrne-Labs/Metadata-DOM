@@ -11,31 +11,44 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<TypeBase>> _localSignature;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
 
-        internal StandaloneSignature(StandaloneSignatureHandle metadataHandle, MetadataState metadataState)
+        internal StandaloneSignature(StandaloneSignatureHandle metadataHandle, GenericContext genericContext, MetadataState metadataState)
         {
             Key = new CodeElementKey(metadataHandle);
             MetadataState = metadataState;
             MetadataHandle = metadataHandle;
             RawMetadata = MetadataState.AssemblyReader.GetStandaloneSignature(metadataHandle);
-            _localSignature = new Lazy<ImmutableArray<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
-            _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeMethodSignature(MetadataState.TypeProvider, GenericContext));
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
+            GenericContext = genericContext;
             Kind = RawMetadata.GetKind();
+            if (Kind == StandaloneSignatureKind.LocalVariables)
+            {
+                _localSignature = new Lazy<ImmutableArray<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
+            }
+            else
+            {
+                _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeMethodSignature(MetadataState.TypeProvider, GenericContext));
+            }
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        public string FullName => throw new NotSupportedException();
+
         public StandaloneSignatureKind Kind { get; }
 
-        public ImmutableArray<TypeBase> LocalVariableSignagure => _localSignature.Value;
+        public ImmutableArray<TypeBase> LocalVariableSignature => Kind == StandaloneSignatureKind.LocalVariables ? _localSignature.Value : throw new InvalidOperationException("This property is only valid when the signature kind is local variable");
 
         public StandaloneSignatureHandle MetadataHandle { get; }
 
-        public MethodSignature<TypeBase> MethodSignature => _methodSignature.Value;
+        public MethodSignature<TypeBase> MethodSignature => Kind == StandaloneSignatureKind.Method ? _methodSignature.Value : throw new InvalidOperationException("This property is only valid when the signature kind is method");
+
+        public string Name => throw new NotSupportedException();
 
         public System.Reflection.Metadata.StandaloneSignature RawMetadata { get; }
 
-        internal GenericContext GenericContext { get; set; }
+        public string TextSignature => throw new NotSupportedException();
+
+        internal GenericContext GenericContext { get; }
 
         internal CodeElementKey Key { get; }
 
@@ -44,11 +57,5 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         CodeElementKey IManagedCodeElement.Key => Key;
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
-
-        public string FullName => throw new NotSupportedException();
-
-        public string Name => throw new NotSupportedException();
-
-        public string TextSignature => throw new NotSupportedException();
     }
 }

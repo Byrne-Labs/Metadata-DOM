@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
@@ -7,7 +8,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     //[PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
-    public class NamespaceDefinition : IManagedCodeElement
+    public class NamespaceDefinition : Namespace, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<ExportedType>> _exportedTypes;
         private readonly Lazy<ImmutableArray<NamespaceDefinition>> _namespaceDefinitions;
@@ -27,27 +28,27 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _exportedTypes = MetadataState.GetLazyCodeElements<ExportedType>(RawMetadata.ExportedTypes);
         }
 
-        public ImmutableArray<ExportedType> ExportedTypes => _exportedTypes.Value;
+        public override IEnumerable<Type> ExportedTypes => _exportedTypes.Value;
+
+        public string FullName => Name;
 
         public NamespaceDefinitionHandle MetadataHandle { get; }
 
-        public ImmutableArray<NamespaceDefinition> NamespaceDefinitions => _namespaceDefinitions.Value;
+        public override string Name { get; }
 
-        public NamespaceDefinition Parent => _parent.Value;
+        public override IEnumerable<Namespace> Namespaces => _namespaceDefinitions.Value;
+
+        public override Namespace Parent => _parent.Value;
 
         public System.Reflection.Metadata.NamespaceDefinition RawMetadata { get; }
 
-        public ImmutableArray<TypeDefinition> TypeDefinitions => _typeDefinitions.Value;
+        public string TextSignature => Name;
+
+        public override IEnumerable<Type> TypeDefinitions => _typeDefinitions.Value;
 
         internal CodeElementKey Key { get; }
 
         internal MetadataState MetadataState { get; }
-
-        public string FullName => Name;
-
-        public string Name { get; }
-
-        public string TextSignature => Name;
 
         CodeElementKey IManagedCodeElement.Key => Key;
 

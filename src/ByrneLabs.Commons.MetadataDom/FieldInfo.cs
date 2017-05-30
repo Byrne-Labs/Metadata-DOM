@@ -37,11 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class FieldInfo : System.Reflection.FieldInfo, IMemberInfo
     {
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
         public abstract string FullName { get; }
-
-        public abstract ModuleToExpose Module { get; }
 
         public abstract string TextSignature { get; }
 
