@@ -17,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class FieldReference : FieldInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<IManagedCodeElement> _parent;
         private readonly Lazy<TypeBase> _signature;
 
@@ -43,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return parent;
             });
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         public override FieldAttributes Attributes => throw new NotSupportedException();

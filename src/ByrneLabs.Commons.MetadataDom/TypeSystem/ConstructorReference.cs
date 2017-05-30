@@ -27,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class ConstructorReference : ConstructorInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
         private readonly Lazy<IManagedCodeElement> _parent;
@@ -53,7 +53,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return parent;
             });
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => MethodReferenceHelper.GetMethodSignature(this, RawMetadata, MetadataState));
             _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(_methodSignature.Value, metadataState));
         }
@@ -69,6 +69,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public MemberReferenceHandle MetadataHandle { get; }
 
         public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
+
+        public override System.Reflection.Module Module => throw new NotSupportedException();
 
         public override string Name { get; }
 
@@ -97,6 +99,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
         public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
 

@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public override string FileName => throw new NotImplementedException();
+        public override string FileName => throw new NotSupportedException("This will be supported in the future");
 
         public object Implementation => _implementation.Value;
 
@@ -40,9 +40,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public System.Reflection.Metadata.ManifestResource RawMetadata { get; }
 
-        public override System.Reflection.Assembly ReferencedAssembly => throw new NotImplementedException();
+        public override System.Reflection.Assembly ReferencedAssembly => throw new NotSupportedException("This will be supported in the future");
 
-        public override ResourceLocation ResourceLocation => throw new NotImplementedException();
+        public override ResourceLocation ResourceLocation => throw new NotSupportedException("This will be supported in the future");
 
         internal CodeElementKey Key { get; }
 

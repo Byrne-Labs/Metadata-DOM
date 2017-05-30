@@ -36,7 +36,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public partial class MethodDefinition : MethodInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
         private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeInfoToExpose> _declaringType;
@@ -57,7 +57,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Key = new CodeElementKey<MethodDefinition>(metadataHandle);
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
             Attributes = RawMetadata.Attributes;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData, CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeInfoToExpose>(RawMetadata.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
@@ -147,7 +147,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
         public override Type[] GetGenericArguments() => _genericParameters.Value.ToArray<Type>();
 
@@ -188,7 +188,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw new NotSupportedException();
 
-        public override MethodInfoToExpose GetBaseDefinition() => throw new NotImplementedException();
+        public override MethodInfoToExpose GetBaseDefinition() => throw new NotSupportedException("This will be supported in the future");
 
         public override object[] GetCustomAttributes(bool inherit) => CustomAttributeData.GetCustomAttributes(this, inherit);
 

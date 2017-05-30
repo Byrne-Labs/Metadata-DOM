@@ -122,11 +122,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         {
             add
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException("This will be supported in the future");
             }
             remove
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException("This will be supported in the future");
             }
         }
 

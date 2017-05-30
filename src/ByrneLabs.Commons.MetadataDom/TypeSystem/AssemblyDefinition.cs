@@ -27,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     public class AssemblyDefinition : AssemblyBase<AssemblyDefinition, AssemblyDefinitionHandle, System.Reflection.Metadata.AssemblyDefinition>
     {
         private readonly Lazy<ImmutableArray<AssemblyReference>> _assemblyReferences;
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<MethodInfoToExpose> _entryPoint;
         private readonly Lazy<Module> _moduleDefinition;
@@ -50,18 +50,18 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _assemblyReferences = MetadataState.GetLazyCodeElements<AssemblyReference>(MetadataState.AssemblyReader.AssemblyReferences);
             Flags = RawMetadata.Flags;
             HashAlgorithm = RawMetadata.HashAlgorithm;
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _moduleDefinition = MetadataState.GetLazyCodeElement<Module>(Handle.ModuleDefinition);
         }
 
-        public override string CodeBase => throw new NotImplementedException();
+        public override string CodeBase => throw new NotSupportedException("This will be supported in the future");
 
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         public override MethodInfoToExpose EntryPoint => _entryPoint.Value;
 
-        public override string EscapedCodeBase => throw new NotImplementedException();
+        public override string EscapedCodeBase => throw new NotSupportedException("This will be supported in the future");
 
         public override AssemblyFlags Flags { get; }
 
@@ -71,15 +71,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ModuleToExpose ManifestModule => Modules.OfType<Module>().SingleOrDefault(module => module.Manifest);
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList< CustomAttributeDataToExpose>();
 
         public override TypeToExpose[] GetExportedTypes() => MetadataState.DefinedTypes.Where(type => type.IsPublic).Cast<Type>().ToArray();
 
-        public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw new NotImplementedException();
+        public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw new NotSupportedException("This will be supported in the future");
 
-        public override ManifestResourceInfo GetManifestResourceInfo(string resourceName) => throw new NotImplementedException();
+        public override ManifestResourceInfo GetManifestResourceInfo(string resourceName) => throw new NotSupportedException("This will be supported in the future");
 
-        public override string[] GetManifestResourceNames() => throw new NotImplementedException();
+        public override string[] GetManifestResourceNames() => throw new NotSupportedException("This will be supported in the future");
 
         [SuppressMessage("ReSharper", "RedundantEnumerableCastCall", Justification = "Needed for .NET Core prior to 2.0")]
         public override ModuleToExpose GetModule(string name) => Modules.OfType<ModuleToExpose>().SingleOrDefault(module => module.Name.Equals(name));

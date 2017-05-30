@@ -21,17 +21,17 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         internal static object[] GetCustomAttributes(IMemberInfo member, bool inherit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("This will be supported in the future");
         }
 
         internal static object[] GetCustomAttributes(IMemberInfo member, TypeToExpose attributeType, bool inherit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("This will be supported in the future");
         }
 
         internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("This will be supported in the future");
         }
     }
 

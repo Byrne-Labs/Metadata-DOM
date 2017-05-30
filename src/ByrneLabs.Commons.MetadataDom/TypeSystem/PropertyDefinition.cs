@@ -105,7 +105,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodInfoToExpose GetGetMethod(bool nonPublic) => nonPublic || GetMethod?.IsPublic == true ? GetMethod : null;
 
-        public override ParameterInfoToExpose[] GetIndexParameters() => throw new NotImplementedException();
+        public override ParameterInfoToExpose[] GetIndexParameters() => throw new NotSupportedException("This will be supported in the future");
 
         public override MethodInfoToExpose GetSetMethod(bool nonPublic) => nonPublic || SetMethod?.IsPublic == true ? SetMethod : null;
     }

@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class MethodReference : MethodInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<ImmutableArray<TypeToExpose>> _genericTypeParameters;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
@@ -56,7 +56,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return parent;
             });
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _genericTypeParameters = new Lazy<ImmutableArray<Type>>(() => MethodReferenceHelper.GetGenericTypeParameters(this));
             _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => MethodReferenceHelper.GetMethodSignature(this, RawMetadata, MetadataState));
             _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(_methodSignature.Value, metadataState));

@@ -16,7 +16,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal MethodImplementation(MethodImplementationHandle metadataHandle, MetadataState metadataState)
         {
-            Key = new CodeElementKey(metadataHandle);
+            Key = new CodeElementKey<MethodImplementation>(metadataHandle);
             MetadataState = metadataState;
             MetadataHandle = metadataHandle;
             RawMetadata = MetadataState.AssemblyReader.GetMethodImplementation(metadataHandle);

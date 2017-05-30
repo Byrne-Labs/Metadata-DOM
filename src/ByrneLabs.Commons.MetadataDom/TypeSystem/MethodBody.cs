@@ -79,7 +79,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<LocalVariableInfo> LocalVariables { get; }
 
-        public override byte[] GetILAsByteArray() => throw new NotImplementedException();
+        public override byte[] GetILAsByteArray() => throw new NotSupportedException("This will be supported in the future");
     }
 #endif
 }

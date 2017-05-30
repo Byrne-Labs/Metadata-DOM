@@ -105,7 +105,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         void Interface3.DoSomething()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("This will be supported in the future");
         }
 
         object Interface3.ReadOnlyValue

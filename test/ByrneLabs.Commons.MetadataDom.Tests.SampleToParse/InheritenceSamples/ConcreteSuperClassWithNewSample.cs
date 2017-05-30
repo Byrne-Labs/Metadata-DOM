@@ -138,10 +138,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
         private int PrivateAutoProperty { get; set; }
 #endif
 #if CSHARP_V7
-        public override int PublicAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        protected internal override int ProtectedInternalAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        protected override int ProtectedAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        internal override int InternalAbstractAutoProperty { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override int PublicAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
+        protected internal override int ProtectedInternalAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
+        protected override int ProtectedAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
+        internal override int InternalAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
 #elif CSHARP_V3
         public override int PublicAbstractAutoProperty {get;set;}
         protected internal override int ProtectedInternalAbstractAutoProperty {get;set;}

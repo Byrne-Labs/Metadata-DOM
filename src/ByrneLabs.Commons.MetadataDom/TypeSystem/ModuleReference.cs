@@ -25,12 +25,12 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class ModuleReference : ModuleBase<ModuleReference, ModuleReferenceHandle, System.Reflection.Metadata.ModuleReference>
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
 
         internal ModuleReference(ModuleReferenceHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
         {
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute, CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         public override AssemblyToExpose Assembly => null;
@@ -49,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string ScopeName { get; }
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
         public override TypeToExpose[] GetTypes() => throw new NotSupportedException();
 

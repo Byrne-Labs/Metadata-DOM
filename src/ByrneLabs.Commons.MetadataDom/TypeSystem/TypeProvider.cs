@@ -73,7 +73,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return modifiedType;
         }
 
-        public TypeBase GetPinnedType(TypeBase elementType) => throw new NotImplementedException();
+        public TypeBase GetPinnedType(TypeBase elementType) => throw new NotSupportedException("This will be supported in the future");
 
         public TypeBase GetPointerType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Pointer);
 
@@ -91,7 +91,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
 
-        public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type) => throw new NotImplementedException();
+        public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type) => throw new NotSupportedException("This will be supported in the future");
 
         public bool IsSystemType(TypeBase type) => type == _systemType;
     }

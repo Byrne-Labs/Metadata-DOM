@@ -26,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {GetName().FullName}")]
     public class AssemblyReference : AssemblyBase<AssemblyReference, AssemblyReferenceHandle, System.Reflection.Metadata.AssemblyReference>
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeDataToExpose>> _customAttributes;
+        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<byte[]> _hashValue;
         private readonly AssemblyName _name;
 
@@ -53,7 +53,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _hashValue = new Lazy<byte[]>(() => MetadataState.AssemblyReader.GetBlobBytes(RawMetadata.HashValue));
             Flags = RawMetadata.Flags;
 
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeDataToExpose>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
         public override string CodeBase => throw new NotSupportedException();
@@ -74,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ModuleToExpose ManifestModule { get; }
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList();
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
         public override TypeToExpose[] GetExportedTypes() => throw new NotSupportedException();
 
