@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using MethodBaseToExpose = System.Reflection.MethodBase;
 
@@ -12,7 +13,7 @@ using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class LocalScope : MetadataDom.LocalScope, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<LocalScope>> _children;

@@ -415,7 +415,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 var parameterIndex = 0;
                 foreach (var parameter in constructor.GetParameters())
                 {
-                    if (parameters[parameterIndex] != null && !parameter.ParameterType.GetTypeInfo().IsAssignableFrom(parameters[parameterIndex].GetType()))
+                    if (parameters[parameterIndex] != null && !parameter.ParameterType.GetTypeInfo().IsInstanceOfType(parameters[parameterIndex]))
                     {
                         match = false;
                         break;
@@ -525,25 +525,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ImmutableArray<T> GetCodeElements<T>(IEnumerable handles) => handles.Cast<object>().Select(handle => GetCodeElement<T>(handle)).ToImmutableArray();
 
-        public ImmutableArray<T> GetCodeElements<T>(IEnumerable<CodeElementKey> keys) => keys.Select(GetCodeElement<T>).ToImmutableArray();
-
         public Lazy<IManagedCodeElement> GetLazyCodeElement(object handle) => new Lazy<IManagedCodeElement>(() => GetCodeElement(handle));
 
         public Lazy<T> GetLazyCodeElement<T>(object handle) => new Lazy<T>(() => GetCodeElement<T>(handle));
-
-        public Lazy<IManagedCodeElement> GetLazyCodeElement(CodeElementKey key) => new Lazy<IManagedCodeElement>(() => GetCodeElement(key));
-
-        public Lazy<T> GetLazyCodeElement<T>(CodeElementKey key) => new Lazy<T>(() => GetCodeElement<T>(key));
 
         public Lazy<T> GetLazyCodeElement<T>(params object[] keyValues) => new Lazy<T>(() => (T) (object) GetCodeElement(new CodeElementKey(typeof(T), keyValues)));
 
         public Lazy<ImmutableArray<T>> GetLazyCodeElements<T>(IEnumerable handles) => new Lazy<ImmutableArray<T>>(() => GetCodeElements<T>(handles));
 
         public Lazy<ImmutableArray<TReturn>> GetLazyCodeElements<TElement, TReturn>(IEnumerable handles) where TElement : TReturn => new Lazy<ImmutableArray<TReturn>>(() => GetCodeElements<TElement>(handles).Cast<TReturn>().ToImmutableArray());
-
-        public Lazy<ImmutableArray<IManagedCodeElement>> GetLazyCodeElements(IEnumerable handles) => new Lazy<ImmutableArray<IManagedCodeElement>>(() => GetCodeElements(handles));
-
-        public Lazy<ImmutableArray<T>> GetLazyCodeElements<T>(IEnumerable<CodeElementKey> keys) => new Lazy<ImmutableArray<T>>(() => GetCodeElements<T>(keys));
 
         public MethodBodyBlock GetMethodBodyBlock(int relativeVirtualAddress)
         {

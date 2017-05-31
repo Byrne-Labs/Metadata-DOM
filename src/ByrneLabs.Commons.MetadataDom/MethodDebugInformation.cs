@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using MethodBaseToExpose = System.Reflection.MethodBase;
 
@@ -8,7 +9,7 @@ using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
 #endif
 namespace ByrneLabs.Commons.MetadataDom
 {
-    //[PublicAPI]
+    [PublicAPI]
     public abstract class MethodDebugInformation
     {
         public abstract Document Document { get; }

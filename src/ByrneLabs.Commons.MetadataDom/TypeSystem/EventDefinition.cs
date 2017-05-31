@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -21,7 +22,7 @@ using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
     public partial class EventDefinition : EventInfo, IManagedCodeElement
     {

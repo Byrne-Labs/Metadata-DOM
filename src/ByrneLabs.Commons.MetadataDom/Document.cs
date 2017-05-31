@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public abstract class Document
     {
         public abstract byte[] Hash { get; }

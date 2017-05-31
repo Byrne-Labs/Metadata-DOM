@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class SequencePoint : IManagedCodeElement
     {
         private readonly Lazy<Document> _document;

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -19,7 +20,7 @@ using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class GenericParameter : EmptyTypeBase<GenericParameter, GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
     {

@@ -44,10 +44,12 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public TypeBase GetArrayType(TypeBase elementType, ArrayShape shape) => _metadataState.GetCodeElement<ShapedArray>(elementType, shape);
 
+        // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
         public TypeBase GetByReferenceType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.ByRef);
 
         public TypeBase GetFunctionPointerType(MethodSignature<TypeBase> signature) => _metadataState.GetCodeElement<FunctionPointer>(signature);
 
+        // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
         public TypeBase GetGenericInstantiation(TypeBase genericType, ImmutableArray<TypeBase> typeArguments) => typeArguments.Any(typeArgument => typeArgument == null) ? genericType : (TypeBase) _metadataState.GetCodeElement(new CodeElementKey(genericType.GetType(), genericType, typeArguments));
 
         public TypeBase GetGenericMethodParameter(GenericContext genericContext, int index) => (genericContext.ContextAvailable && genericContext.MethodParameters.Length > index ? genericContext.MethodParameters[index] : _metadataState.GetCodeElement<GenericParameterPlaceholder>(genericContext.RequestingCodeElement, index)) as TypeBase;
@@ -63,6 +65,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else if (_modifierMap.ContainsKey(modifier.FullName))
             {
+                // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
                 modifiedType = (TypeBase) _metadataState.GetCodeElement(unmodifiedType.GetType(), unmodifiedType, _modifierMap[modifier.FullName]);
             }
             else
@@ -75,12 +78,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public TypeBase GetPinnedType(TypeBase elementType) => throw new NotSupportedException("This will be supported in the future");
 
+        // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
         public TypeBase GetPointerType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Pointer);
 
         public TypeBase GetPrimitiveType(PrimitiveTypeCode typeCode) => _metadataState.GetCodeElement<PrimitiveType>(new CodeElementKey<PrimitiveType>(typeCode));
 
         public TypeBase GetSystemType() => _systemType;
 
+        // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
         public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Array);
 
         public TypeBase GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeDefinition>(handle);

@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeInfoToExpose = System.Reflection.TypeInfo;
 using TypeToExpose = System.Type;
@@ -51,7 +52,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
         }
 
-        public virtual THandle MetadataHandle { get; }
+        public THandle MetadataHandle { get; }
 
         public override int MetadataToken => MetadataHandle.GetHashCode();
 
@@ -59,7 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     }
 
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullNameWithoutAssemblies}")]
-    //[PublicAPI]
+    [PublicAPI]
     public abstract class TypeBase : TypeInfo, IManagedCodeElement
     {
         private readonly TypeBase _unmodifiedType;
@@ -169,9 +170,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal int ArrayDimensionCount => (IsThisArray ? 1 : 0) + (_unmodifiedType?.ArrayDimensionCount).GetValueOrDefault();
 
-        internal virtual string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
+        internal string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
 
-        internal virtual string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
+        internal string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 
         internal CodeElementKey Key { get; }
 

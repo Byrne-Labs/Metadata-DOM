@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class LocalVariable : LocalVariableInfo, IManagedCodeElement
     {
         internal LocalVariable(LocalVariableHandle metadataHandle, MetadataState metadataState)

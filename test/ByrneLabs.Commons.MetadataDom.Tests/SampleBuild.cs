@@ -23,6 +23,18 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly DirectoryInfo _sampleProjectBuildDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}ByrneLabs.Commons.MetadataDom.Tests.SampleToParse", "bin"));
         private static readonly DirectoryInfo _sampleProjectDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}ByrneLabs.Commons.MetadataDom.Tests.SampleToParse"));
 
+        public SampleBuild(string targetFramework, bool debugSymbols, bool optimize, string fileAlignment, int languageVersion, string platform, string outputType, string debugType)
+        {
+            TargetFramework = targetFramework;
+            DebugSymbols = debugSymbols;
+            Optimize = optimize;
+            FileAlignment = fileAlignment;
+            LanguageVersion = languageVersion;
+            Platform = platform;
+            OutputType = outputType;
+            DebugType = debugType;
+        }
+
         public static IEnumerable<FileInfo> BuiltSamples =>
             _sampleProjectBuildDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories)
                 .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories))
@@ -48,23 +60,23 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             }
         }
 
-        public bool DebugSymbols { get; set; }
+        public bool DebugSymbols { get; }
 
-        public string DebugType { get; set; }
+        public string DebugType { get; }
 
-        public string FileAlignment { get; set; }
+        public string FileAlignment { get; }
 
         public bool IsFramework => _dotNetFrameworkVersions.Contains(TargetFramework);
 
-        public int LanguageVersion { get; set; }
+        public int LanguageVersion { get; }
 
-        public bool Optimize { get; set; }
+        public bool Optimize { get; }
 
-        public string OutputType { get; set; }
+        public string OutputType { get; }
 
-        public string Platform { get; set; }
+        public string Platform { get; }
 
-        public string TargetFramework { get; set; }
+        public string TargetFramework { get; }
 
         public static IEnumerable<FileInfo> GetSampleAssemblies(int sampleCount = 100)
         {
@@ -99,26 +111,24 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static SampleBuild CreateRandomBuild()
         {
             var allFrameworks = _dotNetFrameworkVersions.Union(_dotNetCoreVersions).Union(_dotNetStandardVersions).ToArray();
+            var targetFramework = allFrameworks[_random.Next(allFrameworks.Length)];
             var sampleBuild = new SampleBuild
-            {
-                TargetFramework = allFrameworks[_random.Next(allFrameworks.Length)],
-                DebugSymbols = _random.Next(2) == 0,
-                Optimize = _random.Next(2) == 0,
-                FileAlignment = _fileAlignments[_random.Next(_fileAlignments.Length)],
-                LanguageVersion = _random.Next(6) + 2,
-                Platform = _platforms[_random.Next(_platforms.Length)],
-                OutputType = _outputTypes[_random.Next(_outputTypes.Length)]
-            };
-            if (sampleBuild.IsFramework)
-            {
-                sampleBuild.DebugType = _dotNetFrameworkDebugTypes[_random.Next(_dotNetFrameworkDebugTypes.Length)];
-            }
-            else
-            {
-                sampleBuild.DebugType = _dotNetCoreDebugTypes[_random.Next(_dotNetCoreDebugTypes.Length)];
-            }
+            (
+                targetFramework,
+                _random.Next(2) == 0,
+                _random.Next(2) == 0,
+                _fileAlignments[_random.Next(_fileAlignments.Length)],
+                _random.Next(6) + 2,
+                _platforms[_random.Next(_platforms.Length)],
+                _outputTypes[_random.Next(_outputTypes.Length)],
+                _dotNetFrameworkVersions.Contains(targetFramework) ? _dotNetFrameworkDebugTypes[_random.Next(_dotNetFrameworkDebugTypes.Length)] : _dotNetCoreDebugTypes[_random.Next(_dotNetCoreDebugTypes.Length)]
+            );
             return sampleBuild;
         }
+
+        private static string GetDotNetRuntimePath() => @"C:\Program Files\dotnet\dotnet.exe";
+
+        private static string GetMsBuildPath() => @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\amd64\msbuild.exe";
 
         public bool Build()
         {
@@ -206,10 +216,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
             return arguments.ToString();
         }
-
-        private string GetDotNetRuntimePath() => @"C:\Program Files\dotnet\dotnet.exe";
-
-        private string GetMsBuildPath() => @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\amd64\msbuild.exe";
 
         private bool RunTask(ProcessStartInfo processStartInfo)
         {

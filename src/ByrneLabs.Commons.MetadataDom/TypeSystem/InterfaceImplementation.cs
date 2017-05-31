@@ -2,10 +2,11 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {ImplementingType.FullName,nq} : {Interface.FullName}")]
     public class InterfaceImplementation : IManagedCodeElement
     {
@@ -33,7 +34,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public string FullName => Interface.FullName;
 
-        public TypeDefinition ImplementingType { get; internal set; }
+        public TypeDefinition ImplementingType { get; }
 
         public TypeBase Interface { get; }
 

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -23,7 +24,7 @@ using ParameterInfoToExpose = ByrneLabs.Commons.MetadataDom.ParameterInfo;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public partial class PropertyDefinition : PropertyInfo, IManagedCodeElement
     {

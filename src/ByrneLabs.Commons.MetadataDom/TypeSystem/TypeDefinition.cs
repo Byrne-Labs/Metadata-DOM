@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeInfoToExpose = System.Reflection.TypeInfo;
 using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
@@ -38,7 +39,7 @@ using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class TypeDefinition : TypeBase<TypeDefinition, TypeDefinitionHandle, System.Reflection.Metadata.TypeDefinition>
     {
         private Lazy<ImmutableArray<MethodBaseToExpose>> _allMethods;

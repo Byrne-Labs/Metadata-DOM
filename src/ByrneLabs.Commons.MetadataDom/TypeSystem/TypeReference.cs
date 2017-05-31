@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -16,7 +17,7 @@ using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class TypeReference : EmptyTypeBase<TypeReference, TypeReferenceHandle, System.Reflection.Metadata.TypeReference>
     {
         private Lazy<object> _resolutionScope;

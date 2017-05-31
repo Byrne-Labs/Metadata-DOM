@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using ModuleToExpose = System.Reflection.Module;
@@ -17,7 +18,7 @@ using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{ParameterType.FullName,nq} {Name,nq}\"")]
     public class Parameter : ParameterInfo, IManagedCodeElement
     {

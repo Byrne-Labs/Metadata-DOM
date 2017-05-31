@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class ImportDefinition : Import, IManagedCodeElement
     {
         private readonly Lazy<Blob> _alias;

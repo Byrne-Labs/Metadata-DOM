@@ -1,6 +1,8 @@
-﻿namespace ByrneLabs.Commons.MetadataDom
+﻿using JetBrains.Annotations;
+
+namespace ByrneLabs.Commons.MetadataDom
 {
-    //[PublicAPI]
+    [PublicAPI]
     public abstract class SequencePoint
     {
         public abstract Document Document { get; }

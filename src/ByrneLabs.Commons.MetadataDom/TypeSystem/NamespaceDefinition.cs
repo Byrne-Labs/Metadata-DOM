@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class NamespaceDefinition : Namespace, IManagedCodeElement
     {

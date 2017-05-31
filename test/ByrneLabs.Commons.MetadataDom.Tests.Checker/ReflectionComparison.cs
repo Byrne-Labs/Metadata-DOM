@@ -138,7 +138,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        private void CompareCodeElementsToReflectionData(TypeDefinition metadataType, TypeInfo reflectionType)
+        private void CompareCodeElementsToReflectionData(TypeBase metadataType, System.Reflection.TypeInfo reflectionType)
         {
             if (_checkState.HaveBeenCompared(metadataType, reflectionType))
             {
@@ -240,7 +240,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             CompareElementProperties(metadataAttribute.AttributeType.FullName, metadataAttribute, reflectionAttribute);
         }
 
-        private void CompareCodeElementsToReflectionData(PropertyDefinition metadataProperty, PropertyInfo reflectionProperty)
+        private void CompareCodeElementsToReflectionData(PropertyDefinition metadataProperty, System.Reflection.PropertyInfo reflectionProperty)
         {
             if (_checkState.HaveBeenCompared(metadataProperty, reflectionProperty))
             {
@@ -259,9 +259,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 return;
             }
 
-            if (reflectionMethodBase.GetParameters().Length != metadataMethodBase.GetParameters().Count())
+            if (reflectionMethodBase.GetParameters().Length != metadataMethodBase.GetParameters().Length)
             {
-                _checkState.AddError($"{metadataMethodBase.GetTextSignature()} has {reflectionMethodBase.GetParameters().Length} parameters in reflection but {metadataMethodBase.GetParameters().Count()} in metadata");
+                _checkState.AddError($"{metadataMethodBase.GetTextSignature()} has {reflectionMethodBase.GetParameters().Length} parameters in reflection but {metadataMethodBase.GetParameters().Length} in metadata");
             }
             try
             {
@@ -380,7 +380,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        private void CompareTypes(string sourceName, TypeBase metadataType, Type reflectionType)
+        private void CompareTypes(string sourceName, Type metadataType, Type reflectionType)
         {
             if (!Equals(metadataType.Namespace, reflectionType.Namespace))
             {

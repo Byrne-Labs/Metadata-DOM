@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Reflection;
 
@@ -9,7 +10,7 @@ using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public partial class MethodBody : IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<ExceptionRegion>> _exceptionRegions;

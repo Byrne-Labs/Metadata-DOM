@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeInfoToExpose = System.Reflection.TypeInfo;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
@@ -28,7 +29,7 @@ using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class MethodImport : MethodInfo, IManagedCodeElement
     {
         private readonly Lazy<ModuleReference> _module;

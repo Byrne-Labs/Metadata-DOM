@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class Metadata : IManagedCodeElement, IDisposable
     {
         private readonly Lazy<ImmutableArray<AssemblyFile>> _assemblyFiles;

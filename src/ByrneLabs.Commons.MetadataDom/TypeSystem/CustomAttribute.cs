@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Reflection;
 using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
@@ -21,7 +22,7 @@ using CustomAttributeNamedArgumentToExpose = ByrneLabs.Commons.MetadataDom.Custo
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Constructor.DeclaringType.FullName}")]
     public class CustomAttribute : CustomAttributeData, IManagedCodeElement
     {

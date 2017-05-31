@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public abstract class Import
     {
         public abstract string Alias { get; }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeToExpose = System.Type;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
@@ -12,7 +13,7 @@ using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttribut
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    //[PublicAPI]
+    [PublicAPI]
     public abstract class GenericParameterConstraint
     {
         public abstract IEnumerable<CustomAttributeDataToExpose> CustomAttributes { get; }

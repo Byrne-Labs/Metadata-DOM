@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Globalization;
 using TypeInfoToExpose = System.Reflection.TypeInfo;
@@ -32,7 +33,7 @@ using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public partial class MethodDefinition : MethodInfo, IManagedCodeElement
     {

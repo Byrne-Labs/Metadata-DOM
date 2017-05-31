@@ -1,8 +1,9 @@
 ﻿using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class Blob : SimpleCodeElement
     {
         internal Blob(BlobHandle metadataHandle, bool debug, MetadataState metadataState) : base(metadataHandle, metadataState)

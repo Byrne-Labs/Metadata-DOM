@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class GenericParameterConstraint : IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;

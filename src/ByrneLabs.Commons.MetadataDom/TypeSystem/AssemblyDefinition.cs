@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -22,7 +23,7 @@ using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {GetName().FullName}")]
     public class AssemblyDefinition : AssemblyBase<AssemblyDefinition, AssemblyDefinitionHandle, System.Reflection.Metadata.AssemblyDefinition>
     {

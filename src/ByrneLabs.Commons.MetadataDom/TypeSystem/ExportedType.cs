@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -21,7 +22,7 @@ using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class ExportedType : EmptyTypeBase<ExportedType, ExportedTypeHandle, System.Reflection.Metadata.ExportedType>
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using ExceptionHandlingClauseToExpose = System.Reflection.ExceptionHandlingClause;
 using ExceptionHandlingClauseOptionsToExpose = System.Reflection.ExceptionHandlingClauseOptions;
@@ -14,7 +15,7 @@ using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class ExceptionRegion : ExceptionHandlingClauseToExpose, IManagedCodeElement
     {
         private readonly Lazy<TypeBase> _catchType;

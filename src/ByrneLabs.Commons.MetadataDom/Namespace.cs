@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public abstract class Namespace
     {

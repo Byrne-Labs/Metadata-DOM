@@ -2,10 +2,11 @@
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class ManifestResource : ManifestResourceInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;

@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeInfoToExpose = System.Reflection.TypeInfo;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
@@ -25,7 +26,7 @@ using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public partial class ConstructorDefinition : ConstructorInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;

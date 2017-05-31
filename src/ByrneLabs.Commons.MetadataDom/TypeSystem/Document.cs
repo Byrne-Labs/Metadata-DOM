@@ -4,11 +4,12 @@ using System.IO;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
-    //[PublicAPI]
+    [PublicAPI]
     public class Document : MetadataDom.Document, IManagedCodeElement
     {
         private readonly Lazy<byte[]> _hash;

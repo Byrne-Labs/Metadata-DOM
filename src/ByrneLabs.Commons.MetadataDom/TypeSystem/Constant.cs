@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeToExpose = System.Type;
 
@@ -11,7 +12,7 @@ using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Value}")]
     public class Constant : ConstantInfo, IManagedCodeElement
     {

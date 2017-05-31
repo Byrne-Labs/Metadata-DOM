@@ -6,6 +6,10 @@
         <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
+      <DefineConstants>DEBUG;TRACE;NETSTANDARD2_0;NETCOREAPP2_0</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170427-09" />
       <PackageReference Include="xunit" Version="2.2.0" />

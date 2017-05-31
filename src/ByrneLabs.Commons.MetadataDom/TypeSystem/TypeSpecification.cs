@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using MethodBaseToExpose = System.Reflection.MethodBase;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
@@ -22,7 +23,7 @@ using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class TypeSpecification : EmptyTypeBase<TypeSpecification, TypeSpecificationHandle, System.Reflection.Metadata.TypeSpecification>
     {
         private readonly GenericContext _genericContext;

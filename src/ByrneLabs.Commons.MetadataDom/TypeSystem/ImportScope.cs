@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
+using JetBrains.Annotations;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
-    //[PublicAPI]
+    [PublicAPI]
     public class ImportScope : MetadataDom.ImportScope, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<ImportDefinition>> _imports;

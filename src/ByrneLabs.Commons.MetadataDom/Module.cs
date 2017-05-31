@@ -53,9 +53,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected abstract MethodInfoToExpose[] GetAllMethods();
 
-        private FieldInfoToExpose[] GetFieldsImpl(BindingFlags bindingFlags) => GetAllFields().OfType<FieldInfo>().Where(field => (field.BindingFlags & bindingFlags) == bindingFlags).ToArray();
+        private FieldInfoToExpose[] GetFieldsImpl(BindingFlags bindingFlags) => GetAllFields().OfType<FieldInfo>().Where(field => (field.BindingFlags & bindingFlags) == bindingFlags).ToArray<FieldInfoToExpose>();
 
-        private MethodInfoToExpose[] GetMethodsImpl(BindingFlags bindingFlags) => GetAllMethods().Cast<MethodInfo>().Where(method => (method.BindingFlags & bindingFlags) == bindingFlags).ToArray();
+        private MethodInfoToExpose[] GetMethodsImpl(BindingFlags bindingFlags) => GetAllMethods().Cast<MethodInfo>().Where(method => (method.BindingFlags & bindingFlags) == bindingFlags).ToArray<MethodInfoToExpose>();
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
