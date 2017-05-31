@@ -17,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal NamespaceDefinition(NamespaceDefinitionHandle metadataHandle, MetadataState metadataState)
         {
-            Key = new CodeElementKey(metadataHandle);
+            Key = new CodeElementKey<NamespaceDefinition>(metadataHandle);
             MetadataState = metadataState;
             MetadataHandle = metadataHandle;
             RawMetadata = MetadataState.AssemblyReader.GetNamespaceDefinition(metadataHandle);

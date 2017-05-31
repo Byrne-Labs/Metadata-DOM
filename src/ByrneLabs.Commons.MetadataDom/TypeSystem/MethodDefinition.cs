@@ -170,7 +170,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else if (Signature.ParameterTypes.Length != parameterHandles.Count)
             {
-                throw new BadMetadataException($"Method {DeclaringType.FullName}.{Name} has {parameterHandles.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found");
+                parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfoToExpose>().ToImmutableArray();
+                /* 
+                 * TODO: After logging is enabled, log this message:
+                 *  $"Method {DeclaringType.FullName}.{Name} has {parameterHandles.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found"
+                 */
             }
             else
             {

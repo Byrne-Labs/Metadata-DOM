@@ -55,7 +55,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             });
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => MethodReferenceHelper.GetMethodSignature(this, RawMetadata, MetadataState));
-            _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(_methodSignature.Value, metadataState));
+            _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(this, _methodSignature.Value, metadataState));
         }
 
         public override MethodAttributes Attributes => throw new NotSupportedException();

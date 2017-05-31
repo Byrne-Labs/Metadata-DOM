@@ -23,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal MethodDebugInformation(MethodDebugInformationHandle metadataHandle, MethodBaseToExpose methodBase, GenericContext genericContext, MetadataState metadataState)
         {
-            Key = new CodeElementKey(metadataHandle);
+            Key = new CodeElementKey<MethodDebugInformation>(metadataHandle);
             MetadataState = metadataState;
             RawMetadata = MetadataState.PdbReader.GetMethodDebugInformation(metadataHandle);
             Method = methodBase;

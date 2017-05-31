@@ -1,30 +1,44 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     //[PublicAPI]
-    public class ImportScope : DebugCodeElement, ICodeElementWithTypedHandle<ImportScopeHandle, System.Reflection.Metadata.ImportScope>
+    public class ImportScope : MetadataDom.ImportScope, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<ImportDefinition>> _imports;
         private readonly Lazy<Blob> _importsBlob;
         private readonly Lazy<ImportScope> _parent;
 
-        internal ImportScope(ImportScopeHandle metadataHandle, MetadataState metadataState) : base(metadataHandle, metadataState)
+        internal ImportScope(ImportScopeHandle metadataHandle, MetadataState metadataState)
         {
+            Key = new CodeElementKey<ImportScope>(metadataHandle);
+            MetadataState = metadataState;
             MetadataHandle = metadataHandle;
-            RawMetadata = Reader.GetImportScope(metadataHandle);
+            RawMetadata = MetadataState.PdbReader.GetImportScope(metadataHandle);
             _parent = MetadataState.GetLazyCodeElement<ImportScope>(RawMetadata.Parent);
-            _importsBlob = new Lazy<Blob>(() => new Blob(Reader.GetBlobBytes(RawMetadata.ImportsBlob)));
+            _importsBlob = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.ImportsBlob, true);
             _imports = MetadataState.GetLazyCodeElements<ImportDefinition>(RawMetadata.GetImports());
         }
-        public ImmutableArray<ImportDefinition> Imports => _imports.Value;
+
+        public override IEnumerable<Import> Imports => _imports.Value;
+
         public Blob ImportsBlob => _importsBlob.Value;
-        public ImportScope Parent => _parent.Value;
+
+        public ImportScopeHandle MetadataHandle { get; }
+
+        public override MetadataDom.ImportScope Parent => _parent.Value;
 
         public System.Reflection.Metadata.ImportScope RawMetadata { get; }
 
-        public ImportScopeHandle MetadataHandle { get; }
+        internal CodeElementKey Key { get; }
+
+        internal MetadataState MetadataState { get; }
+
+        CodeElementKey IManagedCodeElement.Key => Key;
+
+        MetadataState IManagedCodeElement.MetadataState => MetadataState;
     }
 }

@@ -38,8 +38,6 @@
         <Compile Remove="TypeSystem\IMethod.cs" />
         <Compile Remove="TypeSystem\IMethodBase.cs" />
         <Compile Remove="TypeSystem\IModule.cs" />
-        <Compile Remove="TypeSystem\ImportDefinition.cs" />
-        <Compile Remove="TypeSystem\ImportScope.cs" />
         <Compile Remove="TypeSystem\MethodDefinitionBase.cs" />
         <Compile Remove="TypeSystem\MethodSpecification.cs" />
         <Compile Remove="TypeSystem\RuntimeCodeElement.cs" />

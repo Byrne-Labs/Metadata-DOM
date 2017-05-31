@@ -23,6 +23,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal LocalScope(LocalScopeHandle metadataHandle, MetadataState metadataState)
         {
+            Key = new CodeElementKey<LocalScope>(metadataHandle);
+            MetadataState = metadataState;
             MetadataHandle = metadataHandle;
             MetadataState = metadataState;
             RawMetadata = MetadataState.PdbReader.GetLocalScope(metadataHandle);
@@ -40,7 +42,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int EndOffset { get; }
 
-        public override ImportScope ImportScope => _importScope.Value;
+        public override MetadataDom.ImportScope ImportScope => _importScope.Value;
 
         public override int Length { get; }
 

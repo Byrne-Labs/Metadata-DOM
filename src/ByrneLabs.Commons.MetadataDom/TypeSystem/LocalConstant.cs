@@ -15,7 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataHandle = metadataHandle;
             RawMetadata = MetadataState.PdbReader.GetLocalConstant(MetadataHandle);
             Name = MetadataState.PdbReader.GetString(RawMetadata.Name);
-            _signature = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.Signature);
+            _signature = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.Signature, true);
         }
 
         public LocalConstantHandle MetadataHandle { get; }

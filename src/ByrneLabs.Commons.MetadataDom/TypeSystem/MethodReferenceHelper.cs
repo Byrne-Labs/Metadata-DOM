@@ -25,7 +25,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 genericTypeParameters = ((MethodInfo) methodDefinition).GetGenericArguments().ToImmutableArray();
             }
-            else if (methodDefinition is ConstructorInfo)
+            else if (methodDefinition is ConstructorInfo || methodDefinition == null)
             {
                 genericTypeParameters = ImmutableArray<TypeToExpose>.Empty;
             }
@@ -45,11 +45,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return methodSignature;
         }
 
-        public static IEnumerable<Parameter> GetParameters(MethodSignature<TypeBase> methodSignature, MetadataState metadataState)
+        public static IEnumerable<Parameter> GetParameters(MethodBaseToExpose methodBase, MethodSignature<TypeBase> methodSignature, MetadataState metadataState)
         {
             var parameterIndex = 0;
 
-            var parameters = methodSignature.ParameterTypes.Select(parameterType => metadataState.GetCodeElement<Parameter>(methodSignature, parameterType, parameterIndex, parameterIndex++ < methodSignature.RequiredParameterCount, metadataState)).ToImmutableArray();
+            var parameters = methodSignature.ParameterTypes.Select(parameterType => metadataState.GetCodeElement<Parameter>(methodBase, parameterType, parameterIndex, parameterIndex++ < methodSignature.RequiredParameterCount, metadataState)).ToImmutableArray();
 
             return parameters;
         }

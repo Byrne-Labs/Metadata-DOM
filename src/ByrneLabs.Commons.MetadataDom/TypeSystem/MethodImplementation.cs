@@ -36,7 +36,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return methodBody;
             });
-            _methodDeclaration = MetadataState.GetLazyCodeElement<MethodBase>(RawMetadata.MethodDeclaration);
+            _methodDeclaration = new Lazy<MethodBase>(() => RawMetadata.MethodBody.Kind == HandleKind.MemberReference ? MetadataState.GetCodeElement<MethodBase>(RawMetadata.MethodDeclaration, MethodDefinition) : MetadataState.GetCodeElement<MethodBase>(RawMetadata.MethodDeclaration));
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
         }
 

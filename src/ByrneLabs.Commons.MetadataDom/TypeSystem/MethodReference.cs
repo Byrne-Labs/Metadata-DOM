@@ -11,6 +11,7 @@ using TypeToExpose = System.Type;
 using MethodInfoToExpose = System.Reflection.MethodInfo;
 using PropertyInfoToExpose = System.Reflection.PropertyInfo;
 using EventInfoToExpose = System.Reflection.EventInfo;
+using ModuleToExpose = System.Reflection.Module;
 using ParameterInfoToExpose = System.Reflection.ParameterInfo;
 
 #else
@@ -33,9 +34,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
         private readonly Lazy<IManagedCodeElement> _parent;
-        private readonly Lazy<ParameterInfoToExpose> _returnParameter;
+        private readonly Lazy<Parameter> _returnParameter;
 
-        internal MethodReference(MemberReferenceHandle metadataHandle, MetadataState metadataState)
+        internal MethodReference(MemberReferenceHandle metadataHandle, MetadataState metadataState) : this(metadataHandle, null, metadataState)
+        {
+        }
+
+        internal MethodReference(MemberReferenceHandle metadataHandle, MethodBase methodImplementationDeclaration, MetadataState metadataState)
         {
             Key = new CodeElementKey<MethodReference>(metadataHandle);
             MetadataState = metadataState;
@@ -57,23 +62,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 return parent;
             });
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
-            _genericTypeParameters = new Lazy<ImmutableArray<Type>>(() => MethodReferenceHelper.GetGenericTypeParameters(this));
+            _genericTypeParameters = new Lazy<ImmutableArray<Type>>(() => MethodReferenceHelper.GetGenericTypeParameters(methodImplementationDeclaration));
             _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => MethodReferenceHelper.GetMethodSignature(this, RawMetadata, MetadataState));
-            _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(_methodSignature.Value, metadataState));
-            _returnParameter = metadataState.GetLazyCodeElement<ParameterInfoToExpose>(_methodSignature.Value, ReturnType, _methodSignature.Value.ParameterTypes.Length, false, metadataState);
+            _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(this, _methodSignature.Value, metadataState));
+            _returnParameter = metadataState.GetLazyCodeElement<Parameter>(this, ReturnType, _methodSignature.Value.ParameterTypes.Length, false, metadataState);
         }
 
         public override MethodAttributes Attributes => throw new NotSupportedException();
 
-        public IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
-
-        public override Type DeclaringType => throw new NotSupportedException();
+        public override Type DeclaringType => Parent as Type;
 
         public override string FullName => Name;
 
         public MemberReferenceHandle MetadataHandle { get; }
 
         public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
+
+        public override ModuleToExpose Module => throw new NotSupportedException();
 
         public override string Name { get; }
 
@@ -112,6 +117,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToList<CustomAttributeDataToExpose>();
 
         public override TypeToExpose[] GetGenericArguments() => _genericTypeParameters.Value.ToArray();
 

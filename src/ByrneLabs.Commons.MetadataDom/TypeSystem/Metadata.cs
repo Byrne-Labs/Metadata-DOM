@@ -24,7 +24,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
         private readonly Lazy<ImmutableArray<ManifestResource>> _manifestResources;
         private readonly Lazy<ImmutableArray<IMemberInfo>> _memberDefinitions;
-        private readonly Lazy<ImmutableArray<MethodDebugInformation>> _methodDebugInformation;
         private readonly Lazy<ImmutableArray<MethodBase>> _methodDefinitions;
         private readonly Lazy<ImmutableArray<PropertyDefinition>> _propertyDefinitions;
         private readonly Lazy<ImmutableArray<TypeDefinition>> _typeDefinitions;
@@ -89,7 +88,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(MetadataState.PdbReader.LocalConstants);
                 _localScopes = MetadataState.GetLazyCodeElements<LocalScope>(MetadataState.PdbReader.LocalScopes);
                 _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(MetadataState.PdbReader.LocalVariables);
-                _methodDebugInformation = MetadataState.GetLazyCodeElements<MethodDebugInformation>(MetadataState.PdbReader.MethodDebugInformation);
             }
             else
             {
@@ -99,7 +97,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 _localConstants = new Lazy<ImmutableArray<LocalConstant>>(() => ImmutableArray<LocalConstant>.Empty);
                 _localScopes = new Lazy<ImmutableArray<LocalScope>>(() => ImmutableArray<LocalScope>.Empty);
                 _localVariables = new Lazy<ImmutableArray<LocalVariable>>(() => ImmutableArray<LocalVariable>.Empty);
-                _methodDebugInformation = new Lazy<ImmutableArray<MethodDebugInformation>>(() => ImmutableArray<MethodDebugInformation>.Empty);
             }
         }
 
@@ -142,8 +139,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public ImmutableArray<IMemberInfo> MemberDefinitions => _memberDefinitions.Value;
 
         public MetadataKind MetadataKind { get; }
-
-        public ImmutableArray<MethodDebugInformation> MethodDebugInformation => _methodDebugInformation.Value;
 
         public ImmutableArray<MethodBase> MethodDefinitions => _methodDefinitions.Value;
 

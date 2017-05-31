@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal StandaloneSignature(StandaloneSignatureHandle metadataHandle, GenericContext genericContext, MetadataState metadataState)
         {
-            Key = new CodeElementKey(metadataHandle);
+            Key = new CodeElementKey<StandaloneSignature>(metadataHandle);
             MetadataState = metadataState;
             MetadataHandle = metadataHandle;
             RawMetadata = MetadataState.AssemblyReader.GetStandaloneSignature(metadataHandle);

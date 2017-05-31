@@ -6,8 +6,6 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public abstract string Alias { get; }
 
-        public abstract ImportKind Kind { get; }
-
         public abstract AssemblyName TargetAssembly { get; }
 
         public abstract string TargetNamespace { get; }
