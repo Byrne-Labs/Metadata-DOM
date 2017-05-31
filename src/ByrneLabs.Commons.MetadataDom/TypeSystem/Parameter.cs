@@ -59,7 +59,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
-        internal Parameter(ParameterHandle metadataHandle, MethodDefinition methodDefinition, MetadataState metadataState):this(metadataHandle,metadataState)
+        internal Parameter(ParameterHandle metadataHandle, MethodDefinition methodDefinition, MetadataState metadataState) : this(metadataHandle, metadataState)
         {
             Member = methodDefinition;
             ParameterType = methodDefinition.Signature.ParameterTypes[Position];
@@ -87,7 +87,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool HasDefaultValue => Attributes.HasFlag(ParameterAttributes.HasDefault);
 
-        public override bool IsCompilerGenerated => ((IMemberInfo) Member).IsCompilerGenerated;
+        public override bool IsCompilerGenerated => Member == null ? throw new InvalidOperationException() : ((IMemberInfo)Member).IsCompilerGenerated;
 
         public override bool IsSpecialName { get; }
 
