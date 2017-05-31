@@ -2,9 +2,7 @@
 using System.Reflection;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System;
 using MethodBaseToExpose = System.Reflection.MethodBase;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
@@ -43,8 +41,9 @@ namespace ByrneLabs.Commons.MetadataDom
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class ParameterInfo : System.Reflection.ParameterInfo, IMemberInfo
     {
-
         public abstract string FullName { get; }
+
+        public abstract bool IsCompilerGenerated { get; }
 
         public abstract bool IsSpecialName { get; }
 
@@ -52,12 +51,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public MemberTypes MemberType => MemberTypes.Custom;
 
-        public abstract bool IsCompilerGenerated { get; }
-
-        public virtual string TextSignature => TextSignatureImpl();
-
         [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global", Justification = "False positive because it is not picking up the PublicAPI attribute on the other part of the partial class")]
         public virtual object RawDefaultValue => throw new NotSupportedException();
+
+        public virtual string TextSignature => TextSignatureImpl();
     }
 #else
     public abstract partial class ParameterInfo : MemberInfo

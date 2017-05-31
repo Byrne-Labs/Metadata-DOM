@@ -90,47 +90,47 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             if (metadataElement is TypeBase && reflectionElement is TypeInfo)
             {
-                CompareCodeElementsToReflectionData((TypeDefinition)metadataElement, (TypeInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((TypeDefinition) metadataElement, (TypeInfo) reflectionElement);
             }
             else if (metadataElement is TypeBase && reflectionElement is Type)
             {
-                CompareCodeElementsToReflectionData((TypeDefinition)metadataElement, ((Type)reflectionElement).GetTypeInfo());
+                CompareCodeElementsToReflectionData((TypeDefinition) metadataElement, ((Type) reflectionElement).GetTypeInfo());
             }
             else if (metadataElement is PropertyDefinition && reflectionElement is PropertyInfo)
             {
-                CompareCodeElementsToReflectionData((PropertyDefinition)metadataElement, (PropertyInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((PropertyDefinition) metadataElement, (PropertyInfo) reflectionElement);
             }
             else if (metadataElement is ConstructorDefinition && reflectionElement is ConstructorInfo)
             {
-                CompareCodeElementsToReflectionData((ConstructorDefinition)metadataElement, (ConstructorInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((ConstructorDefinition) metadataElement, (ConstructorInfo) reflectionElement);
             }
             else if (metadataElement is MethodDefinition && reflectionElement is MethodInfo)
             {
-                CompareCodeElementsToReflectionData((MethodDefinition)metadataElement, (MethodInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((MethodDefinition) metadataElement, (MethodInfo) reflectionElement);
             }
             else if (metadataElement is EventDefinition && reflectionElement is EventInfo)
             {
-                CompareCodeElementsToReflectionData((EventDefinition)metadataElement, (EventInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((EventDefinition) metadataElement, (EventInfo) reflectionElement);
             }
             else if (metadataElement is FieldDefinition && reflectionElement is FieldInfo)
             {
-                CompareCodeElementsToReflectionData((FieldDefinition)metadataElement, (FieldInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((FieldDefinition) metadataElement, (FieldInfo) reflectionElement);
             }
             else if (metadataElement is CustomAttributeData && reflectionElement is CustomAttributeData)
             {
-                CompareCodeElementsToReflectionData((CustomAttributeData)metadataElement, (CustomAttributeData)reflectionElement);
+                CompareCodeElementsToReflectionData((CustomAttributeData) metadataElement, (CustomAttributeData) reflectionElement);
             }
             else if (metadataElement is Parameter && reflectionElement is ParameterInfo)
             {
-                CompareCodeElementsToReflectionData((Parameter)metadataElement, (ParameterInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((Parameter) metadataElement, (ParameterInfo) reflectionElement);
             }
             else if (metadataElement is ModuleDefinition && reflectionElement is Module)
             {
-                CompareCodeElementsToReflectionData((ModuleDefinition)metadataElement, (Module)reflectionElement);
+                CompareCodeElementsToReflectionData((ModuleDefinition) metadataElement, (Module) reflectionElement);
             }
             else if (metadataElement is AssemblyDefinition && reflectionElement is Assembly)
             {
-                CompareCodeElementsToReflectionData((AssemblyDefinition)metadataElement, (Assembly)reflectionElement);
+                CompareCodeElementsToReflectionData((AssemblyDefinition) metadataElement, (Assembly) reflectionElement);
             }
             else
             {
@@ -151,7 +151,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 var reflectionElementType = reflectionType.GetElementType();
                 if (metadataElementType != null && reflectionElementType != null)
                 {
-                    CompareCodeElementsToReflectionData((IManagedCodeElement)metadataElementType, reflectionElementType);
+                    CompareCodeElementsToReflectionData((IManagedCodeElement) metadataElementType, reflectionElementType);
                 }
                 else if (metadataElementType != null || reflectionElementType != null)
                 {
@@ -183,7 +183,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     var byName = metadataType.GetMembers().Where(member => member.MemberType == reflectionMember.MemberType && member.GetTextSignature().Equals(reflectionTextSignature)).ToArray();
                     if (byToken.Length == 1 && byName.Length == 1)
                     {
-                        CompareCodeElementsToReflectionData((IManagedCodeElement)byToken.Single(), reflectionMember);
+                        CompareCodeElementsToReflectionData((IManagedCodeElement) byToken.Single(), reflectionMember);
                     }
                     else
                     {
@@ -232,7 +232,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         private void CompareCodeElementsToReflectionData(CustomAttributeData metadataAttribute, CustomAttributeData reflectionAttribute)
         {
-            if (_checkState.HaveBeenCompared((IManagedCodeElement)metadataAttribute, reflectionAttribute))
+            if (_checkState.HaveBeenCompared((IManagedCodeElement) metadataAttribute, reflectionAttribute))
             {
                 return;
             }
@@ -247,14 +247,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 return;
             }
 
-            CompareTypes($"Property {metadataProperty.FullName}", (TypeBase)metadataProperty.PropertyType, reflectionProperty.PropertyType);
+            CompareTypes($"Property {metadataProperty.FullName}", (TypeBase) metadataProperty.PropertyType, reflectionProperty.PropertyType);
 
             CompareElementProperties(metadataProperty.FullName, metadataProperty, reflectionProperty);
         }
 
         private void CompareCodeElementsToReflectionData(MethodBase metadataMethodBase, MethodBase reflectionMethodBase)
         {
-            if (_checkState.HaveBeenCompared((IManagedCodeElement)metadataMethodBase, reflectionMethodBase))
+            if (_checkState.HaveBeenCompared((IManagedCodeElement) metadataMethodBase, reflectionMethodBase))
             {
                 return;
             }
@@ -275,7 +275,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     }
 
                     CompareTypes($"The parameter named {reflectionParameter.Name} with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()}", (TypeBase) metadataParameter.ParameterType, reflectionParameter.ParameterType);
-                    CompareElementProperties(((Parameter)metadataParameter).FullName, metadataParameter, reflectionParameter);
+                    CompareElementProperties(((Parameter) metadataParameter).FullName, metadataParameter, reflectionParameter);
                 }
             }
             catch (Exception exception)
@@ -365,7 +365,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         }
                         else if (metadataElement is IManagedCodeElement)
                         {
-                            CompareCodeElementsToReflectionData((IManagedCodeElement)metadataElement, reflectionElement);
+                            CompareCodeElementsToReflectionData((IManagedCodeElement) metadataElement, reflectionElement);
                         }
                         else
                         {

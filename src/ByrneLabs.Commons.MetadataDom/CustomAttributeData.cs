@@ -19,20 +19,11 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class CustomAttributeData
     {
-        internal static object[] GetCustomAttributes(IMemberInfo member, bool inherit)
-        {
-            throw new NotSupportedException("This will be supported in the future");
-        }
+        internal static object[] GetCustomAttributes(IMemberInfo member, bool inherit) => throw new NotSupportedException("This will be supported in the future");
 
-        internal static object[] GetCustomAttributes(IMemberInfo member, TypeToExpose attributeType, bool inherit)
-        {
-            throw new NotSupportedException("This will be supported in the future");
-        }
+        internal static object[] GetCustomAttributes(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw new NotSupportedException("This will be supported in the future");
 
-        internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit)
-        {
-            throw new NotSupportedException("This will be supported in the future");
-        }
+        internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw new NotSupportedException("This will be supported in the future");
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

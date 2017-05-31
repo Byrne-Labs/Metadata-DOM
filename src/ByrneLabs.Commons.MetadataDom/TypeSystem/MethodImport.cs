@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
-using System.Globalization;
 using TypeInfoToExpose = System.Reflection.TypeInfo;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;

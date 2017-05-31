@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
-using System.Collections.Generic;
 using System.Linq;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using ModuleToExpose = System.Reflection.Module;

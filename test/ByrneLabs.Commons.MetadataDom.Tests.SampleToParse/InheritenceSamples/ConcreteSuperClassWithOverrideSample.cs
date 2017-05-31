@@ -8,114 +8,55 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
         protected internal int protectedInternalField;
         protected int protectedField;
         internal int internalField;
-        private int privateField;
 
         public int PublicProperty
         {
-            get
-            {
-                return protectedInternalField;
-            }
-            set
-            {
-                protectedInternalField = value;
-            }
+            get => protectedInternalField;
+            set => protectedInternalField = value;
         }
 
         public virtual int PublicVirtualProperty
         {
-            get
-            {
-                return protectedInternalField;
-            }
-            set
-            {
-                protectedInternalField = value;
-            }
+            get => protectedInternalField;
+            set => protectedInternalField = value;
         }
 
         protected internal int ProtectedInternalProperty
         {
-            get
-            {
-                return protectedField;
-            }
-            set
-            {
-                protectedField = value;
-            }
+            get => protectedField;
+            set => protectedField = value;
         }
 
         protected internal virtual int ProtectedInternalVirtualProperty
         {
-            get
-            {
-                return protectedField;
-            }
-            set
-            {
-                protectedField = value;
-            }
+            get => protectedField;
+            set => protectedField = value;
         }
 
         protected int ProtectedProperty
         {
-            get
-            {
-                return internalField;
-            }
-            set
-            {
-                internalField = value;
-            }
+            get => internalField;
+            set => internalField = value;
         }
 
         protected virtual int ProtectedVirtualProperty
         {
-            get
-            {
-                return internalField;
-            }
-            set
-            {
-                internalField = value;
-            }
+            get => internalField;
+            set => internalField = value;
         }
 
-        internal int InternalProperty
-        {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
-        }
+        internal int InternalProperty { get; set; }
 
         internal virtual int InternalVirtualProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => InternalProperty;
+            set => InternalProperty = value;
         }
 
         private int PrivateProperty
         {
-            get
-            {
-                return publicField;
-            }
-            set
-            {
-                publicField = value;
-            }
+            get => publicField;
+            set => publicField = value;
         }
 
 #if CSHARP_V3
@@ -137,12 +78,30 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
 
         private int PrivateAutoProperty { get; set; }
 #endif
-
 #if CSHARP_V7
-        public override int PublicAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
-        protected internal override int ProtectedInternalAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
-        protected override int ProtectedAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
-        internal override int InternalAbstractAutoProperty { get => throw new NotSupportedException("This will be supported in the future"); set => throw new NotSupportedException("This will be supported in the future"); }
+        public override int PublicAbstractAutoProperty
+        {
+            get => throw new NotSupportedException("This will be supported in the future");
+            set => throw new NotSupportedException("This will be supported in the future");
+        }
+
+        protected internal override int ProtectedInternalAbstractAutoProperty
+        {
+            get => throw new NotSupportedException("This will be supported in the future");
+            set => throw new NotSupportedException("This will be supported in the future");
+        }
+
+        protected override int ProtectedAbstractAutoProperty
+        {
+            get => throw new NotSupportedException("This will be supported in the future");
+            set => throw new NotSupportedException("This will be supported in the future");
+        }
+
+        internal override int InternalAbstractAutoProperty
+        {
+            get => throw new NotSupportedException("This will be supported in the future");
+            set => throw new NotSupportedException("This will be supported in the future");
+        }
 #elif CSHARP_V3
         public override int PublicAbstractAutoProperty {get;set;}
         protected internal override int ProtectedInternalAbstractAutoProperty {get;set;}
@@ -151,73 +110,52 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.InheritenceSamples
 #endif
         public override int PublicAbstractProperty
         {
-            get
-            {
-                return publicField;
-            }
-            set
-            {
-                publicField = value;
-            }
+            get => publicField;
+            set => publicField = value;
         }
+
         protected internal override int ProtectedInternalAbstractProperty
         {
-            get
-            {
-                return publicField;
-            }
-            set
-            {
-                publicField = value;
-            }
+            get => publicField;
+            set => publicField = value;
         }
+
         protected override int ProtectedAbstractProperty
         {
-            get
-            {
-                return publicField;
-            }
-            set
-            {
-                publicField = value;
-            }
+            get => publicField;
+            set => publicField = value;
         }
+
         internal override int InternalAbstractProperty
         {
-            get
-            {
-                return publicField;
-            }
-            set
-            {
-                publicField = value;
-            }
+            get => publicField;
+            set => publicField = value;
         }
 
-        public override int PublicAbstractMethod() { return 0; }
+        public override int PublicAbstractMethod() => 0;
 
-        public int PublicMethod() { return 0; }
+        public int PublicMethod() => 0;
 
-        public override int PublicVirtualMethod() { return 0; }
+        public override int PublicVirtualMethod() => 0;
 
-        protected internal override int ProtectedInternalAbstractMethod() { return 0; }
+        protected internal override int ProtectedInternalAbstractMethod() => 0;
 
-        protected internal int ProtectedInternalMethod() { return 0; }
+        protected internal int ProtectedInternalMethod() => 0;
 
-        protected internal override int ProtectedInternalVirtualMethod() { return 0; }
+        protected internal override int ProtectedInternalVirtualMethod() => 0;
 
-        protected override int ProtectedAbstractMethod() { return 0; }
+        protected override int ProtectedAbstractMethod() => 0;
 
-        protected int ProtectedMethod() { return 0; }
+        protected int ProtectedMethod() => 0;
 
-        protected override int ProtectedVirtualMethod() { return 0; }
+        protected override int ProtectedVirtualMethod() => 0;
 
-        internal override int InternalAbstractMethod() { return 0; }
+        internal override int InternalAbstractMethod() => 0;
 
-        internal int InternalMethod() { return 0; }
+        internal int InternalMethod() => 0;
 
-        internal override int InternalVirtualMethod() { return 0; }
+        internal override int InternalVirtualMethod() => 0;
 
-        private int PrivateMethod() { return 0; }
+        private int PrivateMethod() => 0;
     }
 }

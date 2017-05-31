@@ -31,23 +31,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
+        public string FullName => Interface.FullName;
+
         public TypeDefinition ImplementingType { get; internal set; }
 
         public TypeBase Interface { get; }
 
         public InterfaceImplementationHandle MetadataHandle { get; }
 
+        public string Name => Interface.Name;
+
         public System.Reflection.Metadata.InterfaceImplementation RawMetadata { get; }
+
+        public string TextSignature => Interface.TextSignature;
 
         internal CodeElementKey Key { get; }
 
         internal MetadataState MetadataState { get; }
-
-        public string FullName => Interface.FullName;
-
-        public string Name => Interface.Name;
-
-        public string TextSignature => Interface.TextSignature;
 
         CodeElementKey IManagedCodeElement.Key => Key;
 

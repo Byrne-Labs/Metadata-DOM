@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
@@ -43,20 +41,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         {
         }
 
-        public object ReadOnlyValue
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public object ReadOnlyValue => null;
 
         public object ReadWriteValue
         {
-            get
-            {
-                return null;
-            }
+            get => null;
             set
             {
                 var a = value;
@@ -75,20 +64,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         {
         }
 
-        object Interface2.ReadOnlyValue
-        {
-            get
-            {
-                return null;
-            }
-        }
+        object Interface2.ReadOnlyValue => null;
 
         object Interface2.ReadWriteValue
         {
-            get
-            {
-                return null;
-            }
+            get => null;
             set
             {
                 var a = value;
@@ -108,20 +88,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             throw new NotSupportedException("This will be supported in the future");
         }
 
-        object Interface3.ReadOnlyValue
-        {
-            get
-            {
-                return null;
-            }
-        }
+        object Interface3.ReadOnlyValue => null;
 
         object Interface3.ReadWriteValue
         {
-            get
-            {
-                return null;
-            }
+            get => null;
             set
             {
                 var a = value;

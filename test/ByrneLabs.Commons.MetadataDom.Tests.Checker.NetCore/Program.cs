@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore

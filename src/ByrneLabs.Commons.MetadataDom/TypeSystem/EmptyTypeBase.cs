@@ -101,7 +101,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool ContainsGenericParameters => false;
 
-        public override MethodBase DeclaringMethod => null;
+        public override MethodBaseToExpose DeclaringMethod => null;
 
         public override TypeToExpose DeclaringType => null;
 
@@ -185,7 +185,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
     public abstract partial class EmptyTypeBase
     {
-
         protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, TypeToExpose[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
 
         protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
@@ -193,7 +192,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
 
         protected override bool IsContextfulImpl() => false;
-
     }
 #else
     public abstract partial class EmptyTypeBase

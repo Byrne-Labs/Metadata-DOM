@@ -8,14 +8,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public event EventHandler Disposing
         {
-            add
-            {
-                disposing = (EventHandler) Delegate.Combine(disposing, value);
-            }
-            remove
-            {
-                disposing = (EventHandler) Delegate.Remove(disposing, value);
-            }
+            add => disposing = (EventHandler) Delegate.Combine(disposing, value);
+            remove => disposing = (EventHandler) Delegate.Remove(disposing, value);
         }
 
         public event EventHandler Disposing2;
@@ -24,11 +18,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         {
         }
 
-        public void remove_FakeEvent(EventHandler eventHandler)
+        public void raise_FakeEvent(EventHandler eventHandler)
         {
         }
 
-        public void raise_FakeEvent(EventHandler eventHandler)
+        public void remove_FakeEvent(EventHandler eventHandler)
         {
         }
     }

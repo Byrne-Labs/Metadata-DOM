@@ -79,8 +79,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
 
-        protected override TypeAttributes GetAttributeFlagsImpl() => RawMetadata.Attributes;
-
         public override TypeToExpose BaseType => _baseType.Value;
 
         public override bool ContainsGenericParameters => GenericTypeParameters.Any();
@@ -117,6 +115,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsConstructedGenericType => throw new NotSupportedException();
 
+        public override bool IsDelegate => "System.Delegate".Equals(BaseType?.FullName) || "System.MulticastDelegate".Equals(BaseType?.FullName);
+
         public override bool IsEnum => "System.Enum".Equals(BaseType?.FullName);
 
         public override bool IsGenericParameter => false;
@@ -132,8 +132,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override bool IsSecurityTransparent => false;
 
         public override bool IsSerializable => (Attributes & TypeAttributes.Serializable) != 0 || IsEnum || IsDelegate;
-
-        public override bool IsDelegate => "System.Delegate".Equals(BaseType?.FullName) || "System.MulticastDelegate".Equals(BaseType?.FullName);
 
         public override IEnumerable<Language> Languages { get; } = ImmutableArray<Language>.Empty;
 
@@ -161,24 +159,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal override string UndecoratedName => MetadataState.AssemblyReader.GetString(RawMetadata.Name);
 
-        protected override bool IsMarshalByRefImpl() => throw new NotSupportedException();
+        protected override TypeAttributes GetAttributeFlagsImpl() => RawMetadata.Attributes;
 
         protected override bool IsCOMObjectImpl() => throw new NotSupportedException();
 
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
+        protected override bool IsContextfulImpl() => throw new NotSupportedException();
 
-        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override bool IsPrimitiveImpl() => throw new NotSupportedException();
-
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
-
-#endif
+        protected override bool IsMarshalByRefImpl() => throw new NotSupportedException();
 
         private void Initialize()
         {
@@ -259,6 +246,19 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _members = new Lazy<ImmutableArray<MemberInfo>>(() => DeclaredMethods.Union<MemberInfo>(DeclaredFields).Union(DeclaredEvents).Union(DeclaredProperties).Union(DeclaredNestedTypes).ToImmutableArray());
         }
 
-        protected override bool IsContextfulImpl() => throw new NotSupportedException();
+#if NETSTANDARD2_0 || NET_FRAMEWORK
+        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
+
+        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
+
+        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
+
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
+
+        protected override bool IsPrimitiveImpl() => throw new NotSupportedException();
+
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+
+#endif
     }
 }

@@ -1,1 +1,3 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ByrneLabs.Commons.MetadataDom.Tests.Checker")]
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("ByrneLabs.Commons.MetadataDom.Tests.Checker")]

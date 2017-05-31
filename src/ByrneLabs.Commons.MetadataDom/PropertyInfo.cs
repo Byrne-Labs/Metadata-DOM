@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;

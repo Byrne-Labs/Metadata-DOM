@@ -119,11 +119,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public partial class EventDefinition
     {
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
-
         public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
 
         public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
+
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
     }
 
 #else

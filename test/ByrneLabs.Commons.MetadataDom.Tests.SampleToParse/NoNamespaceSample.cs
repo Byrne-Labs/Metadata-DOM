@@ -1,3 +1,3 @@
-﻿class NoNamespaceSample
+﻿internal class NoNamespaceSample
 {
 }

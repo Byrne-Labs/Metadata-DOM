@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
+﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
     internal class EscapedNameSamples
     {
@@ -17,15 +13,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class abstractMethodHolder
         {
-            private @abstract @abstract(@abstract @abstract)
-            {
-                return null;
-            }
+            private @abstract @abstract(@abstract @abstract) => null;
         }
 
         private class abstractPropertyHolder
         {
-            private @abstract @abstract { get { return null; } set { } }
+            private @abstract @abstract
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @as
@@ -39,15 +41,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class asMethodHolder
         {
-            private @as @as(@as @as)
-            {
-                return null;
-            }
+            private @as @as(@as @as) => null;
         }
 
         private class asPropertyHolder
         {
-            private @as @as { get { return null; } set { } }
+            private @as @as
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @base
@@ -61,15 +69,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class baseMethodHolder
         {
-            private @base @base(@base @base)
-            {
-                return null;
-            }
+            private @base @base(@base @base) => null;
         }
 
         private class basePropertyHolder
         {
-            private @base @base { get { return null; } set { } }
+            private @base @base
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @bool
@@ -83,15 +97,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class boolMethodHolder
         {
-            private @bool @bool(@bool @bool)
-            {
-                return null;
-            }
+            private @bool @bool(@bool @bool) => null;
         }
 
         private class boolPropertyHolder
         {
-            private @bool @bool { get { return null; } set { } }
+            private @bool @bool
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @break
@@ -105,15 +125,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class breakMethodHolder
         {
-            private @break @break(@break @break)
-            {
-                return null;
-            }
+            private @break @break(@break @break) => null;
         }
 
         private class breakPropertyHolder
         {
-            private @break @break { get { return null; } set { } }
+            private @break @break
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @byte
@@ -127,15 +153,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class byteMethodHolder
         {
-            private @byte @byte(@byte @byte)
-            {
-                return null;
-            }
+            private @byte @byte(@byte @byte) => null;
         }
 
         private class bytePropertyHolder
         {
-            private @byte @byte { get { return null; } set { } }
+            private @byte @byte
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @case
@@ -149,15 +181,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class caseMethodHolder
         {
-            private @case @case(@case @case)
-            {
-                return null;
-            }
+            private @case @case(@case @case) => null;
         }
 
         private class casePropertyHolder
         {
-            private @case @case { get { return null; } set { } }
+            private @case @case
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @catch
@@ -171,15 +209,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class catchMethodHolder
         {
-            private @catch @catch(@catch @catch)
-            {
-                return null;
-            }
+            private @catch @catch(@catch @catch) => null;
         }
 
         private class catchPropertyHolder
         {
-            private @catch @catch { get { return null; } set { } }
+            private @catch @catch
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @char
@@ -193,15 +237,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class charMethodHolder
         {
-            private @char @char(@char @char)
-            {
-                return null;
-            }
+            private @char @char(@char @char) => null;
         }
 
         private class charPropertyHolder
         {
-            private @char @char { get { return null; } set { } }
+            private @char @char
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @checked
@@ -215,15 +265,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class checkedMethodHolder
         {
-            private @checked @checked(@checked @checked)
-            {
-                return null;
-            }
+            private @checked @checked(@checked @checked) => null;
         }
 
         private class checkedPropertyHolder
         {
-            private @checked @checked { get { return null; } set { } }
+            private @checked @checked
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @class
@@ -237,15 +293,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class classMethodHolder
         {
-            private @class @class(@class @class)
-            {
-                return null;
-            }
+            private @class @class(@class @class) => null;
         }
 
         private class classPropertyHolder
         {
-            private @class @class { get { return null; } set { } }
+            private @class @class
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @const
@@ -259,15 +321,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class constMethodHolder
         {
-            private @const @const(@const @const)
-            {
-                return null;
-            }
+            private @const @const(@const @const) => null;
         }
 
         private class constPropertyHolder
         {
-            private @const @const { get { return null; } set { } }
+            private @const @const
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @continue
@@ -281,15 +349,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class continueMethodHolder
         {
-            private @continue @continue(@continue @continue)
-            {
-                return null;
-            }
+            private @continue @continue(@continue @continue) => null;
         }
 
         private class continuePropertyHolder
         {
-            private @continue @continue { get { return null; } set { } }
+            private @continue @continue
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @decimal
@@ -303,15 +377,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class decimalMethodHolder
         {
-            private @decimal @decimal(@decimal @decimal)
-            {
-                return null;
-            }
+            private @decimal @decimal(@decimal @decimal) => null;
         }
 
         private class decimalPropertyHolder
         {
-            private @decimal @decimal { get { return null; } set { } }
+            private @decimal @decimal
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @default
@@ -325,15 +405,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class defaultMethodHolder
         {
-            private @default @default(@default @default)
-            {
-                return null;
-            }
+            private @default @default(@default @default) => null;
         }
 
         private class defaultPropertyHolder
         {
-            private @default @default { get { return null; } set { } }
+            private @default @default
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @delegate
@@ -347,15 +433,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class delegateMethodHolder
         {
-            private @delegate @delegate(@delegate @delegate)
-            {
-                return null;
-            }
+            private @delegate @delegate(@delegate @delegate) => null;
         }
 
         private class delegatePropertyHolder
         {
-            private @delegate @delegate { get { return null; } set { } }
+            private @delegate @delegate
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @do
@@ -369,15 +461,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class doMethodHolder
         {
-            private @do @do(@do @do)
-            {
-                return null;
-            }
+            private @do @do(@do @do) => null;
         }
 
         private class doPropertyHolder
         {
-            private @do @do { get { return null; } set { } }
+            private @do @do
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @double
@@ -391,15 +489,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class doubleMethodHolder
         {
-            private @double @double(@double @double)
-            {
-                return null;
-            }
+            private @double @double(@double @double) => null;
         }
 
         private class doublePropertyHolder
         {
-            private @double @double { get { return null; } set { } }
+            private @double @double
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @else
@@ -413,15 +517,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class elseMethodHolder
         {
-            private @else @else(@else @else)
-            {
-                return null;
-            }
+            private @else @else(@else @else) => null;
         }
 
         private class elsePropertyHolder
         {
-            private @else @else { get { return null; } set { } }
+            private @else @else
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @enum
@@ -435,15 +545,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class enumMethodHolder
         {
-            private @enum @enum(@enum @enum)
-            {
-                return null;
-            }
+            private @enum @enum(@enum @enum) => null;
         }
 
         private class enumPropertyHolder
         {
-            private @enum @enum { get { return null; } set { } }
+            private @enum @enum
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @event
@@ -457,15 +573,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class eventMethodHolder
         {
-            private @event @event(@event @event)
-            {
-                return null;
-            }
+            private @event @event(@event @event) => null;
         }
 
         private class eventPropertyHolder
         {
-            private @event @event { get { return null; } set { } }
+            private @event @event
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @explicit
@@ -479,15 +601,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class explicitMethodHolder
         {
-            private @explicit @explicit(@explicit @explicit)
-            {
-                return null;
-            }
+            private @explicit @explicit(@explicit @explicit) => null;
         }
 
         private class explicitPropertyHolder
         {
-            private @explicit @explicit { get { return null; } set { } }
+            private @explicit @explicit
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @extern
@@ -501,15 +629,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class externMethodHolder
         {
-            private @extern @extern(@extern @extern)
-            {
-                return null;
-            }
+            private @extern @extern(@extern @extern) => null;
         }
 
         private class externPropertyHolder
         {
-            private @extern @extern { get { return null; } set { } }
+            private @extern @extern
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @false
@@ -523,15 +657,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class falseMethodHolder
         {
-            private @false @false(@false @false)
-            {
-                return null;
-            }
+            private @false @false(@false @false) => null;
         }
 
         private class falsePropertyHolder
         {
-            private @false @false { get { return null; } set { } }
+            private @false @false
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @finally
@@ -545,15 +685,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class finallyMethodHolder
         {
-            private @finally @finally(@finally @finally)
-            {
-                return null;
-            }
+            private @finally @finally(@finally @finally) => null;
         }
 
         private class finallyPropertyHolder
         {
-            private @finally @finally { get { return null; } set { } }
+            private @finally @finally
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @fixed
@@ -567,15 +713,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class fixedMethodHolder
         {
-            private @fixed @fixed(@fixed @fixed)
-            {
-                return null;
-            }
+            private @fixed @fixed(@fixed @fixed) => null;
         }
 
         private class fixedPropertyHolder
         {
-            private @fixed @fixed { get { return null; } set { } }
+            private @fixed @fixed
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @float
@@ -589,15 +741,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class floatMethodHolder
         {
-            private @float @float(@float @float)
-            {
-                return null;
-            }
+            private @float @float(@float @float) => null;
         }
 
         private class floatPropertyHolder
         {
-            private @float @float { get { return null; } set { } }
+            private @float @float
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @for
@@ -615,15 +773,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class foreachMethodHolder
         {
-            private @foreach @foreach(@foreach @foreach)
-            {
-                return null;
-            }
+            private @foreach @foreach(@foreach @foreach) => null;
         }
 
         private class foreachPropertyHolder
         {
-            private @foreach @foreach { get { return null; } set { } }
+            private @foreach @foreach
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class forFieldHolder
@@ -633,15 +797,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class forMethodHolder
         {
-            private @for @for(@for @for)
-            {
-                return null;
-            }
+            private @for @for(@for @for) => null;
         }
 
         private class forPropertyHolder
         {
-            private @for @for { get { return null; } set { } }
+            private @for @for
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @goto
@@ -655,15 +825,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class gotoMethodHolder
         {
-            private @goto @goto(@goto @goto)
-            {
-                return null;
-            }
+            private @goto @goto(@goto @goto) => null;
         }
 
         private class gotoPropertyHolder
         {
-            private @goto @goto { get { return null; } set { } }
+            private @goto @goto
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @if
@@ -677,15 +853,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class ifMethodHolder
         {
-            private @if @if(@if @if)
-            {
-                return null;
-            }
+            private @if @if(@if @if) => null;
         }
 
         private class ifPropertyHolder
         {
-            private @if @if { get { return null; } set { } }
+            private @if @if
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @implicit
@@ -699,15 +881,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class implicitMethodHolder
         {
-            private @implicit @implicit(@implicit @implicit)
-            {
-                return null;
-            }
+            private @implicit @implicit(@implicit @implicit) => null;
         }
 
         private class implicitPropertyHolder
         {
-            private @implicit @implicit { get { return null; } set { } }
+            private @implicit @implicit
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @in
@@ -721,15 +909,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class inMethodHolder
         {
-            private @in @in(@in @in)
-            {
-                return null;
-            }
+            private @in @in(@in @in) => null;
         }
 
         private class inPropertyHolder
         {
-            private @in @in { get { return null; } set { } }
+            private @in @in
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @int
@@ -747,15 +941,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class interfaceMethodHolder
         {
-            private @interface @interface(@interface @interface)
-            {
-                return null;
-            }
+            private @interface @interface(@interface @interface) => null;
         }
 
         private class interfacePropertyHolder
         {
-            private @interface @interface { get { return null; } set { } }
+            private @interface @interface
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @internal
@@ -769,15 +969,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class internalMethodHolder
         {
-            private @internal @internal(@internal @internal)
-            {
-                return null;
-            }
+            private @internal @internal(@internal @internal) => null;
         }
 
         private class internalPropertyHolder
         {
-            private @internal @internal { get { return null; } set { } }
+            private @internal @internal
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class intFieldHolder
@@ -787,15 +993,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class intMethodHolder
         {
-            private @int @int(@int @int)
-            {
-                return null;
-            }
+            private @int @int(@int @int) => null;
         }
 
         private class intPropertyHolder
         {
-            private @int @int { get { return null; } set { } }
+            private @int @int
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @is
@@ -809,15 +1021,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class isMethodHolder
         {
-            private @is @is(@is @is)
-            {
-                return null;
-            }
+            private @is @is(@is @is) => null;
         }
 
         private class isPropertyHolder
         {
-            private @is @is { get { return null; } set { } }
+            private @is @is
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @lock
@@ -831,15 +1049,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class lockMethodHolder
         {
-            private @lock @lock(@lock @lock)
-            {
-                return null;
-            }
+            private @lock @lock(@lock @lock) => null;
         }
 
         private class lockPropertyHolder
         {
-            private @lock @lock { get { return null; } set { } }
+            private @lock @lock
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @long
@@ -853,15 +1077,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class longMethodHolder
         {
-            private @long @long(@long @long)
-            {
-                return null;
-            }
+            private @long @long(@long @long) => null;
         }
 
         private class longPropertyHolder
         {
-            private @long @long { get { return null; } set { } }
+            private @long @long
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @namespace
@@ -875,15 +1105,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class namespaceMethodHolder
         {
-            private @namespace @namespace(@namespace @namespace)
-            {
-                return null;
-            }
+            private @namespace @namespace(@namespace @namespace) => null;
         }
 
         private class namespacePropertyHolder
         {
-            private @namespace @namespace { get { return null; } set { } }
+            private @namespace @namespace
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @new
@@ -897,15 +1133,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class newMethodHolder
         {
-            private @new @new(@new @new)
-            {
-                return null;
-            }
+            private @new @new(@new @new) => null;
         }
 
         private class newPropertyHolder
         {
-            private @new @new { get { return null; } set { } }
+            private @new @new
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @null
@@ -919,15 +1161,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class nullMethodHolder
         {
-            private @null @null(@null @null)
-            {
-                return null;
-            }
+            private @null @null(@null @null) => null;
         }
 
         private class nullPropertyHolder
         {
-            private @null @null { get { return null; } set { } }
+            private @null @null
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @object
@@ -941,15 +1189,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class objectMethodHolder
         {
-            private @object @object(@object @object)
-            {
-                return null;
-            }
+            private @object @object(@object @object) => null;
         }
 
         private class objectPropertyHolder
         {
-            private @object @object { get { return null; } set { } }
+            private @object @object
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @operator
@@ -963,15 +1217,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class operatorMethodHolder
         {
-            private @operator @operator(@operator @operator)
-            {
-                return null;
-            }
+            private @operator @operator(@operator @operator) => null;
         }
 
         private class operatorPropertyHolder
         {
-            private @operator @operator { get { return null; } set { } }
+            private @operator @operator
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @out
@@ -985,15 +1245,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class outMethodHolder
         {
-            private @out @out(@out @out)
-            {
-                return null;
-            }
+            private @out @out(@out @out) => null;
         }
 
         private class outPropertyHolder
         {
-            private @out @out { get { return null; } set { } }
+            private @out @out
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @override
@@ -1007,15 +1273,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class overrideMethodHolder
         {
-            private @override @override(@override @override)
-            {
-                return null;
-            }
+            private @override @override(@override @override) => null;
         }
 
         private class overridePropertyHolder
         {
-            private @override @override { get { return null; } set { } }
+            private @override @override
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @params
@@ -1029,15 +1301,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class paramsMethodHolder
         {
-            private @params @params(@params @params)
-            {
-                return null;
-            }
+            private @params @params(@params @params) => null;
         }
 
         private class paramsPropertyHolder
         {
-            private @params @params { get { return null; } set { } }
+            private @params @params
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @private
@@ -1051,15 +1329,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class privateMethodHolder
         {
-            private @private @private(@private @private)
-            {
-                return null;
-            }
+            private @private @private(@private @private) => null;
         }
 
         private class privatePropertyHolder
         {
-            private @private @private { get { return null; } set { } }
+            private @private @private
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @protected
@@ -1073,15 +1357,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class protectedMethodHolder
         {
-            private @protected @protected(@protected @protected)
-            {
-                return null;
-            }
+            private @protected @protected(@protected @protected) => null;
         }
 
         private class protectedPropertyHolder
         {
-            private @protected @protected { get { return null; } set { } }
+            private @protected @protected
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @public
@@ -1095,15 +1385,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class publicMethodHolder
         {
-            private @public @public(@public @public)
-            {
-                return null;
-            }
+            private @public @public(@public @public) => null;
         }
 
         private class publicPropertyHolder
         {
-            private @public @public { get { return null; } set { } }
+            private @public @public
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @readonly
@@ -1117,15 +1413,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class readonlyMethodHolder
         {
-            private @readonly @readonly(@readonly @readonly)
-            {
-                return null;
-            }
+            private @readonly @readonly(@readonly @readonly) => null;
         }
 
         private class readonlyPropertyHolder
         {
-            private @readonly @readonly { get { return null; } set { } }
+            private @readonly @readonly
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @ref
@@ -1139,15 +1441,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class refMethodHolder
         {
-            private @ref @ref(@ref @ref)
-            {
-                return null;
-            }
+            private @ref @ref(@ref @ref) => null;
         }
 
         private class refPropertyHolder
         {
-            private @ref @ref { get { return null; } set { } }
+            private @ref @ref
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @return
@@ -1161,15 +1469,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class returnMethodHolder
         {
-            private @return @return(@return @return)
-            {
-                return null;
-            }
+            private @return @return(@return @return) => null;
         }
 
         private class returnPropertyHolder
         {
-            private @return @return { get { return null; } set { } }
+            private @return @return
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @sbyte
@@ -1183,15 +1497,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class sbyteMethodHolder
         {
-            private @sbyte @sbyte(@sbyte @sbyte)
-            {
-                return null;
-            }
+            private @sbyte @sbyte(@sbyte @sbyte) => null;
         }
 
         private class sbytePropertyHolder
         {
-            private @sbyte @sbyte { get { return null; } set { } }
+            private @sbyte @sbyte
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @sealed
@@ -1205,15 +1525,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class sealedMethodHolder
         {
-            private @sealed @sealed(@sealed @sealed)
-            {
-                return null;
-            }
+            private @sealed @sealed(@sealed @sealed) => null;
         }
 
         private class sealedPropertyHolder
         {
-            private @sealed @sealed { get { return null; } set { } }
+            private @sealed @sealed
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @short
@@ -1227,15 +1553,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class shortMethodHolder
         {
-            private @short @short(@short @short)
-            {
-                return null;
-            }
+            private @short @short(@short @short) => null;
         }
 
         private class shortPropertyHolder
         {
-            private @short @short { get { return null; } set { } }
+            private @short @short
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @sizeof
@@ -1249,15 +1581,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class sizeofMethodHolder
         {
-            private @sizeof @sizeof(@sizeof @sizeof)
-            {
-                return null;
-            }
+            private @sizeof @sizeof(@sizeof @sizeof) => null;
         }
 
         private class sizeofPropertyHolder
         {
-            private @sizeof @sizeof { get { return null; } set { } }
+            private @sizeof @sizeof
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @stackalloc
@@ -1271,15 +1609,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class stackallocMethodHolder
         {
-            private @stackalloc @stackalloc(@stackalloc @stackalloc)
-            {
-                return null;
-            }
+            private @stackalloc @stackalloc(@stackalloc @stackalloc) => null;
         }
 
         private class stackallocPropertyHolder
         {
-            private @stackalloc @stackalloc { get { return null; } set { } }
+            private @stackalloc @stackalloc
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @static
@@ -1293,15 +1637,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class staticMethodHolder
         {
-            private @static @static(@static @static)
-            {
-                return null;
-            }
+            private @static @static(@static @static) => null;
         }
 
         private class staticPropertyHolder
         {
-            private @static @static { get { return null; } set { } }
+            private @static @static
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @string
@@ -1315,15 +1665,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class stringMethodHolder
         {
-            private @string @string(@string @string)
-            {
-                return null;
-            }
+            private @string @string(@string @string) => null;
         }
 
         private class stringPropertyHolder
         {
-            private @string @string { get { return null; } set { } }
+            private @string @string
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @struct
@@ -1337,15 +1693,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class structMethodHolder
         {
-            private @struct @struct(@struct @struct)
-            {
-                return null;
-            }
+            private @struct @struct(@struct @struct) => null;
         }
 
         private class structPropertyHolder
         {
-            private @struct @struct { get { return null; } set { } }
+            private @struct @struct
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @switch
@@ -1359,15 +1721,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class switchMethodHolder
         {
-            private @switch @switch(@switch @switch)
-            {
-                return null;
-            }
+            private @switch @switch(@switch @switch) => null;
         }
 
         private class switchPropertyHolder
         {
-            private @switch @switch { get { return null; } set { } }
+            private @switch @switch
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @this
@@ -1381,15 +1749,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class thisMethodHolder
         {
-            private @this @this(@this @this)
-            {
-                return null;
-            }
+            private @this @this(@this @this) => null;
         }
 
         private class thisPropertyHolder
         {
-            private @this @this { get { return null; } set { } }
+            private @this @this
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @throw
@@ -1403,15 +1777,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class throwMethodHolder
         {
-            private @throw @throw(@throw @throw)
-            {
-                return null;
-            }
+            private @throw @throw(@throw @throw) => null;
         }
 
         private class throwPropertyHolder
         {
-            private @throw @throw { get { return null; } set { } }
+            private @throw @throw
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @true
@@ -1425,15 +1805,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class trueMethodHolder
         {
-            private @true @true(@true @true)
-            {
-                return null;
-            }
+            private @true @true(@true @true) => null;
         }
 
         private class truePropertyHolder
         {
-            private @true @true { get { return null; } set { } }
+            private @true @true
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @try
@@ -1447,15 +1833,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class tryMethodHolder
         {
-            private @try @try(@try @try)
-            {
-                return null;
-            }
+            private @try @try(@try @try) => null;
         }
 
         private class tryPropertyHolder
         {
-            private @try @try { get { return null; } set { } }
+            private @try @try
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @typeof
@@ -1469,15 +1861,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class typeofMethodHolder
         {
-            private @typeof @typeof(@typeof @typeof)
-            {
-                return null;
-            }
+            private @typeof @typeof(@typeof @typeof) => null;
         }
 
         private class typeofPropertyHolder
         {
-            private @typeof @typeof { get { return null; } set { } }
+            private @typeof @typeof
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @uint
@@ -1491,15 +1889,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class uintMethodHolder
         {
-            private @uint @uint(@uint @uint)
-            {
-                return null;
-            }
+            private @uint @uint(@uint @uint) => null;
         }
 
         private class uintPropertyHolder
         {
-            private @uint @uint { get { return null; } set { } }
+            private @uint @uint
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @ulong
@@ -1513,15 +1917,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class ulongMethodHolder
         {
-            private @ulong @ulong(@ulong @ulong)
-            {
-                return null;
-            }
+            private @ulong @ulong(@ulong @ulong) => null;
         }
 
         private class ulongPropertyHolder
         {
-            private @ulong @ulong { get { return null; } set { } }
+            private @ulong @ulong
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @unchecked
@@ -1535,15 +1945,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class uncheckedMethodHolder
         {
-            private @unchecked @unchecked(@unchecked @unchecked)
-            {
-                return null;
-            }
+            private @unchecked @unchecked(@unchecked @unchecked) => null;
         }
 
         private class uncheckedPropertyHolder
         {
-            private @unchecked @unchecked { get { return null; } set { } }
+            private @unchecked @unchecked
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @unsafe
@@ -1557,15 +1973,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class unsafeMethodHolder
         {
-            private @unsafe @unsafe(@unsafe @unsafe)
-            {
-                return null;
-            }
+            private @unsafe @unsafe(@unsafe @unsafe) => null;
         }
 
         private class unsafePropertyHolder
         {
-            private @unsafe @unsafe { get { return null; } set { } }
+            private @unsafe @unsafe
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @ushort
@@ -1579,15 +2001,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class ushortMethodHolder
         {
-            private @ushort @ushort(@ushort @ushort)
-            {
-                return null;
-            }
+            private @ushort @ushort(@ushort @ushort) => null;
         }
 
         private class ushortPropertyHolder
         {
-            private @ushort @ushort { get { return null; } set { } }
+            private @ushort @ushort
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @using
@@ -1601,15 +2029,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class usingMethodHolder
         {
-            private @using @using(@using @using)
-            {
-                return null;
-            }
+            private @using @using(@using @using) => null;
         }
 
         private class usingPropertyHolder
         {
-            private @using @using { get { return null; } set { } }
+            private @using @using
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @virtual
@@ -1623,15 +2057,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class virtualMethodHolder
         {
-            private @virtual @virtual(@virtual @virtual)
-            {
-                return null;
-            }
+            private @virtual @virtual(@virtual @virtual) => null;
         }
 
         private class virtualPropertyHolder
         {
-            private @virtual @virtual { get { return null; } set { } }
+            private @virtual @virtual
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @void
@@ -1645,15 +2085,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class voidMethodHolder
         {
-            private @void @void(@void @void)
-            {
-                return null;
-            }
+            private @void @void(@void @void) => null;
         }
 
         private class voidPropertyHolder
         {
-            private @void @void { get { return null; } set { } }
+            private @void @void
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @volatile
@@ -1667,15 +2113,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class volatileMethodHolder
         {
-            private @volatile @volatile(@volatile @volatile)
-            {
-                return null;
-            }
+            private @volatile @volatile(@volatile @volatile) => null;
         }
 
         private class volatilePropertyHolder
         {
-            private @volatile @volatile { get { return null; } set { } }
+            private @volatile @volatile
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
 
         private class @while
@@ -1689,15 +2141,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         private class whileMethodHolder
         {
-            private @while @while(@while @while)
-            {
-                return null;
-            }
+            private @while @while(@while @while) => null;
         }
 
         private class whilePropertyHolder
         {
-            private @while @while { get { return null; } set { } }
+            private @while @while
+            {
+                get
+                {
+                    return null;
+                }
+                set
+                {
+                }
+            }
         }
     }
 }

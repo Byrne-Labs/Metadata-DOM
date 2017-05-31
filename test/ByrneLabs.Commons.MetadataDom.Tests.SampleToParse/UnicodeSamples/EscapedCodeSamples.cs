@@ -1,55 +1,166 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.UnicodeSamples
+﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.UnicodeSamples
 {
     internal class EscapedCodeSamples
     {
+        private class \u005F\u0E52Class
+        {
+        }
 
-        \u005F\uFF19Class \u005F\uFF19Field;
-        \u005F\u0940Class \u005F\u0940Field;
-        \u005F\uFE01Class \u005F\uFE01Field;
-        \u005F\u0E52Class \u005F\u0E52Field;
-        \u005F\uFE22Class \u005F\uFE22Field;
-        \u01FFClass \u01FFField;
-        \u2188Class \u2188Field;
-        \uAB5EClass \uAB5EField;
-        \u217FClass \u217FField;
-        \u2095Class \u2095Field;
+        private class \u005F\uFF19Class
+        {
+        }
 
-        \u005F\uFF19Class \u005F\uFF19Property { get { return null; } set { ; } }
-        \u005F\u0940Class \u005F\u0940Property { get { return null; } set { ; } }
-        \u005F\uFE01Class \u005F\uFE01Property { get { return null; } set { ; } }
-        \u005F\u0E52Class \u005F\u0E52Property { get { return null; } set { ; } }
-        \u005F\uFE22Class \u005F\uFE22Property { get { return null; } set { ; } }
-        \u01FFClass \u01FFProperty { get { return null; } set { ; } }
-        \u2188Class \u2188Property { get { return null; } set { ; } }
-        \uAB5EClass \uAB5EProperty { get { return null; } set { ; } }
-        \u217FClass \u217FProperty { get { return null; } set { ; } }
-        \u2095Class \u2095Property { get { return null; } set { ; } }
+        private class \u005F\uFE01Class
+        {
+        }
 
-        \u005F\uFF19Class \u005F\uFF19Method(\u005F\uFF19Class \u005F\uFF19Parameter) { return null; }
-        \u005F\u0940Class \u005F\u0940Method(\u005F\u0940Class \u005F\u0940Parameter) { return null; }
-        \u005F\uFE01Class \u005F\uFE01Method(\u005F\uFE01Class \u005F\uFE01Parameter) { return null; }
-        \u005F\u0E52Class \u005F\u0E52Method(\u005F\u0E52Class \u005F\u0E52Parameter) { return null; }
-        \u005F\uFE22Class \u005F\uFE22Method(\u005F\uFE22Class \u005F\uFE22Parameter) { return null; }
-        \u01FFClass \u01FFMethod(\u01FFClass \u01FFParameter) { return null; }
-        \u2188Class \u2188Method(\u2188Class \u2188Parameter) { return null; }
-        \uAB5EClass \uAB5EMethod(\uAB5EClass \uAB5EParameter) { return null; }
-        \u217FClass \u217FMethod(\u217FClass \u217FParameter) { return null; }
-        \u2095Class \u2095Method(\u2095Class \u2095Parameter) { return null; }
+        private class \u005F\uFE22Class
+        {
+        }
 
-        class \u005F\uFF19Class { }
-        class \u005F\u0940Class { }
-        class \u005F\uFE01Class { }
-        class \u005F\u0E52Class { }
-        class \u005F\uFE22Class { }
-        class \u01FFClass { }
-        class \u2188Class { }
-        class \uAB5EClass { }
-        class \u217FClass { }
-        class \u2095Class { }
+        private class \u005F\u0940Class
+        {
+        }
 
+        private class \u217FClass
+        {
+        }
+
+        private class \u2188Class
+        {
+        }
+
+        private class \uAB5EClass
+        {
+        }
+
+        private class \u2095Class
+        {
+        }
+
+        private class \u01FFClass
+        {
+        }
+
+        private \u005F\u0E52Class \u005F\u0E52Field;
+        private \u005F\uFF19Class \u005F\uFF19Field;
+        private \u005F\uFE01Class \u005F\uFE01Field;
+        private \u005F\uFE22Class \u005F\uFE22Field;
+        private \u005F\u0940Class \u005F\u0940Field;
+        private \u217FClass \u217FField;
+        private \u2188Class \u2188Field;
+        private \uAB5EClass \uAB5EField;
+        private \u2095Class \u2095Field;
+        private \u01FFClass \u01FFField;
+
+        private \u005F\u0E52Class \u005F\u0E52Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u005F\uFF19Class \u005F\uFF19Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u005F\uFE01Class \u005F\uFE01Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u005F\uFE22Class \u005F\uFE22Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u005F\u0940Class \u005F\u0940Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u217FClass \u217FProperty
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u2188Class \u2188Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u2095Class \u2095Property
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u01FFClass \u01FFProperty
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \uAB5EClass \uAB5EProperty
+        {
+            get => null;
+            set
+            {
+                ;
+            }
+        }
+
+        private \u005F\u0E52Class \u005F\u0E52Method(\u005F\u0E52Class \u005F\u0E52Parameter) => null;
+
+        private \u005F\uFF19Class \u005F\uFF19Method(\u005F\uFF19Class \u005F\uFF19Parameter) => null;
+
+        private \u005F\uFE01Class \u005F\uFE01Method(\u005F\uFE01Class \u005F\uFE01Parameter) => null;
+
+        private \u005F\uFE22Class \u005F\uFE22Method(\u005F\uFE22Class \u005F\uFE22Parameter) => null;
+
+        private \u005F\u0940Class \u005F\u0940Method(\u005F\u0940Class \u005F\u0940Parameter) => null;
+
+        private \u217FClass \u217FMethod(\u217FClass \u217FParameter) => null;
+
+        private \u2188Class \u2188Method(\u2188Class \u2188Parameter) => null;
+
+        private \u2095Class \u2095Method(\u2095Class \u2095Parameter) => null;
+
+        private \uAB5EClass \uAB5EMethod(\uAB5EClass \uAB5EParameter) => null;
+
+        private \u01FFClass \u01FFMethod(\u01FFClass \u01FFParameter) => null;
     }
 }

@@ -2,12 +2,11 @@
 {
     public abstract class InvalidAbstractSuperClassSample : InvalidAbstractBaseClassSample
     {
-
-        internal abstract int InternalAbstractProperty { get; set; }
-
 #if CSHARP_V3
         internal abstract int InternalAbstractAutoProperty { get; set; }
 #endif
+
+        internal abstract int InternalAbstractProperty { get; set; }
 
         internal abstract int InternalAbstractMethod();
     }

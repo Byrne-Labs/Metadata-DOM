@@ -5,37 +5,25 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
     public unsafe class Samples<T>
     {
-        private volatile int volatileInt;
-        private readonly int readonlyInt = 1;
         private const int constInt = 1;
+        private readonly int readonlyInt = 1;
         public int IntValue = 1;
         public string[] StringArray = { "asdf", null, string.Empty };
-        private GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> _genericClassInstance;
         private Func<string> getValue;
+        private volatile int volatileInt;
+
+        public GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance { get; set; }
 
         public object Item
         {
-            get
-            {
-                return null;
-            }
+            get => null;
             set
             {
                 var a = value;
             }
         }
 
-        public GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>> GenericClassInstance
-        {
-            get
-            {
-                return _genericClassInstance;
-            }
-            set
-            {
-                _genericClassInstance = value;
-            }
-        }
+        public event EventHandler EventWithoutDeclaredAccessors;
 
         public void DoStuff()
         {
@@ -43,10 +31,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             {
                 StringArray[1] = intPointer->ToString();
             }
-            _genericClassInstance = new GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>>((int[])null);
+            GenericClassInstance = new GenericClass<T[], object[], Samples<object[]>, object, int, Dictionary<string, string>, MoreSamples, List<MoreSamples>>((int[]) null);
         }
-
-        public event EventHandler EventWithoutDeclaredAccessors;
 
         protected virtual void OnEventWithoutDeclaredAccessors()
         {
@@ -54,7 +40,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             EventWithoutDeclaredAccessors?.Invoke(this, EventArgs.Empty);
 #endif
         }
-
     }
 
     public sealed class MoreSamples : Samples<object[]>
@@ -91,6 +76,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             EventWithDeclaredAccessors += EventHandler;
         }
 
+        public ByteEnum ByteEnumValue
+        {
+            get
+            {
+                return default(ByteEnum);
+            }
+            protected internal set
+            {
+            }
+        }
+
         public string this[int index, string index2]
         {
             get
@@ -108,9 +104,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             }
         }
 
-        public ByteEnum ByteEnumValue { get { return default(ByteEnum); } protected internal set { } }
-
-        public int SomeInt { get { return 0; } }
+        public int SomeInt => 0;
 
 #if CSHARP_V6
         public int SomeRedirectedInt => SomeInt;
@@ -120,14 +114,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public event EventHandler EventWithDeclaredAccessors
         {
-            add
-            {
-                throw new NotSupportedException("This will be supported in the future");
-            }
-            remove
-            {
-                throw new NotSupportedException("This will be supported in the future");
-            }
+            add => throw new NotSupportedException("This will be supported in the future");
+            remove => throw new NotSupportedException("This will be supported in the future");
         }
 
         public void BasicEventHandler1(string value)

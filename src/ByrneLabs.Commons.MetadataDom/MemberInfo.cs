@@ -1,4 +1,5 @@
-﻿#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
+﻿
+#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

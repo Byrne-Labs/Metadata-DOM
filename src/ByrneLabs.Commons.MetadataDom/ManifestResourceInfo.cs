@@ -1,4 +1,5 @@
-﻿#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
+﻿
+#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
 using System.Reflection;
 using JetBrains.Annotations;
 using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;

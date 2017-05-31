@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection.Metadata;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using MethodBaseToExpose = System.Reflection.MethodBase;
 

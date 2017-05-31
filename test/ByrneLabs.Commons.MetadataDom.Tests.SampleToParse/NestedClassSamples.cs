@@ -1,55 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
+﻿namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
     public class Level1
     {
-        public object value;
-
-        public object Value
+        private interface InterfaceLevel1
         {
-            get
-            {
-                return null;
-            }
-        }
+            object Value { get; }
 
-        public void DoSomething()
-        {
+            void DoSomething();
         }
 
         private class Level2 : InterfaceLevel1
         {
-            public object value;
-
-            public void DoSomething()
-            {
-            }
-
-            public object Value
-            {
-                get
-                {
-                    return null;
-                }
-            }
-
             private class Level3
             {
-                public object value;
-
-                public object Value
+                private interface InterfaceLevel1
                 {
-                    get
-                    {
-                        return null;
-                    }
-                }
+                    object Value { get; }
 
-                public void DoSomething()
-                {
+                    void DoSomething();
                 }
 
                 private class Level4 : InterfaceLevel1
@@ -60,29 +28,33 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
                     {
                     }
 
-                    public object Value
-                    {
-                        get
-                        {
-                            return null;
-                        }
-                    }
+                    public object Value => null;
                 }
 
-                private interface InterfaceLevel1
-                {
-                    object Value { get; }
+                public object value;
 
-                    void DoSomething();
+                public object Value => null;
+
+                public void DoSomething()
+                {
                 }
             }
+
+            public object value;
+
+            public void DoSomething()
+            {
+            }
+
+            public object Value => null;
         }
 
-        private interface InterfaceLevel1
-        {
-            object Value { get; }
+        public object value;
 
-            void DoSomething();
+        public object Value => null;
+
+        public void DoSomething()
+        {
         }
     }
 }

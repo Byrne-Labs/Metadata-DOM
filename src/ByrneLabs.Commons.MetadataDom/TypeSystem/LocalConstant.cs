@@ -18,17 +18,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _signature = MetadataState.GetLazyCodeElement<Blob>(RawMetadata.Signature, true);
         }
 
-        public LocalConstantHandle MetadataHandle { get; }
-
         public override System.Reflection.TypeInfo ConstantType { get; }
 
-        public override string Name { get; }
+        public LocalConstantHandle MetadataHandle { get; }
 
-        public override object Value { get; }
+        public override string Name { get; }
 
         public System.Reflection.Metadata.LocalConstant RawMetadata { get; }
 
         public Blob Signature => _signature.Value;
+
+        public override object Value { get; }
 
         internal CodeElementKey Key { get; }
 

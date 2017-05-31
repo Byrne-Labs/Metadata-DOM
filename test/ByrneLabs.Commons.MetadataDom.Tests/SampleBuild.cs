@@ -23,6 +23,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly DirectoryInfo _sampleProjectBuildDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}ByrneLabs.Commons.MetadataDom.Tests.SampleToParse", "bin"));
         private static readonly DirectoryInfo _sampleProjectDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}ByrneLabs.Commons.MetadataDom.Tests.SampleToParse"));
 
+        public static IEnumerable<FileInfo> BuiltSamples =>
+            _sampleProjectBuildDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories)
+                .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories))
+                .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.netmodule", SearchOption.AllDirectories)).ToList();
+
         public string BuildName
         {
             get
@@ -67,6 +72,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             {
                 throw new InvalidOperationException("Some sample builds have failed");
             }
+
             var assembliesNeeded = sampleCount - BuiltSamples.Count();
             var builtDirectories = _sampleProjectBuildDirectory.EnumerateDirectories();
 
@@ -87,14 +93,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 throw new InvalidOperationException("Some sample builds have failed");
             }
 
-
             return BuiltSamples.OrderBy(x => _random.Next()).Take(sampleCount).ToList();
         }
-
-        public static IEnumerable<FileInfo> BuiltSamples =>
-            _sampleProjectBuildDirectory.EnumerateFiles("*.dll", SearchOption.AllDirectories)
-                .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories))
-                .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.netmodule", SearchOption.AllDirectories)).ToList();
 
         private static SampleBuild CreateRandomBuild()
         {
@@ -207,15 +207,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             return arguments.ToString();
         }
 
-        private string GetDotNetRuntimePath()
-        {
-            return @"C:\Program Files\dotnet\dotnet.exe";
-        }
+        private string GetDotNetRuntimePath() => @"C:\Program Files\dotnet\dotnet.exe";
 
-        private string GetMsBuildPath()
-        {
-            return @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\amd64\msbuild.exe";
-        }
+        private string GetMsBuildPath() => @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\amd64\msbuild.exe";
 
         private bool RunTask(ProcessStartInfo processStartInfo)
         {

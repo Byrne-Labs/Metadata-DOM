@@ -44,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else if (codeElementType != null && !typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(codeElementType))
             {
-                 throw new ArgumentException($"Type {codeElementType.FullName} does not inherit {typeof(IManagedCodeElement).FullName}", nameof(codeElementType));
+                throw new ArgumentException($"Type {codeElementType.FullName} does not inherit {typeof(IManagedCodeElement).FullName}", nameof(codeElementType));
             }
             else if (codeElementType.GetTypeInfo().IsAbstract)
             {

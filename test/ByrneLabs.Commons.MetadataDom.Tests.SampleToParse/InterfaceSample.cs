@@ -5,18 +5,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 {
     internal interface InterfaceSample
     {
-#if CSHARP_V4
-        object this[string Guid = "{00000000-0000-0000-0000-000000000000}", int ID = 0] { get; }
-
-        int this[int something, int ID = 0]
-        {
-#if NETSTANDARD_1_1 || !DOTNET_STANDARD
-            [return: MarshalAs(UnmanagedType.U4)]
-#endif
-            get;
-        }
-#endif
-
         object LotsOfAttributes
         {
 #if NETSTANDARD_1_1 || !DOTNET_STANDARD
@@ -51,5 +39,15 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             get;
             set;
         }
+#if CSHARP_V4
+        object this[string Guid = "{00000000-0000-0000-0000-000000000000}", int ID = 0] { get; }
+        int this[int something, int ID = 0]
+        {
+#if NETSTANDARD_1_1 || !DOTNET_STANDARD
+            [return: MarshalAs(UnmanagedType.U4)]
+#endif
+            get;
+        }
+#endif
     }
 }

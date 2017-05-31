@@ -16,10 +16,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
         }
 
-        internal override string UndecoratedName => "ValueType";
-
         public override string Name => "ValueType";
 
         public override string Namespace => "System";
+
+        internal override string UndecoratedName => "ValueType";
     }
 }

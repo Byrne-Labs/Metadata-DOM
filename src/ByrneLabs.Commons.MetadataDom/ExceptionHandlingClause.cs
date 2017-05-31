@@ -1,4 +1,5 @@
-﻿#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
+﻿
+#if !(NETSTANDARD2_0 || NET_FRAMEWORK)
 namespace ByrneLabs.Commons.MetadataDom
 {
     public abstract class ExceptionHandlingClause

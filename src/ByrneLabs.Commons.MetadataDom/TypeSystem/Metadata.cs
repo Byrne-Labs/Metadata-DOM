@@ -158,15 +158,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal MetadataState MetadataState { get; }
 
+        CodeElementKey IManagedCodeElement.Key => Key;
+
+        MetadataState IManagedCodeElement.MetadataState => MetadataState;
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        CodeElementKey IManagedCodeElement.Key => Key;
-
-        MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
         protected virtual void Dispose(bool disposeManaged)
         {

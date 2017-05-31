@@ -2,112 +2,7 @@
 {
     internal class DefaultClass
     {
-        public void PublicMethod()
-        {
-        }
-
-        protected internal void ProtectedInternalMethod()
-        {
-        }
-
-        protected void ProtectedMethod()
-        {
-        }
-
-        internal void InternalMethod()
-        {
-        }
-
-        private void DefaultMethod()
-        {
-        }
-
-        private void PrivateMethod()
-        {
-        }
-
-        private class NestedDefaultClass
-        {
-            public void PublicMethod()
-            {
-            }
-
-            protected internal void ProtectedInternalMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
-            {
-            }
-
-            internal void InternalMethod()
-            {
-            }
-
-            private void DefaultMethod()
-            {
-            }
-
-            private void PrivateMethod()
-            {
-            }
-        }
-
-        internal class NestedInternalClass
-        {
-            public void PublicMethod()
-            {
-            }
-
-            protected internal void ProtectedInternalMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
-            {
-            }
-
-            internal void InternalMethod()
-            {
-            }
-
-            private void DefaultMethod()
-            {
-            }
-
-            private void PrivateMethod()
-            {
-            }
-        }
-
-        private class NestedPrivateClass
-        {
-            public void PublicMethod()
-            {
-            }
-
-            protected internal void ProtectedInternalMethod()
-            {
-            }
-
-            protected void ProtectedMethod()
-            {
-            }
-
-            internal void InternalMethod()
-            {
-            }
-
-            private void DefaultMethod()
-            {
-            }
-
-            private void PrivateMethod()
-            {
-            }
-        }
-
-        protected class NestedProtectedClass
+        public class NestedPublicClass
         {
             public void PublicMethod()
             {
@@ -161,7 +56,7 @@
             }
         }
 
-        public class NestedPublicClass
+        protected class NestedProtectedClass
         {
             public void PublicMethod()
             {
@@ -186,6 +81,111 @@
             private void PrivateMethod()
             {
             }
+        }
+
+        internal class NestedInternalClass
+        {
+            public void PublicMethod()
+            {
+            }
+
+            protected internal void ProtectedInternalMethod()
+            {
+            }
+
+            protected void ProtectedMethod()
+            {
+            }
+
+            internal void InternalMethod()
+            {
+            }
+
+            private void DefaultMethod()
+            {
+            }
+
+            private void PrivateMethod()
+            {
+            }
+        }
+
+        private class NestedDefaultClass
+        {
+            public void PublicMethod()
+            {
+            }
+
+            protected internal void ProtectedInternalMethod()
+            {
+            }
+
+            protected void ProtectedMethod()
+            {
+            }
+
+            internal void InternalMethod()
+            {
+            }
+
+            private void DefaultMethod()
+            {
+            }
+
+            private void PrivateMethod()
+            {
+            }
+        }
+
+        private class NestedPrivateClass
+        {
+            public void PublicMethod()
+            {
+            }
+
+            protected internal void ProtectedInternalMethod()
+            {
+            }
+
+            protected void ProtectedMethod()
+            {
+            }
+
+            internal void InternalMethod()
+            {
+            }
+
+            private void DefaultMethod()
+            {
+            }
+
+            private void PrivateMethod()
+            {
+            }
+        }
+
+        public void PublicMethod()
+        {
+        }
+
+        protected internal void ProtectedInternalMethod()
+        {
+        }
+
+        protected void ProtectedMethod()
+        {
+        }
+
+        internal void InternalMethod()
+        {
+        }
+
+        private void DefaultMethod()
+        {
+        }
+
+        private void PrivateMethod()
+        {
         }
     }
 }

@@ -62,6 +62,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private DirectoryInfo FaultedReflectionComparisonDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "FaultedMetadataComparison"));
 
         private DirectoryInfo IncompleteAssemblyLoadDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "IncompleteAssemblyLoad"));
+
         private DirectoryInfo LikelyFrameworkBugFoundDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "LikelyFrameworkBugFound"));
 
         private DirectoryInfo NonDotNetAssembliesDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "NonDotNetAssemblies"));
@@ -138,10 +139,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
                 // get all types to see if it can resolve everything
                 // ReSharper disable once UnusedVariable
-                foreach (var method in _checkState.Assembly.DefinedTypes.SelectMany(definedType => definedType.DeclaredMembers.OfType<System.Reflection.MethodBase>()))
+                foreach (var method in _checkState.Assembly.DefinedTypes.SelectMany(definedType => definedType.DeclaredMembers.OfType<MethodBase>()))
                 {
                     method.GetParameters();
                 }
+
                 if (_checkState.Assembly.DefinedTypes.Count() != _checkState.Metadata.AssemblyDefinition.DefinedTypes.Count())
                 {
                     throw new InvalidOperationException($"The metadata assembly has {_checkState.Metadata.AssemblyDefinition.DefinedTypes.Count()} defined types but the reflection assembly has {_checkState.Assembly.DefinedTypes.Count()} defined.  This suggests the assembly also has a native image assembly.");
@@ -230,6 +232,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     {
                         file.CopyTo(Path.Combine(newDirectory.FullName, file.Name), true);
                     }
+
                     logFileName = Path.Combine(newDirectory.FullName, "tests.log");
                 }
                 else

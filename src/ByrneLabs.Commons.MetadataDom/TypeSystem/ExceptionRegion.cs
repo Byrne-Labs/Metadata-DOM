@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 using ExceptionHandlingClauseToExpose = System.Reflection.ExceptionHandlingClause;
 using ExceptionHandlingClauseOptionsToExpose = System.Reflection.ExceptionHandlingClauseOptions;
 using TypeToExpose = System.Type;
+
 #else
 using ExceptionHandlingClauseToExpose = ByrneLabs.Commons.MetadataDom.ExceptionHandlingClause;
 using ExceptionHandlingClauseOptionsToExpose = ByrneLabs.Commons.MetadataDom.ExceptionHandlingClauseOptions;

@@ -6,160 +6,74 @@
         protected internal int protectedInternalField;
         protected int protectedField;
         internal int internalField;
-        private int privateField;
 
-        public int PublicProperty
-        {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
-        }
+        public int PublicProperty { get; set; }
 
         public virtual int PublicVirtualProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         protected internal int ProtectedInternalProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         protected internal virtual int ProtectedInternalVirtualProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         protected int ProtectedProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         protected virtual int ProtectedVirtualProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         internal int InternalProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         internal virtual int InternalVirtualProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
         private int PrivateProperty
         {
-            get
-            {
-                return privateField;
-            }
-            set
-            {
-                privateField = value;
-            }
+            get => PublicProperty;
+            set => PublicProperty = value;
         }
 
-        public int PublicMethod()
-        {
-            return 0;
-        }
+        public int PublicMethod() => 0;
 
-        public virtual int PublicVirtualMethod()
-        {
-            return 0;
-        }
+        public virtual int PublicVirtualMethod() => 0;
 
-        protected internal int ProtectedInternalMethod()
-        {
-            return 0;
-        }
+        protected internal int ProtectedInternalMethod() => 0;
 
-        protected internal virtual int ProtectedInternalVirtualMethod()
-        {
-            return 0;
-        }
+        protected internal virtual int ProtectedInternalVirtualMethod() => 0;
 
-        protected int ProtectedMethod()
-        {
-            return 0;
-        }
+        protected int ProtectedMethod() => 0;
 
-        protected virtual int ProtectedVirtualMethod()
-        {
-            return 0;
-        }
+        protected virtual int ProtectedVirtualMethod() => 0;
 
-        internal int InternalMethod()
-        {
-            return 0;
-        }
+        internal int InternalMethod() => 0;
 
-        internal virtual int InternalVirtualMethod()
-        {
-            return 0;
-        }
+        internal virtual int InternalVirtualMethod() => 0;
 
-        private int PrivateMethod()
-        {
-            return 0;
-        }
+        private int PrivateMethod() => 0;
 
 #if CSHARP_V3
         public int PublicAutoProperty { get; set; }

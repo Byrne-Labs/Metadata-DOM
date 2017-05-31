@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using AssemblyToExpose = System.Reflection.Assembly;
+
 #else
 using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
 

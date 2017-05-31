@@ -8,23 +8,23 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
     internal class NonGenericClass
     {
         internal delegate int CountGetter<TEntity>(TEntity entity, out int count);
-        internal delegate int ItemsGetter<TEntity, TItem>(TEntity entity, int bufferLength, out int count, TItem[] buffer);
 
-        internal static TItem[] GetItems<TEntity, TItem>(TEntity entity, NonGenericClass.CountGetter<TEntity> countGetter, NonGenericClass.ItemsGetter<TEntity, TItem> itemsGetter)
-        {
-            return null;
-        }
+        internal delegate int ItemsGetter<TEntity, TItem>(TEntity entity, int bufferLength, out int count, TItem[] buffer);
 
         public void Something(out int?[] a)
         {
             a = null;
         }
+
+        internal static TItem[] GetItems<TEntity, TItem>(TEntity entity, CountGetter<TEntity> countGetter, ItemsGetter<TEntity, TItem> itemsGetter) => null;
     }
-
-
 
     public class GenericClass<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
     {
+        internal delegate void SomethingDelegate(TAnything1 a);
+
+        internal delegate void SomethingDelegateA(object a);
+
         private class NestedA<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>
         {
         }
@@ -76,6 +76,117 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
             a = null;
         }
 
+        public TAnything1 TAnything1Value
+        {
+            get => default(TAnything1);
+            set
+            {
+                ;
+            }
+        }
+
+        public TAnything2 TAnything2Value
+        {
+            get => default(TAnything2);
+            set
+            {
+                ;
+            }
+        }
+
+        public TClass TClassValue
+        {
+            get => default(TClass);
+            set
+            {
+                ;
+            }
+        }
+
+        public TEnumerable TEnumerableValue
+        {
+            get => default(TEnumerable);
+            set
+            {
+                ;
+            }
+        }
+
+        public TItemBase TItemBaseValue
+        {
+            get => default(TItemBase);
+            set
+            {
+                ;
+            }
+        }
+
+        public TItem TItemValue
+        {
+            get => default(TItem);
+            set
+            {
+                ;
+            }
+        }
+
+        public TNewable TNewableValue
+        {
+            get => default(TNewable);
+            set
+            {
+                ;
+            }
+        }
+
+        public TStruct TStructValue
+        {
+            get => default(TStruct);
+            set
+            {
+                ;
+            }
+        }
+
+        public IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> FourLevelEnumerable<T>(IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> a) => null;
+
+        public IEnumerable<T> OneLevelEnumerable<T>(IEnumerable<T> a) => null;
+
+        public IEnumerable<T> OneLevelEnumerable<T, B>(IEnumerable<T> a) => null;
+
+        public void Something(Action<IEnumerable<IEnumerable<TAnything1>>, IEnumerable<TAnything1>, TAnything1> a, TAnything1 b)
+        {
+        }
+
+        public void Something1(out TimeSpan? a)
+        {
+            a = null;
+        }
+
+        public void Something2(TStruct? tStruct)
+        {
+        }
+
+        public IEnumerable<IEnumerable<IEnumerable<T>>> ThreeLevelEnumerable<T>(IEnumerable<IEnumerable<IEnumerable<T>>> a) => null;
+
+        public T[] ToArray<T>(T[] a) => null;
+
+        public T[] ToArray<T, B>(T[] a) => null;
+
+        public IEnumerable<IEnumerable<T>> TwoLevelEnumerable<T>(IEnumerable<IEnumerable<T>> a) => null;
+
+        internal static void SomethingA(IEnumerable<TAnything1> a, TAnything1 b, SomethingDelegate c)
+        {
+        }
+
+        internal static void SomethingB(IEnumerable<TAnything1> a, TAnything1 b, SomethingDelegate c)
+        {
+        }
+
+        internal static void SomethingB(SomethingDelegateA[] a, SomethingDelegate[] b)
+        {
+        }
+
 #if CSHARP_V3
         public TAnything1 TAnything1ValueAutoProperty { get; set; }
 
@@ -93,89 +204,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
         public TStruct TStructValueAutoProperty { get; set; }
 #endif
-
-        internal delegate void SomethingDelegate(TAnything1 a);
-
-        internal delegate void SomethingDelegateA(object a);
-
-        internal static void SomethingA(IEnumerable<TAnything1> a, TAnything1 b, GenericClass<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable>.SomethingDelegate c)
-        {
-        }
-
-        internal static void SomethingB(IEnumerable<TAnything1> a, TAnything1 b, SomethingDelegate c)
-        {
-        }
-
-        internal static void SomethingB(SomethingDelegateA[] a, SomethingDelegate[] b)
-        {
-        }
-
-        public T[] ToArray<T>(T[] a)
-        {
-            return null;
-        }
-
-
-        public T[] ToArray<T, B>(T[] a)
-        {
-            return null;
-        }
-
-        public void Something2(TStruct? tStruct)
-        {
-        }
-
-        public void Something(Action<IEnumerable<IEnumerable<TAnything1>>, IEnumerable<TAnything1>, TAnything1> a, TAnything1 b)
-        {
-        }
-
-
-        public void Something1(out TimeSpan? a)
-        {
-            a = null;
-        }
-
-        public IEnumerable<T> OneLevelEnumerable<T>(IEnumerable<T> a)
-        {
-            return null;
-        }
-
-        public IEnumerable<T> OneLevelEnumerable<T, B>(IEnumerable<T> a)
-        {
-            return null;
-        }
-
-        public IEnumerable<IEnumerable<T>> TwoLevelEnumerable<T>(IEnumerable<IEnumerable<T>> a)
-        {
-            return null;
-        }
-
-        public IEnumerable<IEnumerable<IEnumerable<T>>> ThreeLevelEnumerable<T>(IEnumerable<IEnumerable<IEnumerable<T>>> a)
-        {
-            return null;
-        }
-
-        public IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> FourLevelEnumerable<T>(IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> a)
-        {
-            return null;
-        }
-
-        public TAnything1 TAnything1Value { get { return default(TAnything1); } set {; } }
-
-        public TAnything2 TAnything2Value { get { return default(TAnything2); } set {; } }
-
-        public TItemBase TItemBaseValue { get { return default(TItemBase); } set {; } }
-
-        public TClass TClassValue { get { return default(TClass); } set {; } }
-
-        public TEnumerable TEnumerableValue { get { return default(TEnumerable); } set {; } }
-
-        public TItem TItemValue { get { return default(TItem); } set {; } }
-
-        public TNewable TNewableValue { get { return default(TNewable); } set {; } }
-
-        public TStruct TStructValue { get { return default(TStruct); } set {; } }
-
     }
 #endif
 }
