@@ -21,5 +21,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract GenericParameter Parameter { get; }
 
         public abstract TypeToExpose Type { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {Parameter.Name}";
     }
 }

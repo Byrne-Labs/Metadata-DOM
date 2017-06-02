@@ -10,5 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract bool IsDebuggerHidden { get; }
 
         public abstract string Name { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {Name}";
     }
 }

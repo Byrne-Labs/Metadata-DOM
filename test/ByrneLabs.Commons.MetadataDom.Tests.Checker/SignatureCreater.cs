@@ -115,7 +115,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             return textSignature;
         }
 
-        public static string GetTextSignature(this MemberInfo memberInfo) => GetTextSignature(memberInfo.ReflectedType.GetTypeInfo(), memberInfo);
+        public static string GetTextSignature(this MemberInfo memberInfo) => GetTextSignature(memberInfo.DeclaringType.GetTypeInfo(), memberInfo);
 
         public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.ConstructorInfo constructorInfo)
         {

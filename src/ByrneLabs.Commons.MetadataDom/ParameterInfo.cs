@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Diagnostics.CodeAnalysis;
@@ -35,6 +34,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsRetval => (Attributes & ParameterAttributes.Retval) != 0;
 
+        public override string ToString() => $"({GetType().FullName}) {TextSignature}";
+
         private string TextSignatureImpl() => ParameterType == null ? string.Empty : (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
     }
 
@@ -52,7 +53,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public MemberTypes MemberType => MemberTypes.Custom;
 
         [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global", Justification = "False positive because it is not picking up the PublicAPI attribute on the other part of the partial class")]
-        public virtual object RawDefaultValue => throw new NotSupportedException();
+        public virtual object RawDefaultValue => throw NotSupportedHelper.FutureVersion();
 
         public virtual string TextSignature => TextSignatureImpl();
     }
@@ -75,7 +76,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override MemberTypes MemberType => MemberTypes.Custom;
 
-        public override Type ReflectedType => throw new NotSupportedException();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public override string TextSignature => TextSignatureImpl();
     }

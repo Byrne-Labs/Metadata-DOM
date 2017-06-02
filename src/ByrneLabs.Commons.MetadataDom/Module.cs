@@ -47,7 +47,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract bool Manifest { get; }
 
-        public override int MDStreamVersion => throw new NotSupportedException();
+        public override int MDStreamVersion => throw NotSupportedHelper.FutureVersion();
+
+        public override string ToString() => $"({GetType().FullName}) {Name}";
 
         protected abstract FieldInfoToExpose[] GetAllFields();
 
@@ -88,9 +90,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public virtual IEnumerable<CustomAttributeDataToExpose> CustomAttributes => GetCustomAttributesData();
 
-        public virtual object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public virtual object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public virtual object[] GetCustomAttributes(System.Type attributeType, bool inherit) => throw new NotSupportedException();
+        public virtual object[] GetCustomAttributes(System.Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
         public virtual FieldInfoToExpose[] GetFields(BindingFlags bindingFlags) => GetFieldsImpl(bindingFlags);
 
@@ -100,7 +102,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public MethodInfoToExpose[] GetMethods() => GetMethods(DefaultLookup);
 
-        public virtual bool IsDefined(System.Type attributeType, bool inherit) => throw new NotSupportedException();
+        public virtual bool IsDefined(System.Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
     }
 #endif
 }

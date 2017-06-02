@@ -36,15 +36,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override AssemblyToExpose Assembly => null;
 
-        public override Guid BaseGenerationId => throw new NotSupportedException();
+        public override Guid BaseGenerationId => throw NotSupportedHelper.FutureVersion();
 
-        public override int Generation => throw new NotSupportedException();
+        public override int Generation => throw NotSupportedHelper.FutureVersion();
 
-        public override Guid GenerationId => throw new NotSupportedException();
+        public override Guid GenerationId => throw NotSupportedHelper.FutureVersion();
 
         public override bool Manifest { get; }
 
-        public override Guid ModuleVersionId => throw new NotSupportedException();
+        public override Guid ModuleVersionId => throw NotSupportedHelper.FutureVersion();
 
         public override string Name { get; }
 
@@ -52,12 +52,12 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
-        public override TypeToExpose[] GetTypes() => throw new NotSupportedException();
+        public override TypeToExpose[] GetTypes() => throw NotSupportedHelper.FutureVersion();
 
-        public override bool IsResource() => throw new NotSupportedException();
+        public override bool IsResource() => throw NotSupportedHelper.FutureVersion();
 
-        protected override FieldInfoToExpose[] GetAllFields() => throw new NotSupportedException();
+        protected override FieldInfoToExpose[] GetAllFields() => throw NotSupportedHelper.FutureVersion();
 
-        protected override MethodInfoToExpose[] GetAllMethods() => throw new NotSupportedException();
+        protected override MethodInfoToExpose[] GetAllMethods() => throw NotSupportedHelper.FutureVersion();
     }
 }

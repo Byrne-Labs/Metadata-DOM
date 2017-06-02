@@ -100,21 +100,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IEnumerable<PropertyInfoToExpose> DeclaredProperties => _properties.Value;
 
-        public override MethodBaseToExpose DeclaringMethod => throw new NotSupportedException();
+        public override MethodBaseToExpose DeclaringMethod => throw NotSupportedHelper.FutureVersion();
 
         public override TypeToExpose DeclaringType => _declaringType.Value;
 
         public override IEnumerable<Document> Documents { get; } = ImmutableArray<Document>.Empty;
 
-        public override GenericParameterAttributes GenericParameterAttributes => throw new NotSupportedException();
+        public override GenericParameterAttributes GenericParameterAttributes => throw NotSupportedHelper.FutureVersion();
 
-        public override int GenericParameterPosition => throw new NotSupportedException();
+        public override int GenericParameterPosition => throw NotSupportedHelper.FutureVersion();
 
         public override TypeToExpose[] GenericTypeParameters => _genericParameters.Value;
 
         public override IEnumerable<TypeToExpose> ImplementedInterfaces => _interfaceImplementations.Value;
 
-        public override bool IsConstructedGenericType => throw new NotSupportedException();
+        public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
 
         public override bool IsDelegate => "System.Delegate".Equals(BaseType?.FullName) || "System.MulticastDelegate".Equals(BaseType?.FullName);
 
@@ -148,11 +148,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
-        public override TypeToExpose ReflectedType => throw new NotSupportedException();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override StructLayoutAttribute StructLayoutAttribute => throw new NotSupportedException();
-
-        public override RuntimeTypeHandle TypeHandle => throw new NotSupportedException();
+        public override StructLayoutAttribute StructLayoutAttribute => throw NotSupportedHelper.FutureVersion();
 
         public override ConstructorInfoToExpose TypeInitializer => DeclaredConstructors.SingleOrDefault(constructor => !constructor.GetParameters().Any());
 
@@ -162,11 +160,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         protected override TypeAttributes GetAttributeFlagsImpl() => RawMetadata.Attributes;
 
-        protected override bool IsCOMObjectImpl() => throw new NotSupportedException();
-
-        protected override bool IsContextfulImpl() => throw new NotSupportedException();
-
-        protected override bool IsMarshalByRefImpl() => throw new NotSupportedException();
+        protected override bool IsMarshalByRefImpl() => throw NotSupportedHelper.FutureVersion();
 
         private void Initialize()
         {
@@ -248,15 +242,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
-        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
-
-        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override bool IsPrimitiveImpl() => throw new NotSupportedException();
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 

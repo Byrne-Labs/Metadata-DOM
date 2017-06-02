@@ -25,6 +25,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string[] SourceCodeLines { get; }
 
-        public string GetSourceCode(int startRow, int startColumn, int endRow, int endColumn) => throw new NotSupportedException("This will be supported in the future");
+        public string GetSourceCode(int startRow, int startColumn, int endRow, int endColumn) => throw NotSupportedHelper.FutureVersion();
+
+        public override string ToString() => $"({GetType().FullName}) {Name}";
     }
 }

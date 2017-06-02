@@ -33,7 +33,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
-        public string FullName => throw new NotSupportedException();
+        public string FullName => throw NotSupportedHelper.FutureVersion();
 
         public StandaloneSignatureKind Kind { get; }
 
@@ -43,11 +43,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MethodSignature<TypeBase> MethodSignature => Kind == StandaloneSignatureKind.Method ? _methodSignature.Value : throw new InvalidOperationException("This property is only valid when the signature kind is method");
 
-        public string Name => throw new NotSupportedException();
+        public string Name => throw NotSupportedHelper.FutureVersion();
 
         public System.Reflection.Metadata.StandaloneSignature RawMetadata { get; }
 
-        public string TextSignature => throw new NotSupportedException();
+        public string TextSignature => throw NotSupportedHelper.FutureVersion();
 
         internal GenericContext GenericContext { get; }
 

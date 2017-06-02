@@ -22,7 +22,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int Index { get; }
 
-        public override bool IsDebuggerHidden => throw new NotSupportedException();
+        public override bool IsDebuggerHidden => throw NotSupportedHelper.FutureVersion();
 
         public LocalVariableHandle MetadataHandle { get; }
 

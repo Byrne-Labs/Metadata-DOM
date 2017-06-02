@@ -27,5 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract MethodBaseToExpose StateMachineKickoffMethod { get; }
 
         public abstract string TextSignature { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
     }
 }

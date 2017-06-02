@@ -6,21 +6,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public static class TypeNameExtensions
     {
-        internal static string GetFullName(this Type type) => GetFullName((TypeBase) type.GetTypeInfo());
+        internal static string GetFullName(this Type type) => GetFullName((TypeBase)type.GetTypeInfo());
 
         internal static string GetFullName(this TypeBase type) => type.GetFullName(GetFullName, true);
 
-        internal static string GetFullNameWithoutAssemblies(this Type type) => GetFullNameWithoutAssemblies((TypeBase) type.GetTypeInfo());
+        internal static string GetFullNameWithoutAssemblies(this Type type) => GetFullNameWithoutAssemblies((TypeBase)type.GetTypeInfo());
 
         internal static string GetFullNameWithoutAssemblies(this TypeBase type) => type.GetFullName(GetFullNameWithoutAssemblies, true);
 
-        internal static string GetFullNameWithoutGenericArguments(this Type type) => GetFullNameWithoutGenericArguments((TypeBase) type.GetTypeInfo());
+        internal static string GetFullNameWithoutGenericArguments(this Type type) => GetFullNameWithoutGenericArguments((TypeBase)type.GetTypeInfo());
 
         internal static string GetFullNameWithoutGenericArguments(this TypeBase type) => type.GetFullName(GetFullNameWithoutGenericArguments, false);
 
         internal static string GetNameModifiers(this TypeBase type) => string.Concat(Enumerable.Repeat("[]", type.ArrayDimensionCount)) + new string('*', type.PointerCount) + (type.IsByRef ? "&" : string.Empty);
 
-        private static string GetFullName(this Type type, Func<Type, string> nameGetter, bool includeGenericArguments) => GetFullName((TypeBase) type.GetTypeInfo(), nameGetter, includeGenericArguments);
+        private static string GetFullName(this Type type, Func<Type, string> nameGetter, bool includeGenericArguments) => GetFullName((TypeBase)type.GetTypeInfo(), nameGetter, includeGenericArguments);
 
         private static string GetFullName(this TypeBase type, Func<Type, string> nameGetter, bool includeGenericArguments)
         {
@@ -31,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else
             {
-                var typeToUse = type.TypeElementModifier != null && type.BaseType != null ? (TypeBase) type.BaseType.GetTypeInfo() : type;
+                var typeToUse = type.TypeElementModifier != null && type.UnmodifiedType != null ? (TypeBase)type.UnmodifiedType.GetTypeInfo() : type;
                 string parent;
                 if (typeToUse.IsNested && typeToUse.DeclaringType.GetTypeInfo().IsGenericType)
                 {
@@ -61,7 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 string genericArgumentsText;
                 if (includeGenericArguments && typeToUse.HasGenericTypeArguments)
                 {
-                    genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.GetFullNameWithoutAssemblies() ?? genericTypeArgument.Name)) + "]";
+                    genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.GetFullName(GetFullNameWithoutAssemblies, genericTypeArgument.DeclaringType != typeToUse) ?? genericTypeArgument.Name)) + "]";
                 }
 
                 else
@@ -81,5 +81,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             return fullName;
         }
+
     }
 }

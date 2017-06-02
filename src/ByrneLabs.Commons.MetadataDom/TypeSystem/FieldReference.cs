@@ -46,11 +46,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
-        public override FieldAttributes Attributes => throw new NotSupportedException();
+        public override FieldAttributes Attributes => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override Type DeclaringType => FieldType?.DeclaringType;
 
-        public override RuntimeFieldHandle FieldHandle => throw new NotSupportedException();
+        public override RuntimeFieldHandle FieldHandle => throw NotSupportedHelper.NotValidForMetadata();
 
         public override TypeToExpose FieldType => _signature.Value;
 
@@ -68,7 +68,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MemberReference RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw new NotSupportedException();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.NotValidForMetadata();
 
         public override string TextSignature => $"{FullName}";
 
@@ -80,20 +80,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override object GetRawConstantValue() => throw new NotSupportedException();
+        public override object GetRawConstantValue() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override object GetValue(object obj) => throw new NotSupportedException();
+        public override object GetValue(object obj) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
+        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
         internal TypeBase CreateFieldSignature()
         {

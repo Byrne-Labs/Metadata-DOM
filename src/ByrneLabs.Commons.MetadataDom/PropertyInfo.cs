@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
-using System;
 using System.Linq;
 using System.Globalization;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
@@ -31,6 +30,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsStatic => GetMethod?.IsStatic != false && SetMethod?.IsStatic != false;
 
         internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
@@ -48,9 +49,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsInherited => DeclaringType == ReflectedType;
 
-        public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw new NotSupportedException();
+        public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw NotSupportedHelper.FutureVersion();
 
-        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw new NotSupportedException();
+        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => throw NotSupportedHelper.FutureVersion();
     }
 #else
     public abstract partial class PropertyInfo : MemberInfo

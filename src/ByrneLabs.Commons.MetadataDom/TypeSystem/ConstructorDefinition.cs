@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -27,6 +28,7 @@ using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public partial class ConstructorDefinition : ConstructorInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
@@ -160,17 +162,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public partial class ConstructorDefinition
     {
-        public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
+        public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+        public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
     }
 
 #else

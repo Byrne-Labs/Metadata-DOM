@@ -61,7 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "These must be files, not directories")]
         private static ProcessStartInfo GetNetCoreProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
-            var checkerDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore/bin/Debug/netcoreapp1.0"));
+            var checkerDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../../ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore/bin/netstandard2.0/netcoreapp2.0"));
             var processStartInfo = new ProcessStartInfo("dotnet")
             {
                 WorkingDirectory = checkerDirectory.FullName,
@@ -75,7 +75,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "These must be files, not directories")]
         private static ProcessStartInfo GetNetFrameworkProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
-            var processStartInfo = new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", @"ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\bin\Debug\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.exe"))
+            var processStartInfo = new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", @"ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\bin\netstandard2.0\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.exe"))
             {
                 Arguments = $"\"{BaseTestsDirectory}\" \"{assemblyFile.FullName}\"" + (pdbFile == null ? string.Empty : $" \"{pdbFile.FullName}\""),
                 RedirectStandardError = true,

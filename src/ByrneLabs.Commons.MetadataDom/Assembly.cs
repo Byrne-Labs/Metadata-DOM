@@ -26,18 +26,6 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class Assembly
     {
-        public abstract string CodeBase { get; }
-
-        public abstract MethodInfoToExpose EntryPoint { get; }
-
-        public abstract AssemblyFlags Flags { get; }
-
-        public abstract AssemblyHashAlgorithm HashAlgorithm { get; }
-
-        public abstract string Location { get; }
-
-        public abstract ModuleToExpose ManifestModule { get; }
-
         public static AssemblyToExpose LoadMetadata(FileInfo assemblyFile) => LoadMetadata(assemblyFile, null, true);
 
         public static AssemblyToExpose LoadMetadata(FileInfo assemblyFile, FileInfo pdbFile) => LoadMetadata(assemblyFile, pdbFile, true);
@@ -102,25 +90,39 @@ namespace ByrneLabs.Commons.MetadataDom
             GC.SuppressFinalize(this);
         }
 
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
+
         protected abstract void Dispose(bool disposeManaged);
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public abstract partial class Assembly : AssemblyToExpose, IDisposable
     {
+        public abstract AssemblyFlags Flags { get; }
+
+        public abstract AssemblyHashAlgorithm HashAlgorithm { get; }
+
         public override string FullName => GetName().FullName;
 
-        public override bool GlobalAssemblyCache => throw new NotSupportedException();
+        public override bool GlobalAssemblyCache => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override long HostContext => throw new NotSupportedException();
+        public override long HostContext => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override string ImageRuntimeVersion => throw new NotSupportedException();
+        public override string ImageRuntimeVersion => throw NotSupportedHelper.FutureVersion();
 
         public override bool ReflectionOnly => true;
     }
 #else
     public abstract partial class Assembly : IDisposable
     {
+        public abstract string CodeBase { get; }
+
+        public abstract MethodInfoToExpose EntryPoint { get; }
+
+        public abstract string Location { get; }
+
+        public abstract ModuleToExpose ManifestModule { get; }
+
         public override string ToString() => FullName ?? base.ToString();
 
         public virtual AssemblyName GetName() => GetName(false);

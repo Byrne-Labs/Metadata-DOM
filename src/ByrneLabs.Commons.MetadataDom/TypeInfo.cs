@@ -96,6 +96,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
             return bindingFlags;
         }
+
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
+
+        protected override bool IsPrimitiveImpl() => throw new NotImplementedException();
     }
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 
@@ -105,43 +109,51 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override TypeToExpose[] GenericTypeArguments => GetGenericArguments();
 
-        public override Guid GUID => throw new NotSupportedException();
+        public override Guid GUID => throw NotSupportedHelper.FutureVersion();
 
-        public bool IsCOMObject => throw new NotSupportedException();
+        public bool IsCOMObject => throw NotSupportedHelper.NotValidForMetadata();
 
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
-        public override bool IsConstructedGenericType => throw new NotSupportedException();
+        public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
 
-        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override Type UnderlyingSystemType => this;
 
-        public override EventInfoToExpose[] GetEvents() => throw new NotSupportedException();
+        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override EventInfoToExpose[] GetEvents() => throw new NotImplementedException();
+
+        public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+
+        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
         public override int GetHashCode() => FullName.GetHashCode() | 12345;
 
-        public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw new NotSupportedException();
+        public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose[] GetInterfaces() => throw new NotSupportedException();
+        public override TypeToExpose[] GetInterfaces() => throw new NotImplementedException();
 
-        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose GetNestedType(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override TypeToExpose GetNestedType(string name, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters) => throw new NotSupportedException();
+        public override object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters) => throw NotSupportedHelper.NotValidForMetadata();
+
+        protected override bool IsCOMObjectImpl() => throw NotSupportedHelper.NotValidForMetadata();
+
+        protected override bool IsContextfulImpl() => throw NotSupportedHelper.NotValidForMetadata();
     }
 #else
     public abstract partial class TypeInfo : Type
@@ -184,7 +196,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public virtual IEnumerable<PropertyInfoToExpose> DeclaredProperties => GetProperties(DeclaredOnlyLookup);
 
-        public virtual GenericParameterAttributes GenericParameterAttributes => throw new NotSupportedException();
+        public virtual GenericParameterAttributes GenericParameterAttributes => throw NotSupportedHelper.FutureVersion();
 
         public virtual IEnumerable<TypeToExpose> ImplementedInterfaces => GetInterfaces();
     }

@@ -68,7 +68,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public System.Reflection.Metadata.FieldDefinition RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw new NotSupportedException();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public int RelativeVirtualAddress { get; }
 
@@ -90,17 +90,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public partial class FieldDefinition
     {
-        public override RuntimeFieldHandle FieldHandle => throw new NotSupportedException();
+        public override RuntimeFieldHandle FieldHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object GetValue(object obj) => throw new NotSupportedException();
+        public override object GetValue(object obj) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override bool IsDefined(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override bool IsDefined(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw new NotSupportedException();
+        public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
     }
 #else
     public partial class FieldDefinition

@@ -52,12 +52,12 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => Enumerable.Empty<CustomAttributeDataToExpose>().ToImmutableList();
 
-        public override TypeToExpose[] GetTypes() => throw new NotSupportedException();
+        public override TypeToExpose[] GetTypes() => throw NotSupportedHelper.FutureVersion();
 
-        public override bool IsResource() => throw new NotSupportedException();
+        public override bool IsResource() => throw NotSupportedHelper.FutureVersion();
 
-        protected override FieldInfoToExpose[] GetAllFields() => throw new NotSupportedException();
+        protected override FieldInfoToExpose[] GetAllFields() => throw NotSupportedHelper.FutureVersion();
 
-        protected override MethodInfoToExpose[] GetAllMethods() => throw new NotSupportedException();
+        protected override MethodInfoToExpose[] GetAllMethods() => throw NotSupportedHelper.FutureVersion();
     }
 }

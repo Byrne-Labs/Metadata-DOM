@@ -29,5 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public PropertyInfoToExpose ParentProperty => Parent as PropertyInfo;
 
         protected abstract object Parent { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {(Parent as IMemberInfo).FullName}";
     }
 }

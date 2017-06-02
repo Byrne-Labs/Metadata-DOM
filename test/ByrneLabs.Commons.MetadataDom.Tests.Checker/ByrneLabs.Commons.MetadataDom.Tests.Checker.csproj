@@ -7,6 +7,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
         <TargetFramework>netstandard2.0</TargetFramework>
+        <DefineConstants>DEBUG;TRACE;NETSTANDARD2_0;NETSTANDARD2_0</DefineConstants>
     </PropertyGroup>
     <ItemGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
         <PackageReference Include="NETStandard.Library.NETFramework" Version="2.0.0-preview1-25301-01" />

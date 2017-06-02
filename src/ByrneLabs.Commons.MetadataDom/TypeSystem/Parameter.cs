@@ -117,5 +117,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+
+        public override string ToString() => $"({GetType().FullName}) \"{(Member as ConstructorDefinition)?.FullName ?? (Member as MethodDefinition).FullName}\"; position {Position}";
     }
 }

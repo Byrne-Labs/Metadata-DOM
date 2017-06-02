@@ -58,19 +58,19 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(this, _methodSignature.Value, metadataState));
         }
 
-        public override MethodAttributes Attributes => throw new NotSupportedException();
+        public override MethodAttributes Attributes => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
 
-        public override Type DeclaringType => throw new NotSupportedException();
+        public override Type DeclaringType => throw NotSupportedHelper.FutureVersion();
 
         public override string FullName => Name;
 
         public MemberReferenceHandle MetadataHandle { get; }
 
-        public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
+        public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override System.Reflection.Module Module => throw new NotSupportedException();
+        public override System.Reflection.Module Module => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override string Name { get; }
 
@@ -80,7 +80,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MemberReference RawMetadata { get; }
 
-        public override Type ReflectedType => throw new NotSupportedException();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public TypeToExpose ReturnType => MethodSignature?.ReturnType;
 
@@ -96,20 +96,20 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
-        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
+        public override TypeToExpose[] GetGenericArguments() => new Type[] { };
 
-        public override MethodImplAttributes GetMethodImplementationFlags() => throw new NotSupportedException();
+        public override MethodImplAttributes GetMethodImplementationFlags() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+        public override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override bool IsDefined(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override bool IsDefined(Type attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
     }
 }

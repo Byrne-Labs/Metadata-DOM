@@ -52,6 +52,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public override MemberTypes MemberType => MemberTypes.Method;
 
         internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public override string ToString() => $"({GetType().FullName}) {TextSignature}";
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

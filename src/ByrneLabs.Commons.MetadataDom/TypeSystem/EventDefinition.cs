@@ -95,7 +95,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public System.Reflection.Metadata.EventDefinition RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw new NotSupportedException();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public override MethodInfoToExpose RemoveMethod { get; }
 
@@ -120,11 +120,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public partial class EventDefinition
     {
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw new NotSupportedException();
+        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
     }
 
 #else

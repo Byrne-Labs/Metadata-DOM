@@ -50,5 +50,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal override string UndecoratedName => PrimitiveTypeCode.ToString();
 
         protected override TypeAttributes GetAttributeFlagsImpl() => TypeAttributes.AnsiClass & TypeAttributes.Class;
+
+        protected override bool IsPrimitiveImpl() => true;
     }
 }

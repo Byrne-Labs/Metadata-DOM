@@ -16,5 +16,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract string Name { get; }
 
         public abstract object Value { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {Name}";
     }
 }

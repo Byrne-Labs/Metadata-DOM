@@ -29,6 +29,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public override MemberTypes MemberType => MemberTypes.Event;
 
         internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

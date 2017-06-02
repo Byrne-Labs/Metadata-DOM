@@ -38,13 +38,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public Document Document => _document.Value;
 
-        public string FullName => throw new NotSupportedException();
-
         public StandaloneSignature LocalSignature => _localSignature.Value;
 
         public MethodBaseToExpose Method { get; }
-
-        public string Name => throw new NotSupportedException();
 
         public System.Reflection.Metadata.MethodDebugInformation RawMetadata { get; }
 
@@ -55,8 +51,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public string SourceCode => _sourceCode.Value;
 
         public MethodDefinition StateMachineKickoffMethod => _stateMachineKickoffMethod.Value;
-
-        public string TextSignature => throw new NotSupportedException();
 
         internal CodeElementKey Key { get; }
 

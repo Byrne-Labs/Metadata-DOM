@@ -139,7 +139,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override StructLayoutAttribute StructLayoutAttribute => null;
 
-        public override RuntimeTypeHandle TypeHandle => throw new NotSupportedException();
+        public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
 
         public override ConstructorInfoToExpose TypeInitializer => null;
 
@@ -147,51 +147,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal override string UndecoratedName => null;
 
-        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => Enumerable.Empty<CustomAttributeDataToExpose>().ToImmutableList();
 
-        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
-
-        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
-
-        public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw new NotSupportedException();
-
-        public override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw new NotSupportedException();
-
-        public override TypeToExpose[] GetInterfaces() => throw new NotSupportedException();
-
-        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr) => throw new NotSupportedException();
-
-        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingAttr) => throw new NotSupportedException();
-
-        public override TypeToExpose GetNestedType(string name, BindingFlags bindingAttr) => throw new NotSupportedException();
-
-        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingAttr) => throw new NotSupportedException();
-
-        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw new NotSupportedException();
-
-        protected override TypeAttributes GetAttributeFlagsImpl() => throw new NotSupportedException();
-
-        protected override bool IsCOMObjectImpl() => throw new NotSupportedException();
-
-        protected override bool IsMarshalByRefImpl() => throw new NotSupportedException();
-
-        protected override bool IsPrimitiveImpl() => throw new NotSupportedException();
+        protected override TypeAttributes GetAttributeFlagsImpl() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
     }
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 
     public abstract partial class EmptyTypeBase
     {
-        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, TypeToExpose[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
+        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, TypeToExpose[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
-        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
+        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw new NotSupportedException();
-
-        protected override bool IsContextfulImpl() => false;
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
     }
 #else
     public abstract partial class EmptyTypeBase

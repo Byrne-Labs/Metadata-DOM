@@ -14,7 +14,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private static readonly string[] _ignoredErrorsRegex =
         {
             @"^<module>\.FullName has a value of .+ in metadata but a value of .+ in reflection$",
-            @"System\.BadImageFormatException: Invalid method header: 0x[0-9A-F][0-9A-F](?: 0x[0-9A-F][0-9A-F])?\s*at System\.Reflection\.Metadata\.MethodBodyBlock\.Create\(BlobReader reader\)"
+            @"System\.BadImageFormatException: Invalid method header: 0x[0-9A-F][0-9A-F](?: 0x[0-9A-F][0-9A-F])?\s*at System\.Reflection\.Metadata\.MethodBodyBlock\.Create\(BlobReader reader\)",
+            @"System.NotSupportedException: This method will be supported in a future version",
+            @"System.NotSupportedException: This method is not valid on metadata",
+            @"ReflectionOnly has a value of True in metadata but a value of False in reflection",
+            "ModuleHandle has a value of System.ModuleHandle in metadata but a value of System.ModuleHandle in reflection"
         };
         private static readonly string[] _invalidErrorsRegex =
         {

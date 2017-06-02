@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
 using CustomAttributeTypedArgumentToExpose = System.Reflection.CustomAttributeTypedArgument;
@@ -19,11 +18,13 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class CustomAttributeData
     {
-        internal static object[] GetCustomAttributes(IMemberInfo member, bool inherit) => throw new NotSupportedException("This will be supported in the future");
+        internal static object[] GetCustomAttributes(IMemberInfo member, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        internal static object[] GetCustomAttributes(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw new NotSupportedException("This will be supported in the future");
+        internal static object[] GetCustomAttributes(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw new NotSupportedException("This will be supported in the future");
+        internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
+
+        public override string ToString() => $"({GetType().FullName}) {AttributeType.Name}";
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

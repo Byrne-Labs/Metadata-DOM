@@ -455,10 +455,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 codeElement = _codeElementCache[key];
             }
-            else if (key.PrimitiveTypeCode.HasValue)
-            {
-                codeElement = new PrimitiveType(key.PrimitiveTypeCode.Value, this);
-            }
             else if (key.Handle?.IsNil == true || DebugMetadataTypes.Contains(key.UpcastHandle?.GetType()) && !HasDebugMetadata || !DebugMetadataTypes.Contains(key.UpcastHandle?.GetType()) && !HasMetadata)
             {
                 codeElement = null;

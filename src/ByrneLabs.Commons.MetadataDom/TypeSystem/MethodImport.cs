@@ -44,17 +44,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _module = MetadataState.GetLazyCodeElement<ModuleReference>(metadata.Module);
         }
 
-        public override MethodAttributes Attributes => throw new NotSupportedException();
+        public override MethodAttributes Attributes => throw NotSupportedHelper.FutureVersion();
 
-        public override Type DeclaringType => throw new NotSupportedException();
+        public override Type DeclaringType => throw NotSupportedHelper.FutureVersion();
 
         public override string FullName => Name;
 
-        public override bool IsCompilerGenerated => throw new NotSupportedException();
+        public override bool IsCompilerGenerated => throw NotSupportedHelper.FutureVersion();
 
         public override int MetadataToken => RawMetadata.GetHashCode();
 
-        public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
+        public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.FutureVersion();
 
         public MethodImportAttributes MethodImportAttributes { get; }
 
@@ -62,21 +62,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string Name { get; }
 
-        public override IEnumerable<ParameterInfoToExpose> Parameters => throw new NotSupportedException();
+        public override IEnumerable<ParameterInfoToExpose> Parameters => throw NotSupportedHelper.FutureVersion();
 
         public System.Reflection.Metadata.MethodImport RawMetadata { get; }
 
-        public override Type ReflectedType => throw new NotSupportedException();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override EventInfoToExpose RelatedEvent => throw new NotSupportedException();
+        public override EventInfoToExpose RelatedEvent => throw NotSupportedHelper.FutureVersion();
 
-        public override PropertyInfoToExpose RelatedProperty => throw new NotSupportedException();
+        public override PropertyInfoToExpose RelatedProperty => throw NotSupportedHelper.FutureVersion();
 
-        public override ParameterInfoToExpose ReturnParameter => throw new NotSupportedException();
+        public override ParameterInfoToExpose ReturnParameter => throw NotSupportedHelper.FutureVersion();
 
-        public override Type ReturnType => throw new NotSupportedException();
+        public override Type ReturnType => throw NotSupportedHelper.FutureVersion();
 
-        public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw new NotSupportedException();
+        public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
 
         public override string TextSignature => Name;
 
@@ -88,18 +88,18 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override MethodInfoToExpose GetBaseDefinition() => throw new NotSupportedException();
+        public override MethodInfoToExpose GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
 
-        public override object[] GetCustomAttributes(bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => throw new NotSupportedException();
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => throw NotSupportedHelper.FutureVersion();
 
-        public override MethodImplAttributes GetMethodImplementationFlags() => throw new NotSupportedException();
+        public override MethodImplAttributes GetMethodImplementationFlags() => throw NotSupportedHelper.FutureVersion();
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.FutureVersion();
 
-        public override bool IsDefined(Type attributeType, bool inherit) => throw new NotSupportedException();
+        public override bool IsDefined(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
     }
 }

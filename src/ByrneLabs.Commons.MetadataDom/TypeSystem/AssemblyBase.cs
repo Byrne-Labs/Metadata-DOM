@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Security;
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -12,6 +13,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataState = metadataState;
             metadataState.CacheCodeElement(this, key);
         }
+
+        public override SecurityRuleSet SecurityRuleSet => throw NotSupportedHelper.FutureVersion();
 
         internal CodeElementKey Key { get; }
 

@@ -69,17 +69,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<CustomAttributeTypedArgumentToExpose> ConstructorArguments => _constructorArguments.Value;
 
-        public string FullName => throw new NotSupportedException();
-
         public CustomAttributeHandle MetadataHandle { get; }
-
-        public string Name => throw new NotSupportedException();
 
         public override IList<CustomAttributeNamedArgumentToExpose> NamedArguments => _namedArguments.Value;
 
         public System.Reflection.Metadata.CustomAttribute RawMetadata { get; }
-
-        public string TextSignature => throw new NotSupportedException();
 
         internal CodeElementKey Key { get; }
 

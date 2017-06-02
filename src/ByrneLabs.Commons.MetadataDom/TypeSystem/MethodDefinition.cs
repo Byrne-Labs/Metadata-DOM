@@ -120,7 +120,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IEnumerable<ParameterInfoToExpose> Parameters => _parameters.Value;
 
-        public override TypeToExpose ReflectedType => throw new NotSupportedException();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public override EventInfoToExpose RelatedEvent => _relatedEvent.Value;
 
@@ -189,17 +189,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 #if NETSTANDARD2_0 || NET_FRAMEWORK
     public partial class MethodDefinition
     {
-        public override RuntimeMethodHandle MethodHandle => throw new NotSupportedException();
+        public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw new NotSupportedException();
+        public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
 
-        public override MethodInfoToExpose GetBaseDefinition() => throw new NotSupportedException("This will be supported in the future");
+        public override MethodInfoToExpose GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
 
         public override object[] GetCustomAttributes(bool inherit) => CustomAttributeData.GetCustomAttributes(this, inherit);
 
         public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => CustomAttributeData.GetCustomAttributes(this, attributeType, inherit);
 
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw new NotSupportedException();
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
         public override bool IsDefined(TypeToExpose attributeType, bool inherit) => CustomAttributeData.IsDefined(this, attributeType, inherit);
     }

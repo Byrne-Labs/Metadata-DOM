@@ -12,6 +12,9 @@ using TypeToExpose = System.Type;
 using EventInfoToExpose = System.Reflection.EventInfo;
 using FieldInfoToExpose = System.Reflection.FieldInfo;
 using MemberInfoToExpose = System.Reflection.MemberInfo;
+using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
+using MethodInfoToExpose = System.Reflection.MethodInfo;
+using PropertyInfoToExpose = System.Reflection.PropertyInfo;
 
 #else
 using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
@@ -19,6 +22,9 @@ using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
 using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
 using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
 using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
+using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
+using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
+using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
 
 #endif
 
@@ -63,7 +69,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public abstract class TypeBase : TypeInfo, IManagedCodeElement
     {
-        private readonly TypeBase _unmodifiedType;
+        internal TypeBase UnmodifiedType { get; }
         private Lazy<string> _fullName;
         private Lazy<string> _fullNameWithoutAssemblies;
         private Lazy<string> _fullNameWithoutGenericArguments;
@@ -72,7 +78,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal TypeBase(TypeBase unmodifiedType, TypeElementModifier typeElementModifier, MetadataState metadataState, CodeElementKey key)
         {
             Key = key;
-            _unmodifiedType = unmodifiedType;
+            UnmodifiedType = unmodifiedType;
             TypeElementModifier = typeElementModifier;
             MetadataState = metadataState;
             if (IsArrayImpl() || IsPointerImpl())
@@ -84,7 +90,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 ArrayRank = 1;
             }
             GenericTypeArguments = Array.Empty<TypeToExpose>();
-            UnderlyingSystemType = unmodifiedType.UnderlyingSystemType;
             Initialize();
         }
 
@@ -101,7 +106,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
             GenericTypeArguments = genericTypeArguments.Cast<TypeToExpose>().ToArray();
-            UnderlyingSystemType = genericTypeDefinition.UnderlyingSystemType;
             Initialize();
         }
 
@@ -110,7 +114,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Key = key;
             GenericTypeArguments = Array.Empty<TypeToExpose>();
             MetadataState = metadataState;
-            UnderlyingSystemType = this;
             Initialize();
         }
 
@@ -130,23 +133,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed bool HasGenericTypeArguments => GenericTypeArguments.Any();
 
-        public override sealed bool IsBoxed => _unmodifiedType?.IsBoxed == true || IsThisBoxed;
+        public override sealed bool IsBoxed => UnmodifiedType?.IsBoxed == true || IsThisBoxed;
 
-        public override sealed bool IsByValue => _unmodifiedType?.IsByValue == true || IsThisByValue;
+        public override sealed bool IsByValue => UnmodifiedType?.IsByValue == true || IsThisByValue;
 
-        public override sealed bool IsConstant => _unmodifiedType?.IsConstant == true || IsThisConstant;
+        public override sealed bool IsConstant => UnmodifiedType?.IsConstant == true || IsThisConstant;
 
-        public override bool IsGenericType => _unmodifiedType?.IsGenericType == true || IsThisGenericType;
+        public override bool IsGenericType => UnmodifiedType?.IsGenericType == true || IsThisGenericType;
 
-        public override sealed bool IsVolatile => _unmodifiedType?.IsVolatile == true || IsThisVolatile;
+        public override sealed bool IsVolatile => UnmodifiedType?.IsVolatile == true || IsThisVolatile;
 
         public override int MetadataToken => DowncastMetadataHandle.HasValue ? DowncastMetadataHandle.Value.GetHashCode() : 0;
 
         public override string Name => _name.Value;
 
         public override string TextSignature => FullNameWithoutAssemblies;
-
-        public override TypeToExpose UnderlyingSystemType { get; }
 
         protected bool IsThisArray => TypeElementModifier == TypeSystem.TypeElementModifier.Array;
 
@@ -168,7 +169,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal abstract string MetadataNamespace { get; }
 
-        internal int ArrayDimensionCount => (IsThisArray ? 1 : 0) + (_unmodifiedType?.ArrayDimensionCount).GetValueOrDefault();
+        internal int ArrayDimensionCount => (IsThisArray ? 1 : 0) + (UnmodifiedType?.ArrayDimensionCount).GetValueOrDefault();
 
         internal string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
 
@@ -178,7 +179,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal MetadataState MetadataState { get; }
 
-        internal int PointerCount => (IsThisPointer ? 1 : 0) + (_unmodifiedType?.PointerCount).GetValueOrDefault();
+        internal int PointerCount => (IsThisPointer ? 1 : 0) + (UnmodifiedType?.PointerCount).GetValueOrDefault();
 
         internal TypeElementModifier? TypeElementModifier { get; }
 
@@ -190,23 +191,33 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed TypeToExpose GetElementType() => ElementType;
 
-        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+
+        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
 
         public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
 
-        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw new NotSupportedException();
+        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+
+        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
+
+        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
+
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
         protected override sealed bool HasElementTypeImpl() => ElementType != null;
 
-        protected override sealed bool IsArrayImpl() => _unmodifiedType?.IsArray == true || IsThisArray;
+        protected override sealed bool IsArrayImpl() => UnmodifiedType?.IsArray == true || IsThisArray;
 
-        protected override sealed bool IsByRefImpl() => _unmodifiedType?.IsByRef == true || IsThisByRef;
+        protected override sealed bool IsByRefImpl() => UnmodifiedType?.IsByRef == true || IsThisByRef;
 
-        protected override sealed bool IsPointerImpl() => _unmodifiedType?.IsPointer == true || IsThisPointer;
+        protected override sealed bool IsPointerImpl() => UnmodifiedType?.IsPointer == true || IsThisPointer;
 
-        protected override sealed bool IsValueTypeImpl() => _unmodifiedType?.IsValueType == true || IsThisValueType;
+        protected override bool IsPrimitiveImpl() => false;
+
+        protected override sealed bool IsValueTypeImpl() => UnmodifiedType?.IsValueType == true || IsThisValueType;
 
         private void Initialize()
         {

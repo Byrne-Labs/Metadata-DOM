@@ -24,5 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract int StartLine { get; }
 
         public virtual string Name => $"{Document.Name}({StartLine}:{StartColumn},{EndLine},{EndColumn})";
+
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
     }
 }

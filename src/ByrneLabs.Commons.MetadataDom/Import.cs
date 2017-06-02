@@ -13,5 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract string TargetNamespace { get; }
 
         public abstract TypeInfo TargetType { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {Alias} = {TargetNamespace}";
     }
 }

@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataState = metadataState;
         }
 
-        public override string FullyQualifiedName => Name;
+        public override string FullyQualifiedName => Assembly == null ? Name : Assembly.Location;
 
         public override int MetadataToken => Key.Handle.GetHashCode();
 
@@ -35,7 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal ModuleBase(THandle metadataHandle, MetadataState metadataState) : base(new CodeElementKey<TModuleBase>(metadataHandle), metadataState)
         {
             MetadataHandle = metadataHandle;
-            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(metadataHandle);
+            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(metadataHandle);
         }
 
         public THandle MetadataHandle { get; }

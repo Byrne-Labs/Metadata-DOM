@@ -18,5 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract Namespace Parent { get; }
 
         public abstract IEnumerable<Type> TypeDefinitions { get; }
+
+        public override string ToString() => $"({GetType().FullName}) {Name}";
     }
 }

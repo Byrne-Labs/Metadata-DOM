@@ -31,6 +31,8 @@ namespace ByrneLabs.Commons.MetadataDom
         internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public abstract object GetRawConstantValue();
+
+        public override string ToString() => $"({GetType().FullName}) {FullName}";
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK
