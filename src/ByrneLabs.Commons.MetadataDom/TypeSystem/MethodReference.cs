@@ -70,7 +70,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodAttributes Attributes => throw NotSupportedHelper.FutureVersion();
 
-        public override Type DeclaringType => Parent as Type;
+        public override TypeToExpose DeclaringType => Parent as TypeToExpose;
 
         public override string FullName => Name;
 
@@ -88,7 +88,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MemberReference RawMetadata { get; }
 
-        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public override EventInfoToExpose RelatedEvent => throw NotSupportedHelper.FutureVersion();
 

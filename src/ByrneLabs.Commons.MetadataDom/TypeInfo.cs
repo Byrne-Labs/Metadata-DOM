@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
+using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using System.Globalization;
 using System;
@@ -37,6 +39,7 @@ using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
 
 namespace ByrneLabs.Commons.MetadataDom
 {
+    [PublicAPI]
     public abstract partial class TypeInfo
     {
         public abstract int ArrayRank { get; }
@@ -46,8 +49,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract TypeInfoToExpose ElementType { get; }
 
         public abstract TypeInfoToExpose GenericTypeDefinition { get; }
-
-        public abstract bool HasGenericTypeArguments { get; }
 
         public abstract bool IsBoxed { get; }
 
@@ -62,6 +63,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract IEnumerable<Language> Languages { get; }
 
         public abstract ConstructorInfoToExpose TypeInitializer { get; }
+
+        public virtual bool HasGenericTypeArguments => GetGenericArguments().Any();
 
         public bool IsPrimitive => IsPrimitiveImpl();
 
@@ -105,7 +108,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
     public abstract partial class TypeInfo : TypeDelegator, IMemberInfo
     {
+        private const BindingFlags DefaultBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+
         public abstract string TextSignature { get; }
+
+        public BindingFlags BindingFlags => CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public override TypeToExpose[] GenericTypeArguments => GetGenericArguments();
 
@@ -117,43 +124,299 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
 
+        public bool IsInherited => DeclaringType == ReflectedType;
+
+        public override bool IsSecurityCritical => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsSecuritySafeCritical => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
+
         public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
 
         public override Type UnderlyingSystemType => this;
 
-        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingFlags) => SingleMember(GetEvents(name, bindingFlags, false));
 
-        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override EventInfoToExpose[] GetEvents(BindingFlags bindingFlags) => GetEvents(null, bindingFlags, false).ToArray();
 
-        public override EventInfoToExpose[] GetEvents() => throw new NotImplementedException();
+        public override EventInfoToExpose[] GetEvents() => GetEvents(DefaultBindingFlags);
 
-        public override FieldInfoToExpose GetField(string name, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override FieldInfoToExpose GetField(string name, BindingFlags bindingFlags) => SingleMember(GetFields(name, bindingFlags, false));
 
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override FieldInfoToExpose[] GetFields(BindingFlags bindingFlags) => GetFields(null, bindingFlags, false).ToArray();
 
         public override int GetHashCode() => FullName.GetHashCode() | 12345;
 
-        public override TypeToExpose GetInterface(string name, bool ignoreCase) => throw NotSupportedHelper.FutureVersion();
+        public override TypeToExpose GetInterface(string name, bool ignoreCase) => SingleMember(GetInterfaces(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase, false));
 
-        public override TypeToExpose[] GetInterfaces() => throw new NotImplementedException();
+        public override TypeToExpose[] GetInterfaces() => GetInterfaces(null, BindingFlags.Public | BindingFlags.NonPublic, false).ToArray();
 
-        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingFlags)
+        {
+            var members = new List<MemberInfo>();
+            if ((type & MemberTypes.Method) != 0)
+            {
+                members.AddRange(GetMethods<MethodInfo>(name, bindingFlags, CallingConventions.Any, null, true));
+            }
+            if ((type & MemberTypes.Constructor) != 0)
+            {
+                members.AddRange(GetMethods<ConstructorInfo>(name, bindingFlags, CallingConventions.Any, null, true));
+            }
+            if ((type & MemberTypes.Property) != 0)
+            {
+                members.AddRange(GetProperties(name, bindingFlags, null, null, true));
+            }
+            if ((type & MemberTypes.Event) != 0)
+            {
+                members.AddRange(GetEvents(name, bindingFlags, true));
+            }
+            if ((type & MemberTypes.Field) != 0)
+            {
+                members.AddRange(GetFields(name, bindingFlags, true));
+            }
+            if ((type & (MemberTypes.NestedType | MemberTypes.TypeInfo)) != 0)
+            {
+                members.AddRange(GetNestedTypes(name, bindingFlags, true));
+            }
 
-        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+            return members.ToArray();
+        }
 
-        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingFlags) => GetMember(null, MemberTypes.All, bindingFlags);
 
-        public override TypeToExpose GetNestedType(string name, BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingFlags) => GetMethods<MethodInfoToExpose>(null, bindingFlags, CallingConventions.Any, null, false).ToArray();
 
-        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override TypeToExpose GetNestedType(string name, BindingFlags bindingFlags) => SingleMember(GetNestedTypes(name, bindingFlags, false));
 
-        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
+        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingFlags) => GetNestedTypes(null, bindingFlags, false).ToArray();
+
+        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingFlags) => GetProperties(null, bindingFlags, null, null, false).ToArray();
 
         public override object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters) => throw NotSupportedHelper.NotValidForMetadata();
+
+        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<ConstructorInfoToExpose>(null, bindingFlags, callConvention, argumentTypes, false));
+
+        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<MethodInfoToExpose>(name, bindingFlags, callConvention, argumentTypes, false));
+
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingFlags, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => SingleMember(GetProperties(name, bindingFlags, propertyType, types,false));
 
         protected override bool IsCOMObjectImpl() => throw NotSupportedHelper.NotValidForMetadata();
 
         protected override bool IsContextfulImpl() => throw NotSupportedHelper.NotValidForMetadata();
+
+        private IEnumerable<EventInfoToExpose> GetEvents(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
+        {
+            bindingFlags ^= BindingFlags.DeclaredOnly;
+
+            var candidateEvents = GetMemberCandidates<EventInfo>(name, bindingFlags, false);
+
+            // filter by binding flag
+            candidateEvents = candidateEvents.Where(eventInfo => (bindingFlags & eventInfo.BindingFlags) == eventInfo.BindingFlags);
+
+            return candidateEvents;
+        }
+
+        private IEnumerable<FieldInfoToExpose> GetFields(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
+        {
+            bindingFlags ^= BindingFlags.DeclaredOnly;
+
+            var candidateFields = GetMemberCandidates<FieldInfo>(name, bindingFlags, false);
+
+            // filter by binding flag
+            candidateFields = candidateFields.Where(field => (bindingFlags & field.BindingFlags) == field.BindingFlags);
+
+            return candidateFields;
+        }
+
+        private IEnumerable<TypeToExpose> GetInterfaces(string name, BindingFlags bindingFlags, bool allowPrefixLookup) => GetTypes(name, bindingFlags, allowPrefixLookup).Where(type => type.IsInterface);
+
+        private IEnumerable<T> GetMemberCandidates<T>(string name, BindingFlags bindingFlags, bool allowPrefixLookup) where T : MemberInfoToExpose
+        {
+            // filter by type
+            var candidateMembers = DeclaredMembers.OfType<T>();
+
+            // filter by name
+            if (name != null)
+            {
+                var stringComparison = (bindingFlags & BindingFlags.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                if (allowPrefixLookup && name.EndsWith("*", StringComparison.Ordinal))
+                {
+                    var prefix = name.Substring(0, name.Length - 1);
+                    candidateMembers = candidateMembers.Where(member => member.Name.StartsWith(prefix, stringComparison));
+                }
+                else
+                {
+                    candidateMembers = candidateMembers.Where(member => member.Name.Equals(name, stringComparison));
+                }
+            }
+
+            return candidateMembers.ToImmutableArray();
+        }
+
+        private IEnumerable<T> GetMethods<T>(string name, BindingFlags bindingFlags, CallingConventions callConvention, Type[] argumentTypes, bool allowPrefixLookup) where T : MethodBaseToExpose
+        {
+            var candidateMethods = GetMemberCandidates<T>(name, bindingFlags, false);
+
+            // filter by calling convention
+            if ((callConvention & CallingConventions.Any) == 0)
+            {
+                candidateMethods = candidateMethods.Where(methodBase =>
+                    ((callConvention & CallingConventions.VarArgs) == 0 || (methodBase.CallingConvention & CallingConventions.VarArgs) == 0) &&
+                    ((callConvention & CallingConventions.Standard) == 0 || (methodBase.CallingConvention & CallingConventions.Standard) == 0));
+            }
+
+            // filter by arguments
+            if (argumentTypes != null && argumentTypes.Length > 0)
+            {
+                if ((bindingFlags & (BindingFlags.GetProperty | BindingFlags.SetProperty)) == 0)
+                {
+                    candidateMethods = candidateMethods.Where(method => method.GetParameters().Length == argumentTypes.Length);
+                }
+                candidateMethods = candidateMethods.Where(method =>
+                {
+                    var includeMethod = true;
+                    var parameters = method.GetParameters();
+                    var checkForVarArgs = false;
+
+                    if (argumentTypes.Length > parameters.Length)
+                    {
+                        if ((method.CallingConvention & CallingConventions.VarArgs) == 0)
+                        {
+                            checkForVarArgs = true;
+                        }
+                    }
+                    else if ((bindingFlags & BindingFlags.OptionalParamBinding) == 0 || !parameters[argumentTypes.Length].IsOptional)
+                    {
+                        checkForVarArgs = true;
+                    }
+
+                    if (checkForVarArgs)
+                    {
+                        if (parameters.Length == 0 ||
+                            argumentTypes.Length < parameters.Length - 1 ||
+                            !parameters.Last().ParameterType.IsArray ||
+                            !parameters.Last().IsDefined(typeof(ParamArrayAttribute), false))
+                        {
+                            includeMethod = false;
+                        }
+                    }
+
+                    return includeMethod;
+                });
+            }
+
+            return candidateMethods;
+        }
+
+        private IEnumerable<TypeToExpose> GetNestedTypes(string name, BindingFlags bindingFlags, bool allowPrefixLookup) => GetTypes(name, bindingFlags, allowPrefixLookup).Where(type => type.IsNested);
+
+        private IEnumerable<PropertyInfoToExpose> GetProperties(string name, BindingFlags bindingFlags, Type propertyType, Type[] types, bool allowPrefixLookup)
+        {
+            bindingFlags ^= BindingFlags.DeclaredOnly;
+
+            var candidateProperties = GetMemberCandidates<PropertyInfo>(name, bindingFlags, false);
+
+            // filter by binding flag
+            candidateProperties = candidateProperties.Where(property => (bindingFlags & property.BindingFlags) == property.BindingFlags);
+
+            // filter by property type
+            if (propertyType != null)
+            {
+                candidateProperties.Where(property => property.PropertyType.IsEquivalentTo(propertyType));
+            }
+
+            // filter by parameter types
+            if (types != null && types.Length > 0)
+            {
+                candidateProperties = candidateProperties.Where(property => property.GetIndexParameters().Select(parameter => parameter.ParameterType).SequenceEqual(types));
+            }
+
+            return candidateProperties;
+        }
+
+        private IEnumerable<TypeToExpose> GetTypes(string fullName, BindingFlags bindingFlags, bool allowPrefixLookup)
+        {
+            bindingFlags &= ~BindingFlags.Static;
+
+            var candidateTypes = GetMemberCandidates<TypeInfo>(null, bindingFlags, false);
+
+            // filter on binding flags
+            if ((bindingFlags & BindingFlags.Public) != 0)
+            {
+                candidateTypes = candidateTypes.Where(nestedClass => nestedClass.IsNestedPublic || nestedClass.IsPublic);
+            }
+            if ((bindingFlags & BindingFlags.NonPublic) != 0)
+            {
+                candidateTypes = candidateTypes.Where(nestedClass => !nestedClass.IsNestedPublic && !nestedClass.IsPublic);
+            }
+            if ((bindingFlags & BindingFlags.DeclaredOnly) != 0)
+            {
+                candidateTypes = candidateTypes.Where(nestedClass => nestedClass.IsInherited);
+            }
+            if ((bindingFlags & BindingFlags.FlattenHierarchy) != 0)
+            {
+                candidateTypes = candidateTypes.Where(nestedClass => !nestedClass.IsStatic || nestedClass.IsInherited);
+            }
+            if ((bindingFlags & BindingFlags.Static) != 0)
+            {
+                candidateTypes = candidateTypes.Where(nestedClass => nestedClass.IsStatic);
+            }
+            if ((bindingFlags & BindingFlags.Instance) != 0)
+            {
+                candidateTypes = candidateTypes.Where(nestedClass => !nestedClass.IsStatic);
+            }
+
+            // filter on name
+            if (fullName != null)
+            {
+                string @namespace;
+                string name;
+                var lastNamespaceSeperator = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                if (lastNamespaceSeperator == -1)
+                {
+                    @namespace = null;
+                    name = fullName;
+                }
+                else if (lastNamespaceSeperator > fullName.Length || lastNamespaceSeperator == 0)
+                {
+                    throw new ArgumentException("Name cannot begin or end with a dot", nameof(fullName));
+                }
+                else
+                {
+                    @namespace = fullName.Substring(0, lastNamespaceSeperator - 1);
+                    name = fullName.Substring(lastNamespaceSeperator);
+                }
+
+                if (@namespace != null)
+                {
+                    candidateTypes = candidateTypes.Where(type => type.Namespace.Equals(@namespace));
+                }
+
+                var stringComparison = (bindingFlags & BindingFlags.IgnoreCase) != 0 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                if (allowPrefixLookup && name.EndsWith("*", StringComparison.Ordinal))
+                {
+                    var prefix = name.Substring(0, name.Length - 1);
+                    candidateTypes = candidateTypes.Where(type => type.Name.StartsWith(prefix, stringComparison));
+                }
+                else
+                {
+                    candidateTypes = candidateTypes.Where(type => type.Name.Equals(name, stringComparison));
+                }
+            }
+
+            return candidateTypes;
+        }
+
+        private T SingleMember<T>(IEnumerable<T> members) where T : MemberInfoToExpose
+        {
+            if (members.Count() > 1)
+            {
+                throw new AmbiguousMatchException($"Multiple {typeof(T).Name.ToLower()} instances match arguments provided");
+            }
+
+            return members.FirstOrDefault();
+        }
     }
 #else
     public abstract partial class TypeInfo : Type

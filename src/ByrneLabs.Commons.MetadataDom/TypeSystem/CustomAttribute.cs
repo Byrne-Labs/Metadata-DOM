@@ -44,23 +44,32 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 CustomAttributeValue<TypeBase>? value;
 
-                /*
-                 * I cannot figure out why, but the DecodeValue call will throw an exception if the argument kind is not field or property. -- Jonathan Byrne 12/19/2016
-                 */
-                var valueKind = (CustomAttributeNamedArgumentKind) MetadataState.AssemblyReader.GetBlobReader(RawMetadata.Value).ReadSerializationTypeCode();
-                if (valueKind == CustomAttributeNamedArgumentKind.Field || valueKind == CustomAttributeNamedArgumentKind.Property)
-                {
-                    value = RawMetadata.DecodeValue(MetadataState.TypeProvider);
-                }
-                else
-                {
-                    value = null;
-                }
+                value = RawMetadata.DecodeValue(MetadataState.TypeProvider);
 
                 return value;
             });
             _constructorArguments = new Lazy<ImmutableList<CustomAttributeTypedArgument>>(() => Value.HasValue ? Value.Value.FixedArguments.Select(argument => new CustomAttributeTypedArgument(argument.Type, argument.Value)).ToImmutableList() : ImmutableList<CustomAttributeTypedArgument>.Empty);
-            _namedArguments = new Lazy<ImmutableList<CustomAttributeNamedArgument>>(() => Value.HasValue ? Value.Value.NamedArguments.Select(argument => new CustomAttributeNamedArgument(argument.Type, argument.Value)).ToImmutableList() : ImmutableList<CustomAttributeNamedArgument>.Empty);
+            _namedArguments = new Lazy<ImmutableList<CustomAttributeNamedArgument>>(() =>
+            {
+                var namedArguements = new List<CustomAttributeNamedArgument>();
+                if (Value.HasValue)
+                {
+                    foreach (var argument in Value.Value.NamedArguments)
+                    {
+                        MemberInfo memberInfo;
+                        if (argument.Kind == CustomAttributeNamedArgumentKind.Field)
+                        {
+                            memberInfo = AttributeType.GetFields().Single(field => field.Name.Equals(argument.Name));
+                        }
+                        else
+                        {
+                            memberInfo = AttributeType.GetProperties().Single(property => property.Name.Equals(argument.Name));
+                        }
+                        namedArguements.Add(new CustomAttributeNamedArgument(memberInfo, argument.Value));
+                    }
+                }
+                return namedArguements.ToImmutableList();
+            });
         }
 
         public TypeToExpose AttributeType => Constructor.DeclaringType;

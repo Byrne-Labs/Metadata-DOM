@@ -19,7 +19,13 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class ConstructorInfo
     {
-        internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public override bool IsSecurityCritical => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsSecuritySafeCritical => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
 
         public override string ToString() => $"({GetType().FullName}) {TextSignature}";
     }
@@ -36,12 +42,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
         public bool IsInherited => DeclaringType == ReflectedType;
-
-        public override bool IsSecurityCritical => false;
-
-        public override bool IsSecuritySafeCritical => false;
-
-        public override bool IsSecurityTransparent => false;
 
         public override ParameterInfoToExpose[] GetParameters() => Parameters.ToArray();
     }

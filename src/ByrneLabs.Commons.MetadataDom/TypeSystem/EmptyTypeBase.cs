@@ -69,7 +69,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public THandle MetadataHandle { get; }
 
-        public override int MetadataToken => MetadataHandle.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public TToken RawMetadata { get; }
     }
@@ -121,12 +121,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsGenericTypeDefinition => false;
 
-        public override bool IsSecurityCritical => false;
-
-        public override bool IsSecuritySafeCritical => false;
-
-        public override bool IsSecurityTransparent => false;
-
         public override IEnumerable<Language> Languages => ImmutableArray<Language>.Empty;
 
         public override MemberTypes MemberType => MemberTypes.TypeInfo;
@@ -163,7 +157,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
     }
 #else
     public abstract partial class EmptyTypeBase

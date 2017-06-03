@@ -76,7 +76,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return modifiedType;
         }
 
-        public TypeBase GetPinnedType(TypeBase elementType) => throw NotSupportedHelper.FutureVersion();
+        /*
+         * TODO: Research the correct way to do this. -- Jonathan Byrne 07/02/2017
+         */
+        public TypeBase GetPinnedType(TypeBase elementType) => elementType;
 
         // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
         public TypeBase GetPointerType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Pointer);
@@ -96,7 +99,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
 
-        public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type) => throw NotSupportedHelper.FutureVersion();
+        /*
+         * TODO: Research the correct way to do this. -- Jonathan Byrne 07/02/2017
+         */
+        public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type) => PrimitiveTypeCode.Int32;
 
         public bool IsSystemType(TypeBase type) => type == _systemType;
     }

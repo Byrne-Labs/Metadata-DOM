@@ -48,6 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<ParameterInfoToExpose>> _parameters;
         private readonly Lazy<EventInfo> _relatedEvent;
         private readonly Lazy<PropertyInfo> _relatedProperty;
+        private readonly Lazy<Parameter> _returnParameter;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
 
         internal MethodDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState)
@@ -73,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 foreach (var genericParameter in genericParameters)
                 {
                     genericParameter.DeclaringMethod = this;
-                    genericParameter.SetDeclaringType((TypeBase) DeclaringType);
+                    genericParameter.SetDeclaringType((TypeBase)DeclaringType);
                 }
 
                 return genericParameters;
@@ -82,17 +83,20 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 var basicName = $"{DeclaringType.FullName}.{Name}";
                 var genericParameters = _genericParameters.Value.Any() ? $"<{string.Join(", ", _genericParameters.Value.Select(genericTypeParameter => genericTypeParameter.Name))}>" : string.Empty;
-                var parameters = !_relatedProperty.Value?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase) parameter.ParameterType).FullNameWithoutAssemblies))})";
+                var parameters = !_relatedProperty.Value?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase)parameter.ParameterType).FullNameWithoutAssemblies))})";
 
                 return basicName + genericParameters + parameters;
             });
             // ReSharper disable once RedundantEnumerableCastCall
-            _relatedEvent = new Lazy<EventInfo>(() => ((TypeBase) DeclaringType).DeclaredEvents.Cast<EventInfo>().SingleOrDefault(@event => @event.AddMethod == this || @event.RemoveMethod == this || @event.RemoveMethod == this));
+            _relatedEvent = new Lazy<EventInfo>(() => ((TypeBase)DeclaringType).DeclaredEvents.Cast<EventInfo>().SingleOrDefault(@event => @event.AddMethod == this || @event.RemoveMethod == this || @event.RemoveMethod == this));
             // ReSharper disable once RedundantEnumerableCastCall
-            _relatedProperty = new Lazy<PropertyInfo>(() => ((TypeBase) DeclaringType).DeclaredProperties.Cast<PropertyInfo>().SingleOrDefault(property => property.GetMethod == this || property.SetMethod == this));
+            _relatedProperty = new Lazy<PropertyInfo>(() => ((TypeBase)DeclaringType).DeclaredProperties.Cast<PropertyInfo>().SingleOrDefault(property => property.GetMethod == this || property.SetMethod == this));
+            _returnParameter = MetadataState.GetLazyCodeElement<Parameter>(this, Signature.ReturnType);
         }
 
         public override MethodAttributes Attributes { get; }
+
+        public override CallingConventions CallingConvention => Signature.Header.CallingConvention == SignatureCallingConvention.Default ? CallingConventions.Standard | (IsStatic ? 0 : CallingConventions.HasThis) : throw new ArgumentException($"Unable to handle the signature calling convention {Signature.Header.CallingConvention}");
 
         public override bool ContainsGenericParameters { get; }
 
@@ -112,7 +116,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsGenericMethodDefinition { get; }
 
-        public override int MetadataToken => MetadataHandle.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public override ModuleToExpose Module => MetadataState.ModuleDefinition;
 
@@ -126,7 +130,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override PropertyInfoToExpose RelatedProperty => _relatedProperty.Value;
 
-        public override ParameterInfoToExpose ReturnParameter => Parameters.First();
+        public override ParameterInfoToExpose ReturnParameter => _returnParameter.Value;
 
         public override TypeToExpose ReturnType => Signature.ReturnType;
 

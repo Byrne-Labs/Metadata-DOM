@@ -96,7 +96,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ParameterHandle MetadataHandle { get; }
 
-        public override int MetadataToken => MetadataHandle.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public override ModuleToExpose Module => MetadataState.ModuleDefinition;
 

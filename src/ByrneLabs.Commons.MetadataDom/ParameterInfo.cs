@@ -24,6 +24,8 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class ParameterInfo
     {
+        public BindingFlags BindingFlags => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+
         public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
 
         public bool IsLcid => (Attributes & ParameterAttributes.Lcid) != 0;

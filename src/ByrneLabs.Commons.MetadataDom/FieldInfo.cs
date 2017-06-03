@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public override MemberTypes MemberType => MemberTypes.Field;
 
-        internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public abstract object GetRawConstantValue();
 

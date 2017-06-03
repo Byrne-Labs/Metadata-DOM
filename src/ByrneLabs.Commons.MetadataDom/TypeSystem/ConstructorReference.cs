@@ -62,7 +62,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
 
-        public override Type DeclaringType => throw NotSupportedHelper.FutureVersion();
+        public override TypeToExpose DeclaringType => Parent as TypeToExpose;
 
         public override string FullName => Name;
 
@@ -80,7 +80,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MemberReference RawMetadata { get; }
 
-        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public TypeToExpose ReturnType => MethodSignature?.ReturnType;
 

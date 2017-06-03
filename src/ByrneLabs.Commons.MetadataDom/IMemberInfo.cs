@@ -16,6 +16,8 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public interface IMemberInfo
     {
+        BindingFlags BindingFlags { get; }
+
         IEnumerable<CustomAttributeDataToExpose> CustomAttributes { get; }
 
         string FullName { get; }

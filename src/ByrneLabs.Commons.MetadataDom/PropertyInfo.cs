@@ -29,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsStatic => GetMethod?.IsStatic != false && SetMethod?.IsStatic != false;
 
-        internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public override string ToString() => $"({GetType().FullName}) {FullName}";
     }

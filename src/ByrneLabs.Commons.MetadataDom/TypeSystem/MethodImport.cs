@@ -52,7 +52,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsCompilerGenerated => throw NotSupportedHelper.FutureVersion();
 
-        public override int MetadataToken => RawMetadata.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.FutureVersion();
 

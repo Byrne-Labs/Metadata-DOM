@@ -12,7 +12,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullyQualifiedName => Assembly == null ? Name : Assembly.Location;
 
-        public override int MetadataToken => Key.Handle.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public string ScopedName { get; protected set; }
 

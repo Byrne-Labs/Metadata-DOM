@@ -68,6 +68,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodAttributes Attributes => RawMetadata.Attributes;
 
+        public override CallingConventions CallingConvention => Signature.Header.CallingConvention == SignatureCallingConvention.Default ? CallingConventions.Standard | CallingConventions.HasThis : throw new ArgumentException($"Unable to handle the signature calling convention {Signature.Header.CallingConvention}");
+
         public override bool ContainsGenericParameters => false;
 
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
@@ -92,7 +94,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MethodDefinitionHandle MetadataHandle { get; }
 
-        public override int MetadataToken => MetadataHandle.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public override ModuleToExpose Module => MetadataState.ModuleDefinition;
 

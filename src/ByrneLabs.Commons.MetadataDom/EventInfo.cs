@@ -22,13 +22,13 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class EventInfo
     {
+        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
         public bool IsPublic => AddMethod?.IsPublic != false && RemoveMethod?.IsPublic != false && RaiseMethod?.IsPublic != false;
 
         public bool IsStatic => AddMethod?.IsStatic != false && RemoveMethod?.IsStatic != false && RaiseMethod?.IsStatic != false;
 
         public override MemberTypes MemberType => MemberTypes.Event;
-
-        internal BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public override string ToString() => $"({GetType().FullName}) {FullName}";
     }

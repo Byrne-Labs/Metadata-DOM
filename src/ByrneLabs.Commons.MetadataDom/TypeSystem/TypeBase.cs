@@ -60,7 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public THandle MetadataHandle { get; }
 
-        public override int MetadataToken => MetadataHandle.GetHashCode();
+        public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
         public TToken RawMetadata { get; }
     }
@@ -69,7 +69,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public abstract class TypeBase : TypeInfo, IManagedCodeElement
     {
-        internal TypeBase UnmodifiedType { get; }
+        private readonly TypeToExpose[] _genericTypeArguments;
         private Lazy<string> _fullName;
         private Lazy<string> _fullNameWithoutAssemblies;
         private Lazy<string> _fullNameWithoutGenericArguments;
@@ -89,7 +89,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 ArrayRank = 1;
             }
-            GenericTypeArguments = Array.Empty<TypeToExpose>();
+            _genericTypeArguments = Array.Empty<TypeToExpose>();
             Initialize();
         }
 
@@ -105,14 +105,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataState = metadataState;
             IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
-            GenericTypeArguments = genericTypeArguments.Cast<TypeToExpose>().ToArray();
+            _genericTypeArguments = genericTypeArguments.Cast<TypeToExpose>().ToArray();
             Initialize();
         }
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState)
         {
             Key = key;
-            GenericTypeArguments = Array.Empty<TypeToExpose>();
+            _genericTypeArguments = Array.Empty<TypeToExpose>();
             MetadataState = metadataState;
             Initialize();
         }
@@ -127,11 +127,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullName => _fullName.Value;
 
-        public override TypeToExpose[] GenericTypeArguments { get; }
-
         public override sealed TypeInfoToExpose GenericTypeDefinition { get; }
-
-        public override sealed bool HasGenericTypeArguments => GenericTypeArguments.Any();
 
         public override sealed bool IsBoxed => UnmodifiedType?.IsBoxed == true || IsThisBoxed;
 
@@ -183,6 +179,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal TypeElementModifier? TypeElementModifier { get; }
 
+        internal TypeBase UnmodifiedType { get; }
+
         CodeElementKey IManagedCodeElement.Key => Key;
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
@@ -195,7 +193,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose[] GetGenericArguments() => throw new NotSupportedException();
+        public override TypeToExpose[] GetGenericArguments() => _genericTypeArguments;
 
         public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
 
@@ -205,7 +203,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
         protected override sealed bool HasElementTypeImpl() => ElementType != null;
 
