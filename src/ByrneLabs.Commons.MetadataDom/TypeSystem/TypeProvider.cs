@@ -91,18 +91,34 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         // ReSharper disable once PossibleMistakenCallToGetType.2 -- We need to find what subclass of TypeBase we are using. -- Jonathan Byrne 05/31/2017
         public TypeBase GetSZArrayType(TypeBase elementType) => (TypeBase) _metadataState.GetCodeElement(elementType.GetType(), elementType, TypeElementModifier.Array);
 
-        public TypeBase GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeDefinition>(handle);
+        public TypeBase GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeDefinition>(handle);
 
-        public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => rawTypeKind != 0 && rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeReference>(handle);
+        public TypeBase GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeReference>(handle);
 
         public TypeBase GetTypeFromSerializedName(string name) => _metadataState.GetCodeElement<SerializedType>(name);
 
-        public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => rawTypeKind != 18 && rawTypeKind != 17 ? throw new ArgumentException() : _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
+        public TypeBase GetTypeFromSpecification(MetadataReader reader, GenericContext genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => _metadataState.GetCodeElement<TypeSpecification>(handle, genericContext);
 
         /*
          * TODO: Research the correct way to do this. -- Jonathan Byrne 07/02/2017
          */
-        public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type) => PrimitiveTypeCode.Int32;
+        public PrimitiveTypeCode GetUnderlyingEnumType(TypeBase type)
+        {
+            if (!(type is TypeDefinition))
+            {
+                // ReSharper disable once PossibleMistakenCallToGetType.2
+                throw NotSupportedHelper.NotValidForMetadataType(type.GetType());
+            }
+
+            var enumType = type.DeclaredFields.First().FieldType as PrimitiveType;
+            if (enumType == null)
+            {
+                // ReSharper disable once PossibleMistakenCallToGetType.2
+                throw new InvalidOperationException($"The enum type is {type.DeclaredFields.First().FieldType.GetType()} but must be {typeof(PrimitiveType)}");
+            }
+
+            return enumType.PrimitiveTypeCode;
+        }
 
         public bool IsSystemType(TypeBase type) => type == _systemType;
     }

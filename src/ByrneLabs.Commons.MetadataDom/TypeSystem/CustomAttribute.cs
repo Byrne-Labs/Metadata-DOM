@@ -40,14 +40,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             RawMetadata = MetadataState.AssemblyReader.GetCustomAttribute(metadataHandle);
             _constructor = MetadataState.GetLazyCodeElement<ConstructorInfoToExpose>(RawMetadata.Constructor, null);
             _parent = MetadataState.GetLazyCodeElement(RawMetadata.Parent);
-            _value = new Lazy<CustomAttributeValue<TypeBase>?>(() =>
-            {
-                CustomAttributeValue<TypeBase>? value;
-
-                value = RawMetadata.DecodeValue(MetadataState.TypeProvider);
-
-                return value;
-            });
+            _value = new Lazy<CustomAttributeValue<TypeBase>?>(() => RawMetadata.DecodeValue(MetadataState.TypeProvider));
             _constructorArguments = new Lazy<ImmutableList<CustomAttributeTypedArgument>>(() => Value.HasValue ? Value.Value.FixedArguments.Select(argument => new CustomAttributeTypedArgument(argument.Type, argument.Value)).ToImmutableList() : ImmutableList<CustomAttributeTypedArgument>.Empty);
             _namedArguments = new Lazy<ImmutableList<CustomAttributeNamedArgument>>(() =>
             {

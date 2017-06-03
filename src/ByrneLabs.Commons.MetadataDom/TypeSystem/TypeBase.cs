@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
@@ -189,21 +188,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed TypeToExpose GetElementType() => ElementType;
 
-        public override EventInfoToExpose[] GetEvents(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
-
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
-
         public override TypeToExpose[] GetGenericArguments() => _genericTypeArguments;
 
         public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
-
-        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
-
-        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
-
-        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
-
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
 
         protected override sealed bool HasElementTypeImpl() => ElementType != null;
 

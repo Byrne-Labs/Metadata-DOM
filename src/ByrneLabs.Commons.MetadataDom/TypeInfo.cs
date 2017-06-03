@@ -136,6 +136,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override Type UnderlyingSystemType => this;
 
+        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingFlags) => GetMethods<ConstructorInfoToExpose>(null, bindingFlags, CallingConventions.Any, null, false).ToArray();
+
         public override EventInfoToExpose GetEvent(string name, BindingFlags bindingFlags) => SingleMember(GetEvents(name, bindingFlags, false));
 
         public override EventInfoToExpose[] GetEvents(BindingFlags bindingFlags) => GetEvents(null, bindingFlags, false).ToArray();
@@ -199,7 +201,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<MethodInfoToExpose>(name, bindingFlags, callConvention, argumentTypes, false));
 
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingFlags, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => SingleMember(GetProperties(name, bindingFlags, propertyType, types,false));
+        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingFlags, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => SingleMember(GetProperties(name, bindingFlags, propertyType, types, false));
 
         protected override bool IsCOMObjectImpl() => throw NotSupportedHelper.NotValidForMetadata();
 

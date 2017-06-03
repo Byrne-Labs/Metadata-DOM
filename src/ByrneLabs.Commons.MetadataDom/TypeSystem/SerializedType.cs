@@ -48,8 +48,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 UndecoratedName = nameParse.Groups[2].Value;
             }
             Namespace = nameParse.Groups[1].Value.TrimEnd('.');
-            var assemblyName = new AssemblyName(nameParse.Groups[4].Value);
-            Assembly = MetadataState.FindAssemblyReference(assemblyName);
+            if (string.IsNullOrEmpty( nameParse.Groups[4].Value))
+            {
+                Assembly = MetadataState.AssemblyDefinition;
+            }
+            else
+            {
+                var assemblyName = new AssemblyName(nameParse.Groups[4].Value);
+                Assembly = MetadataState.FindAssemblyReference(assemblyName);
+            }
         }
 
         public override AssemblyToExpose Assembly { get; }

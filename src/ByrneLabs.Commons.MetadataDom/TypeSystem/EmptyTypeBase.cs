@@ -101,6 +101,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool ContainsGenericParameters => false;
 
+        public override IEnumerable<MemberInfoToExpose> DeclaredMembers => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+
         public override MethodBaseToExpose DeclaringMethod => null;
 
         public override TypeToExpose DeclaringType => null;
@@ -141,8 +143,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal override string UndecoratedName => null;
 
-        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingAttr) => throw NotSupportedHelper.FutureVersion();
-
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => Enumerable.Empty<CustomAttributeDataToExpose>().ToImmutableList();
 
         public override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
@@ -153,11 +153,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
     public abstract partial class EmptyTypeBase
     {
-        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, TypeToExpose[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
-
-        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingAttr, Binder binder, CallingConventions callConvention, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
-
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingAttr, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => throw NotSupportedHelper.FutureVersion();
     }
 #else
     public abstract partial class EmptyTypeBase
