@@ -76,7 +76,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else
                 {
-                    fullName = parent + @namespace + typeToUse.UndecoratedName + typeToUse.GetNameModifiers() + genericArgumentsText;
+                    fullName = parent + @namespace + typeToUse.UndecoratedName + type.GetNameModifiers() + genericArgumentsText;
                 }
             }
             return fullName;

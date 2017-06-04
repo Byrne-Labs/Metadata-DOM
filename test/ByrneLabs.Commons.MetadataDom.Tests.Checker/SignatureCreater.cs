@@ -10,29 +10,29 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             string textSignature;
             // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull -- Using try cast for all possible classes would be slower than checking the type. -- Jonathan Byrne 01/21/2017
-            if (memberInfo is TypeInfo)
+            if (memberInfo is System.Reflection.TypeInfo)
             {
-                textSignature = GetTextSignature((TypeInfo) memberInfo);
+                textSignature = GetTextSignature((System.Reflection.TypeInfo) memberInfo);
             }
-            else if (memberInfo is PropertyInfo)
+            else if (memberInfo is System.Reflection.PropertyInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (PropertyInfo) memberInfo);
+                textSignature = GetTextSignature(reflectedType, (System.Reflection.PropertyInfo) memberInfo);
             }
-            else if (memberInfo is FieldInfo)
+            else if (memberInfo is System.Reflection.FieldInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (FieldInfo) memberInfo);
+                textSignature = GetTextSignature(reflectedType, (System.Reflection.FieldInfo) memberInfo);
             }
-            else if (memberInfo is EventInfo)
+            else if (memberInfo is System.Reflection.EventInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (EventInfo) memberInfo);
+                textSignature = GetTextSignature(reflectedType, (System.Reflection.EventInfo) memberInfo);
             }
-            else if (memberInfo is MethodInfo)
+            else if (memberInfo is System.Reflection.MethodInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (MethodInfo) memberInfo);
+                textSignature = GetTextSignature(reflectedType, (System.Reflection.MethodInfo) memberInfo);
             }
-            else if (memberInfo is ConstructorInfo)
+            else if (memberInfo is System.Reflection.ConstructorInfo)
             {
-                textSignature = GetTextSignature(reflectedType, (ConstructorInfo) memberInfo);
+                textSignature = GetTextSignature(reflectedType, (System.Reflection.ConstructorInfo) memberInfo);
             }
             else
             {
@@ -100,11 +100,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             $"{reflectedType.FullName}.{propertyInfo.Name}" +
             ("Item".Equals(propertyInfo.Name) && propertyInfo.GetMethod?.GetParameters().Any() == true ? $"[{string.Join(", ", propertyInfo.GetMethod?.GetParameters().Select(parameter => GetTextSignature(parameter.ParameterType.GetTypeInfo())))}]" : string.Empty);
 
-        public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, FieldInfo fieldInfo) => $"{reflectedType.FullName}.{fieldInfo.Name}";
+        public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.FieldInfo fieldInfo) => $"{reflectedType.FullName}.{fieldInfo.Name}";
 
-        public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, EventInfo eventInfo) => $"{reflectedType.FullName}.{eventInfo.Name}";
+        public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.EventInfo eventInfo) => $"{reflectedType.FullName}.{eventInfo.Name}";
 
-        public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, MethodInfo methodInfo)
+        public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.MethodInfo methodInfo)
         {
             var basicName = $"{GetTextSignature(reflectedType)}.{methodInfo.Name}";
             var nonIndexProperty = methodInfo.IsSpecialName && (methodInfo.Name.StartsWith("get_") || methodInfo.Name.StartsWith("set_") || methodInfo.Name.StartsWith("remove_") || methodInfo.Name.StartsWith("add_") || methodInfo.Name.StartsWith("raise_") || methodInfo.Name.Contains(".get_") || methodInfo.Name.Contains(".set_") || methodInfo.Name.Contains(".remove_") || methodInfo.Name.Contains(".add_") || methodInfo.Name.Contains(".raise_")) && !("get_Item".Equals(methodInfo.Name) && methodInfo.GetParameters().Length > 0 || "set_Item".Equals(methodInfo.Name) && methodInfo.GetParameters().Length > 1);
@@ -115,7 +115,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             return textSignature;
         }
 
-        public static string GetTextSignature(this MemberInfo memberInfo) => GetTextSignature(memberInfo.DeclaringType.GetTypeInfo(), memberInfo);
+        public static string GetTextSignature(this System.Reflection.MemberInfo memberInfo) => GetTextSignature(memberInfo.DeclaringType.GetTypeInfo(), memberInfo);
 
         public static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.ConstructorInfo constructorInfo)
         {

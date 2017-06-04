@@ -19,7 +19,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             @"System.NotSupportedException: This method is not valid on metadata",
             @"ReflectionOnly has a value of True in metadata but a value of False in reflection",
             "ModuleHandle has a value of System.ModuleHandle in metadata but a value of System.ModuleHandle in reflection",
-            "at System.Reflection.TypeDelegator.get_IsSZArray()"
+            @"at System.Reflection.TypeDelegator\.get_IsSZArray\(\)",
+            @"at System.Reflection.Assembly\.get_Evidence\(\)",
+            @"at System.Reflection.Assembly\.get_PermissionSet\(\)"
         };
         private static readonly string[] _invalidErrorsRegex =
         {

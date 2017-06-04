@@ -71,6 +71,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 var baseType = EventHandlerType;
                 while (baseType != null && !multicast)
                 {
+                    if (!(baseType is TypeDefinition))
+                    {
+                        // ReSharper disable once PossibleMistakenCallToGetType.2
+                        throw NotSupportedHelper.NotValidForMetadataType(baseType.GetType());
+                    }
                     multicast = baseType.FullName.Equals("System.MulticastDelegate");
                     baseType = baseType.BaseType;
                 }

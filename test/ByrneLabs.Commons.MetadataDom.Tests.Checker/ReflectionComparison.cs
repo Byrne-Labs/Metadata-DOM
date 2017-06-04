@@ -27,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 var key = new Tuple<Type, Type>(metadataType, reflectionType);
                 if (!_propertiesToCompare.ContainsKey(key))
                 {
-                    var allProperties = metadataTypeInfo.GetProperties().Select(property => property.Name).Intersect(reflectionTypeInfo.GetProperties().Select(property => property.Name));
+                    var allProperties = metadataTypeInfo.GetProperties().Select(property => property.Name).Intersect(reflectionTypeInfo.GetProperties().Select(property => property.Name)).Where(name => !"DeclaredMembers".Equals(name));
                     var properties = (
                         from propertyName in allProperties
                         let metadataPropertyInfo = metadataTypeInfo.GetProperty(propertyName)
@@ -413,7 +413,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     if (metadataItem is IManagedCodeElement)
                     {
                         var reflectionItem = reflectionEnumerable.Skip(index).First();
-                        CompareCodeElementsToReflectionData((IManagedCodeElement) metadataItem, reflectionItem);
+                        CompareCodeElementsToReflectionData((IManagedCodeElement)metadataItem, reflectionItem);
                     }
                 }
             }

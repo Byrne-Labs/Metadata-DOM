@@ -74,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
-        public override TypeToExpose[] GetExportedTypes() => MetadataState.DefinedTypes.Where(type => type.IsPublic).Cast<Type>().ToArray();
+        public override TypeToExpose[] GetExportedTypes() => MetadataState.DefinedTypes.Where(type => type.IsPublic||type.IsNestedPublic).Cast<Type>().ToArray();
 
         public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw NotSupportedHelper.FutureVersion();
 
