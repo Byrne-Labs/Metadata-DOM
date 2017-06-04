@@ -110,7 +110,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestReflectionComparisonSampleAssembly() => Assert.True(CheckMetadataOutOfProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll"))));
+        public void TestReflectionComparisonSampleAssemblyInProcess() => Assert.True(CheckMetadataInProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll"))));
+
+        [Fact]
+        [Trait("Category", "Fast")]
+        public void TestReflectionComparisonSampleAssemblyOutOfProcess() => Assert.True(CheckMetadataOutOfProcess(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll"))));
 
         private bool CheckMetadataInProcess(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
