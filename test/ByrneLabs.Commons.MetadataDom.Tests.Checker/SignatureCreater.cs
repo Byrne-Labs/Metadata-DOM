@@ -49,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             string genericParameters;
             if (typeInfo.IsNested && typeInfo.FullName == null && !typeInfo.IsGenericParameter)
             {
-                parent = GetTextSignature(typeInfo, includeGenericArguments) + "+";
+                parent = GetTextSignature(typeInfo.DeclaringType as System.Reflection.TypeInfo, includeGenericArguments) + "+";
                 name = typeInfo.Name;
             }
             else if (typeInfo.GenericTypeArguments.Length > 0)
