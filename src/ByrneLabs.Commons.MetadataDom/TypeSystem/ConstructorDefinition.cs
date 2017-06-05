@@ -91,7 +91,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override CallingConventions CallingConvention => Signature.Header.CallingConvention == SignatureCallingConvention.Default ? CallingConventions.Standard | CallingConventions.HasThis : throw new ArgumentException($"Unable to handle the signature calling convention {Signature.Header.CallingConvention}");
 
-        public override bool ContainsGenericParameters => _genericParameters.Value.Any();
+        public override bool ContainsGenericParameters => _genericParameters.Value.Any() || DeclaringType.ContainsGenericParameters;
 
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
 

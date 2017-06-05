@@ -81,7 +81,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     foreach (var genericParameter in genericParameters)
                     {
                         genericParameter.SetDeclaringMethod(this);
-                        genericParameter.SetDeclaringType((TypeBase) DeclaringType);
+                        genericParameter.SetDeclaringType((TypeBase)DeclaringType);
                     }
                 }
 
@@ -100,13 +100,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             // ReSharper disable once RedundantEnumerableCastCall
             _relatedProperty = new Lazy<PropertyInfo>(() => ((TypeBase)DeclaringType).DeclaredProperties.Cast<PropertyInfo>().SingleOrDefault(property => property.GetMethod == this || property.SetMethod == this));
             _returnParameter = MetadataState.GetLazyCodeElement<Parameter>(this, Signature.ReturnType);
+            var name = Name;
         }
 
         public override MethodAttributes Attributes { get; }
 
         public override CallingConventions CallingConvention => Signature.Header.CallingConvention == SignatureCallingConvention.Default ? CallingConventions.Standard | (IsStatic ? 0 : CallingConventions.HasThis) : throw new ArgumentException($"Unable to handle the signature calling convention {Signature.Header.CallingConvention}");
 
-        public override bool ContainsGenericParameters => _genericParameters.Value.Any();
+        public override bool ContainsGenericParameters => _genericParameters.Value.Any() || DeclaringType.ContainsGenericParameters;
 
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
 
