@@ -148,8 +148,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override FieldInfoToExpose[] GetFields(BindingFlags bindingFlags) => GetFields(null, bindingFlags, false).ToArray();
 
-        public override int GetHashCode() => FullName.GetHashCode() | 12345;
-
         public override TypeToExpose GetInterface(string name, bool ignoreCase) => SingleMember(GetInterfaces(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase, false));
 
         public override TypeToExpose[] GetInterfaces() => GetInterfaces(null, BindingFlags.Public | BindingFlags.NonPublic, false).ToArray();

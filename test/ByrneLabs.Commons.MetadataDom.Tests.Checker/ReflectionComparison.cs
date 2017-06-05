@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private static readonly Dictionary<Tuple<MemberInfo, MemberInfo, string>, int> _exceptionCount = new Dictionary<Tuple<MemberInfo, MemberInfo, string>, int>();
         private static readonly List<Tuple<MemberInfo, MemberInfo>> _ignoredMembers = new List<Tuple<MemberInfo, MemberInfo>>();
         private static readonly Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>> _membersToCompare = new Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>>();
-        private static readonly string[] _ignoredMethodNames = { "GetHashCode", "GetType" };
+        private static readonly string[] _ignoredMethodNames = { "GetHashCode", "GetType", "GetMethods", "GetInterfaces", "GetProperties", "GetMembers", "ToString" };
         private static readonly string[] _ignoredPropertyNames = { "DeclaredMembers" };
         public readonly CheckState _checkState;
 
@@ -72,8 +72,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         var allProperties = metadataTypeInfo.DeclaredProperties.Select(property => property.Name).Intersect(reflectionTypeInfo.DeclaredProperties.Select(property => property.Name)).Distinct().Except(_ignoredPropertyNames);
                         var properties = (
                             from propertyName in allProperties
-                            let metadataPropertyInfo = metadataTypeInfo.GetProperty(propertyName)
-                            let reflectionPropertyInfo = reflectionTypeInfo.GetProperty(propertyName)
+                            let metadataPropertyInfo = metadataTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
+                            let reflectionPropertyInfo = reflectionTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
                             where metadataPropertyInfo.PropertyType == reflectionPropertyInfo.PropertyType || typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(metadataPropertyInfo.PropertyType) || typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(reflectionPropertyInfo.PropertyType)
                             select new Tuple<MemberInfo, MemberInfo>(metadataPropertyInfo, reflectionPropertyInfo)).ToList();
 
@@ -199,43 +199,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 return;
             }
-
-            try
-            {
-                var metadataElementType = metadataType.ElementType;
-                var reflectionElementType = reflectionType.GetElementType();
-                if (metadataElementType != null && reflectionElementType != null)
-                {
-                    CompareCodeElementsToReflectionData((IManagedCodeElement)metadataElementType, reflectionElementType);
-                }
-                else if (metadataElementType != null || reflectionElementType != null)
-                {
-                    _checkState.AddError($"{metadataType.FullName}.ElementType has a value of {metadataElementType} in metadata but a value of {reflectionElementType} in reflection");
-                }
-            }
-            catch (Exception exception)
-            {
-                _checkState.AddException(exception, metadataType, CheckPhase.ReflectionComparison);
-            }
-            try
-            {
-                if (reflectionType.IsArray && metadataType.ArrayRank != reflectionType.GetArrayRank())
-                {
-                    _checkState.AddError($"{metadataType.FullName}.ArrayRank has a value of {metadataType.ArrayRank} in metadata but a value of {reflectionType.GetArrayRank()} in reflection");
-                }
-            }
-            catch (Exception exception)
-            {
-                _checkState.AddException(exception, metadataType, CheckPhase.ReflectionComparison);
-            }
-
             try
             {
                 foreach (var reflectionMember in reflectionType.DeclaredMembers)
                 {
                     var byToken = metadataType.DeclaredMembers.Where(member => member.MetadataToken == reflectionMember.MetadataToken).ToArray();
                     var reflectionTextSignature = SignatureCreater.GetTextSignature(reflectionType, reflectionMember);
-                    var byName = metadataType.DeclaredMembers.Where(member => member.MemberType == reflectionMember.MemberType && member.GetTextSignature().Equals(reflectionTextSignature)).ToArray();
+                    var byName = metadataType.DeclaredMembers.Where(metadataMember => metadataMember.MemberType == reflectionMember.MemberType && ((IMemberInfo)metadataMember).TextSignature.Equals(reflectionTextSignature)).ToArray();
                     if (byToken.Length == 1 && byName.Length == 1)
                     {
                         CompareCodeElementsToReflectionData((IManagedCodeElement)byToken.Single(), reflectionMember);

@@ -24,6 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         private static string GetFullName(this TypeBase type, Func<Type, string> nameGetter, bool includeGenericArguments)
         {
+            //var frameCount = (new System.Diagnostics.StackTrace(true)).FrameCount;
             string fullName;
             if (type.IsGenericParameter && type.DeclaringType == null)
             {
@@ -59,7 +60,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     @namespace = typeToUse.Namespace + ".";
                 }
                 string genericArgumentsText;
-                if (includeGenericArguments && typeToUse.HasGenericTypeArguments)
+                if (includeGenericArguments && typeToUse.HasGenericTypeArguments && !typeToUse.IsDelegate)
                 {
                     genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.GetFullName(GetFullNameWithoutAssemblies, genericTypeArgument.DeclaringType != typeToUse) ?? genericTypeArgument.Name)) + "]";
                 }

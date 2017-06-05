@@ -66,8 +66,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsGenericParameter => true;
 
-        public override MemberTypes MemberType => MemberTypes.Custom;
-
         public override string Namespace => DeclaringType?.Namespace;
 
         internal IManagedCodeElement Parent => _parent.Value;

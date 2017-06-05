@@ -192,6 +192,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
 
+        public override int GetHashCode() => MetadataToken | 12345;
+
         protected override sealed bool HasElementTypeImpl() => ElementType != null;
 
         protected override sealed bool IsArrayImpl() => UnmodifiedType?.IsArray == true || IsThisArray;

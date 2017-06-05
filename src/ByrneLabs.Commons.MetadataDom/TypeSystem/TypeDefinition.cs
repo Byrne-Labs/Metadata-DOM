@@ -116,7 +116,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
 
-        public override bool IsDelegate => "System.Delegate".Equals(BaseType?.FullName) || "System.MulticastDelegate".Equals(BaseType?.FullName);
+        public override bool IsDelegate => "System".Equals(BaseType?.Namespace) && ("Delegate".Equals(BaseType?.Name) || "MulticastDelegate".Equals(BaseType?.Name));
 
         public override bool IsEnum => "System.Enum".Equals(BaseType?.FullName);
 
@@ -151,6 +151,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal override string MetadataNamespace => RawMetadata.Namespace.IsNil ? null : MetadataState.AssemblyReader.GetString(RawMetadata.Namespace);
 
         internal override string UndecoratedName => MetadataState.AssemblyReader.GetString(RawMetadata.Name);
+
+#if NETSTANDARD2_0 || NET_FRAMEWORK
+
+        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+
+#endif
+
+        public override Type[] GetGenericArguments() => IsDelegate ? _genericParameters.Value : base.GetGenericArguments();
 
         protected override TypeAttributes GetAttributeFlagsImpl() => RawMetadata.Attributes;
 
@@ -210,7 +218,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else
                 {
-                    baseType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.BaseType);
+                    baseType = (TypeBase)MetadataState.GetCodeElement(RawMetadata.BaseType);
                 }
                 return baseType;
             });
@@ -229,16 +237,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return genericParameters.Cast<Type>().ToArray();
             });
-            _interfaceImplementations = new Lazy<ImmutableArray<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo) MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
+            _interfaceImplementations = new Lazy<ImmutableArray<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo)MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition, TypeInfo>(RawMetadata.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition, PropertyInfo>(RawMetadata.GetProperties());
             _members = new Lazy<ImmutableArray<MemberInfo>>(() => DeclaredMethods.Union<MemberInfo>(DeclaredFields).Union(DeclaredConstructors).Union(DeclaredEvents).Union(DeclaredProperties).Union(DeclaredNestedTypes).ToImmutableArray());
         }
-
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
-
-#endif
     }
 }

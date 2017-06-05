@@ -88,7 +88,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool HasDefaultValue => Attributes.HasFlag(ParameterAttributes.HasDefault);
 
-        public override bool IsCompilerGenerated => Member == null ? throw new InvalidOperationException() : ((IMemberInfo)Member).IsCompilerGenerated;
+        public override bool IsCompilerGenerated => Member == null ? throw new InvalidOperationException() : ((IMemberInfo) Member).IsCompilerGenerated;
 
         public override bool IsSpecialName { get; }
 
@@ -117,7 +117,5 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
-
-        public override string ToString() => $"{ParameterType} {Name}";
     }
 }

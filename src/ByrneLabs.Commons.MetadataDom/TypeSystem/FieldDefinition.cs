@@ -52,7 +52,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override TypeToExpose FieldType => _fieldType.Value;
 
-        public override string FullName => $"{DeclaringType.FullName} {Name}";
+        public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
         public override MemberTypes MemberType => MemberTypes.Field;
 

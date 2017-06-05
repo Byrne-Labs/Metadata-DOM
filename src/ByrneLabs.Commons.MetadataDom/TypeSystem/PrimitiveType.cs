@@ -43,8 +43,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public PrimitiveTypeCode PrimitiveTypeCode { get; }
 
-        public override string TextSignature => FullName;
-
         internal override string MetadataNamespace { get; } = "System";
 
         internal override string UndecoratedName => PrimitiveTypeCode.ToString();

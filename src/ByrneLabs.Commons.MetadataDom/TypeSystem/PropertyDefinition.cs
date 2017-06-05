@@ -63,7 +63,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ConstantInfo DefaultValue => _defaultValue.Value;
 
-        public override string FullName => $"{DeclaringType.FullName}.{Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
+        public override string FullName => $"{PropertyType} {Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
 
         public override sealed MethodInfoToExpose GetMethod { get; }
 
@@ -89,7 +89,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed MethodInfoToExpose SetMethod { get; }
 
-        public override string TextSignature => FullName;
+        public override string TextSignature => $"{DeclaringType.FullName}.{Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
 
         internal CodeElementKey Key { get; }
 

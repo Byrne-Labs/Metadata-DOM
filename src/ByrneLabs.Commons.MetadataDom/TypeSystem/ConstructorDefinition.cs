@@ -40,6 +40,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<ImmutableArray<ParameterInfoToExpose>> _parameters;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
+        private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
 
         internal ConstructorDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -56,6 +57,26 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 return basicName + genericParameters + parameters;
             });
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
+            _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
+            {
+                IEnumerable<GenericParameter> genericParameters;
+                if (_declaringType.Value.IsDelegate)
+                {
+                    genericParameters = _declaringType.Value.GenericTypeParameters.Cast<GenericParameter>();
+                }
+                else
+                {
+                    genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
+                    foreach (var genericParameter in genericParameters)
+                    {
+                        genericParameter.SetDeclaringMethod(this);
+                        genericParameter.SetDeclaringType((TypeBase)DeclaringType);
+                    }
+                }
+
+                return genericParameters;
+            });
+
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
@@ -70,7 +91,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override CallingConventions CallingConvention => Signature.Header.CallingConvention == SignatureCallingConvention.Default ? CallingConventions.Standard | CallingConventions.HasThis : throw new ArgumentException($"Unable to handle the signature calling convention {Signature.Header.CallingConvention}");
 
-        public override bool ContainsGenericParameters => false;
+        public override bool ContainsGenericParameters => _genericParameters.Value.Any();
 
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
 
@@ -122,7 +143,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
-        public override TypeToExpose[] GetGenericArguments() => new Type[] { };
+        public override TypeToExpose[] GetGenericArguments() => _genericParameters.Value.ToArray<Type>();
 
         public override MethodBodyToExpose GetMethodBody() => _methodBody.Value;
 
