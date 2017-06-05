@@ -100,7 +100,7 @@ namespace ByrneLabs.Commons.MetadataDom
             return bindingFlags;
         }
 
-        public override string ToString() => $"({GetType().FullName}) {FullName}";
+        public override string ToString() => FullName;
 
         protected override bool IsPrimitiveImpl() => throw new NotImplementedException();
     }

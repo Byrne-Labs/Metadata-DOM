@@ -21,7 +21,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             "ModuleHandle has a value of System.ModuleHandle in metadata but a value of System.ModuleHandle in reflection",
             @"at System.Reflection.TypeDelegator\.get_IsSZArray\(\)",
             @"at System.Reflection.Assembly\.get_Evidence\(\)",
-            @"at System.Reflection.Assembly\.get_PermissionSet\(\)"
+            @"at System.Reflection.Assembly\.get_PermissionSet\(\)",
+            "Method may only be called on a Type for which Type.IsGenericParameter is true."
         };
         private static readonly string[] _invalidErrorsRegex =
         {

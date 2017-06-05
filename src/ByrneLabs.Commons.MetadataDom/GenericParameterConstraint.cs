@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection.Metadata;
 using JetBrains.Annotations;
 #if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeToExpose = System.Type;
@@ -18,10 +17,10 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public abstract IEnumerable<CustomAttributeDataToExpose> CustomAttributes { get; }
 
-        public abstract GenericParameter Parameter { get; }
+        public abstract TypeToExpose Parameter { get; }
 
         public abstract TypeToExpose Type { get; }
 
-        public override string ToString() => $"({GetType().FullName}) {Parameter.Name}";
+        public override string ToString() => Parameter.Name;
     }
 }

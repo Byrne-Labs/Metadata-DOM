@@ -109,7 +109,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             var basicName = $"{GetTextSignature(reflectedType)}.{methodInfo.Name}";
             var nonIndexProperty = methodInfo.IsSpecialName && (methodInfo.Name.StartsWith("get_") || methodInfo.Name.StartsWith("set_") || methodInfo.Name.StartsWith("remove_") || methodInfo.Name.StartsWith("add_") || methodInfo.Name.StartsWith("raise_") || methodInfo.Name.Contains(".get_") || methodInfo.Name.Contains(".set_") || methodInfo.Name.Contains(".remove_") || methodInfo.Name.Contains(".add_") || methodInfo.Name.Contains(".raise_")) && !("get_Item".Equals(methodInfo.Name) && methodInfo.GetParameters().Length > 0 || "set_Item".Equals(methodInfo.Name) && methodInfo.GetParameters().Length > 1);
             var genericParameters = nonIndexProperty || !methodInfo.IsGenericMethod ? string.Empty : $"<{string.Join(", ", methodInfo.GetGenericArguments().Select(genericTypeParameter => genericTypeParameter.Name))}>";
-            var parameters = nonIndexProperty ? string.Empty : $"({string.Join(", ", methodInfo.GetParameters().Select(parameter => GetTextSignature(parameter.ParameterType.GetTypeInfo(), true)))})";
+            var parameters = nonIndexProperty ? string.Empty : $"({string.Join(", ", methodInfo.GetParameters().Select(parameter => parameter.ParameterType.ToString()))})";
             var textSignature = basicName + genericParameters + parameters;
 
             return textSignature;

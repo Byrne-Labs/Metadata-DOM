@@ -53,7 +53,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
-        public override string ToString() => $"({GetType().FullName}) {TextSignature}";
+        public override string ToString() => TextSignature;
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

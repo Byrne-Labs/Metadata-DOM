@@ -32,7 +32,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract object GetRawConstantValue();
 
-        public override string ToString() => $"({GetType().FullName}) {FullName}";
+        public override string ToString() => FullName;
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

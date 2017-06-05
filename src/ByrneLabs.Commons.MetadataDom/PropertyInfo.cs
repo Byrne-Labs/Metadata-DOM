@@ -31,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
-        public override string ToString() => $"({GetType().FullName}) {FullName}";
+        public override string ToString() => FullName;
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

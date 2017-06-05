@@ -202,7 +202,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         protected override bool IsPrimitiveImpl() => false;
 
-        protected override sealed bool IsValueTypeImpl() => UnmodifiedType?.IsValueType == true || IsThisValueType;
+        protected override sealed bool IsValueTypeImpl() => UnmodifiedType?.IsValueType == true || IsThisValueType || IsEnum;
 
         private void Initialize()
         {

@@ -36,7 +36,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public bool IsRetval => (Attributes & ParameterAttributes.Retval) != 0;
 
-        public override string ToString() => $"({GetType().FullName}) {TextSignature}";
+        public override string ToString() => TextSignature;
 
         private string TextSignatureImpl() => ParameterType == null ? string.Empty : (IsOut ? "out " : string.Empty) + ParameterType.FullName + " " + Name;
     }

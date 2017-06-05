@@ -30,6 +30,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected abstract object Parent { get; }
 
-        public override string ToString() => $"({GetType().FullName}) {(Parent as IMemberInfo).FullName}";
+        public override string ToString() => (Parent as IMemberInfo).FullName;
     }
 }

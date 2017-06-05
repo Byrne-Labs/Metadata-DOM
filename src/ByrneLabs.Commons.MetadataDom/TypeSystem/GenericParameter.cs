@@ -10,11 +10,13 @@ using JetBrains.Annotations;
 using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
 using TypeToExpose = System.Type;
 using AssemblyToExpose = System.Reflection.Assembly;
+using MethodBaseToExpose = System.Reflection.MethodBase;
 
 #else
 using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
 using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
 using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
+using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
 
 #endif
 
@@ -27,13 +29,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private Lazy<ImmutableArray<GenericParameterConstraint>> _constraints;
         private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private TypeBase _declaringType;
+        private MethodBaseToExpose _declaringMethod;
         private Lazy<IManagedCodeElement> _parent;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal GenericParameter(GenericParameter baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
         {
             _declaringType = (TypeBase) baseType.DeclaringType;
-            DeclaringMethod = baseType.DeclaringMethod;
+            _declaringMethod = baseType.DeclaringMethod;
             Initialize();
         }
 
@@ -53,7 +56,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ImmutableArray<GenericParameterConstraint> Constraints => _constraints.Value;
 
-        public MethodDefinition DeclaringMethod { get; internal set; }
+        public override MethodBaseToExpose DeclaringMethod => _declaringMethod;
 
         public override TypeToExpose DeclaringType => _declaringType;
 
@@ -72,6 +75,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal override string UndecoratedName => MetadataState.AssemblyReader.GetString(RawMetadata.Name);
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+
+        internal void SetDeclaringMethod(MethodBaseToExpose declaringMethod)
+        {
+            _declaringMethod = declaringMethod;
+        }
 
         internal void SetDeclaringType(TypeBase declaringType) => _declaringType = declaringType;
 

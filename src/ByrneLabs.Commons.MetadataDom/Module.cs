@@ -49,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override int MDStreamVersion => throw NotSupportedHelper.FutureVersion();
 
-        public override string ToString() => $"({GetType().FullName}) {Name}";
+        public override string ToString() => Name;
 
         protected abstract FieldInfoToExpose[] GetAllFields();
 

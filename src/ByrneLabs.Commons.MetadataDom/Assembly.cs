@@ -90,7 +90,7 @@ namespace ByrneLabs.Commons.MetadataDom
             GC.SuppressFinalize(this);
         }
 
-        public override string ToString() => $"({GetType().FullName}) {FullName}";
+        public override string ToString() => FullName;
 
         protected abstract void Dispose(bool disposeManaged);
     }

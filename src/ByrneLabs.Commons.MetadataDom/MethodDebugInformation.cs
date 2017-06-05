@@ -28,6 +28,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string TextSignature { get; }
 
-        public override string ToString() => $"({GetType().FullName}) {FullName}";
+        public override string ToString() => FullName;
     }
 }

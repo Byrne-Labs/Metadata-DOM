@@ -27,7 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override string ToString() => $"({GetType().FullName}) {TextSignature}";
+        public override string ToString() => TextSignature;
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

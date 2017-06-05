@@ -1,12 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
+#if NETSTANDARD2_0 || NET_FRAMEWORK
+using TypeToExpose = System.Type;
+using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
+
+#else
+using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
+using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
+
+#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
-    public class GenericParameterConstraint : IManagedCodeElement
+    public class GenericParameterConstraint : MetadataDom.GenericParameterConstraint, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<GenericParameter> _parameter;
@@ -23,11 +33,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 TypeBase constrainedType;
                 if (RawMetadata.Type.Kind == HandleKind.TypeSpecification)
                 {
-                    constrainedType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.Type, Parameter.Parent);
+                    constrainedType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.Type, _parameter.Value.Parent);
+                }
+                else if (RawMetadata.Type.Kind == HandleKind.TypeDefinition)
+                {
+                    constrainedType = MetadataState.GetCodeElement< TypeDefinition>(RawMetadata.Type);
                 }
                 else
                 {
-                    constrainedType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.Type);
+                    throw new InvalidOperationException($"Unexpected constrained type {RawMetadata.Type.Kind}");
                 }
                 return constrainedType;
             });
@@ -35,15 +49,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
-        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
 
         public GenericParameterConstraintHandle MetadataHandle { get; }
 
-        public GenericParameter Parameter => _parameter.Value;
+        public override TypeToExpose Parameter => _parameter.Value;
 
         public System.Reflection.Metadata.GenericParameterConstraint RawMetadata { get; }
 
-        public TypeBase Type => _type.Value;
+        public override TypeToExpose Type => _type.Value;
 
         internal CodeElementKey Key { get; }
 

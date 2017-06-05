@@ -27,6 +27,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public string GetSourceCode(int startRow, int startColumn, int endRow, int endColumn) => throw NotSupportedHelper.FutureVersion();
 
-        public override string ToString() => $"({GetType().FullName}) {Name}";
+        public override string ToString() => Name;
     }
 }

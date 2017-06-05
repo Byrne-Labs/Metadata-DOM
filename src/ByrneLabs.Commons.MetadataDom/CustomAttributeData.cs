@@ -24,7 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         internal static bool IsDefined(IMemberInfo member, TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override string ToString() => $"({GetType().FullName}) {AttributeType.Name}";
+        public override string ToString() => AttributeType.Name;
     }
 
 #if NETSTANDARD2_0 || NET_FRAMEWORK

@@ -88,7 +88,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool HasDefaultValue => Attributes.HasFlag(ParameterAttributes.HasDefault);
 
-        public override bool IsCompilerGenerated => Member == null ? throw new InvalidOperationException() : ((IMemberInfo) Member).IsCompilerGenerated;
+        public override bool IsCompilerGenerated => Member == null ? throw new InvalidOperationException() : ((IMemberInfo)Member).IsCompilerGenerated;
 
         public override bool IsSpecialName { get; }
 
@@ -96,7 +96,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ParameterHandle MetadataHandle { get; }
 
-        public override int MetadataToken => Key.Handle.Value.GetHashCode();
+        public override int MetadataToken => Key.Handle.HasValue ? Key.Handle.Value.GetHashCode() : 0;
 
         public override ModuleToExpose Module => MetadataState.ModuleDefinition;
 
@@ -118,6 +118,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
 
-        public override string ToString() => $"({GetType().FullName}) \"{(Member as ConstructorDefinition)?.FullName ?? (Member as MethodDefinition).FullName}\"; position {Position}";
+        public override string ToString() => $"{ParameterType} {Name}";
     }
 }

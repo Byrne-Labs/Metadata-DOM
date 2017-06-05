@@ -73,7 +73,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
                 foreach (var genericParameter in genericParameters)
                 {
-                    genericParameter.DeclaringMethod = this;
+                    genericParameter.SetDeclaringMethod(this);
                     genericParameter.SetDeclaringType((TypeBase)DeclaringType);
                 }
 
