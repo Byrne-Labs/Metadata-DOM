@@ -34,26 +34,26 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal TypeBase(TypeBase<TTypeBase, THandle, TToken> unmodifiedType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(unmodifiedType, typeElementModifier, metadataState, new CodeElementKey<TTypeBase>(unmodifiedType, typeElementModifier))
         {
             MetadataHandle = unmodifiedType.MetadataHandle;
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(unmodifiedType.DowncastMetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(unmodifiedType.DowncastMetadataHandle);
         }
 
         internal TypeBase(TypeBase<TTypeBase, THandle, TToken> genericTypeDefinition, IEnumerable<TypeBase> genericTypeArguments, MetadataState metadataState) : base(genericTypeDefinition, genericTypeArguments, metadataState, new CodeElementKey<TTypeBase>(genericTypeDefinition, genericTypeDefinition, genericTypeArguments))
         {
             MetadataHandle = genericTypeDefinition.MetadataHandle;
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(genericTypeDefinition.DowncastMetadataHandle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(genericTypeDefinition.DowncastMetadataHandle);
         }
 
         internal TypeBase(THandle handle, MetadataState metadataState) : base(new CodeElementKey<TTypeBase>(handle), metadataState)
         {
             MetadataHandle = handle;
-            RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(handle);
+            RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(handle);
         }
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState) : base(key, metadataState)
         {
             if (key.Handle != null)
             {
-                RawMetadata = (TToken)MetadataState.GetRawMetadataForHandle(key.Handle.Value);
+                RawMetadata = (TToken) MetadataState.GetRawMetadataForHandle(key.Handle.Value);
             }
         }
 
@@ -102,7 +102,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
 
             MetadataState = metadataState;
-            IsThisGenericType = true;
             GenericTypeDefinition = genericTypeDefinition;
             _genericTypeArguments = new Lazy<Type[]>(() => DeclaringType?.GenericTypeArguments == null ? genericTypeArguments.ToArray<TypeToExpose>() : genericTypeArguments.Union(DeclaringType.GenericTypeArguments).ToArray());
             Initialize();
@@ -120,7 +119,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string AssemblyQualifiedName => Assembly == null ? FullName : $"{FullName}, {Assembly.FullName}";
 
-        public Handle? DowncastMetadataHandle => ((IManagedCodeElement)this).Key.Handle;
+        public Handle? DowncastMetadataHandle => ((IManagedCodeElement) this).Key.Handle;
 
         public override TypeInfoToExpose ElementType { get; }
 
@@ -154,7 +153,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         protected bool IsThisConstant => TypeElementModifier == TypeSystem.TypeElementModifier.Constant;
 
-        protected bool IsThisGenericType { get; }
+        protected bool IsThisGenericType => _genericTypeArguments.Value.Any();
 
         protected bool IsThisPointer => TypeElementModifier == TypeSystem.TypeElementModifier.Pointer;
 
@@ -169,6 +168,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal string FullNameWithoutAssemblies => _fullNameWithoutAssemblies.Value;
 
         internal string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
+
+        internal TypeToExpose[] GenericArgumentsWithoutParameters => _genericTypeArguments.Value;
 
         internal CodeElementKey Key { get; }
 
@@ -188,7 +189,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override sealed TypeToExpose GetElementType() => ElementType;
 
-        public override TypeToExpose[] GetGenericArguments() => _genericTypeArguments.Value;
+        public override TypeToExpose[] GetGenericArguments() => _genericTypeArguments.Value.Any() ? _genericTypeArguments.Value : GenericTypeParameters;
 
         public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
 

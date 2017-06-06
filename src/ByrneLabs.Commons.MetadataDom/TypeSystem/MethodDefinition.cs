@@ -70,19 +70,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
             _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
             {
-                IEnumerable<GenericParameter> genericParameters;
-                if (_declaringType.Value.IsDelegate)
+                var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
+                foreach (var genericParameter in genericParameters)
                 {
-                    genericParameters = _declaringType.Value.GenericTypeParameters.Cast<GenericParameter>();
-                }
-                else
-                {
-                    genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
-                    foreach (var genericParameter in genericParameters)
-                    {
-                        genericParameter.SetDeclaringMethod(this);
-                        genericParameter.SetDeclaringType((TypeBase)DeclaringType);
-                    }
+                    genericParameter.SetDeclaringMethod(this);
+                    genericParameter.SetDeclaringType((TypeBase)DeclaringType);
                 }
 
                 return genericParameters;
@@ -90,7 +82,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _fullName = new Lazy<string>(() =>
             {
                 var basicName = $"{DeclaringType.FullName}.{Name}";
-                var genericParameters = _genericParameters.Value.Any() ? $"<{string.Join(", ", _genericParameters.Value.Select(genericTypeParameter => genericTypeParameter.Name))}>" : string.Empty;
+                var genericParameters = _genericParameters.Value.Any() ? $"`{_genericParameters.Value.Count()}" : string.Empty;
                 var parameters = !_relatedProperty.Value?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase)parameter.ParameterType).FullNameWithoutAssemblies))})";
 
                 return basicName + genericParameters + parameters;
@@ -100,7 +92,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             // ReSharper disable once RedundantEnumerableCastCall
             _relatedProperty = new Lazy<PropertyInfo>(() => ((TypeBase)DeclaringType).DeclaredProperties.Cast<PropertyInfo>().SingleOrDefault(property => property.GetMethod == this || property.SetMethod == this));
             _returnParameter = MetadataState.GetLazyCodeElement<Parameter>(this, Signature.ReturnType);
-            var name = Name;
         }
 
         public override MethodAttributes Attributes { get; }
@@ -123,7 +114,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsGenericMethod => _genericParameters.Value.Any();
 
-        public override bool IsGenericMethodDefinition { get; }
+        public override bool IsGenericMethodDefinition => _genericParameters.Value.Any(parameter => parameter.IsGenericParameter);
 
         public override int MetadataToken => Key.Handle.Value.GetHashCode();
 

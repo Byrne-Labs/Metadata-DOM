@@ -22,9 +22,29 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         private static string GetFullName(this Type type, Func<Type, string> nameGetter, bool includeGenericArguments) => GetFullName((TypeBase)type.GetTypeInfo(), nameGetter, includeGenericArguments);
 
+#if DEBUG
+        /*
+         * This method has been prone to stack overflows which are very, very hard to debug.  This makes it a lot simpler. -- Jonathan Byrne 06/06/2017
+         */
+        [ThreadStatic]
+        private static int _recursionCount;
+        private static readonly object _recursionCheckSyncRoot = new object();
+#endif
+
         private static string GetFullName(this TypeBase type, Func<Type, string> nameGetter, bool includeGenericArguments)
         {
-            //var frameCount = (new System.Diagnostics.StackTrace(true)).FrameCount;
+#if DEBUG
+            lock (_recursionCheckSyncRoot)
+            {
+                _recursionCount++;
+                if (_recursionCount > 100)
+                {
+                    var message = $"Aborted before likely stack overflow with {_recursionCount} levels of recursion";
+                    _recursionCount = 0;
+                    throw new InvalidOperationException(message);
+                }
+            }
+#endif
             string fullName;
             if (type.IsGenericParameter && type.DeclaringType == null)
             {
@@ -60,9 +80,16 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     @namespace = typeToUse.Namespace + ".";
                 }
                 string genericArgumentsText;
-                if (includeGenericArguments && typeToUse.HasGenericTypeArguments && !typeToUse.IsDelegate)
+                if (includeGenericArguments && typeToUse.HasGenericTypeArguments && !typeToUse.GenericTypeArguments.SequenceEqual(typeToUse.GenericTypeParameters))
                 {
-                    genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.GetFullName(GetFullNameWithoutAssemblies, genericTypeArgument.DeclaringType != typeToUse) ?? genericTypeArgument.Name)) + "]";
+                    if (typeToUse.IsDelegate)
+                    {
+                        genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.Name)) + "]";
+                    }
+                    else
+                    {
+                        genericArgumentsText = "[" + string.Join(",", typeToUse.GenericTypeArguments.Select(genericTypeArgument => genericTypeArgument.GetFullName(GetFullNameWithoutAssemblies, genericTypeArgument.DeclaringType != typeToUse) ?? genericTypeArgument.Name)) + "]";
+                    }
                 }
 
                 else
@@ -80,6 +107,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     fullName = parent + @namespace + typeToUse.UndecoratedName + type.GetNameModifiers() + genericArgumentsText;
                 }
             }
+#if DEBUG
+            lock (_recursionCheckSyncRoot)
+            {
+                _recursionCount--;
+            }
+#endif
+
             return fullName;
         }
 

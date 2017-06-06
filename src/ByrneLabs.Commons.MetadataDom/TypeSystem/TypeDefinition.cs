@@ -114,7 +114,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IEnumerable<TypeToExpose> ImplementedInterfaces => _interfaceImplementations.Value;
 
-        public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
+        public override bool IsConstructedGenericType => GenericTypeDefinition != null;
 
         public override bool IsDelegate => "System".Equals(BaseType?.Namespace) && ("Delegate".Equals(BaseType?.Name) || "MulticastDelegate".Equals(BaseType?.Name));
 
@@ -158,7 +158,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
 #endif
 
-        public override Type[] GetGenericArguments() => IsDelegate ? _genericParameters.Value : base.GetGenericArguments();
+        //public override Type[] GetGenericArguments() => IsDelegate ? _genericParameters.Value : base.GetGenericArguments();
 
         protected override TypeAttributes GetAttributeFlagsImpl() => RawMetadata.Attributes;
 

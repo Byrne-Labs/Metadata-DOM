@@ -7,7 +7,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
     internal class NonGenericClass
     {
+        int GenericCount<TEntity>(TEntity entity)
+        {
+            return 0;
+        }
+
+        int GenericCount<TEntity, TEntity2>(TEntity entity)
+        {
+            return 0;
+        }
+
         internal delegate int CountGetter<TEntity>(TEntity entity, out int count);
+
+        internal delegate int CountGetter<TEntity, TEntity2>(TEntity entity, out int count);
 
         internal delegate int ItemsGetter<TEntity, TItem>(TEntity entity, int bufferLength, out int count, TItem[] buffer);
 

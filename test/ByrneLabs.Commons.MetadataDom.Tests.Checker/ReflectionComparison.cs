@@ -206,34 +206,44 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     var byToken = metadataType.DeclaredMembers.Where(member => member.MetadataToken == reflectionMember.MetadataToken).ToArray();
                     var reflectionTextSignature = SignatureCreater.GetTextSignature(reflectionType, reflectionMember);
                     var byName = metadataType.DeclaredMembers.Where(metadataMember => metadataMember.MemberType == reflectionMember.MemberType && ((IMemberInfo)metadataMember).TextSignature.Equals(reflectionTextSignature)).ToArray();
-                    if (byToken.Length == 1 && byName.Length == 1)
+                    if (byToken.Length == 0 && byName.Length == 0)
                     {
-                        CompareCodeElementsToReflectionData((IManagedCodeElement)byToken.Single(), reflectionMember);
+                        _checkState.AddError($"Could not find {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token or name");
+                    }
+                    else if (byToken.Length > 1)
+                    {
+                        _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token");
+                    }
+                    else if (byName.Length > 1)
+                    {
+                        _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by name");
+                    }
+                    else if (byToken.Length == 0)
+                    {
+                        _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" in metadata with the metadata token {byName[0].MetadataToken} instead of {reflectionMember.MetadataToken}");
+                    }
+                    else if (!reflectionTextSignature.Equals(byToken[0].GetTextSignature()))
+                    {
+                        _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" in metadata with the name \"{byToken[0].GetTextSignature()}\"");
+                    }
+
+                    object metadataMemberToCompare = null;
+                    if (byToken.Length == 1)
+                    {
+                        metadataMemberToCompare = byToken.Single();
+                    }
+                    else if (byName.Length == 1)
+                    {
+                        metadataMemberToCompare = byName.Single();
+                    }
+
+                    if (metadataMemberToCompare != null)
+                    {
+                        CompareCodeElementsToReflectionData((IManagedCodeElement)metadataMemberToCompare, reflectionMember);
                     }
                     else
                     {
-                        _checkState.ComparedMetadataMembers.AddRange(byToken.Union(byName).Cast<IMemberInfo>());
                         _checkState.ComparedReflectionMembers.Add(reflectionMember);
-                        if (byToken.Length == 0 && byName.Length == 0)
-                        {
-                            _checkState.AddError($"Could not find {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token or name");
-                        }
-                        else if (byToken.Length > 1)
-                        {
-                            _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token");
-                        }
-                        else if (byName.Length > 1)
-                        {
-                            _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by name");
-                        }
-                        else if (byToken.Length == 0)
-                        {
-                            _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" in metadata with the metadata token {byName[0].MetadataToken} instead of {reflectionMember.MetadataToken}");
-                        }
-                        else
-                        {
-                            _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" in metadata with the name {byToken[0].GetTextSignature()}");
-                        }
                     }
                 }
             }
