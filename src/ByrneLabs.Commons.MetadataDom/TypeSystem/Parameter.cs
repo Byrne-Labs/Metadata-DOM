@@ -41,8 +41,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal Parameter(MemberInfo member, Type parameterType, int position, bool optional, MetadataState metadataState)
         {
-            var memberName = member.Name;
-            var parameterTypeName = parameterType.Name;
             MetadataState = metadataState;
             Key = new CodeElementKey<Parameter>(member, position);
             _customAttributes = new Lazy<ImmutableArray<CustomAttribute>>(() => ImmutableArray<CustomAttribute>.Empty);

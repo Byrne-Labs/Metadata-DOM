@@ -31,17 +31,16 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _type = new Lazy<TypeBase>(() =>
             {
                 TypeBase constrainedType;
-                if (RawMetadata.Type.Kind == HandleKind.TypeSpecification)
+                switch (RawMetadata.Type.Kind)
                 {
-                    constrainedType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.Type, _parameter.Value.Parent);
-                }
-                else if (RawMetadata.Type.Kind == HandleKind.TypeDefinition)
-                {
-                    constrainedType = MetadataState.GetCodeElement<TypeDefinition>(RawMetadata.Type);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"Unexpected constrained type {RawMetadata.Type.Kind}");
+                    case HandleKind.TypeSpecification:
+                        constrainedType = MetadataState.GetCodeElement<TypeSpecification>(RawMetadata.Type, _parameter.Value.Parent);
+                        break;
+                    case HandleKind.TypeDefinition:
+                        constrainedType = MetadataState.GetCodeElement<TypeDefinition>(RawMetadata.Type);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unexpected constrained type {RawMetadata.Type.Kind}");
                 }
 
                 return constrainedType;

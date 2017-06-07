@@ -37,7 +37,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
 #endif
             string fullName;
-            var name = type.Name;
             if (type.IsGenericParameter && type.DeclaringType == null)
             {
                 fullName = type.Name;

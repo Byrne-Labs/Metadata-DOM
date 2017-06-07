@@ -183,15 +183,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else if (Signature.ParameterTypes.Length < parameterHandles.Count)
             {
-                var parameterList = new List<ParameterInfoToExpose>();
-                foreach (var parameterHandle in parameterHandles)
-                {
-                    var parameter = MetadataState.AssemblyReader.GetParameter(parameterHandle);
-                    if (parameter.SequenceNumber > 0)
-                    {
-                        parameterList.Add(MetadataState.GetCodeElement<Parameter>(parameterHandle, this));
-                    }
-                }
+                var parameterList = (from parameterHandle in parameterHandles
+                        let parameter = MetadataState.AssemblyReader.GetParameter(parameterHandle)
+                        where parameter.SequenceNumber > 0
+                        select MetadataState.GetCodeElement<Parameter>(parameterHandle, this)).Cast<ParameterInfoToExpose>()
+                    .ToList();
 
                 parameters = parameterList.ToImmutableArray();
             }

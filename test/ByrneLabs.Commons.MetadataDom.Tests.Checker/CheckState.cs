@@ -293,7 +293,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         public bool HaveBeenCompared(IManagedCodeElement metadataElement, object reflectionElement)
         {
-            var name = metadataElement.ToString();
             lock (_comparedElements)
             {
                 var key = new Tuple<IManagedCodeElement, object>(metadataElement, reflectionElement);
