@@ -305,11 +305,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     var metadataParameter = metadataMethodBase.GetParameters().SingleOrDefault(parameter => parameter.Position == reflectionParameter.Position);
                     if (metadataParameter == null)
                     {
-                        _checkState.AddError($"The parameter named {reflectionParameter.Name} with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()} could not be found in metadata");
+                        _checkState.AddError($"The parameter named \"{reflectionParameter.Name}\" with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()} could not be found in metadata");
                         continue;
                     }
 
-                    CompareTypes($"The parameter named {reflectionParameter.Name} with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()}", (TypeBase)metadataParameter.ParameterType, reflectionParameter.ParameterType);
+                    CompareTypes($"The parameter named \"{reflectionParameter.Name}\" with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()}", (TypeBase)metadataParameter.ParameterType, reflectionParameter.ParameterType);
                     CompareElementProperties(((Parameter)metadataParameter).FullName, (IManagedCodeElement)metadataParameter, reflectionParameter);
                 }
             }

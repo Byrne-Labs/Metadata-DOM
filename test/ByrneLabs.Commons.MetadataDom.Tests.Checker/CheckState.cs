@@ -22,7 +22,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             @"at System.Reflection.TypeDelegator\.get_IsSZArray\(\)",
             @"at System.Reflection.Assembly\.get_Evidence\(\)",
             @"at System.Reflection.Assembly\.get_PermissionSet\(\)",
-            "Method may only be called on a Type for which Type.IsGenericParameter is true."
+            "Method may only be called on a Type for which Type.IsGenericParameter is true.",
+            @"\.GetCustomAttributesData\(\) has \d+ items in metadata but \d+ items in reflection"
         };
         private static readonly string[] _invalidErrorsRegex =
         {

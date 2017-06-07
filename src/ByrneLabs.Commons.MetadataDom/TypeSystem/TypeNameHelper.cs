@@ -18,7 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal static string GetFullNameWithoutGenericArguments(this TypeBase type) => type.GetFullName(GetFullNameWithoutGenericArguments, false);
 
-        internal static string GetNameModifiers(this TypeBase type) => string.Concat(Enumerable.Repeat("[]", type.ArrayDimensionCount)) + new string('*', type.PointerCount) + (type.IsByRef ? "&" : string.Empty);
+        internal static string GetNameModifiers(this TypeBase type) => (type.IsThisArray? "[]":string.Empty) + new string('*', type.PointerCount) + (type.IsThisByRef ? "&" : string.Empty);
 
         private static string GetFullName(this Type type, Func<Type, string> nameGetter, bool includeGenericArguments) => GetFullName((TypeBase)type.GetTypeInfo(), nameGetter, includeGenericArguments);
 
@@ -46,6 +46,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
 #endif
             string fullName;
+            var name = type.Name;
             if (type.IsGenericParameter && type.DeclaringType == null)
             {
                 fullName = type.Name;
@@ -104,7 +105,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else
                 {
-                    fullName = parent + @namespace + typeToUse.UndecoratedName + type.GetNameModifiers() + genericArgumentsText;
+                    fullName = typeToUse.FullNameWithoutAssemblies + type.GetNameModifiers();
                 }
             }
 #if DEBUG

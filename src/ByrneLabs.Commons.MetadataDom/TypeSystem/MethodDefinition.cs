@@ -164,7 +164,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         private ImmutableArray<ParameterInfoToExpose> LoadParameters()
         {
-            ImmutableArray<ParameterInfoToExpose> parameters;
+            IEnumerable<ParameterInfoToExpose> parameters;
             var parameterHandles = RawMetadata.GetParameters();
             if (Signature.ParameterTypes.Any() && parameterHandles.Count == 0)
             {
@@ -173,7 +173,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 */
                 parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfoToExpose>().ToImmutableArray();
             }
-            else if (Signature.ParameterTypes.Length != parameterHandles.Count)
+            else if (Signature.ParameterTypes.Length > parameterHandles.Count)
             {
                 parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfoToExpose>().ToImmutableArray();
                 /* 
@@ -181,12 +181,26 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                  *  $"Method {DeclaringType.FullName}.{Name} has {parameterHandles.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found"
                  */
             }
+            else if (Signature.ParameterTypes.Length < parameterHandles.Count)
+            {
+                var parameterList = new List<ParameterInfoToExpose>();
+                foreach (var parameterHandle in parameterHandles)
+                {
+                    var parameter = MetadataState.AssemblyReader.GetParameter(parameterHandle);
+                    if (parameter.SequenceNumber > 0)
+                    {
+                        parameterList.Add(MetadataState.GetCodeElement<Parameter>(parameterHandle, this));
+                    }
+                }
+
+                parameters = parameterList.ToImmutableArray();
+            }
             else
             {
                 parameters = parameterHandles.Select(parameterHandle => MetadataState.GetCodeElement<Parameter>(parameterHandle, this)).Cast<ParameterInfoToExpose>().ToImmutableArray();
             }
 
-            return parameters;
+            return parameters.ToImmutableArray();
         }
     }
 

@@ -143,24 +143,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string TextSignature => FullNameWithoutAssemblies;
 
-        protected bool IsThisArray => TypeElementModifier == TypeSystem.TypeElementModifier.Array;
-
-        protected bool IsThisBoxed => TypeElementModifier == TypeSystem.TypeElementModifier.Boxed;
-
-        protected bool IsThisByRef => TypeElementModifier == TypeSystem.TypeElementModifier.ByRef;
-
-        protected bool IsThisByValue => TypeElementModifier == TypeSystem.TypeElementModifier.ByValue;
-
-        protected bool IsThisConstant => TypeElementModifier == TypeSystem.TypeElementModifier.Constant;
-
-        protected bool IsThisGenericType => _genericTypeArguments.Value.Any();
-
-        protected bool IsThisPointer => TypeElementModifier == TypeSystem.TypeElementModifier.Pointer;
-
-        protected bool IsThisValueType => TypeElementModifier == TypeSystem.TypeElementModifier.ValueType;
-
-        protected bool IsThisVolatile => TypeElementModifier == TypeSystem.TypeElementModifier.Volatile;
-
         internal abstract string MetadataNamespace { get; }
 
         internal int ArrayDimensionCount => (IsThisArray ? 1 : 0) + (UnmodifiedType?.ArrayDimensionCount).GetValueOrDefault();
@@ -170,6 +152,24 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 
         internal TypeToExpose[] GenericArgumentsWithoutParameters => _genericTypeArguments.Value;
+
+        internal bool IsThisArray => TypeElementModifier == TypeSystem.TypeElementModifier.Array;
+
+        internal bool IsThisBoxed => TypeElementModifier == TypeSystem.TypeElementModifier.Boxed;
+
+        internal bool IsThisByRef => TypeElementModifier == TypeSystem.TypeElementModifier.ByRef;
+
+        internal bool IsThisByValue => TypeElementModifier == TypeSystem.TypeElementModifier.ByValue;
+
+        internal bool IsThisConstant => TypeElementModifier == TypeSystem.TypeElementModifier.Constant;
+
+        internal bool IsThisGenericType => _genericTypeArguments.Value.Any();
+
+        internal bool IsThisPointer => TypeElementModifier == TypeSystem.TypeElementModifier.Pointer;
+
+        internal bool IsThisValueType => TypeElementModifier == TypeSystem.TypeElementModifier.ValueType;
+
+        internal bool IsThisVolatile => TypeElementModifier == TypeSystem.TypeElementModifier.Volatile;
 
         internal CodeElementKey Key { get; }
 
