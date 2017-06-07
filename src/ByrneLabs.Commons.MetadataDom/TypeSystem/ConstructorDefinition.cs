@@ -36,11 +36,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<string> _fullName;
+        private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<ImmutableArray<ParameterInfoToExpose>> _parameters;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
-        private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
 
         internal ConstructorDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -70,7 +70,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     foreach (var genericParameter in genericParameters)
                     {
                         genericParameter.SetDeclaringMethod(this);
-                        genericParameter.SetDeclaringType((TypeBase)DeclaringType);
+                        genericParameter.SetDeclaringType((TypeBase) DeclaringType);
                     }
                 }
 

@@ -218,7 +218,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else
                 {
-                    baseType = (TypeBase)MetadataState.GetCodeElement(RawMetadata.BaseType);
+                    baseType = (TypeBase) MetadataState.GetCodeElement(RawMetadata.BaseType);
                 }
                 return baseType;
             });
@@ -237,7 +237,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return genericParameters.Cast<Type>().ToArray();
             });
-            _interfaceImplementations = new Lazy<ImmutableArray<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo)MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
+            _interfaceImplementations = new Lazy<ImmutableArray<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo) MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition, TypeInfo>(RawMetadata.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition, PropertyInfo>(RawMetadata.GetProperties());
             _members = new Lazy<ImmutableArray<MemberInfo>>(() => DeclaredMethods.Union<MemberInfo>(DeclaredFields).Union(DeclaredConstructors).Union(DeclaredEvents).Union(DeclaredProperties).Union(DeclaredNestedTypes).ToImmutableArray());

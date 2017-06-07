@@ -12,9 +12,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
     {
         private static readonly Dictionary<Tuple<MemberInfo, MemberInfo, string>, int> _exceptionCount = new Dictionary<Tuple<MemberInfo, MemberInfo, string>, int>();
         private static readonly List<Tuple<MemberInfo, MemberInfo>> _ignoredMembers = new List<Tuple<MemberInfo, MemberInfo>>();
-        private static readonly Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>> _membersToCompare = new Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>>();
         private static readonly string[] _ignoredMethodNames = { "GetHashCode", "GetType", "GetMethods", "GetInterfaces", "GetProperties", "GetMembers", "ToString" };
         private static readonly string[] _ignoredPropertyNames = { "DeclaredMembers" };
+        private static readonly Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>> _membersToCompare = new Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>>();
         public readonly CheckState _checkState;
 
         public ReflectionComparison(CheckState checkState)
@@ -64,36 +64,36 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             var metadataTypeInfo = metadataType.GetTypeInfo();
             var reflectionTypeInfo = reflectionType.GetTypeInfo();
             lock (_ignoredMembers)
-                lock (_membersToCompare)
+            lock (_membersToCompare)
+            {
+                var key = new Tuple<Type, Type>(metadataType, reflectionType);
+                if (!_membersToCompare.ContainsKey(key))
                 {
-                    var key = new Tuple<Type, Type>(metadataType, reflectionType);
-                    if (!_membersToCompare.ContainsKey(key))
-                    {
-                        var allProperties = metadataTypeInfo.DeclaredProperties.Select(property => property.Name).Intersect(reflectionTypeInfo.DeclaredProperties.Select(property => property.Name)).Distinct().Except(_ignoredPropertyNames);
-                        var properties = (
-                            from propertyName in allProperties
-                            let metadataPropertyInfo = metadataTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
-                            let reflectionPropertyInfo = reflectionTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
-                            where metadataPropertyInfo.PropertyType == reflectionPropertyInfo.PropertyType || typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(metadataPropertyInfo.PropertyType) || typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(reflectionPropertyInfo.PropertyType)
-                            select new Tuple<MemberInfo, MemberInfo>(metadataPropertyInfo, reflectionPropertyInfo)).ToList();
+                    var allProperties = metadataTypeInfo.DeclaredProperties.Select(property => property.Name).Intersect(reflectionTypeInfo.DeclaredProperties.Select(property => property.Name)).Distinct().Except(_ignoredPropertyNames);
+                    var properties = (
+                        from propertyName in allProperties
+                        let metadataPropertyInfo = metadataTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
+                        let reflectionPropertyInfo = reflectionTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
+                        where metadataPropertyInfo.PropertyType == reflectionPropertyInfo.PropertyType || typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(metadataPropertyInfo.PropertyType) || typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(reflectionPropertyInfo.PropertyType)
+                        select new Tuple<MemberInfo, MemberInfo>(metadataPropertyInfo, reflectionPropertyInfo)).ToList();
 
-                        var allMethods = metadataTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_"))).Select(method => method.Name)
-                            .Intersect(reflectionTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_"))).Select(method => method.Name)).Distinct().Except(_ignoredMethodNames);
-                        var methods = (
-                            from methodName in allMethods
-                            let metadataMethodInfo = metadataTypeInfo.GetMethod(methodName, new Type[] { })
-                            let reflectionMethodInfo = reflectionTypeInfo.GetMethod(methodName, new Type[] { })
-                            where
-                            metadataMethodInfo.ReturnType == reflectionMethodInfo.ReturnType ||
-                            metadataMethodInfo.ReturnType != typeof(object) && metadataMethodInfo.ReturnType != typeof(object) && (metadataMethodInfo.ReturnType.IsAssignableFrom(reflectionMethodInfo.ReturnType) || reflectionMethodInfo.ReturnType.IsAssignableFrom(metadataMethodInfo.ReturnType)) ||
-                            typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(metadataMethodInfo.ReturnType) || typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(reflectionMethodInfo.ReturnType)
-                            select new Tuple<MemberInfo, MemberInfo>(metadataMethodInfo, reflectionMethodInfo)).ToList();
+                    var allMethods = metadataTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_"))).Select(method => method.Name)
+                        .Intersect(reflectionTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_"))).Select(method => method.Name)).Distinct().Except(_ignoredMethodNames);
+                    var methods = (
+                        from methodName in allMethods
+                        let metadataMethodInfo = metadataTypeInfo.GetMethod(methodName, new Type[] { })
+                        let reflectionMethodInfo = reflectionTypeInfo.GetMethod(methodName, new Type[] { })
+                        where
+                        metadataMethodInfo.ReturnType == reflectionMethodInfo.ReturnType ||
+                        metadataMethodInfo.ReturnType != typeof(object) && metadataMethodInfo.ReturnType != typeof(object) && (metadataMethodInfo.ReturnType.IsAssignableFrom(reflectionMethodInfo.ReturnType) || reflectionMethodInfo.ReturnType.IsAssignableFrom(metadataMethodInfo.ReturnType)) ||
+                        typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(metadataMethodInfo.ReturnType) || typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(reflectionMethodInfo.ReturnType)
+                        select new Tuple<MemberInfo, MemberInfo>(metadataMethodInfo, reflectionMethodInfo)).ToList();
 
-                        _membersToCompare.Add(key, properties.Union(methods).ToArray());
-                    }
-
-                    return _membersToCompare[key].Except(_ignoredMembers);
+                    _membersToCompare.Add(key, properties.Union(methods).ToArray());
                 }
+
+                return _membersToCompare[key].Except(_ignoredMembers);
+            }
         }
 
         public void Check()
@@ -145,47 +145,47 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             if (metadataElement is TypeBase && reflectionElement is System.Reflection.TypeInfo)
             {
-                CompareCodeElementsToReflectionData((TypeBase)metadataElement, (System.Reflection.TypeInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((TypeBase) metadataElement, (System.Reflection.TypeInfo) reflectionElement);
             }
             else if (metadataElement is TypeBase && reflectionElement is Type)
             {
-                CompareCodeElementsToReflectionData((TypeBase)metadataElement, ((Type)reflectionElement).GetTypeInfo());
+                CompareCodeElementsToReflectionData((TypeBase) metadataElement, ((Type) reflectionElement).GetTypeInfo());
             }
             else if (metadataElement is PropertyDefinition && reflectionElement is System.Reflection.PropertyInfo)
             {
-                CompareCodeElementsToReflectionData((PropertyDefinition)metadataElement, (System.Reflection.PropertyInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((PropertyDefinition) metadataElement, (System.Reflection.PropertyInfo) reflectionElement);
             }
             else if (metadataElement is ConstructorDefinition && reflectionElement is System.Reflection.ConstructorInfo)
             {
-                CompareCodeElementsToReflectionData((ConstructorDefinition)metadataElement, (System.Reflection.ConstructorInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((ConstructorDefinition) metadataElement, (System.Reflection.ConstructorInfo) reflectionElement);
             }
             else if (metadataElement is MethodDefinition && reflectionElement is System.Reflection.MethodInfo)
             {
-                CompareCodeElementsToReflectionData((MethodDefinition)metadataElement, (System.Reflection.MethodInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((MethodDefinition) metadataElement, (System.Reflection.MethodInfo) reflectionElement);
             }
             else if (metadataElement is EventDefinition && reflectionElement is System.Reflection.EventInfo)
             {
-                CompareCodeElementsToReflectionData((EventDefinition)metadataElement, (System.Reflection.EventInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((EventDefinition) metadataElement, (System.Reflection.EventInfo) reflectionElement);
             }
             else if (metadataElement is FieldDefinition && reflectionElement is System.Reflection.FieldInfo)
             {
-                CompareCodeElementsToReflectionData((FieldDefinition)metadataElement, (System.Reflection.FieldInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((FieldDefinition) metadataElement, (System.Reflection.FieldInfo) reflectionElement);
             }
             else if (metadataElement is CustomAttribute && reflectionElement is System.Reflection.CustomAttributeData)
             {
-                CompareCodeElementsToReflectionData((CustomAttribute)metadataElement, (System.Reflection.CustomAttributeData)reflectionElement);
+                CompareCodeElementsToReflectionData((CustomAttribute) metadataElement, (System.Reflection.CustomAttributeData) reflectionElement);
             }
             else if (metadataElement is Parameter && reflectionElement is System.Reflection.ParameterInfo)
             {
-                CompareCodeElementsToReflectionData((Parameter)metadataElement, (System.Reflection.ParameterInfo)reflectionElement);
+                CompareCodeElementsToReflectionData((Parameter) metadataElement, (System.Reflection.ParameterInfo) reflectionElement);
             }
             else if (metadataElement is ModuleDefinition && reflectionElement is System.Reflection.Module)
             {
-                CompareCodeElementsToReflectionData((ModuleDefinition)metadataElement, (System.Reflection.Module)reflectionElement);
+                CompareCodeElementsToReflectionData((ModuleDefinition) metadataElement, (System.Reflection.Module) reflectionElement);
             }
             else if (metadataElement is AssemblyDefinition && reflectionElement is System.Reflection.Assembly)
             {
-                CompareCodeElementsToReflectionData((AssemblyDefinition)metadataElement, (System.Reflection.Assembly)reflectionElement);
+                CompareCodeElementsToReflectionData((AssemblyDefinition) metadataElement, (System.Reflection.Assembly) reflectionElement);
             }
             else
             {
@@ -199,13 +199,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 return;
             }
+
             try
             {
                 foreach (var reflectionMember in reflectionType.DeclaredMembers)
                 {
                     var byToken = metadataType.DeclaredMembers.Where(member => member.MetadataToken == reflectionMember.MetadataToken).ToArray();
                     var reflectionTextSignature = SignatureCreater.GetTextSignature(reflectionType, reflectionMember);
-                    var byName = metadataType.DeclaredMembers.Where(metadataMember => metadataMember.MemberType == reflectionMember.MemberType && ((IMemberInfo)metadataMember).TextSignature.Equals(reflectionTextSignature)).ToArray();
+                    var byName = metadataType.DeclaredMembers.Where(metadataMember => metadataMember.MemberType == reflectionMember.MemberType && ((IMemberInfo) metadataMember).TextSignature.Equals(reflectionTextSignature)).ToArray();
                     if (byToken.Length == 0 && byName.Length == 0)
                     {
                         _checkState.AddError($"Could not find {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token or name");
@@ -239,7 +240,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
                     if (metadataMemberToCompare != null)
                     {
-                        CompareCodeElementsToReflectionData((IManagedCodeElement)metadataMemberToCompare, reflectionMember);
+                        CompareCodeElementsToReflectionData((IManagedCodeElement) metadataMemberToCompare, reflectionMember);
                     }
                     else
                     {
@@ -282,14 +283,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 return;
             }
 
-            CompareTypes($"Property {metadataProperty.FullName}", (TypeBase)metadataProperty.PropertyType, reflectionProperty.PropertyType);
+            CompareTypes($"Property {metadataProperty.FullName}", (TypeBase) metadataProperty.PropertyType, reflectionProperty.PropertyType);
 
             CompareElementProperties(metadataProperty.FullName, metadataProperty, reflectionProperty);
         }
 
         private void CompareCodeElementsToReflectionData(MethodBase metadataMethodBase, MethodBase reflectionMethodBase)
         {
-            if (_checkState.HaveBeenCompared((IManagedCodeElement)metadataMethodBase, reflectionMethodBase))
+            if (_checkState.HaveBeenCompared((IManagedCodeElement) metadataMethodBase, reflectionMethodBase))
             {
                 return;
             }
@@ -309,8 +310,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         continue;
                     }
 
-                    CompareTypes($"The parameter named \"{reflectionParameter.Name}\" with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()}", (TypeBase)metadataParameter.ParameterType, reflectionParameter.ParameterType);
-                    CompareElementProperties(((Parameter)metadataParameter).FullName, (IManagedCodeElement)metadataParameter, reflectionParameter);
+                    CompareTypes($"The parameter named \"{reflectionParameter.Name}\" with position {reflectionParameter.Position} on {metadataMethodBase.GetTextSignature()}", (TypeBase) metadataParameter.ParameterType, reflectionParameter.ParameterType);
+                    CompareElementProperties(((Parameter) metadataParameter).FullName, (IManagedCodeElement) metadataParameter, reflectionParameter);
                 }
             }
             catch (Exception exception)
@@ -318,7 +319,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 _checkState.AddException(exception, metadataMethodBase, CheckPhase.ReflectionComparison);
             }
 
-            CompareElementProperties(metadataMethodBase.GetTextSignature(), (IManagedCodeElement)metadataMethodBase, reflectionMethodBase);
+            CompareElementProperties(metadataMethodBase.GetTextSignature(), (IManagedCodeElement) metadataMethodBase, reflectionMethodBase);
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "We want a different method for each memember type")]
@@ -379,7 +380,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     if (metadataItem is IManagedCodeElement)
                     {
                         var reflectionItem = reflectionEnumerable.Skip(index).First();
-                        CompareCodeElementsToReflectionData((IManagedCodeElement)metadataItem, reflectionItem);
+                        CompareCodeElementsToReflectionData((IManagedCodeElement) metadataItem, reflectionItem);
                     }
                 }
             }
@@ -398,7 +399,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     Exception metadataException = null;
                     try
                     {
-                        metadataValue = ((System.Reflection.PropertyInfo)propertyToCompare.Item1).GetValue(metadataElement);
+                        metadataValue = ((System.Reflection.PropertyInfo) propertyToCompare.Item1).GetValue(metadataElement);
                     }
                     catch (Exception exception)
                     {
@@ -408,7 +409,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     Exception reflectionException = null;
                     try
                     {
-                        reflectionValue = ((System.Reflection.PropertyInfo)propertyToCompare.Item2).GetValue(reflectionElement);
+                        reflectionValue = ((System.Reflection.PropertyInfo) propertyToCompare.Item2).GetValue(reflectionElement);
                     }
                     catch (Exception exception)
                     {
@@ -428,7 +429,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     Exception metadataException = null;
                     try
                     {
-                        metadataValue = ((System.Reflection.MethodInfo)methodToCompare.Item1).Invoke(metadataElement, null);
+                        metadataValue = ((System.Reflection.MethodInfo) methodToCompare.Item1).Invoke(metadataElement, null);
                     }
                     catch (Exception exception)
                     {
@@ -438,7 +439,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     Exception reflectionException = null;
                     try
                     {
-                        reflectionValue = ((System.Reflection.MethodInfo)methodToCompare.Item2).Invoke(reflectionElement, null);
+                        reflectionValue = ((System.Reflection.MethodInfo) methodToCompare.Item2).Invoke(reflectionElement, null);
                     }
                     catch (Exception exception)
                     {
@@ -460,7 +461,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         {
             if (metadataValue is IEnumerable && reflectionValue is IEnumerable && !(metadataValue is string || reflectionValue is string))
             {
-                CompareCodeElementsToReflectionData(elementName, ((IEnumerable)metadataValue).Cast<object>(), ((IEnumerable)reflectionValue).Cast<object>());
+                CompareCodeElementsToReflectionData(elementName, ((IEnumerable) metadataValue).Cast<object>(), ((IEnumerable) reflectionValue).Cast<object>());
             }
             else if (!(metadataValue is IManagedCodeElement) && metadataValue?.GetType() == reflectionValue?.GetType() && !Equals(metadataValue, reflectionValue))
             {

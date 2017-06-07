@@ -61,6 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                         namedArguements.Add(new CustomAttributeNamedArgument(memberInfo, argument.Value));
                     }
                 }
+
                 return namedArguements.ToImmutableList();
             });
         }

@@ -25,11 +25,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract bool IsIndexer { get; }
 
+        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
         public bool IsPublic => GetMethod?.IsPublic != false && SetMethod?.IsPublic != false;
 
         public bool IsStatic => GetMethod?.IsStatic != false && SetMethod?.IsStatic != false;
-
-        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public override string ToString() => FullName;
     }

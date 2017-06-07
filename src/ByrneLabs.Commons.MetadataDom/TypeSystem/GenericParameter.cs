@@ -28,8 +28,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         private Lazy<ImmutableArray<GenericParameterConstraint>> _constraints;
         private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private TypeBase _declaringType;
         private MethodBaseToExpose _declaringMethod;
+        private TypeBase _declaringType;
         private Lazy<IManagedCodeElement> _parent;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]

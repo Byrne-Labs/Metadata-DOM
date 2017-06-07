@@ -33,6 +33,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract PropertyInfoToExpose RelatedProperty { get; }
 
+        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
         public bool IsEventAdder => RelatedEvent != null && RelatedEvent.AddMethod == this;
 
         public bool IsEventRaiser => RelatedEvent != null && RelatedEvent.RaiseMethod == this;
@@ -50,8 +52,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
 
         public override MemberTypes MemberType => MemberTypes.Method;
-
-        public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public override string ToString() => TextSignature;
     }

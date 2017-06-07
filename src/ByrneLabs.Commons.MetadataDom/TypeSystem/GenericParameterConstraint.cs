@@ -37,12 +37,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else if (RawMetadata.Type.Kind == HandleKind.TypeDefinition)
                 {
-                    constrainedType = MetadataState.GetCodeElement< TypeDefinition>(RawMetadata.Type);
+                    constrainedType = MetadataState.GetCodeElement<TypeDefinition>(RawMetadata.Type);
                 }
                 else
                 {
                     throw new InvalidOperationException($"Unexpected constrained type {RawMetadata.Type.Kind}");
                 }
+
                 return constrainedType;
             });
             _parameter = MetadataState.GetLazyCodeElement<GenericParameter>(RawMetadata.Parameter);

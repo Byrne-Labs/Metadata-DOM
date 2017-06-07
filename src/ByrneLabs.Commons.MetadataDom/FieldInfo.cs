@@ -26,9 +26,9 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract partial class FieldInfo
     {
-        public override MemberTypes MemberType => MemberTypes.Field;
-
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public override MemberTypes MemberType => MemberTypes.Field;
 
         public abstract object GetRawConstantValue();
 

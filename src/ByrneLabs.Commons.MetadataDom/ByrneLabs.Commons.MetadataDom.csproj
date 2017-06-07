@@ -17,12 +17,12 @@
         <TargetFramework>netstandard1.6</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Remove="PortablePdb\**" />
-        <Compile Remove="WindowsPdb\**" />
-        <EmbeddedResource Remove="PortablePdb\**" />
-        <EmbeddedResource Remove="WindowsPdb\**" />
-        <None Remove="PortablePdb\**" />
-        <None Remove="WindowsPdb\**" />
+      <Compile Remove="PortablePdb\**" />
+      <Compile Remove="WindowsPdb\**" />
+      <EmbeddedResource Remove="PortablePdb\**" />
+      <EmbeddedResource Remove="WindowsPdb\**" />
+      <None Remove="PortablePdb\**" />
+      <None Remove="WindowsPdb\**" />
     </ItemGroup>
     <ItemGroup>
         <Compile Remove="TypeSystem\DebugCodeElement.cs" />

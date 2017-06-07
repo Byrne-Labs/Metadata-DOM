@@ -6,30 +6,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public static class TypeNameExtensions
     {
-        internal static string GetFullName(this Type type) => GetFullName((TypeBase)type.GetTypeInfo());
+        internal static string GetFullName(this Type type) => GetFullName((TypeBase) type.GetTypeInfo());
 
         internal static string GetFullName(this TypeBase type) => type.GetFullName(GetFullName, true);
 
-        internal static string GetFullNameWithoutAssemblies(this Type type) => GetFullNameWithoutAssemblies((TypeBase)type.GetTypeInfo());
+        internal static string GetFullNameWithoutAssemblies(this Type type) => GetFullNameWithoutAssemblies((TypeBase) type.GetTypeInfo());
 
         internal static string GetFullNameWithoutAssemblies(this TypeBase type) => type.GetFullName(GetFullNameWithoutAssemblies, true);
 
-        internal static string GetFullNameWithoutGenericArguments(this Type type) => GetFullNameWithoutGenericArguments((TypeBase)type.GetTypeInfo());
+        internal static string GetFullNameWithoutGenericArguments(this Type type) => GetFullNameWithoutGenericArguments((TypeBase) type.GetTypeInfo());
 
         internal static string GetFullNameWithoutGenericArguments(this TypeBase type) => type.GetFullName(GetFullNameWithoutGenericArguments, false);
 
-        internal static string GetNameModifiers(this TypeBase type) => (type.IsThisArray? "[]":string.Empty) + new string('*', type.PointerCount) + (type.IsThisByRef ? "&" : string.Empty);
+        internal static string GetNameModifiers(this TypeBase type) => (type.IsThisArray ? "[]" : string.Empty) + new string('*', type.PointerCount) + (type.IsThisByRef ? "&" : string.Empty);
 
-        private static string GetFullName(this Type type, Func<Type, string> nameGetter, bool includeGenericArguments) => GetFullName((TypeBase)type.GetTypeInfo(), nameGetter, includeGenericArguments);
-
-#if DEBUG
-        /*
-         * This method has been prone to stack overflows which are very, very hard to debug.  This makes it a lot simpler. -- Jonathan Byrne 06/06/2017
-         */
-        [ThreadStatic]
-        private static int _recursionCount;
-        private static readonly object _recursionCheckSyncRoot = new object();
-#endif
+        private static string GetFullName(this Type type, Func<Type, string> nameGetter, bool includeGenericArguments) => GetFullName((TypeBase) type.GetTypeInfo(), nameGetter, includeGenericArguments);
 
         private static string GetFullName(this TypeBase type, Func<Type, string> nameGetter, bool includeGenericArguments)
         {
@@ -53,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else
             {
-                var typeToUse = type.TypeElementModifier != null && type.UnmodifiedType != null ? (TypeBase)type.UnmodifiedType.GetTypeInfo() : type;
+                var typeToUse = type.TypeElementModifier != null && type.UnmodifiedType != null ? (TypeBase) type.UnmodifiedType.GetTypeInfo() : type;
                 string parent;
                 if (typeToUse.IsNested && typeToUse.DeclaringType.GetTypeInfo().IsGenericType)
                 {
@@ -118,5 +109,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return fullName;
         }
 
+#if DEBUG
+        /*
+         * This method has been prone to stack overflows which are very, very hard to debug.  This makes it a lot simpler. -- Jonathan Byrne 06/06/2017
+         */
+        [ThreadStatic]
+        private static int _recursionCount;
+        private static readonly object _recursionCheckSyncRoot = new object();
+#endif
     }
 }

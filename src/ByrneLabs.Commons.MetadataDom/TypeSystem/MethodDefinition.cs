@@ -74,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 foreach (var genericParameter in genericParameters)
                 {
                     genericParameter.SetDeclaringMethod(this);
-                    genericParameter.SetDeclaringType((TypeBase)DeclaringType);
+                    genericParameter.SetDeclaringType((TypeBase) DeclaringType);
                 }
 
                 return genericParameters;
@@ -83,14 +83,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 var basicName = $"{DeclaringType.FullName}.{Name}";
                 var genericParameters = _genericParameters.Value.Any() ? $"`{_genericParameters.Value.Count()}" : string.Empty;
-                var parameters = !_relatedProperty.Value?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase)parameter.ParameterType).FullNameWithoutAssemblies))})";
+                var parameters = !_relatedProperty.Value?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase) parameter.ParameterType).FullNameWithoutAssemblies))})";
 
                 return basicName + genericParameters + parameters;
             });
             // ReSharper disable once RedundantEnumerableCastCall
-            _relatedEvent = new Lazy<EventInfo>(() => ((TypeBase)DeclaringType).DeclaredEvents.Cast<EventInfo>().SingleOrDefault(@event => @event.AddMethod == this || @event.RemoveMethod == this || @event.RemoveMethod == this));
+            _relatedEvent = new Lazy<EventInfo>(() => ((TypeBase) DeclaringType).DeclaredEvents.Cast<EventInfo>().SingleOrDefault(@event => @event.AddMethod == this || @event.RemoveMethod == this || @event.RemoveMethod == this));
             // ReSharper disable once RedundantEnumerableCastCall
-            _relatedProperty = new Lazy<PropertyInfo>(() => ((TypeBase)DeclaringType).DeclaredProperties.Cast<PropertyInfo>().SingleOrDefault(property => property.GetMethod == this || property.SetMethod == this));
+            _relatedProperty = new Lazy<PropertyInfo>(() => ((TypeBase) DeclaringType).DeclaredProperties.Cast<PropertyInfo>().SingleOrDefault(property => property.GetMethod == this || property.SetMethod == this));
             _returnParameter = MetadataState.GetLazyCodeElement<Parameter>(this, Signature.ReturnType);
         }
 

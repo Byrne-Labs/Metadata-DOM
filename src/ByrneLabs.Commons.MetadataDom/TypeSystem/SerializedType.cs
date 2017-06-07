@@ -48,7 +48,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 UndecoratedName = nameParse.Groups[2].Value;
             }
             Namespace = nameParse.Groups[1].Value.TrimEnd('.');
-            if (string.IsNullOrEmpty( nameParse.Groups[4].Value))
+            if (string.IsNullOrEmpty(nameParse.Groups[4].Value))
             {
                 Assembly = MetadataState.AssemblyDefinition;
             }
