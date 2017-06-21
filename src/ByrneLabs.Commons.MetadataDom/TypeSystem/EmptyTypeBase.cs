@@ -5,37 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
-using MethodBaseToExpose = System.Reflection.MethodBase;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using ModuleToExpose = System.Reflection.Module;
-using AssemblyToExpose = System.Reflection.Assembly;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-using MemberInfoToExpose = System.Reflection.MemberInfo;
-using BaseTypeToExpose = System.Reflection.TypeInfo;
-
-#else
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
-using BaseTypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -74,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public TToken RawMetadata { get; }
     }
 
-    public abstract partial class EmptyTypeBase : TypeBase
+    public abstract class EmptyTypeBase : TypeBase
     {
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "This is only valid for EmptyTypeBase")]
@@ -93,23 +62,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
         }
 
-        public override AssemblyToExpose Assembly => null;
+        public override System.Reflection.Assembly Assembly => null;
 
         public override string AssemblyQualifiedName => null;
 
-        public override TypeToExpose BaseType => null;
+        public override Type BaseType => null;
 
         public override bool ContainsGenericParameters => false;
 
-        public override IEnumerable<MemberInfoToExpose> DeclaredMembers => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override IEnumerable<MemberInfo> DeclaredMembers => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override MethodBaseToExpose DeclaringMethod => null;
+        public override MethodBase DeclaringMethod => null;
 
-        public override TypeToExpose DeclaringType => null;
+        public override Type DeclaringType => null;
 
         public override IEnumerable<Document> Documents => Enumerable.Empty<Document>();
 
-        public override TypeToExpose[] GenericTypeParameters => Array.Empty<TypeToExpose>();
+        public override Type[] GenericTypeParameters => Array.Empty<Type>();
 
         public override IEnumerable<Type> ImplementedInterfaces => Enumerable.Empty<Type>();
 
@@ -127,36 +96,26 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MemberTypes MemberType => MemberTypes.TypeInfo;
 
-        public override ModuleToExpose Module => null;
+        public override System.Reflection.Module Module => null;
 
         public override string Namespace => null;
 
-        public override TypeToExpose ReflectedType => null;
+        public override Type ReflectedType => null;
 
         public override StructLayoutAttribute StructLayoutAttribute => null;
 
         public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override ConstructorInfoToExpose TypeInitializer => null;
+        public override ConstructorInfo TypeInitializer => null;
 
         internal override string MetadataNamespace => null;
 
         internal override string UndecoratedName => null;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => Enumerable.Empty<CustomAttributeDataToExpose>().ToImmutableList();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => Enumerable.Empty<System.Reflection.CustomAttributeData>().ToImmutableList();
 
         public override InterfaceMapping GetInterfaceMap(Type interfaceType) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         protected override TypeAttributes GetAttributeFlagsImpl() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
     }
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-
-    public abstract partial class EmptyTypeBase
-    {
-    }
-#else
-    public abstract partial class EmptyTypeBase
-    {
-    }
-#endif
 }

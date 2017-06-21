@@ -3,29 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using ModuleToExpose = System.Reflection.Module;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using ParameterInfoToExpose = System.Reflection.ParameterInfo;
-using MethodBodyToExpose = System.Reflection.MethodBody;
-
-#else
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using ParameterInfoToExpose = ByrneLabs.Commons.MetadataDom.ParameterInfo;
-using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -58,21 +35,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MethodImportAttributes MethodImportAttributes { get; }
 
-        public override ModuleToExpose Module => _module.Value;
+        public override System.Reflection.Module Module => _module.Value;
 
         public override string Name { get; }
 
-        public override IEnumerable<ParameterInfoToExpose> Parameters => throw NotSupportedHelper.FutureVersion();
+        public override IEnumerable<System.Reflection.ParameterInfo> Parameters => throw NotSupportedHelper.FutureVersion();
 
         public System.Reflection.Metadata.MethodImport RawMetadata { get; }
 
         public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override EventInfoToExpose RelatedEvent => throw NotSupportedHelper.FutureVersion();
+        public override EventInfo RelatedEvent => throw NotSupportedHelper.FutureVersion();
 
-        public override PropertyInfoToExpose RelatedProperty => throw NotSupportedHelper.FutureVersion();
+        public override PropertyInfo RelatedProperty => throw NotSupportedHelper.FutureVersion();
 
-        public override ParameterInfoToExpose ReturnParameter => throw NotSupportedHelper.FutureVersion();
+        public override System.Reflection.ParameterInfo ReturnParameter => throw NotSupportedHelper.FutureVersion();
 
         public override Type ReturnType => throw NotSupportedHelper.FutureVersion();
 
@@ -88,13 +65,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override MethodInfoToExpose GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
+        public override System.Reflection.MethodInfo GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
 
         public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => throw NotSupportedHelper.FutureVersion();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => throw NotSupportedHelper.FutureVersion();
 
         public override MethodImplAttributes GetMethodImplementationFlags() => throw NotSupportedHelper.FutureVersion();
 

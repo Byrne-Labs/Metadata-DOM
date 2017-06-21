@@ -1,25 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeToExpose = System.Type;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-
-#else
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     [PublicAPI]
     public abstract class GenericParameterConstraint
     {
-        public abstract IEnumerable<CustomAttributeDataToExpose> CustomAttributes { get; }
+        public abstract IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes { get; }
 
-        public abstract TypeToExpose Parameter { get; }
+        public abstract Type Parameter { get; }
 
-        public abstract TypeToExpose Type { get; }
+        public abstract Type Type { get; }
 
         public override string ToString() => Parameter.Name;
     }

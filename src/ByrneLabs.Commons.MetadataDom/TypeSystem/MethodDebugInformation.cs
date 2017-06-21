@@ -1,15 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using MethodBaseToExpose = System.Reflection.MethodBase;
 
-#else
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-
-#endif
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
@@ -22,7 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<string> _sourceCode;
         private readonly Lazy<MethodDefinition> _stateMachineKickoffMethod;
 
-        internal MethodDebugInformation(MethodDebugInformationHandle metadataHandle, MethodBaseToExpose methodBase, GenericContext genericContext, MetadataState metadataState)
+        internal MethodDebugInformation(MethodDebugInformationHandle metadataHandle, MethodBase methodBase, GenericContext genericContext, MetadataState metadataState)
         {
             Key = new CodeElementKey<MethodDebugInformation>(metadataHandle);
             MetadataState = metadataState;
@@ -40,11 +36,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public StandaloneSignature LocalSignature => _localSignature.Value;
 
-        public MethodBaseToExpose Method { get; }
+        public MethodBase Method { get; }
 
         public System.Reflection.Metadata.MethodDebugInformation RawMetadata { get; }
 
-        public ImmutableArray<SequencePoint> SequencePoints => _sequencePoints.Value;
+        public IEnumerable<SequencePoint> SequencePoints => _sequencePoints.Value;
 
         public byte[] SequencePointsBlob => _sequencePointsBlob.Value;
 

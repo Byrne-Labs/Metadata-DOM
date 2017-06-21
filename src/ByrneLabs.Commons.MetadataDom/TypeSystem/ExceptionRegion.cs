@@ -1,22 +1,12 @@
 ﻿using System;
+using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using ExceptionHandlingClauseToExpose = System.Reflection.ExceptionHandlingClause;
-using ExceptionHandlingClauseOptionsToExpose = System.Reflection.ExceptionHandlingClauseOptions;
-using TypeToExpose = System.Type;
-
-#else
-using ExceptionHandlingClauseToExpose = ByrneLabs.Commons.MetadataDom.ExceptionHandlingClause;
-using ExceptionHandlingClauseOptionsToExpose = ByrneLabs.Commons.MetadataDom.ExceptionHandlingClauseOptions;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
-    public class ExceptionRegion : ExceptionHandlingClauseToExpose, IManagedCodeElement
+    public class ExceptionRegion : ExceptionHandlingClause, IManagedCodeElement
     {
         private readonly Lazy<TypeBase> _catchType;
 
@@ -41,16 +31,16 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             FilterOffset = RawMetadata.FilterOffset;
             HandlerLength = RawMetadata.HandlerLength;
             HandlerOffset = RawMetadata.HandlerOffset;
-            Flags = (ExceptionHandlingClauseOptionsToExpose) RawMetadata.Kind;
+            Flags = (ExceptionHandlingClauseOptions) RawMetadata.Kind;
             TryLength = RawMetadata.TryLength;
             TryOffset = RawMetadata.TryOffset;
         }
 
-        public override TypeToExpose CatchType => _catchType.Value;
+        public override Type CatchType => _catchType.Value;
 
         public override int FilterOffset { get; }
 
-        public override ExceptionHandlingClauseOptionsToExpose Flags { get; }
+        public override ExceptionHandlingClauseOptions Flags { get; }
 
         public override int HandlerLength { get; }
 

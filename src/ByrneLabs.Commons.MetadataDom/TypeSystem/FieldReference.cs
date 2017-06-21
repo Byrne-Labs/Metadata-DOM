@@ -3,15 +3,6 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
 using System.Reflection.Metadata;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -52,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override RuntimeFieldHandle FieldHandle => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override TypeToExpose FieldType => _signature.Value;
+        public override Type FieldType => _signature.Value;
 
         public override string FullName => DeclaringType == null ? Name : $"{DeclaringType.FullName}.{Name}";
 
@@ -68,7 +59,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MemberReference RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.NotValidForMetadata();
+        public override Type ReflectedType => throw NotSupportedHelper.NotValidForMetadata();
 
         public override string TextSignature => $"{FullName}";
 
@@ -82,13 +73,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override object GetRawConstantValue() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override object GetValue(object obj) => throw NotSupportedHelper.NotValidForMetadata();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override bool IsDefined(Type attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 

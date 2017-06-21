@@ -5,21 +5,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using ModuleToExpose = System.Reflection.Module;
-
-#else
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -59,9 +44,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string CodeBase => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override IEnumerable<TypeInfoToExpose> DefinedTypes { get; } = ImmutableArray<TypeInfoToExpose>.Empty;
+        public override IEnumerable<System.Reflection.TypeInfo> DefinedTypes { get; } = ImmutableArray<TypeInfo>.Empty;
 
-        public override MethodInfoToExpose EntryPoint => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override System.Reflection.MethodInfo EntryPoint => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override string EscapedCodeBase => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
@@ -73,26 +58,26 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string Location { get; }
 
-        public override ModuleToExpose ManifestModule { get; }
+        public override System.Reflection.Module ManifestModule { get; }
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-        public override TypeToExpose[] GetExportedTypes() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override Type[] GetExportedTypes() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override System.Reflection.Module[] GetLoadedModules(bool getResourceModules) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override ManifestResourceInfo GetManifestResourceInfo(string resourceName) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override string[] GetManifestResourceNames() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override ModuleToExpose GetModule(string name) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override System.Reflection.Module GetModule(string name) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override ModuleToExpose[] GetModules(bool getResourceModules) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override System.Reflection.Module[] GetModules(bool getResourceModules) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
         public override AssemblyName GetName(bool copiedName) => _name;
 
         public override AssemblyName[] GetReferencedAssemblies() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override TypeToExpose[] GetTypes() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+        public override Type[] GetTypes() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -105,53 +106,53 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public FileInfo AssemblyFile { get; }
 
-        public ImmutableArray<AssemblyFile> AssemblyFiles => _assemblyFiles.Value;
+        public IEnumerable<AssemblyFile> AssemblyFiles => _assemblyFiles.Value;
 
-        public ImmutableArray<AssemblyReference> AssemblyReferences => MetadataState.AssemblyReferences;
+        public IEnumerable<AssemblyReference> AssemblyReferences => MetadataState.AssemblyReferences;
 
-        public ImmutableArray<CustomDebugInformation> CustomDebugInformation => _customDebugInformation.Value;
+        public IEnumerable<CustomDebugInformation> CustomDebugInformation => _customDebugInformation.Value;
 
-        public ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
-        public ImmutableArray<Document> Documents => _documents.Value;
+        public IEnumerable<Document> Documents => _documents.Value;
 
-        public ImmutableArray<EventDefinition> EventDefinitions => !HasMetadata ? ImmutableArray<EventDefinition>.Empty : _eventDefinitions.Value;
+        public IEnumerable<EventDefinition> EventDefinitions => !HasMetadata ? ImmutableArray<EventDefinition>.Empty : _eventDefinitions.Value;
 
-        public ImmutableArray<ExportedType> ExportedTypes => _exportedTypes.Value;
+        public IEnumerable<ExportedType> ExportedTypes => _exportedTypes.Value;
 
-        public ImmutableArray<FieldDefinition> FieldDefinitions => _fieldDefinitions.Value;
+        public IEnumerable<FieldDefinition> FieldDefinitions => _fieldDefinitions.Value;
 
         public bool HasDebugMetadata { get; }
 
         public bool HasMetadata { get; }
 
-        public ImmutableArray<ImportScope> ImportScopes => _importScopes.Value;
+        public IEnumerable<ImportScope> ImportScopes => _importScopes.Value;
 
-        public ImmutableArray<Language> Languages => _languages.Value;
+        public IEnumerable<Language> Languages => _languages.Value;
 
-        public ImmutableArray<LocalConstant> LocalConstants => _localConstants.Value;
+        public IEnumerable<LocalConstant> LocalConstants => _localConstants.Value;
 
-        public ImmutableArray<LocalScope> LocalScopes => _localScopes.Value;
+        public IEnumerable<LocalScope> LocalScopes => _localScopes.Value;
 
-        public ImmutableArray<LocalVariable> LocalVariables => _localVariables.Value;
+        public IEnumerable<LocalVariable> LocalVariables => _localVariables.Value;
 
-        public ImmutableArray<ManifestResource> ManifestResources => _manifestResources.Value;
+        public IEnumerable<ManifestResource> ManifestResources => _manifestResources.Value;
 
-        public ImmutableArray<IMemberInfo> MemberDefinitions => _memberDefinitions.Value;
+        public IEnumerable<IMemberInfo> MemberDefinitions => _memberDefinitions.Value;
 
         public MetadataKind MetadataKind { get; }
 
-        public ImmutableArray<MethodBase> MethodDefinitions => _methodDefinitions.Value;
+        public IEnumerable<MethodBase> MethodDefinitions => _methodDefinitions.Value;
 
         public ModuleDefinition ModuleDefinition => MetadataState.ModuleDefinition;
 
         public FileInfo PdbFile { get; }
 
-        public ImmutableArray<PropertyDefinition> PropertyDefinitions => _propertyDefinitions.Value;
+        public IEnumerable<PropertyDefinition> PropertyDefinitions => _propertyDefinitions.Value;
 
-        public ImmutableArray<TypeDefinition> TypeDefinitions => _typeDefinitions.Value;
+        public IEnumerable<TypeDefinition> TypeDefinitions => _typeDefinitions.Value;
 
-        public ImmutableArray<TypeReference> TypeReferences => _typeReferences.Value;
+        public IEnumerable<TypeReference> TypeReferences => _typeReferences.Value;
 
         protected MetadataReader Reader => MetadataState.AssemblyReader ?? MetadataState.PdbReader;
 

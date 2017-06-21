@@ -5,27 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using TypeToExpose = System.Type;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-using MemberInfoToExpose = System.Reflection.MemberInfo;
-using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-
-#else
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
-using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -68,7 +47,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public abstract class TypeBase : TypeInfo, IManagedCodeElement
     {
-        private readonly Lazy<TypeToExpose[]> _genericTypeArguments;
+        private readonly Lazy<Type[]> _genericTypeArguments;
         private Lazy<string> _fullName;
         private Lazy<string> _fullNameWithoutAssemblies;
         private Lazy<string> _fullNameWithoutGenericArguments;
@@ -88,7 +67,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 ArrayRank = 1;
             }
-            _genericTypeArguments = new Lazy<Type[]>(Array.Empty<TypeToExpose>);
+            _genericTypeArguments = new Lazy<Type[]>(Array.Empty<Type>);
             Initialize();
         }
 
@@ -103,14 +82,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
             MetadataState = metadataState;
             GenericTypeDefinition = genericTypeDefinition;
-            _genericTypeArguments = new Lazy<Type[]>(() => DeclaringType?.GenericTypeArguments == null ? genericTypeArguments.ToArray<TypeToExpose>() : genericTypeArguments.Union(DeclaringType.GenericTypeArguments).ToArray());
+            _genericTypeArguments = new Lazy<Type[]>(() => DeclaringType?.GenericTypeArguments == null ? genericTypeArguments.ToArray<Type>() : genericTypeArguments.Union(DeclaringType.GenericTypeArguments).ToArray());
             Initialize();
         }
 
         internal TypeBase(CodeElementKey key, MetadataState metadataState)
         {
             Key = key;
-            _genericTypeArguments = new Lazy<Type[]>(Array.Empty<TypeToExpose>);
+            _genericTypeArguments = new Lazy<Type[]>(Array.Empty<Type>);
             MetadataState = metadataState;
             Initialize();
         }
@@ -121,11 +100,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public Handle? DowncastMetadataHandle => ((IManagedCodeElement) this).Key.Handle;
 
-        public override TypeInfoToExpose ElementType { get; }
+        public override TypeInfo ElementType { get; }
 
         public override string FullName => _fullName.Value;
 
-        public override sealed TypeInfoToExpose GenericTypeDefinition { get; }
+        public override sealed TypeInfo GenericTypeDefinition { get; }
 
         public override sealed bool IsBoxed => UnmodifiedType?.IsBoxed == true || IsThisBoxed;
 
@@ -151,7 +130,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal string FullNameWithoutGenericArguments => _fullNameWithoutGenericArguments.Value;
 
-        internal TypeToExpose[] GenericArgumentsWithoutParameters => _genericTypeArguments.Value;
+        internal Type[] GenericArgumentsWithoutParameters => _genericTypeArguments.Value;
 
         internal bool IsThisArray => TypeElementModifier == TypeSystem.TypeElementModifier.Array;
 
@@ -187,11 +166,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int GetArrayRank() => ArrayRank;
 
-        public override sealed TypeToExpose GetElementType() => ElementType;
+        public override sealed Type GetElementType() => ElementType;
 
-        public override TypeToExpose[] GetGenericArguments() => _genericTypeArguments.Value.Any() ? _genericTypeArguments.Value : GenericTypeParameters;
+        public override Type[] GetGenericArguments() => _genericTypeArguments.Value.Any() ? _genericTypeArguments.Value : GenericTypeParameters;
 
-        public override sealed TypeToExpose GetGenericTypeDefinition() => GenericTypeDefinition;
+        public override sealed Type GetGenericTypeDefinition() => GenericTypeDefinition;
 
         public override int GetHashCode() => MetadataToken | 12345;
 

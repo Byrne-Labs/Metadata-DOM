@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -27,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public ManifestResourceAttributes Attributes { get; }
 
-        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public override string FileName => throw NotSupportedHelper.FutureVersion();
 

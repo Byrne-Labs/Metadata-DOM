@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
@@ -30,7 +31,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
-        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public string FullName => Interface.FullName;
 

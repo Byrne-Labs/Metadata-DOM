@@ -6,25 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using ModuleToExpose = System.Reflection.Module;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
-    public partial class EventDefinition : EventInfo, IManagedCodeElement
+    public class EventDefinition : EventInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
 
@@ -50,16 +37,16 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
         }
 
-        public override MethodInfoToExpose AddMethod { get; }
+        public override System.Reflection.MethodInfo AddMethod { get; }
 
         public override EventAttributes Attributes => RawMetadata.Attributes;
 
-        public override TypeToExpose DeclaringType => AddMethod.DeclaringType;
+        public override Type DeclaringType => AddMethod.DeclaringType;
 
         /*
          * HACK:  This should probably come from MetadataToken.Type but it is unclear how to create the generic context for a type specification when this is done.  It is much easier to get the type from the adder method.
          */
-        public override TypeToExpose EventHandlerType => AddMethod.GetParameters().Single().ParameterType;
+        public override Type EventHandlerType => AddMethod.GetParameters().Single().ParameterType;
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
@@ -93,17 +80,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
-        public override ModuleToExpose Module => MetadataState.ModuleDefinition;
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Name { get; }
 
-        public override MethodInfoToExpose RaiseMethod { get; }
+        public override System.Reflection.MethodInfo RaiseMethod { get; }
 
         public System.Reflection.Metadata.EventDefinition RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override MethodInfoToExpose RemoveMethod { get; }
+        public override System.Reflection.MethodInfo RemoveMethod { get; }
 
         public override string TextSignature => FullName;
 
@@ -115,27 +102,18 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override MethodInfoToExpose GetAddMethod(bool nonPublic) => !nonPublic && !AddMethod.IsPublic ? null : AddMethod;
+        public override System.Reflection.MethodInfo GetAddMethod(bool nonPublic) => !nonPublic && !AddMethod.IsPublic ? null : AddMethod;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
-
-        public override MethodInfoToExpose GetRaiseMethod(bool nonPublic) => !nonPublic && !RaiseMethod.IsPublic ? null : RaiseMethod;
-
-        public override MethodInfoToExpose GetRemoveMethod(bool nonPublic) => !nonPublic && !RemoveMethod.IsPublic ? null : RemoveMethod;
-    }
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-    public partial class EventDefinition
-    {
         public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
-    }
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-#else
-    public partial class EventDefinition
-    {
+        public override System.Reflection.MethodInfo GetRaiseMethod(bool nonPublic) => !nonPublic && !RaiseMethod.IsPublic ? null : RaiseMethod;
+
+        public override System.Reflection.MethodInfo GetRemoveMethod(bool nonPublic) => !nonPublic && !RemoveMethod.IsPublic ? null : RemoveMethod;
+
+        public override bool IsDefined(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
     }
-#endif
 }

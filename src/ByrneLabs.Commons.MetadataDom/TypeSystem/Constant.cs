@@ -2,13 +2,7 @@
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
 using TypeToExpose = System.Type;
-
-#else
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {

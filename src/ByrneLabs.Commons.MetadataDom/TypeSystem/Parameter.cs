@@ -6,15 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using ModuleToExpose = System.Reflection.Module;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -98,7 +89,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int MetadataToken => Key.Handle.HasValue ? Key.Handle.Value.GetHashCode() : 0;
 
-        public override ModuleToExpose Module => MetadataState.ModuleDefinition;
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Name { get; }
 
@@ -116,6 +107,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
     }
 }

@@ -1,15 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using ModuleToExpose = System.Reflection.Module;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -18,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         BindingFlags BindingFlags { get; }
 
-        IEnumerable<CustomAttributeDataToExpose> CustomAttributes { get; }
+        IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes { get; }
 
         string FullName { get; }
 
@@ -30,12 +21,12 @@ namespace ByrneLabs.Commons.MetadataDom
 
         int MetadataToken { get; }
 
-        ModuleToExpose Module { get; }
+        System.Reflection.Module Module { get; }
 
         string Name { get; }
 
         string TextSignature { get; }
 
-        IList<CustomAttributeDataToExpose> GetCustomAttributesData();
+        IList<System.Reflection.CustomAttributeData> GetCustomAttributesData();
     }
 }

@@ -2,13 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using AssemblyToExpose = System.Reflection.Assembly;
-
-#else
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -32,7 +25,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             UndecoratedName = $"T{Index}";
         }
 
-        public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
+        public override System.Reflection.Assembly Assembly => MetadataState.AssemblyDefinition;
 
         public int Index { get; }
 

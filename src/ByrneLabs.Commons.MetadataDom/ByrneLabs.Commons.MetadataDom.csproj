@@ -17,10 +17,13 @@
         <TargetFramework>netstandard1.6</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+      <Compile Remove="DnLibPdb\**" />
       <Compile Remove="PortablePdb\**" />
       <Compile Remove="WindowsPdb\**" />
+      <EmbeddedResource Remove="DnLibPdb\**" />
       <EmbeddedResource Remove="PortablePdb\**" />
       <EmbeddedResource Remove="WindowsPdb\**" />
+      <None Remove="DnLibPdb\**" />
       <None Remove="PortablePdb\**" />
       <None Remove="WindowsPdb\**" />
     </ItemGroup>

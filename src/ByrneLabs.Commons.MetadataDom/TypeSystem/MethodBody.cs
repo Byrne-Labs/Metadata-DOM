@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using System.Reflection;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
-    public partial class MethodBody : IManagedCodeElement
+    public class MethodBody : System.Reflection.MethodBody, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<ExceptionRegion>> _exceptionRegions;
         private readonly Lazy<StandaloneSignature> _localSignature;
@@ -68,19 +65,4 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
     }
-
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-    public partial class MethodBody : System.Reflection.MethodBody
-    {
-    }
-#else
-    public partial class MethodBody : ByrneLabs.Commons.MetadataDom.MethodBody
-    {
-        public override int LocalSignatureMetadataToken { get; }
-
-        public override IList<LocalVariableInfo> LocalVariables { get; }
-
-        public override byte[] GetILAsByteArray() => throw NotSupportedHelper.FutureVersion();
-    }
-#endif
 }

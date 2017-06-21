@@ -5,15 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -71,7 +62,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
         }
 
-        public override TypeToExpose DeclaringType => ResolutionScope is TypeReference ? (TypeBase) ResolutionScope : null;
+        public override Type DeclaringType => ResolutionScope is TypeReference ? (TypeBase) ResolutionScope : null;
 
         public override bool IsGenericParameter => false;
 

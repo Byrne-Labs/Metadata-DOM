@@ -5,32 +5,13 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using ModuleToExpose = System.Reflection.Module;
-using ParameterInfoToExpose = System.Reflection.ParameterInfo;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using ParameterInfoToExpose = ByrneLabs.Commons.MetadataDom.ParameterInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class MethodReference : MethodInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private readonly Lazy<ImmutableArray<TypeToExpose>> _genericTypeParameters;
+        private readonly Lazy<ImmutableArray<Type>> _genericTypeParameters;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
         private readonly Lazy<IManagedCodeElement> _parent;
@@ -70,7 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodAttributes Attributes => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose DeclaringType => Parent as TypeToExpose;
+        public override Type DeclaringType => Parent as Type;
 
         public override string FullName => Name;
 
@@ -78,25 +59,25 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.FutureVersion();
 
-        public override ModuleToExpose Module => throw NotSupportedHelper.FutureVersion();
+        public override System.Reflection.Module Module => throw NotSupportedHelper.FutureVersion();
 
         public override string Name { get; }
 
-        public override IEnumerable<ParameterInfoToExpose> Parameters => _parameters.Value;
+        public override IEnumerable<System.Reflection.ParameterInfo> Parameters => _parameters.Value;
 
         public object Parent => _parent.Value;
 
         public MemberReference RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override EventInfoToExpose RelatedEvent => throw NotSupportedHelper.FutureVersion();
+        public override EventInfo RelatedEvent => throw NotSupportedHelper.FutureVersion();
 
-        public override PropertyInfoToExpose RelatedProperty => throw NotSupportedHelper.FutureVersion();
+        public override PropertyInfo RelatedProperty => throw NotSupportedHelper.FutureVersion();
 
-        public override ParameterInfoToExpose ReturnParameter => _returnParameter.Value;
+        public override System.Reflection.ParameterInfo ReturnParameter => _returnParameter.Value;
 
-        public TypeToExpose ReturnType => MethodSignature?.ReturnType;
+        public Type ReturnType => MethodSignature?.ReturnType;
 
         public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
 
@@ -112,15 +93,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override MethodInfoToExpose GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
+        public override System.Reflection.MethodInfo GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
 
         public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToList<System.Reflection.CustomAttributeData>();
 
-        public override TypeToExpose[] GetGenericArguments() => _genericTypeParameters.Value.ToArray();
+        public override Type[] GetGenericArguments() => _genericTypeParameters.Value.ToArray();
 
         public override MethodImplAttributes GetMethodImplementationFlags() => throw NotSupportedHelper.FutureVersion();
 

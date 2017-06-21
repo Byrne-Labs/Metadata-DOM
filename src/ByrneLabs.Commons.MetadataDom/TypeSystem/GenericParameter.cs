@@ -6,19 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using AssemblyToExpose = System.Reflection.Assembly;
-using MethodBaseToExpose = System.Reflection.MethodBase;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -28,7 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         private Lazy<ImmutableArray<GenericParameterConstraint>> _constraints;
         private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private MethodBaseToExpose _declaringMethod;
+        private MethodBase _declaringMethod;
         private TypeBase _declaringType;
         private Lazy<IManagedCodeElement> _parent;
 
@@ -52,13 +39,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Initialize();
         }
 
-        public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
+        public override System.Reflection.Assembly Assembly => MetadataState.AssemblyDefinition;
 
-        public ImmutableArray<GenericParameterConstraint> Constraints => _constraints.Value;
+        public IEnumerable<GenericParameterConstraint> Constraints => _constraints.Value;
 
-        public override MethodBaseToExpose DeclaringMethod => _declaringMethod;
+        public override MethodBase DeclaringMethod => _declaringMethod;
 
-        public override TypeToExpose DeclaringType => _declaringType;
+        public override Type DeclaringType => _declaringType;
 
         public override GenericParameterAttributes GenericParameterAttributes => RawMetadata.Attributes;
 
@@ -72,9 +59,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal override string UndecoratedName => MetadataState.AssemblyReader.GetString(RawMetadata.Name);
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-        internal void SetDeclaringMethod(MethodBaseToExpose declaringMethod)
+        internal void SetDeclaringMethod(MethodBase declaringMethod)
         {
             _declaringMethod = declaringMethod;
         }

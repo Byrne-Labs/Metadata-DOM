@@ -4,24 +4,6 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
 using System.Reflection.Metadata;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using ParameterInfoToExpose = System.Reflection.ParameterInfo;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using ParameterInfoToExpose = ByrneLabs.Commons.MetadataDom.ParameterInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -60,9 +42,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodAttributes Attributes => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttributeData> CustomAttributes => _customAttributes.Value;
 
-        public override TypeToExpose DeclaringType => Parent as TypeToExpose;
+        public override Type DeclaringType => Parent as Type;
 
         public override string FullName => Name;
 
@@ -74,15 +56,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string Name { get; }
 
-        public override IEnumerable<ParameterInfoToExpose> Parameters => _parameters.Value;
+        public override IEnumerable<System.Reflection.ParameterInfo> Parameters => _parameters.Value;
 
         public object Parent => _parent.Value;
 
         public MemberReference RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public TypeToExpose ReturnType => MethodSignature?.ReturnType;
+        public Type ReturnType => MethodSignature?.ReturnType;
 
         public override string TextSignature => Name;
 
@@ -100,9 +82,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-        public override TypeToExpose[] GetGenericArguments() => new Type[] { };
+        public override Type[] GetGenericArguments() => new Type[] { };
 
         public override MethodImplAttributes GetMethodImplementationFlags() => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 

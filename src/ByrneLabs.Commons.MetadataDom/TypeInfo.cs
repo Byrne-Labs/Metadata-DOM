@@ -1,54 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using System.Globalization;
-using System;
-using System.Linq;
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
-using MethodBaseToExpose = System.Reflection.MethodBase;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using ModuleToExpose = System.Reflection.Module;
-using AssemblyToExpose = System.Reflection.Assembly;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-using MemberInfoToExpose = System.Reflection.MemberInfo;
-
-#else
-using System.Linq;
-using System;
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom
 {
     [PublicAPI]
-    public abstract partial class TypeInfo
+    public abstract class TypeInfo : TypeDelegator, IMemberInfo
     {
+        private const BindingFlags DefaultBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+
         public abstract int ArrayRank { get; }
 
         public abstract IEnumerable<TypeSystem.Document> Documents { get; }
 
-        public abstract TypeInfoToExpose ElementType { get; }
+        public abstract TypeInfo ElementType { get; }
 
-        public abstract TypeInfoToExpose GenericTypeDefinition { get; }
+        public abstract TypeInfo GenericTypeDefinition { get; }
 
         public abstract bool IsBoxed { get; }
 
@@ -62,17 +33,43 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IEnumerable<Language> Languages { get; }
 
-        public abstract ConstructorInfoToExpose TypeInitializer { get; }
+        public abstract string TextSignature { get; }
+
+        public abstract ConstructorInfo TypeInitializer { get; }
+
+        public BindingFlags BindingFlags => CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public override Type[] GenericTypeArguments => GetGenericArguments();
+
+        public override Guid GUID => throw NotSupportedHelper.FutureVersion();
 
         public virtual bool HasGenericTypeArguments => GetGenericArguments().Any();
 
+        public bool IsCOMObject => throw NotSupportedHelper.NotValidForMetadata();
+
+        public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
+
+        public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
+
+        public bool IsInherited => DeclaringType == ReflectedType;
+
         public bool IsPrimitive => IsPrimitiveImpl();
+
+        public override bool IsSecurityCritical => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsSecuritySafeCritical => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
 
         public bool IsStatic => IsAbstract && IsSealed;
 
         public override MemberTypes MemberType => IsNested ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
-        public override TypeToExpose ReflectedType => DeclaringType;
+        public override Type ReflectedType => DeclaringType;
+
+        public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override Type UnderlyingSystemType => this;
 
         internal abstract string UndecoratedName { get; }
 
@@ -100,59 +97,23 @@ namespace ByrneLabs.Commons.MetadataDom
             return bindingFlags;
         }
 
-        public override string ToString() => FullName;
+        public override System.Reflection.ConstructorInfo[] GetConstructors(BindingFlags bindingFlags) => GetMethods<System.Reflection.ConstructorInfo>(null, bindingFlags, CallingConventions.Any, null, false).ToArray();
 
-        protected override bool IsPrimitiveImpl() => throw new NotImplementedException();
-    }
-#if NETSTANDARD2_0 || NET_FRAMEWORK
+        public override System.Reflection.EventInfo GetEvent(string name, BindingFlags bindingFlags) => SingleMember(GetEvents(name, bindingFlags, false));
 
-    public abstract partial class TypeInfo : TypeDelegator, IMemberInfo
-    {
-        private const BindingFlags DefaultBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+        public override System.Reflection.EventInfo[] GetEvents(BindingFlags bindingFlags) => GetEvents(null, bindingFlags, false).ToArray();
 
-        public abstract string TextSignature { get; }
+        public override System.Reflection.EventInfo[] GetEvents() => GetEvents(DefaultBindingFlags);
 
-        public BindingFlags BindingFlags => CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+        public override System.Reflection.FieldInfo GetField(string name, BindingFlags bindingFlags) => SingleMember(GetFields(name, bindingFlags, false));
 
-        public override TypeToExpose[] GenericTypeArguments => GetGenericArguments();
+        public override System.Reflection.FieldInfo[] GetFields(BindingFlags bindingFlags) => GetFields(null, bindingFlags, false).ToArray();
 
-        public override Guid GUID => throw NotSupportedHelper.FutureVersion();
+        public override Type GetInterface(string name, bool ignoreCase) => SingleMember(GetInterfaces(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase, false));
 
-        public bool IsCOMObject => throw NotSupportedHelper.NotValidForMetadata();
+        public override Type[] GetInterfaces() => GetInterfaces(null, BindingFlags.Public | BindingFlags.NonPublic, false).ToArray();
 
-        public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
-
-        public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
-
-        public bool IsInherited => DeclaringType == ReflectedType;
-
-        public override bool IsSecurityCritical => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override bool IsSecuritySafeCritical => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override Type UnderlyingSystemType => this;
-
-        public override ConstructorInfoToExpose[] GetConstructors(BindingFlags bindingFlags) => GetMethods<ConstructorInfoToExpose>(null, bindingFlags, CallingConventions.Any, null, false).ToArray();
-
-        public override EventInfoToExpose GetEvent(string name, BindingFlags bindingFlags) => SingleMember(GetEvents(name, bindingFlags, false));
-
-        public override EventInfoToExpose[] GetEvents(BindingFlags bindingFlags) => GetEvents(null, bindingFlags, false).ToArray();
-
-        public override EventInfoToExpose[] GetEvents() => GetEvents(DefaultBindingFlags);
-
-        public override FieldInfoToExpose GetField(string name, BindingFlags bindingFlags) => SingleMember(GetFields(name, bindingFlags, false));
-
-        public override FieldInfoToExpose[] GetFields(BindingFlags bindingFlags) => GetFields(null, bindingFlags, false).ToArray();
-
-        public override TypeToExpose GetInterface(string name, bool ignoreCase) => SingleMember(GetInterfaces(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase, false));
-
-        public override TypeToExpose[] GetInterfaces() => GetInterfaces(null, BindingFlags.Public | BindingFlags.NonPublic, false).ToArray();
-
-        public override MemberInfoToExpose[] GetMember(string name, MemberTypes type, BindingFlags bindingFlags)
+        public override MemberInfo[] GetMember(string name, MemberTypes type, BindingFlags bindingFlags)
         {
             var members = new List<MemberInfo>();
             if ((type & MemberTypes.Method) != 0)
@@ -183,29 +144,33 @@ namespace ByrneLabs.Commons.MetadataDom
             return members.ToArray();
         }
 
-        public override MemberInfoToExpose[] GetMembers(BindingFlags bindingFlags) => GetMember(null, MemberTypes.All, bindingFlags);
+        public override MemberInfo[] GetMembers(BindingFlags bindingFlags) => GetMember(null, MemberTypes.All, bindingFlags);
 
-        public override MethodInfoToExpose[] GetMethods(BindingFlags bindingFlags) => GetMethods<MethodInfoToExpose>(null, bindingFlags, CallingConventions.Any, null, false).ToArray();
+        public override System.Reflection.MethodInfo[] GetMethods(BindingFlags bindingFlags) => GetMethods<System.Reflection.MethodInfo>(null, bindingFlags, CallingConventions.Any, null, false).ToArray();
 
-        public override TypeToExpose GetNestedType(string name, BindingFlags bindingFlags) => SingleMember(GetNestedTypes(name, bindingFlags, false));
+        public override Type GetNestedType(string name, BindingFlags bindingFlags) => SingleMember(GetNestedTypes(name, bindingFlags, false));
 
-        public override TypeToExpose[] GetNestedTypes(BindingFlags bindingFlags) => GetNestedTypes(null, bindingFlags, false).ToArray();
+        public override Type[] GetNestedTypes(BindingFlags bindingFlags) => GetNestedTypes(null, bindingFlags, false).ToArray();
 
-        public override PropertyInfoToExpose[] GetProperties(BindingFlags bindingFlags) => GetProperties(null, bindingFlags, null, null, false).ToArray();
+        public override System.Reflection.PropertyInfo[] GetProperties(BindingFlags bindingFlags) => GetProperties(null, bindingFlags, null, null, false).ToArray();
 
         public override object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters) => throw NotSupportedHelper.NotValidForMetadata();
 
-        protected override ConstructorInfoToExpose GetConstructorImpl(BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<ConstructorInfoToExpose>(null, bindingFlags, callConvention, argumentTypes, false));
+        public override string ToString() => FullName;
 
-        protected override MethodInfoToExpose GetMethodImpl(string name, BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<MethodInfoToExpose>(name, bindingFlags, callConvention, argumentTypes, false));
+        protected override System.Reflection.ConstructorInfo GetConstructorImpl(BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<ConstructorInfo>(null, bindingFlags, callConvention, argumentTypes, false));
 
-        protected override PropertyInfoToExpose GetPropertyImpl(string name, BindingFlags bindingFlags, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => SingleMember(GetProperties(name, bindingFlags, propertyType, types, false));
+        protected override System.Reflection.MethodInfo GetMethodImpl(string name, BindingFlags bindingFlags, Binder binder, CallingConventions callConvention, Type[] argumentTypes, ParameterModifier[] modifiers) => SingleMember(GetMethods<MethodInfo>(name, bindingFlags, callConvention, argumentTypes, false));
+
+        protected override System.Reflection.PropertyInfo GetPropertyImpl(string name, BindingFlags bindingFlags, Binder binder, Type propertyType, Type[] types, ParameterModifier[] modifiers) => SingleMember(GetProperties(name, bindingFlags, propertyType, types, false));
 
         protected override bool IsCOMObjectImpl() => throw NotSupportedHelper.NotValidForMetadata();
 
         protected override bool IsContextfulImpl() => throw NotSupportedHelper.NotValidForMetadata();
 
-        private IEnumerable<EventInfoToExpose> GetEvents(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
+        protected override bool IsPrimitiveImpl() => throw new NotImplementedException();
+
+        private IEnumerable<System.Reflection.EventInfo> GetEvents(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
         {
             bindingFlags ^= BindingFlags.DeclaredOnly;
 
@@ -217,7 +182,7 @@ namespace ByrneLabs.Commons.MetadataDom
             return candidateEvents;
         }
 
-        private IEnumerable<FieldInfoToExpose> GetFields(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
+        private IEnumerable<System.Reflection.FieldInfo> GetFields(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
         {
             bindingFlags ^= BindingFlags.DeclaredOnly;
 
@@ -229,9 +194,9 @@ namespace ByrneLabs.Commons.MetadataDom
             return candidateFields;
         }
 
-        private IEnumerable<TypeToExpose> GetInterfaces(string name, BindingFlags bindingFlags, bool allowPrefixLookup) => GetTypes(name, bindingFlags, allowPrefixLookup).Where(type => type.IsInterface);
+        private IEnumerable<Type> GetInterfaces(string name, BindingFlags bindingFlags, bool allowPrefixLookup) => GetTypes(name, bindingFlags, allowPrefixLookup).Where(type => type.IsInterface);
 
-        private IEnumerable<T> GetMemberCandidates<T>(string name, BindingFlags bindingFlags, bool allowPrefixLookup) where T : MemberInfoToExpose
+        private IEnumerable<T> GetMemberCandidates<T>(string name, BindingFlags bindingFlags, bool allowPrefixLookup) where T : MemberInfo
         {
             // filter by type
             var candidateMembers = DeclaredMembers.OfType<T>();
@@ -254,7 +219,7 @@ namespace ByrneLabs.Commons.MetadataDom
             return candidateMembers.ToImmutableArray();
         }
 
-        private IEnumerable<T> GetMethods<T>(string name, BindingFlags bindingFlags, CallingConventions callConvention, Type[] argumentTypes, bool allowPrefixLookup) where T : MethodBaseToExpose
+        private IEnumerable<T> GetMethods<T>(string name, BindingFlags bindingFlags, CallingConventions callConvention, Type[] argumentTypes, bool allowPrefixLookup) where T : MethodBase
         {
             var candidateMethods = GetMemberCandidates<T>(name, bindingFlags, false);
 
@@ -309,9 +274,9 @@ namespace ByrneLabs.Commons.MetadataDom
             return candidateMethods;
         }
 
-        private IEnumerable<TypeToExpose> GetNestedTypes(string name, BindingFlags bindingFlags, bool allowPrefixLookup) => GetTypes(name, bindingFlags, allowPrefixLookup).Where(type => type.IsNested);
+        private IEnumerable<Type> GetNestedTypes(string name, BindingFlags bindingFlags, bool allowPrefixLookup) => GetTypes(name, bindingFlags, allowPrefixLookup).Where(type => type.IsNested);
 
-        private IEnumerable<PropertyInfoToExpose> GetProperties(string name, BindingFlags bindingFlags, Type propertyType, Type[] types, bool allowPrefixLookup)
+        private IEnumerable<System.Reflection.PropertyInfo> GetProperties(string name, BindingFlags bindingFlags, Type propertyType, Type[] types, bool allowPrefixLookup)
         {
             bindingFlags ^= BindingFlags.DeclaredOnly;
 
@@ -335,7 +300,7 @@ namespace ByrneLabs.Commons.MetadataDom
             return candidateProperties;
         }
 
-        private IEnumerable<TypeToExpose> GetTypes(string fullName, BindingFlags bindingFlags, bool allowPrefixLookup)
+        private IEnumerable<Type> GetTypes(string fullName, BindingFlags bindingFlags, bool allowPrefixLookup)
         {
             bindingFlags &= ~BindingFlags.Static;
 
@@ -408,7 +373,7 @@ namespace ByrneLabs.Commons.MetadataDom
             return candidateTypes;
         }
 
-        private T SingleMember<T>(IEnumerable<T> members) where T : MemberInfoToExpose
+        private T SingleMember<T>(IEnumerable<T> members) where T : MemberInfo
         {
             if (members.Count() > 1)
             {
@@ -418,50 +383,4 @@ namespace ByrneLabs.Commons.MetadataDom
             return members.FirstOrDefault();
         }
     }
-#else
-    public abstract partial class TypeInfo : Type
-    {
-
-        public abstract IList<CustomAttributeDataToExpose> GetCustomAttributesData();
-
-        public abstract TypeToExpose[] GetGenericArguments();
-
-        public abstract TypeToExpose GetGenericTypeDefinition();
-
-        public abstract bool ContainsGenericParameters { get; }
-
-        public abstract MethodBaseToExpose DeclaringMethod { get; }
-
-        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
-        public abstract TypeToExpose[] GenericTypeParameters { get; }
-
-        public abstract bool IsGenericTypeDefinition { get; }
-
-        public abstract bool IsSecurityCritical { get; }
-
-        public abstract bool IsSecuritySafeCritical { get; }
-
-        public abstract bool IsSecurityTransparent { get; }
-
-        public abstract StructLayoutAttribute StructLayoutAttribute { get; }
-
-        public virtual IEnumerable<ConstructorInfoToExpose> DeclaredConstructors => GetConstructors(DeclaredOnlyLookup);
-
-        public virtual IEnumerable<EventInfoToExpose> DeclaredEvents => GetEvents(DeclaredOnlyLookup);
-
-        public virtual IEnumerable<FieldInfoToExpose> DeclaredFields => GetFields(DeclaredOnlyLookup);
-
-        public virtual IEnumerable<MemberInfoToExpose> DeclaredMembers => GetMembers(DeclaredOnlyLookup);
-
-        public virtual IEnumerable<MethodInfoToExpose> DeclaredMethods => GetMethods(DeclaredOnlyLookup);
-
-        public virtual IEnumerable<TypeInfoToExpose> DeclaredNestedTypes => GetNestedTypes(DeclaredOnlyLookup).Cast<TypeInfoToExpose>();
-
-        public virtual IEnumerable<PropertyInfoToExpose> DeclaredProperties => GetProperties(DeclaredOnlyLookup);
-
-        public virtual GenericParameterAttributes GenericParameterAttributes => throw NotSupportedHelper.FutureVersion();
-
-        public virtual IEnumerable<TypeToExpose> ImplementedInterfaces => GetInterfaces();
-    }
-#endif
 }

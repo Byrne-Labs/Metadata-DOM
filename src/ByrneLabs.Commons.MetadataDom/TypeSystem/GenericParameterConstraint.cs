@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeToExpose = System.Type;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-
-#else
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -49,15 +40,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
-        public override IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes => _customAttributes.Value;
 
         public GenericParameterConstraintHandle MetadataHandle { get; }
 
-        public override TypeToExpose Parameter => _parameter.Value;
+        public override Type Parameter => _parameter.Value;
 
         public System.Reflection.Metadata.GenericParameterConstraint RawMetadata { get; }
 
-        public override TypeToExpose Type => _type.Value;
+        public override Type Type => _type.Value;
 
         internal CodeElementKey Key { get; }
 

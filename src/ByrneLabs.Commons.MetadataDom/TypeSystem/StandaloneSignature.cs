@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
@@ -31,13 +32,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
-        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public string FullName => throw NotSupportedHelper.FutureVersion();
 
         public StandaloneSignatureKind Kind { get; }
 
-        public ImmutableArray<TypeBase> LocalVariableSignature => Kind == StandaloneSignatureKind.LocalVariables ? _localSignature.Value : throw new InvalidOperationException("This property is only valid when the signature kind is local variable");
+        public IEnumerable<TypeBase> LocalVariableSignature => Kind == StandaloneSignatureKind.LocalVariables ? _localSignature.Value : throw new InvalidOperationException("This property is only valid when the signature kind is local variable");
 
         public StandaloneSignatureHandle MetadataHandle { get; }
 

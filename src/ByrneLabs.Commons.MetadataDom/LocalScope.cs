@@ -1,12 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using MethodBaseToExpose = System.Reflection.MethodBase;
-
-#else
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom
 {
@@ -25,7 +19,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IEnumerable<LocalVariableInfo> LocalVariables { get; }
 
-        public abstract MethodBaseToExpose Method { get; }
+        public abstract MethodBase Method { get; }
 
         public abstract int StartOffset { get; }
     }

@@ -242,10 +242,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     {
                         CompareCodeElementsToReflectionData((IManagedCodeElement) metadataMemberToCompare, reflectionMember);
                     }
-                    else
-                    {
-                        _checkState.ComparedReflectionMembers.Add(reflectionMember);
-                    }
                 }
             }
             catch (Exception exception)

@@ -5,21 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using MethodBaseToExpose = System.Reflection.MethodBase;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using ModuleToExpose = System.Reflection.Module;
-using AssemblyToExpose = System.Reflection.Assembly;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-
-#else
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -57,19 +42,19 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Initialize();
         }
 
-        public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
+        public override System.Reflection.Assembly Assembly => MetadataState.AssemblyDefinition;
 
         public override string FullName => Signature.FullName;
 
         public override MemberTypes MemberType { get; } = MemberTypes.Custom;
 
-        public override ModuleToExpose Module => MetadataState.ModuleDefinition;
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Namespace => Signature.Namespace;
 
-        public FieldInfoToExpose ReferencingField => _referencingCodeElement as FieldInfo;
+        public FieldInfo ReferencingField => _referencingCodeElement as FieldInfo;
 
-        public MethodBaseToExpose ReferencingMethod => _referencingCodeElement as MethodBase;
+        public MethodBase ReferencingMethod => _referencingCodeElement as MethodBase;
 
         public TypeDefinition ReferencingTypeDefinition => _referencingCodeElement as TypeDefinition;
 
@@ -78,7 +63,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         internal override string UndecoratedName => Signature.Name;
 
         // ReSharper disable once RedundantTypeArgumentsOfMethod
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
         protected override TypeAttributes GetAttributeFlagsImpl() => Signature.Attributes;
 

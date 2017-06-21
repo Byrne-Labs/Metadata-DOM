@@ -5,13 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using AssemblyToExpose = System.Reflection.Assembly;
-
-#else
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -42,7 +35,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Initialize();
         }
 
-        public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
+        public override System.Reflection.Assembly Assembly => MetadataState.AssemblyDefinition;
 
         public int GenericParameterCount { get; protected set; }
 
@@ -50,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MethodSignature<TypeBase> MethodSignature { get; }
 
-        public ImmutableArray<Parameter> Parameters => _parameters.Value;
+        public IEnumerable<Parameter> Parameters => _parameters.Value;
 
         public TypeBase ReturnType { get; protected set; }
 

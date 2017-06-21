@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
@@ -25,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public bool ContainsMetadata { get; }
 
-        public ImmutableArray<CustomAttribute> CustomAttributes => _customAttributes.Value;
+        public IEnumerable<CustomAttribute> CustomAttributes => _customAttributes.Value;
 
         public Blob HashValue => _hashValue.Value;
 

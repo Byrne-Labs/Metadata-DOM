@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using MethodBaseToExpose = System.Reflection.MethodBase;
-
-#else
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -20,7 +14,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImportScope> _importScope;
         private readonly Lazy<ImmutableArray<LocalConstant>> _localConstants;
         private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
-        private readonly Lazy<MethodBaseToExpose> _method;
+        private readonly Lazy<MethodBase> _method;
 
         internal LocalScope(LocalScopeHandle metadataHandle, MetadataState metadataState)
         {
@@ -32,7 +26,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             EndOffset = RawMetadata.EndOffset;
             _importScope = MetadataState.GetLazyCodeElement<ImportScope>(RawMetadata.ImportScope);
             Length = RawMetadata.Length;
-            _method = MetadataState.GetLazyCodeElement<MethodBaseToExpose>(RawMetadata.Method);
+            _method = MetadataState.GetLazyCodeElement<MethodBase>(RawMetadata.Method);
             StartOffset = RawMetadata.StartOffset;
             _children = new Lazy<ImmutableArray<LocalScope>>(LoadChildren);
             _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(RawMetadata.GetLocalConstants());
@@ -53,7 +47,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public LocalScopeHandle MetadataHandle { get; }
 
-        public override MethodBaseToExpose Method => _method.Value;
+        public override MethodBase Method => _method.Value;
 
         public System.Reflection.Metadata.LocalScope RawMetadata { get; }
 
@@ -76,7 +70,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 childrenHandles.Add(childrenEnumerator.Current);
             }
 
-            return MetadataState.GetCodeElements<LocalScope>(childrenHandles);
+            return MetadataState.GetCodeElements<LocalScope>(childrenHandles).ToImmutableArray();
         }
     }
 }

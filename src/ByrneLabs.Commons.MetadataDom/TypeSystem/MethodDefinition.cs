@@ -2,40 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using System.Globalization;
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using ModuleToExpose = System.Reflection.Module;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using ParameterInfoToExpose = System.Reflection.ParameterInfo;
-using MethodBodyToExpose = System.Reflection.MethodBody;
-
-#else
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using ParameterInfoToExpose = ByrneLabs.Commons.MetadataDom.ParameterInfo;
-using MethodBodyToExpose = ByrneLabs.Commons.MetadataDom.MethodBody;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
-    public partial class MethodDefinition : MethodInfo, IManagedCodeElement
+    public class MethodDefinition : MethodInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
@@ -44,8 +21,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<string> _fullName;
         private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
-        private readonly Lazy<MethodBodyToExpose> _methodBody;
-        private readonly Lazy<ImmutableArray<ParameterInfoToExpose>> _parameters;
+        private readonly Lazy<MethodBody> _methodBody;
+        private readonly Lazy<ImmutableArray<System.Reflection.ParameterInfo>> _parameters;
         private readonly Lazy<EventInfo> _relatedEvent;
         private readonly Lazy<PropertyInfo> _relatedProperty;
         private readonly Lazy<Parameter> _returnParameter;
@@ -63,8 +40,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
-            _methodBody = new Lazy<MethodBodyToExpose>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
-            _parameters = new Lazy<ImmutableArray<ParameterInfoToExpose>>(LoadParameters);
+            _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
+            _parameters = new Lazy<ImmutableArray<System.Reflection.ParameterInfo>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle(), this, new GenericContext(this, _declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
             _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, _declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
 
@@ -102,9 +79,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MethodDebugInformation DebugInformation => _debugInformation.Value;
 
-        public ImmutableArray<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
+        public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
-        public override TypeToExpose DeclaringType => _declaringType.Value;
+        public override Type DeclaringType => _declaringType.Value;
 
         public Document Document => DebugInformation?.Document;
 
@@ -118,21 +95,25 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
-        public override ModuleToExpose Module => MetadataState.ModuleDefinition;
+        public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Name { get; }
 
-        public override IEnumerable<ParameterInfoToExpose> Parameters => _parameters.Value;
+        public override IEnumerable<System.Reflection.ParameterInfo> Parameters => _parameters.Value;
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override EventInfoToExpose RelatedEvent => _relatedEvent.Value;
+        public override EventInfo RelatedEvent => _relatedEvent.Value;
 
-        public override PropertyInfoToExpose RelatedProperty => _relatedProperty.Value;
+        public override PropertyInfo RelatedProperty => _relatedProperty.Value;
 
-        public override ParameterInfoToExpose ReturnParameter => _returnParameter.Value;
+        public override System.Reflection.ParameterInfo ReturnParameter => _returnParameter.Value;
 
-        public override TypeToExpose ReturnType => Signature.ReturnType;
+        public override Type ReturnType => Signature.ReturnType;
+
+        public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
 
         public string SourceCode => DebugInformation?.SourceCode;
 
@@ -152,30 +133,40 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override System.Reflection.MethodInfo GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
+
+        public override object[] GetCustomAttributes(bool inherit) => CustomAttributeData.GetCustomAttributes(this, inherit);
+
+        public override object[] GetCustomAttributes(Type attributeType, bool inherit) => CustomAttributeData.GetCustomAttributes(this, attributeType, inherit);
+
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
         public override Type[] GetGenericArguments() => _genericParameters.Value.ToArray<Type>();
 
-        public override MethodBodyToExpose GetMethodBody() => _methodBody.Value;
+        public override System.Reflection.MethodBody GetMethodBody() => _methodBody.Value;
 
         public override MethodImplAttributes GetMethodImplementationFlags() => RawMetadata.ImplAttributes;
 
-        public override ParameterInfoToExpose[] GetParameters() => _parameters.Value.ToArray();
+        public override System.Reflection.ParameterInfo[] GetParameters() => _parameters.Value.ToArray();
 
-        private ImmutableArray<ParameterInfoToExpose> LoadParameters()
+        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override bool IsDefined(Type attributeType, bool inherit) => CustomAttributeData.IsDefined(this, attributeType, inherit);
+
+        private ImmutableArray<System.Reflection.ParameterInfo> LoadParameters()
         {
-            IEnumerable<ParameterInfoToExpose> parameters;
+            IEnumerable<ParameterInfo> parameters;
             var parameterHandles = RawMetadata.GetParameters();
             if (Signature.ParameterTypes.Any() && parameterHandles.Count == 0)
             {
                 /* Parameters do not have to be named in IL.  When this happens, the parameter does not show up in the parameter list but will have a parameter type.  If there are no parameters listed,
                  * we can use the order of the parameter types to get the position. -- Jonathan Byrne 01/11/2017
                 */
-                parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfoToExpose>().ToImmutableArray();
+                parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfo>().ToImmutableArray();
             }
             else if (Signature.ParameterTypes.Length > parameterHandles.Count)
             {
-                parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfoToExpose>().ToImmutableArray();
+                parameters = Signature.ParameterTypes.Select((parameterType, position) => new Parameter(this, parameterType, position, position > Signature.RequiredParameterCount, MetadataState)).Cast<ParameterInfo>().ToImmutableArray();
                 /* 
                  * TODO: After logging is enabled, log this message:
                  *  $"Method {DeclaringType.FullName}.{Name} has {parameterHandles.Count} parameters but {Signature.ParameterTypes.Length} parameter types were found"
@@ -186,40 +177,17 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 var parameterList = (from parameterHandle in parameterHandles
                         let parameter = MetadataState.AssemblyReader.GetParameter(parameterHandle)
                         where parameter.SequenceNumber > 0
-                        select MetadataState.GetCodeElement<Parameter>(parameterHandle, this)).Cast<ParameterInfoToExpose>()
+                        select MetadataState.GetCodeElement<Parameter>(parameterHandle, this)).Cast<ParameterInfo>()
                     .ToList();
 
                 parameters = parameterList.ToImmutableArray();
             }
             else
             {
-                parameters = parameterHandles.Select(parameterHandle => MetadataState.GetCodeElement<Parameter>(parameterHandle, this)).Cast<ParameterInfoToExpose>().ToImmutableArray();
+                parameters = parameterHandles.Select(parameterHandle => MetadataState.GetCodeElement<Parameter>(parameterHandle, this)).Cast<ParameterInfo>().ToImmutableArray();
             }
 
-            return parameters.ToImmutableArray();
+            return parameters.ToImmutableArray<System.Reflection.ParameterInfo>();
         }
     }
-
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-    public partial class MethodDefinition
-    {
-        public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
-
-        public override MethodInfoToExpose GetBaseDefinition() => throw NotSupportedHelper.FutureVersion();
-
-        public override object[] GetCustomAttributes(bool inherit) => CustomAttributeData.GetCustomAttributes(this, inherit);
-
-        public override object[] GetCustomAttributes(TypeToExpose attributeType, bool inherit) => CustomAttributeData.GetCustomAttributes(this, attributeType, inherit);
-
-        public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override bool IsDefined(TypeToExpose attributeType, bool inherit) => CustomAttributeData.IsDefined(this, attributeType, inherit);
-    }
-#else
-    public partial class MethodDefinition
-    {
-    }
-#endif
 }

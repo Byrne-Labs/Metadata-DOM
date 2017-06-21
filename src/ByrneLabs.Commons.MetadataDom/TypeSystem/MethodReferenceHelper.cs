@@ -2,24 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using MethodBaseToExpose = System.Reflection.MethodBase;
-using TypeToExpose = System.Type;
-
-#else
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     internal static class MethodReferenceHelper
     {
-        public static ImmutableArray<TypeToExpose> GetGenericTypeParameters(MethodBaseToExpose methodDefinition)
+        public static ImmutableArray<Type> GetGenericTypeParameters(MethodBase methodDefinition)
         {
-            ImmutableArray<TypeToExpose> genericTypeParameters;
+            ImmutableArray<Type> genericTypeParameters;
             // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (methodDefinition is MethodInfo)
             {
@@ -27,7 +19,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
             else if (methodDefinition is ConstructorInfo || methodDefinition == null)
             {
-                genericTypeParameters = ImmutableArray<TypeToExpose>.Empty;
+                genericTypeParameters = ImmutableArray<Type>.Empty;
             }
             else
             {
@@ -37,7 +29,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return genericTypeParameters;
         }
 
-        public static MethodSignature<TypeBase> GetMethodSignature(MethodBaseToExpose methodDefinition, MemberReference rawMetadata, MetadataState metadataState)
+        public static MethodSignature<TypeBase> GetMethodSignature(MethodBase methodDefinition, MemberReference rawMetadata, MetadataState metadataState)
         {
             MethodSignature<TypeBase> methodSignature;
             var genericContext = new GenericContext(methodDefinition as IManagedCodeElement, methodDefinition.DeclaringType.GenericTypeArguments, methodDefinition.GetGenericArguments());
@@ -45,7 +37,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return methodSignature;
         }
 
-        public static IEnumerable<Parameter> GetParameters(MethodBaseToExpose methodBase, MethodSignature<TypeBase> methodSignature, MetadataState metadataState)
+        public static IEnumerable<Parameter> GetParameters(MethodBase methodBase, MethodSignature<TypeBase> methodSignature, MetadataState metadataState)
         {
             var parameterIndex = 0;
 

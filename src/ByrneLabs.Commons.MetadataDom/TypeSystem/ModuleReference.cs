@@ -4,21 +4,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using AssemblyToExpose = System.Reflection.Assembly;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -34,7 +19,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
 
-        public override AssemblyToExpose Assembly => null;
+        public override System.Reflection.Assembly Assembly => null;
 
         public override Guid BaseGenerationId => throw NotSupportedHelper.FutureVersion();
 
@@ -50,14 +35,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string ScopeName { get; }
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-        public override TypeToExpose[] GetTypes() => throw NotSupportedHelper.FutureVersion();
+        public override Type[] GetTypes() => throw NotSupportedHelper.FutureVersion();
 
         public override bool IsResource() => throw NotSupportedHelper.FutureVersion();
 
-        protected override FieldInfoToExpose[] GetAllFields() => throw NotSupportedHelper.FutureVersion();
+        protected override System.Reflection.FieldInfo[] GetAllFields() => throw NotSupportedHelper.FutureVersion();
 
-        protected override MethodInfoToExpose[] GetAllMethods() => throw NotSupportedHelper.FutureVersion();
+        protected override System.Reflection.MethodInfo[] GetAllMethods() => throw NotSupportedHelper.FutureVersion();
     }
 }

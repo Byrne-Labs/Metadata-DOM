@@ -7,19 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using ModuleToExpose = System.Reflection.Module;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -30,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<ImmutableArray<AssemblyReference>> _assemblyReferences;
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
-        private readonly Lazy<MethodInfoToExpose> _entryPoint;
+        private readonly Lazy<MethodInfo> _entryPoint;
         private readonly Lazy<Module> _moduleDefinition;
         private readonly AssemblyName _name;
 
@@ -47,7 +34,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             name.SetPublicKey(MetadataState.AssemblyReader.GetBlobBytes(RawMetadata.PublicKey));
             _name = name;
 
-            _entryPoint = new Lazy<MethodInfoToExpose>(() => MetadataState.HasDebugMetadata ? MetadataState.GetCodeElement<MethodDefinition>(MetadataState.PdbReader.DebugMetadataHeader.EntryPoint) : null);
+            _entryPoint = new Lazy<MethodInfo>(() => MetadataState.HasDebugMetadata ? MetadataState.GetCodeElement<MethodDefinition>(MetadataState.PdbReader.DebugMetadataHeader.EntryPoint) : null);
             _assemblyReferences = MetadataState.GetLazyCodeElements<AssemblyReference>(MetadataState.AssemblyReader.AssemblyReferences);
             Flags = RawMetadata.Flags;
             HashAlgorithm = RawMetadata.HashAlgorithm;
@@ -60,7 +47,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
-        public override MethodInfoToExpose EntryPoint => _entryPoint.Value;
+        public override System.Reflection.MethodInfo EntryPoint => _entryPoint.Value;
 
         public override string EscapedCodeBase => throw NotSupportedHelper.FutureVersion();
 
@@ -70,27 +57,27 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string Location => MetadataState.AssemblyFileWrapper.CompiledFile.FullName;
 
-        public override ModuleToExpose ManifestModule => Modules.OfType<Module>().SingleOrDefault(module => module.Manifest);
+        public override System.Reflection.Module ManifestModule => Modules.OfType<Module>().SingleOrDefault(module => module.Manifest);
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-        public override TypeToExpose[] GetExportedTypes() => MetadataState.DefinedTypes.Where(type => type.IsPublic || type.IsNestedPublic).Cast<Type>().ToArray();
+        public override Type[] GetExportedTypes() => MetadataState.DefinedTypes.Where(type => type.IsPublic || type.IsNestedPublic).Cast<Type>().ToArray();
 
-        public override ModuleToExpose[] GetLoadedModules(bool getResourceModules) => throw NotSupportedHelper.FutureVersion();
+        public override System.Reflection.Module[] GetLoadedModules(bool getResourceModules) => throw NotSupportedHelper.FutureVersion();
 
         public override ManifestResourceInfo GetManifestResourceInfo(string resourceName) => throw NotSupportedHelper.FutureVersion();
 
         public override string[] GetManifestResourceNames() => throw NotSupportedHelper.FutureVersion();
 
         [SuppressMessage("ReSharper", "RedundantEnumerableCastCall", Justification = "Needed for .NET Core prior to 2.0")]
-        public override ModuleToExpose GetModule(string name) => Modules.OfType<ModuleToExpose>().SingleOrDefault(module => module.Name.Equals(name));
+        public override System.Reflection.Module GetModule(string name) => Modules.OfType<Module>().SingleOrDefault(module => module.Name.Equals(name));
 
-        public override ModuleToExpose[] GetModules(bool getResourceModules) => new List<ModuleToExpose> { _moduleDefinition.Value }.ToArray();
+        public override System.Reflection.Module[] GetModules(bool getResourceModules) => new List<System.Reflection.Module> { _moduleDefinition.Value }.ToArray();
 
         public override AssemblyName GetName(bool copiedName) => _name;
 
         public override AssemblyName[] GetReferencedAssemblies() => _assemblyReferences.Value.Select(assemblyReference => assemblyReference.GetName()).ToArray();
 
-        public override TypeToExpose[] GetTypes() => MetadataState.DefinedTypes.Cast<TypeToExpose>().ToArray();
+        public override Type[] GetTypes() => MetadataState.DefinedTypes.Cast<Type>().ToArray();
     }
 }

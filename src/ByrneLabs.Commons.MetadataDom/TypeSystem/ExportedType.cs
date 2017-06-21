@@ -4,21 +4,6 @@ using System.Collections.Immutable;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using AssemblyToExpose = System.Reflection.Assembly;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
@@ -40,13 +25,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             UndecoratedName = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
         }
 
-        public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
+        public override System.Reflection.Assembly Assembly => MetadataState.AssemblyDefinition;
 
         public TypeAttributes Attributes { get; }
 
-        public override IEnumerable<CustomAttributeDataToExpose> CustomAttributes => _customAttributes.Value;
+        public override IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes => _customAttributes.Value;
 
-        public override TypeToExpose DeclaringType { get; }
+        public override Type DeclaringType { get; }
 
         public object Implementation => _implementation.Value;
 

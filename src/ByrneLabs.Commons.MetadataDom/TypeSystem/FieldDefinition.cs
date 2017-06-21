@@ -6,23 +6,12 @@ using System.Globalization;
 using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using ModuleToExpose = System.Reflection.Module;
-
-#else
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
-    public partial class FieldDefinition : FieldInfo, IManagedCodeElement
+    public class FieldDefinition : FieldInfo, IManagedCodeElement
     {
         private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
@@ -46,11 +35,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override FieldAttributes Attributes => RawMetadata.Attributes;
 
-        public override TypeToExpose DeclaringType => _declaringType.Value;
+        public override Type DeclaringType => _declaringType.Value;
 
         public ConstantInfo DefaultValue => _defaultValue.Value;
 
-        public override TypeToExpose FieldType => _fieldType.Value;
+        public override RuntimeFieldHandle FieldHandle => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override Type FieldType => _fieldType.Value;
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
@@ -60,7 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
-        public override ModuleToExpose Module => MetadataState.ModuleDefinition;
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Name { get; }
 
@@ -68,7 +59,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public System.Reflection.Metadata.FieldDefinition RawMetadata { get; }
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public int RelativeVirtualAddress { get; }
 
@@ -82,19 +73,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
-
-        public override object GetRawConstantValue() => DefaultValue.Value;
-    }
-
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-    public partial class FieldDefinition
-    {
-        public override RuntimeFieldHandle FieldHandle => throw NotSupportedHelper.NotValidForMetadata();
-
         public override object[] GetCustomAttributes(bool inherit) => throw NotSupportedHelper.FutureVersion();
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
+
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
+
+        public override object GetRawConstantValue() => DefaultValue.Value;
 
         public override object GetValue(object obj) => throw NotSupportedHelper.NotValidForMetadata();
 
@@ -102,9 +87,4 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
     }
-#else
-    public partial class FieldDefinition
-    {
-    }
-#endif
 }

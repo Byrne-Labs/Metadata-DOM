@@ -54,7 +54,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             { typeof(TypeSpecificationHandle), typeof(TypeSpecification) }
         });
         private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
-        private readonly Lazy<ImmutableArray<AssemblyReference>> _assemblyReferences;
+        private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
         private readonly IDictionary<CodeElementKey, IManagedCodeElement> _codeElementCache = new Dictionary<CodeElementKey, IManagedCodeElement>();
         private readonly Lazy<ImmutableArray<TypeInfo>> _definedTypes;
         private readonly Lazy<ModuleDefinition> _moduleDefinition;
@@ -87,7 +87,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
             }
 
-            _assemblyReferences = new Lazy<ImmutableArray<AssemblyReference>>(() => AssemblyReader == null ? ImmutableArray<AssemblyReference>.Empty : GetCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences));
+            _assemblyReferences = new Lazy<IEnumerable<AssemblyReference>>(() => AssemblyReader == null ? Enumerable.Empty<AssemblyReference>() : GetCodeElements<AssemblyReference>(AssemblyReader.AssemblyReferences));
             _assemblyDefinition = new Lazy<AssemblyDefinition>(() => AssemblyReader?.IsAssembly == true ? GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition) : null);
             _moduleDefinition = GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
             _definedTypes = new Lazy<ImmutableArray<TypeInfo>>(() => AssemblyReader == null ? ImmutableArray<TypeInfo>.Empty : AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeInfo>().Where(type => !"<Module>".Equals(type.FullName)).ToImmutableArray());
@@ -97,9 +97,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MetadataReader AssemblyReader => AssemblyFileWrapper?.Reader;
 
-        public ImmutableArray<AssemblyReference> AssemblyReferences => _assemblyReferences.Value;
+        public IEnumerable<AssemblyReference> AssemblyReferences => _assemblyReferences.Value;
 
-        public ImmutableArray<TypeInfo> DefinedTypes => !HasMetadata ? ImmutableArray<TypeInfo>.Empty : _definedTypes.Value;
+        public IEnumerable<TypeInfo> DefinedTypes => !HasMetadata ? ImmutableArray<TypeInfo>.Empty : _definedTypes.Value;
 
         public bool HasDebugMetadata => PdbFileWrapper?.HasMetadata == true;
 

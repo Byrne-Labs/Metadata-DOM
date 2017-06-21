@@ -7,42 +7,13 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-#if NETSTANDARD2_0 || NET_FRAMEWORK
-using TypeInfoToExpose = System.Reflection.TypeInfo;
-using ConstructorInfoToExpose = System.Reflection.ConstructorInfo;
-using MethodBaseToExpose = System.Reflection.MethodBase;
-using CustomAttributeDataToExpose = System.Reflection.CustomAttributeData;
-using TypeToExpose = System.Type;
-using MethodInfoToExpose = System.Reflection.MethodInfo;
-using PropertyInfoToExpose = System.Reflection.PropertyInfo;
-using ModuleToExpose = System.Reflection.Module;
-using AssemblyToExpose = System.Reflection.Assembly;
-using EventInfoToExpose = System.Reflection.EventInfo;
-using FieldInfoToExpose = System.Reflection.FieldInfo;
-using MemberInfoToExpose = System.Reflection.MemberInfo;
-
-#else
-using TypeInfoToExpose = ByrneLabs.Commons.MetadataDom.TypeInfo;
-using ConstructorInfoToExpose = ByrneLabs.Commons.MetadataDom.ConstructorInfo;
-using MethodBaseToExpose = ByrneLabs.Commons.MetadataDom.MethodBase;
-using CustomAttributeDataToExpose = ByrneLabs.Commons.MetadataDom.CustomAttributeData;
-using TypeToExpose = ByrneLabs.Commons.MetadataDom.Type;
-using MethodInfoToExpose = ByrneLabs.Commons.MetadataDom.MethodInfo;
-using PropertyInfoToExpose = ByrneLabs.Commons.MetadataDom.PropertyInfo;
-using ModuleToExpose = ByrneLabs.Commons.MetadataDom.Module;
-using AssemblyToExpose = ByrneLabs.Commons.MetadataDom.Assembly;
-using EventInfoToExpose = ByrneLabs.Commons.MetadataDom.EventInfo;
-using FieldInfoToExpose = ByrneLabs.Commons.MetadataDom.FieldInfo;
-using MemberInfoToExpose = ByrneLabs.Commons.MetadataDom.MemberInfo;
-
-#endif
 
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
     public class TypeDefinition : TypeBase<TypeDefinition, TypeDefinitionHandle, System.Reflection.Metadata.TypeDefinition>
     {
-        private Lazy<ImmutableArray<MethodBaseToExpose>> _allMethods;
+        private Lazy<ImmutableArray<MethodBase>> _allMethods;
         private Lazy<TypeBase> _baseType;
         private Lazy<ImmutableArray<ConstructorInfo>> _constructors;
         private Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
@@ -52,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private Lazy<ImmutableArray<FieldInfo>> _fields;
         private Lazy<Type[]> _genericParameters;
         private Lazy<ImmutableArray<TypeInfo>> _interfaceImplementations;
-        private Lazy<ImmutableArray<MemberInfoToExpose>> _members;
+        private Lazy<ImmutableArray<MemberInfo>> _members;
         private Lazy<ImmutableArray<MethodImplementation>> _methodImplementations;
         private Lazy<ImmutableArray<MethodInfo>> _methods;
         private Lazy<string> _namespace;
@@ -78,31 +49,31 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Initialize();
         }
 
-        public override AssemblyToExpose Assembly => MetadataState.AssemblyDefinition;
+        public override System.Reflection.Assembly Assembly => MetadataState.AssemblyDefinition;
 
-        public override TypeToExpose BaseType => _baseType.Value;
+        public override Type BaseType => _baseType.Value;
 
         public override bool ContainsGenericParameters => GenericTypeParameters.Any();
 
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
-        public override IEnumerable<ConstructorInfoToExpose> DeclaredConstructors => _constructors.Value;
+        public override IEnumerable<System.Reflection.ConstructorInfo> DeclaredConstructors => _constructors.Value;
 
-        public override IEnumerable<EventInfoToExpose> DeclaredEvents => _events.Value;
+        public override IEnumerable<System.Reflection.EventInfo> DeclaredEvents => _events.Value;
 
-        public override IEnumerable<FieldInfoToExpose> DeclaredFields => _fields.Value;
+        public override IEnumerable<System.Reflection.FieldInfo> DeclaredFields => _fields.Value;
 
-        public override IEnumerable<MemberInfoToExpose> DeclaredMembers => _members.Value;
+        public override IEnumerable<MemberInfo> DeclaredMembers => _members.Value;
 
-        public override IEnumerable<MethodInfoToExpose> DeclaredMethods => _methods.Value;
+        public override IEnumerable<System.Reflection.MethodInfo> DeclaredMethods => _methods.Value;
 
-        public override IEnumerable<TypeInfoToExpose> DeclaredNestedTypes => _nestedTypes.Value;
+        public override IEnumerable<System.Reflection.TypeInfo> DeclaredNestedTypes => _nestedTypes.Value;
 
-        public override IEnumerable<PropertyInfoToExpose> DeclaredProperties => _properties.Value;
+        public override IEnumerable<System.Reflection.PropertyInfo> DeclaredProperties => _properties.Value;
 
-        public override MethodBaseToExpose DeclaringMethod => throw NotSupportedHelper.FutureVersion();
+        public override MethodBase DeclaringMethod => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose DeclaringType => _declaringType.Value;
+        public override Type DeclaringType => _declaringType.Value;
 
         public override IEnumerable<Document> Documents { get; } = ImmutableArray<Document>.Empty;
 
@@ -110,9 +81,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int GenericParameterPosition => throw NotSupportedHelper.FutureVersion();
 
-        public override TypeToExpose[] GenericTypeParameters => _genericParameters.Value;
+        public override Type[] GenericTypeParameters => _genericParameters.Value;
 
-        public override IEnumerable<TypeToExpose> ImplementedInterfaces => _interfaceImplementations.Value;
+        public override IEnumerable<Type> ImplementedInterfaces => _interfaceImplementations.Value;
 
         public override bool IsConstructedGenericType => GenericTypeDefinition != null;
 
@@ -136,29 +107,25 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public IEnumerable<MethodImplementation> MethodImplementations => _methodImplementations.Value;
 
-        public override ModuleToExpose Module => MetadataState.ModuleDefinition;
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Namespace => _namespace.Value;
 
         public NamespaceDefinition NamespaceDefinition => _namespaceDefinition.Value;
 
-        public override TypeToExpose ReflectedType => throw NotSupportedHelper.FutureVersion();
+        public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public override StructLayoutAttribute StructLayoutAttribute => throw NotSupportedHelper.FutureVersion();
 
-        public override ConstructorInfoToExpose TypeInitializer => DeclaredConstructors.SingleOrDefault(constructor => !constructor.GetParameters().Any());
+        public override ConstructorInfo TypeInitializer => (ConstructorInfo) DeclaredConstructors.SingleOrDefault(constructor => !constructor.GetParameters().Any());
 
         internal override string MetadataNamespace => RawMetadata.Namespace.IsNil ? null : MetadataState.AssemblyReader.GetString(RawMetadata.Namespace);
 
         internal override string UndecoratedName => MetadataState.AssemblyReader.GetString(RawMetadata.Name);
 
-#if NETSTANDARD2_0 || NET_FRAMEWORK
+        public override IList<System.Reflection.CustomAttributeData> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<System.Reflection.CustomAttributeData>();
 
-        public override IList<CustomAttributeDataToExpose> GetCustomAttributesData() => _customAttributes.Value.ToImmutableList<CustomAttributeDataToExpose>();
-
-#endif
-
-        //public override Type[] GetGenericArguments() => IsDelegate ? _genericParameters.Value : base.GetGenericArguments();
+        public override Type[] GetGenericArguments() => IsDelegate ? _genericParameters.Value : base.GetGenericArguments();
 
         protected override TypeAttributes GetAttributeFlagsImpl() => RawMetadata.Attributes;
 
