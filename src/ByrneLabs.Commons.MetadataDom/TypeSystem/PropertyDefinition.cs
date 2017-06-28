@@ -13,9 +13,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public class PropertyDefinition : PropertyInfo, IManagedCodeElement
     {
+        private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
         private readonly Lazy<Constant> _defaultValue;
         private readonly MethodSignature<TypeBase> _signature;
-        private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
 
         internal PropertyDefinition(PropertyDefinitionHandle metadataHandle, MetadataState metadataState)
         {

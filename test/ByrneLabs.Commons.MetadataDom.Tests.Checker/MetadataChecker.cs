@@ -74,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         /*
                          * The following code is horribly hackish but ImmutableArrays do not support most LINQ methods and as generic structs, are a little clumsy to handle. -- Jonathan Byrne 01/21/2017
                          */
-                        if ((propertyValue?.GetType().FullName).StartsWith("System.Collections.Immutable.ImmutableArray`1", StringComparison.Ordinal) == true && typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
+                        if ((propertyValue?.GetType().FullName).StartsWith("System.Collections.Immutable.ImmutableArray`1", StringComparison.Ordinal) && typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
                         {
                         }
                         if (codeElementsPropertyValue != null)

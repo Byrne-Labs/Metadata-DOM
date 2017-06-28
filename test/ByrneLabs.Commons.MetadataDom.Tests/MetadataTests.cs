@@ -67,6 +67,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             {
                 success &= CheckMetadata(CheckTypes.MetadataSymbols, build.AssemblyFile, build.SymbolsFile, false);
             }
+
             Assert.True(success);
         }
 
