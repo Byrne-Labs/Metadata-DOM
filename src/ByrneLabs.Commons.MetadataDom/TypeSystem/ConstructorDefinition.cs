@@ -76,13 +76,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool ContainsGenericParameters => _genericParameters.Value.Any() || DeclaringType.ContainsGenericParameters;
 
-        public MethodDebugInformation DebugInformation => _debugInformation.Value;
+        public override MetadataDom.MethodDebugInformation DebugInformation => _debugInformation.Value;
 
         public IEnumerable<DeclarativeSecurityAttribute> DeclarativeSecurityAttributes => _declarativeSecurityAttributes.Value;
 
         public override Type DeclaringType => _declaringType.Value;
-
-        public Document Document => DebugInformation?.Document;
 
         public override string FullName => _fullName.Value;
 
@@ -112,7 +110,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => null;
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => DebugInformation?.SequencePoints.Cast<MetadataDom.SequencePoint>().ToImmutableArray();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => (DebugInformation?.SequencePoints).ToImmutableArray();
 
         public override string SourceCode => DebugInformation?.SourceCode;
 

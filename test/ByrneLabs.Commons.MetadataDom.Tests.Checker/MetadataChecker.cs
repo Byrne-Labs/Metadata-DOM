@@ -40,19 +40,19 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             if (_checkState.Metadata.HasDebugMetadata && checkSymbols)
             {
-                foreach (var methodDefinition in _checkState.Metadata.MethodDefinitions.Where(methodDefinition => methodDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && methodDefinition.SequencePoints != null && !methodDefinition.SequencePoints.Any()))
+                foreach (var methodDefinition in _checkState.Metadata.MethodDefinitions.Where(methodDefinition => methodDefinition.SequencePoints != null && !methodDefinition.SequencePoints.Any()))
                 {
                     _checkState.AddError($"No sequence points loaded for method {methodDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
                 }
-                foreach (var methodDefinition in _checkState.Metadata.MethodDefinitions.Where(methodDefinition => methodDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && methodDefinition.SourceCode == null))
+                foreach (var methodDefinition in _checkState.Metadata.MethodDefinitions.Where(methodDefinition => methodDefinition.SourceCode == null))
                 {
                     _checkState.AddError($"No source code loaded for method {methodDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
                 }
-                foreach (var constructorDefinition in _checkState.Metadata.ConstructorDefinitions.Where(constructorDefinition => constructorDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && constructorDefinition.SequencePoints != null && !constructorDefinition.SequencePoints.Any()))
+                foreach (var constructorDefinition in _checkState.Metadata.ConstructorDefinitions.Where(constructorDefinition => constructorDefinition.SequencePoints != null && !constructorDefinition.SequencePoints.Any()))
                 {
                     _checkState.AddError($"No sequence points loaded for method {constructorDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
                 }
-                foreach (var constructorDefinition in _checkState.Metadata.ConstructorDefinitions.Where(constructorDefinition => constructorDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && constructorDefinition.SourceCode == null))
+                foreach (var constructorDefinition in _checkState.Metadata.ConstructorDefinitions.Where(constructorDefinition => constructorDefinition.SourceCode == null))
                 {
                     _checkState.AddError($"No source code loaded for method {constructorDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
                 }

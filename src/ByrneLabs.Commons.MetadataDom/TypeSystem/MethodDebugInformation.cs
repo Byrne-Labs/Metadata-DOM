@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
-    public class MethodDebugInformation : IManagedCodeElement
+    public class MethodDebugInformation : MetadataDom.MethodDebugInformation, IManagedCodeElement
     {
         private readonly Lazy<Document> _document;
         private readonly Lazy<StandaloneSignature> _localSignature;
@@ -35,21 +35,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _sourceCode = new Lazy<string>(() => Document == null ? null : string.Join(Environment.NewLine, SequencePoints.Where(sequencePoint => sequencePoint != null).Select(sequencePoint => sequencePoint.SourceCode)));
         }
 
-        public Document Document => _document.Value;
+        public override MetadataDom.Document Document => _document.Value;
 
         public StandaloneSignature LocalSignature => _localSignature.Value;
 
-        public MethodBase Method { get; }
+        public override MethodBase Method { get; }
 
         public System.Reflection.Metadata.MethodDebugInformation RawMetadata { get; }
 
-        public IEnumerable<SequencePoint> SequencePoints => _sequencePoints.Value;
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => _sequencePoints.Value;
 
         public Blob SequencePointsBlob => _sequencePointsBlob.Value;
 
-        public string SourceCode => _sourceCode.Value;
+        public override string SourceCode => _sourceCode.Value;
 
-        public MethodDefinition StateMachineKickoffMethod => _stateMachineKickoffMethod.Value;
+        public override MethodBase StateMachineKickoffMethod => _stateMachineKickoffMethod.Value;
 
         internal CodeElementKey Key { get; }
 

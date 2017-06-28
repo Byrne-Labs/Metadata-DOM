@@ -25,6 +25,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type DeclaringType => throw NotSupportedHelper.FutureVersion();
 
+        public override MetadataDom.MethodDebugInformation DebugInformation => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+
         public override string FullName => Name;
 
         public override bool IsCompilerGenerated => throw NotSupportedHelper.FutureVersion();

@@ -8,6 +8,8 @@ namespace ByrneLabs.Commons.MetadataDom
     [PublicAPI]
     public abstract class MethodInfo : System.Reflection.MethodInfo, IMemberInfo
     {
+        public abstract MethodDebugInformation DebugInformation { get; }
+
         public abstract string FullName { get; }
 
         public abstract IEnumerable<System.Reflection.ParameterInfo> Parameters { get; }
