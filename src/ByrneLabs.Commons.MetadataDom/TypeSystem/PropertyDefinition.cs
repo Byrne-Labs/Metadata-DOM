@@ -15,7 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         private readonly Lazy<Constant> _defaultValue;
         private readonly MethodSignature<TypeBase> _signature;
-        private Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
 
         internal PropertyDefinition(PropertyDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -54,15 +54,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsIndexer => _signature.ParameterTypes.Any() && "Item".Equals(Name);
 
-        public override bool IsSpecialName => Attributes.HasFlag(PropertyAttributes.SpecialName);
-
         public override MemberTypes MemberType { get; } = MemberTypes.Property;
 
         public PropertyDefinitionHandle MetadataHandle { get; }
 
         public override int MetadataToken => Key.Handle.Value.GetHashCode();
 
-        public override Module Module => MetadataState.ModuleDefinition;
+        public override System.Reflection.Module Module => MetadataState.ModuleDefinition;
 
         public override string Name { get; }
 
@@ -72,7 +70,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => null;
 
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+
         public override sealed System.Reflection.MethodInfo SetMethod { get; }
+
+        public override string SourceCode => throw new NotImplementedException();
 
         public override string TextSignature => $"{DeclaringType.FullName}.{Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
 

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -14,9 +15,9 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract bool IsIndexer { get; }
 
-        public abstract bool IsSpecialName { get; }
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
 
-        public abstract Module Module { get; }
+        public abstract string SourceCode { get; }
 
         public abstract string TextSignature { get; }
 

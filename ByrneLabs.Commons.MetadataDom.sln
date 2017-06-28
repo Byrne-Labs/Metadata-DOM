@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26510.0
+VisualStudioVersion = 15.0.26608.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom", "src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj", "{A07DA73F-EA48-4AB1-B482-B5641F1A3D5C}"
 EndProject

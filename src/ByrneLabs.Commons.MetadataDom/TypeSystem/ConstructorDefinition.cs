@@ -14,15 +14,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public class ConstructorDefinition : ConstructorInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
-        private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<string> _fullName;
         private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
-        private readonly Lazy<ImmutableArray<ParameterInfo>> _parameters;
+        private readonly Lazy<IEnumerable<ParameterInfo>> _parameters;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
 
         internal ConstructorDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState)
@@ -65,7 +65,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
             _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
-            _parameters = new Lazy<ImmutableArray<ParameterInfo>>(LoadParameters);
+            _parameters = new Lazy<IEnumerable<ParameterInfo>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle(), this, new GenericContext(this, _declaringType.Value.GenericTypeParameters, null)));
             _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, _declaringType.Value.GenericTypeParameters, GenericTypeParameters)));
         }
@@ -112,7 +112,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => null;
 
-        public string SourceCode => DebugInformation?.SourceCode;
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => DebugInformation?.SequencePoints.Cast<MetadataDom.SequencePoint>().ToImmutableArray();
+
+        public override string SourceCode => DebugInformation?.SourceCode;
 
         public override string TextSignature => FullName;
 
@@ -138,7 +140,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodImplAttributes GetMethodImplementationFlags() => RawMetadata.ImplAttributes;
 
-        public override System.Reflection.ParameterInfo[] GetParameters() => _parameters.Value.ToArray();
+        public override System.Reflection.ParameterInfo[] GetParameters() => _parameters.Value.ToArray<System.Reflection.ParameterInfo>();
 
         public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => throw NotSupportedHelper.NotValidForMetadata();
 
@@ -146,7 +148,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsDefined(Type attributeType, bool inherit) => throw NotSupportedHelper.FutureVersion();
 
-        private ImmutableArray<ParameterInfo> LoadParameters()
+        private IEnumerable<ParameterInfo> LoadParameters()
         {
             var allParameters = RawMetadata.GetParameters().Select(parameterMetadata => MetadataState.GetCodeElement<Parameter>(parameterMetadata, this)).ToList();
             var parameters = allParameters.Where(parameter => parameter.Position >= 0).ToList();

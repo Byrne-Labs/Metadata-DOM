@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class ManifestResource : ManifestResourceInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<IManagedCodeElement> _implementation;
 
         internal ManifestResource(ManifestResourceHandle metadataHandle, MetadataState metadataState) : base(null, null, ResourceLocation.Embedded)

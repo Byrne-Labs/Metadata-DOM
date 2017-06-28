@@ -11,10 +11,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class NamespaceDefinition : Namespace, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<ExportedType>> _exportedTypes;
-        private readonly Lazy<ImmutableArray<NamespaceDefinition>> _namespaceDefinitions;
+        private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
+        private readonly Lazy<IEnumerable<NamespaceDefinition>> _namespaceDefinitions;
         private readonly Lazy<NamespaceDefinition> _parent;
-        private readonly Lazy<ImmutableArray<TypeDefinition>> _typeDefinitions;
+        private readonly Lazy<IEnumerable<TypeDefinition>> _typeDefinitions;
 
         internal NamespaceDefinition(NamespaceDefinitionHandle metadataHandle, MetadataState metadataState)
         {

@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         private readonly GenericContext _genericContext;
         private readonly IManagedCodeElement _referencingCodeElement;
-        private Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
+        private Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
         private Lazy<TypeBase> _signature;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]

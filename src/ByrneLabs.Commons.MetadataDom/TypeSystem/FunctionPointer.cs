@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class FunctionPointer : EmptyTypeBase
     {
-        private Lazy<ImmutableArray<Parameter>> _parameters;
+        private Lazy<IEnumerable<Parameter>> _parameters;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
@@ -50,7 +50,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private void Initialize()
         {
             var position = 0;
-            _parameters = new Lazy<ImmutableArray<Parameter>>(() => MethodSignature.ParameterTypes.Select(parameterType => new Parameter(this, parameterType, ++position, position > MethodSignature.RequiredParameterCount, MetadataState)).ToImmutableArray());
+            _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodSignature.ParameterTypes.Select(parameterType => new Parameter(this, parameterType, ++position, position > MethodSignature.RequiredParameterCount, MetadataState)).ToImmutableArray());
             ReturnType = MethodSignature.ReturnType;
             GenericParameterCount = MethodSignature.GenericParameterCount;
         }

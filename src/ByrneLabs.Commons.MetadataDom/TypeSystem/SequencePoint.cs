@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
-    public class SequencePoint : IManagedCodeElement
+    public class SequencePoint : MetadataDom.SequencePoint, IManagedCodeElement
     {
         private readonly Lazy<Document> _document;
         private readonly Lazy<string> _sourceCode;
@@ -26,29 +26,27 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _sourceCode = new Lazy<string>(LoadSourceCode);
         }
 
-        public Document Document => _document.Value;
+        public override MetadataDom.Document Document => _document.Value;
 
-        public int EndColumn { get; }
+        public override int EndColumn { get; }
 
-        public int EndLine { get; }
+        public override int EndLine { get; }
 
-        public string FullName => Name;
+        public override string FullName => Name;
 
-        public bool IsHidden { get; }
+        public override bool IsHidden { get; }
 
-        public string Name => $"{Document.Name}({StartLine}:{StartColumn},{EndLine},{EndColumn})";
+        public override string Name => $"{Document.Name}({StartLine}:{StartColumn},{EndLine},{EndColumn})";
 
-        public int Offset { get; }
+        public override int Offset { get; }
 
         public System.Reflection.Metadata.SequencePoint RawMetadata { get; }
 
-        public string SourceCode => _sourceCode.Value;
+        public override string SourceCode => _sourceCode.Value;
 
-        public int StartColumn { get; }
+        public override int StartColumn { get; }
 
-        public int StartLine { get; }
-
-        public string TextSignature => Name;
+        public override int StartLine { get; }
 
         internal CodeElementKey Key { get; }
 

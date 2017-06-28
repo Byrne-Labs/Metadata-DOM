@@ -23,17 +23,40 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             _checkState = checkState;
         }
 
-        public void Check()
+        public void Check(bool checkTypes, bool checkSymbols)
         {
-            /*
-             * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
-             */
-            foreach (var typeDefinition in _checkState.Metadata.TypeDefinitions)
+            if (checkTypes)
             {
-                CheckCodeElement(typeDefinition, true);
+                /*
+                 * While not necessary, checking the declared types first makes debugging easier. -- Jonathan Byrne 12/17/2016
+                 */
+                foreach (var typeDefinition in _checkState.Metadata.TypeDefinitions)
+                {
+                    CheckCodeElement(typeDefinition, true);
+                }
+
+                CheckCodeElement(_checkState.Metadata, false);
             }
 
-            CheckCodeElement(_checkState.Metadata, false);
+            if (_checkState.Metadata.HasDebugMetadata && checkSymbols)
+            {
+                foreach (var methodDefinition in _checkState.Metadata.MethodDefinitions.Where(methodDefinition => methodDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && methodDefinition.SequencePoints != null && !methodDefinition.SequencePoints.Any()))
+                {
+                    _checkState.AddError($"No sequence points loaded for method {methodDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
+                }
+                foreach (var methodDefinition in _checkState.Metadata.MethodDefinitions.Where(methodDefinition => methodDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && methodDefinition.SourceCode == null))
+                {
+                    _checkState.AddError($"No source code loaded for method {methodDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
+                }
+                foreach (var constructorDefinition in _checkState.Metadata.ConstructorDefinitions.Where(constructorDefinition => constructorDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && constructorDefinition.SequencePoints != null && !constructorDefinition.SequencePoints.Any()))
+                {
+                    _checkState.AddError($"No sequence points loaded for method {constructorDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
+                }
+                foreach (var constructorDefinition in _checkState.Metadata.ConstructorDefinitions.Where(constructorDefinition => constructorDefinition.DebugInformation?.SequencePointsBlob?.Bytes?.Any() == true && constructorDefinition.SourceCode == null))
+                {
+                    _checkState.AddError($"No source code loaded for method {constructorDefinition.FullName} for {_checkState.Metadata.AssemblyFile.DirectoryName}");
+                }
+            }
         }
 
         private void CheckCodeElement(IManagedCodeElement codeElement, bool excludeAssemblies)
@@ -51,7 +74,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         /*
                          * The following code is horribly hackish but ImmutableArrays do not support most LINQ methods and as generic structs, are a little clumsy to handle. -- Jonathan Byrne 01/21/2017
                          */
-                        if (propertyValue?.GetType().FullName.StartsWith("System.Collections.Immutable.ImmutableArray`1") == true && typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
+                        if ((propertyValue?.GetType().FullName).StartsWith("System.Collections.Immutable.ImmutableArray`1", StringComparison.Ordinal) == true && typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(propertyValue.GetType().GenericTypeArguments[0]))
                         {
                         }
                         if (codeElementsPropertyValue != null)

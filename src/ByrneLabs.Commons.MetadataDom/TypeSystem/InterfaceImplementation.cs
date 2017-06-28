@@ -11,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {ImplementingType.FullName,nq} : {Interface.FullName}")]
     public class InterfaceImplementation : IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
 
         internal InterfaceImplementation(InterfaceImplementationHandle metadataHandle, TypeDefinition implementingType, MetadataState metadataState)
         {

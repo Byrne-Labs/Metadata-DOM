@@ -11,11 +11,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 {
     public class SampleBuild
     {
+        private static readonly string[] _debugTypesWithSymbolFiles = { "portable", "full", "pdbonly" };
         private static readonly string[] _dotNetCoreDebugTypes = { "none", "portable", "embedded" };
-        private static readonly string[] _dotNetCoreVersions = { "netcoreapp1.0", "netcoreapp1.1" };
+        private static readonly string[] _dotNetCoreVersions = { "netcoreapp1.0", "netcoreapp1.1", "netcoreapp2.0" };
         private static readonly string[] _dotNetFrameworkDebugTypes = { "none", "full", "pdbonly" };
         private static readonly string[] _dotNetFrameworkVersions = { "v2.0", "v3.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2" };
-        private static readonly string[] _dotNetStandardVersions = { "netstandard1.0", "netstandard1.1", "netstandard1.2", "netstandard1.3", "netstandard1.4", "netstandard1.5", "netstandard1.6" };
+        private static readonly string[] _dotNetStandardVersions = { "netstandard1.0", "netstandard1.1", "netstandard1.2", "netstandard1.3", "netstandard1.4", "netstandard1.5", "netstandard1.6", "netstandard2.0" };
         private static readonly string[] _fileAlignments = { "512", "1024", "2048", "4096", "8192" };
         private static readonly string[] _outputTypes = { "Library", "Exe", "Module", "Winexe" };
         private static readonly string[] _platforms = { "AnyCPU", "x86", "x64" };
@@ -23,7 +24,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private static readonly DirectoryInfo _sampleProjectBuildDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}ByrneLabs.Commons.MetadataDom.Tests.SampleToParse", "bin"));
         private static readonly DirectoryInfo _sampleProjectDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}ByrneLabs.Commons.MetadataDom.Tests.SampleToParse"));
 
-        public SampleBuild(string targetFramework, bool debugSymbols, bool optimize, string fileAlignment, int languageVersion, string platform, string outputType, string debugType)
+        private SampleBuild(string targetFramework, bool debugSymbols, bool optimize, string fileAlignment, int languageVersion, string platform, string outputType, string debugType)
         {
             TargetFramework = targetFramework;
             DebugSymbols = debugSymbols;
@@ -33,6 +34,22 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             Platform = platform;
             OutputType = outputType;
             DebugType = debugType;
+
+            var buildName = new StringBuilder();
+            buildName.Append(TargetFramework).Append("-CSharp").Append(LanguageVersion).Append("-");
+            if (DebugSymbols)
+            {
+                buildName.Append("Debug-");
+            }
+            if (Optimize)
+            {
+                buildName.Append("Optimized-");
+            }
+            buildName.Append(DebugType).Append("-").Append(FileAlignment).Append("-").Append(OutputType);
+            BuildName = buildName.ToString();
+            var baseFileName = $"{_sampleProjectBuildDirectory.FullName}\\{BuildName}\\{(IsFramework ? string.Empty : targetFramework + "\\")}Sample";
+            AssemblyFile = new FileInfo($"{baseFileName}.{(OutputType.Equals("Exe") || OutputType.Equals("Winexe") ? "exe" : "dll")}");
+            SymbolsFile = _debugTypesWithSymbolFiles.Contains(DebugType) ? new FileInfo($"{baseFileName}.pdb") : null;
         }
 
         public static IEnumerable<FileInfo> BuiltSamples =>
@@ -40,25 +57,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.exe", SearchOption.AllDirectories))
                 .Union(_sampleProjectBuildDirectory.EnumerateFiles("*.netmodule", SearchOption.AllDirectories)).ToList();
 
-        public string BuildName
-        {
-            get
-            {
-                var buildName = new StringBuilder();
-                buildName.Append(TargetFramework).Append("-CSharp").Append(LanguageVersion).Append("-");
-                if (DebugSymbols)
-                {
-                    buildName.Append("Debug-");
-                }
-                if (Optimize)
-                {
-                    buildName.Append("Optimized-");
-                }
-                buildName.Append(DebugType).Append("-").Append(FileAlignment).Append("-").Append(OutputType);
+        public FileInfo AssemblyFile { get; }
 
-                return buildName.ToString();
-            }
-        }
+        public string BuildName { get; }
+
+        public bool Built => AssemblyFile.Exists && (SymbolsFile == null || SymbolsFile.Exists);
 
         public bool DebugSymbols { get; }
 
@@ -76,7 +79,28 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         public string Platform { get; }
 
+        public FileInfo SymbolsFile { get; }
+
         public string TargetFramework { get; }
+
+        public static SampleBuild[] BuildBasicSymbolFormats()
+        {
+            var basicSymbolFormats = new[]
+            {
+                new SampleBuild("netcoreapp2.0", true, true, "512", 7, "AnyCPU", "Library", "portable"),
+                new SampleBuild("netcoreapp2.0", true, true, "512", 7, "AnyCPU", "Library", "embedded"),
+                new SampleBuild("v4.6.2", true, true, "512", 7, "AnyCPU", "Library", "full"),
+                new SampleBuild("v4.6.2", true, true, "512", 7, "AnyCPU", "Library", "pdbonly"),
+                new SampleBuild("netcoreapp2.0", true, false, "512", 7, "AnyCPU", "Library", "portable"),
+                new SampleBuild("netcoreapp2.0", true, false, "512", 7, "AnyCPU", "Library", "embedded"),
+                new SampleBuild("v4.6.2", true, false, "512", 7, "AnyCPU", "Library", "full"),
+                new SampleBuild("v4.6.2", true, false, "512", 7, "AnyCPU", "Library", "pdbonly")
+            };
+
+            Parallel.ForEach(basicSymbolFormats, build => build.Build());
+
+            return basicSymbolFormats;
+        }
 
         public static IEnumerable<FileInfo> GetSampleAssemblies(int sampleCount = 100)
         {
@@ -132,6 +156,11 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         public bool Build()
         {
+            if (Built)
+            {
+                return true;
+            }
+
             var success = true;
             if (!IsFramework)
             {
@@ -188,6 +217,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         private string GetBuildArguments()
         {
             var arguments = new StringBuilder();
+            arguments.Append("/property:BuildName=").Append(BuildName).Append(" ");
+            arguments.Append("/property:Configuration=").Append(BuildName).Append(" ");
             arguments.Append("/property:OutputType=").Append(OutputType).Append(" ");
             arguments.Append("/property:DebugType=").Append(DebugType).Append(" ");
             arguments.Append("/property:FileAlignment=").Append(FileAlignment).Append(" ");
@@ -203,15 +234,14 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 arguments.Append("/property:TargetFramework=").Append(TargetFramework).Append(" ");
             }
             arguments.Append("/property:Optimize=").Append(Optimize.ToString().ToLower()).Append(" ");
-            arguments.Append("/property:BuildName=").Append(BuildName).Append(" ");
 
             if (_dotNetFrameworkVersions.Contains(TargetFramework))
             {
-                arguments.Append("ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.NetFramework.csproj");
+                arguments.Append("Sample.NetFramework.csproj");
             }
             else
             {
-                arguments.Append("ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.NetCore.csproj");
+                arguments.Append("Sample.NetCore.csproj");
             }
 
             return arguments.ToString();

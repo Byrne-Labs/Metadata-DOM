@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
     public class EventDefinition : EventInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -72,8 +72,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             }
         }
 
-        public override bool IsSpecialName => Attributes.HasFlag(EventAttributes.SpecialName);
-
         public override MemberTypes MemberType { get; } = MemberTypes.Event;
 
         public EventDefinitionHandle MetadataHandle { get; }
@@ -91,6 +89,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public override System.Reflection.MethodInfo RemoveMethod { get; }
+
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+
+        public override string SourceCode => throw new NotImplementedException();
 
         public override string TextSignature => FullName;
 

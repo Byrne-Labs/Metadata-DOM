@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using JetBrains.Annotations;
 
@@ -15,22 +16,15 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract System.Reflection.Module Module { get; }
 
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
+
+        public abstract string SourceCode { get; }
+
         public BindingFlags BindingFlags => throw NotSupportedHelper.NotValidForMetadataType(GetType());
-
-        public bool IsIn => (Attributes & ParameterAttributes.In) != 0;
-
-        public bool IsLcid => (Attributes & ParameterAttributes.Lcid) != 0;
-
-        public bool IsOptional => (Attributes & ParameterAttributes.Optional) != 0;
-
-        public bool IsOut => (Attributes & ParameterAttributes.Out) != 0;
-
-        public bool IsRetval => (Attributes & ParameterAttributes.Retval) != 0;
 
         public MemberTypes MemberType => MemberTypes.Custom;
 
-        [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global", Justification = "False positive because it is not picking up the PublicAPI attribute on the other part of the class")]
-        public virtual object RawDefaultValue => throw NotSupportedHelper.FutureVersion();
+        public override object RawDefaultValue => throw NotSupportedHelper.FutureVersion();
 
         public virtual string TextSignature => TextSignatureImpl();
 

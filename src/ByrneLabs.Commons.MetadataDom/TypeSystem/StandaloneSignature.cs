@@ -9,8 +9,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class StandaloneSignature : IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private readonly Lazy<ImmutableArray<TypeBase>> _localSignature;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<TypeBase>> _localSignature;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
 
         internal StandaloneSignature(StandaloneSignatureHandle metadataHandle, GenericContext genericContext, MetadataState metadataState)
@@ -23,7 +23,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Kind = RawMetadata.GetKind();
             if (Kind == StandaloneSignatureKind.LocalVariables)
             {
-                _localSignature = new Lazy<ImmutableArray<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
+                _localSignature = new Lazy<IEnumerable<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
             }
             else
             {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Metadata;
 using JetBrains.Annotations;
 
@@ -12,24 +11,26 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class Metadata : IManagedCodeElement, IDisposable
     {
-        private readonly Lazy<ImmutableArray<AssemblyFile>> _assemblyFiles;
-        private readonly Lazy<ImmutableArray<CustomDebugInformation>> _customDebugInformation;
-        private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
-        private readonly Lazy<ImmutableArray<Document>> _documents;
-        private readonly Lazy<ImmutableArray<EventDefinition>> _eventDefinitions;
-        private readonly Lazy<ImmutableArray<ExportedType>> _exportedTypes;
-        private readonly Lazy<ImmutableArray<FieldDefinition>> _fieldDefinitions;
-        private readonly Lazy<ImmutableArray<ImportScope>> _importScopes;
-        private readonly Lazy<ImmutableArray<Language>> _languages;
-        private readonly Lazy<ImmutableArray<LocalConstant>> _localConstants;
-        private readonly Lazy<ImmutableArray<LocalScope>> _localScopes;
-        private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
-        private readonly Lazy<ImmutableArray<ManifestResource>> _manifestResources;
-        private readonly Lazy<ImmutableArray<IMemberInfo>> _memberDefinitions;
-        private readonly Lazy<ImmutableArray<MethodBase>> _methodDefinitions;
-        private readonly Lazy<ImmutableArray<PropertyDefinition>> _propertyDefinitions;
-        private readonly Lazy<ImmutableArray<TypeDefinition>> _typeDefinitions;
-        private readonly Lazy<ImmutableArray<TypeReference>> _typeReferences;
+        private readonly Lazy<IEnumerable<AssemblyFile>> _assemblyFiles;
+        private readonly Lazy<IEnumerable<ConstructorDefinition>> _constructorDefinitions;
+        private readonly Lazy<IEnumerable<CustomDebugInformation>> _customDebugInformation;
+        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<IEnumerable<Document>> _documents;
+        private readonly Lazy<IEnumerable<EventDefinition>> _eventDefinitions;
+        private readonly Lazy<IEnumerable<ExportedType>> _exportedTypes;
+        private readonly Lazy<IEnumerable<FieldDefinition>> _fieldDefinitions;
+        private readonly Lazy<IEnumerable<ImportScope>> _importScopes;
+        private readonly Lazy<IEnumerable<Language>> _languages;
+        private readonly Lazy<IEnumerable<LocalConstant>> _localConstants;
+        private readonly Lazy<IEnumerable<LocalScope>> _localScopes;
+        private readonly Lazy<IEnumerable<LocalVariable>> _localVariables;
+        private readonly Lazy<IEnumerable<ManifestResource>> _manifestResources;
+        private readonly Lazy<IEnumerable<IMemberInfo>> _memberDefinitions;
+        private readonly Lazy<IEnumerable<MethodDebugInformation>> _methodDebugInformation;
+        private readonly Lazy<IEnumerable<MethodDefinition>> _methodDefinitions;
+        private readonly Lazy<IEnumerable<PropertyDefinition>> _propertyDefinitions;
+        private readonly Lazy<IEnumerable<TypeDefinition>> _typeDefinitions;
+        private readonly Lazy<IEnumerable<TypeReference>> _typeReferences;
 
         public Metadata(FileInfo assemblyFile) : this(false, assemblyFile)
         {
@@ -59,46 +60,55 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 _fieldDefinitions = MetadataState.GetLazyCodeElements<FieldDefinition>(Reader.FieldDefinitions);
                 _importScopes = MetadataState.GetLazyCodeElements<ImportScope>(Reader.ImportScopes);
                 _manifestResources = MetadataState.GetLazyCodeElements<ManifestResource>(Reader.ManifestResources);
-                _methodDefinitions = new Lazy<ImmutableArray<MethodBase>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).Cast<MethodBase>().ToImmutableArray());
+                _methodDefinitions = new Lazy<IEnumerable<MethodDefinition>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).OfType<MethodDefinition>().ToImmutableArray());
+                _constructorDefinitions = new Lazy<IEnumerable<ConstructorDefinition>>(() => MetadataState.GetCodeElements(Reader.MethodDefinitions).OfType<ConstructorDefinition>().ToImmutableArray());
                 _propertyDefinitions = MetadataState.GetLazyCodeElements<PropertyDefinition>(Reader.PropertyDefinitions);
-                _typeDefinitions = new Lazy<ImmutableArray<TypeDefinition>>(() => MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToImmutableArray());
+                _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() => MetadataState.GetCodeElements<TypeDefinition>(Reader.TypeDefinitions).Where(typeDefinition => !"<Module>".Equals(typeDefinition.Name)).ToImmutableArray());
                 _typeReferences = MetadataState.GetLazyCodeElements<TypeReference>(Reader.TypeReferences);
-                _memberDefinitions = new Lazy<ImmutableArray<IMemberInfo>>(() => MethodDefinitions.Cast<IMemberInfo>().Union(FieldDefinitions).Union(EventDefinitions).Union(PropertyDefinitions).Union(TypeDefinitions).ToImmutableArray());
+                _memberDefinitions = new Lazy<IEnumerable<IMemberInfo>>(() => MethodDefinitions.Cast<IMemberInfo>().Union(FieldDefinitions).Union(EventDefinitions).Union(PropertyDefinitions).Union(TypeDefinitions).ToImmutableArray());
                 MetadataKind = Reader.MetadataKind;
             }
             else
             {
-                _assemblyFiles = new Lazy<ImmutableArray<AssemblyFile>>(() => ImmutableArray<AssemblyFile>.Empty);
-                _declarativeSecurityAttributes = new Lazy<ImmutableArray<DeclarativeSecurityAttribute>>(() => ImmutableArray<DeclarativeSecurityAttribute>.Empty);
-                _eventDefinitions = new Lazy<ImmutableArray<EventDefinition>>(() => ImmutableArray<EventDefinition>.Empty);
-                _exportedTypes = new Lazy<ImmutableArray<ExportedType>>(() => ImmutableArray<ExportedType>.Empty);
-                _fieldDefinitions = new Lazy<ImmutableArray<FieldDefinition>>(() => ImmutableArray<FieldDefinition>.Empty);
-                _importScopes = new Lazy<ImmutableArray<ImportScope>>(() => ImmutableArray<ImportScope>.Empty);
-                _manifestResources = new Lazy<ImmutableArray<ManifestResource>>(() => ImmutableArray<ManifestResource>.Empty);
-                _methodDefinitions = new Lazy<ImmutableArray<MethodBase>>(() => ImmutableArray<MethodBase>.Empty);
-                _propertyDefinitions = new Lazy<ImmutableArray<PropertyDefinition>>(() => ImmutableArray<PropertyDefinition>.Empty);
-                _typeDefinitions = new Lazy<ImmutableArray<TypeDefinition>>(() => ImmutableArray<TypeDefinition>.Empty);
-                _typeReferences = new Lazy<ImmutableArray<TypeReference>>(() => ImmutableArray<TypeReference>.Empty);
-                _memberDefinitions = new Lazy<ImmutableArray<IMemberInfo>>(() => ImmutableArray<IMemberInfo>.Empty);
+                _assemblyFiles = new Lazy<IEnumerable<AssemblyFile>>(() => ImmutableArray<AssemblyFile>.Empty);
+                _declarativeSecurityAttributes = new Lazy<IEnumerable<DeclarativeSecurityAttribute>>(() => ImmutableArray<DeclarativeSecurityAttribute>.Empty);
+                _eventDefinitions = new Lazy<IEnumerable<EventDefinition>>(() => ImmutableArray<EventDefinition>.Empty);
+                _exportedTypes = new Lazy<IEnumerable<ExportedType>>(() => ImmutableArray<ExportedType>.Empty);
+                _fieldDefinitions = new Lazy<IEnumerable<FieldDefinition>>(() => ImmutableArray<FieldDefinition>.Empty);
+                _importScopes = new Lazy<IEnumerable<ImportScope>>(() => ImmutableArray<ImportScope>.Empty);
+                _manifestResources = new Lazy<IEnumerable<ManifestResource>>(() => ImmutableArray<ManifestResource>.Empty);
+                _methodDefinitions = new Lazy<IEnumerable<MethodDefinition>>(() => ImmutableArray<MethodDefinition>.Empty);
+                _constructorDefinitions = new Lazy<IEnumerable<ConstructorDefinition>>(() => ImmutableArray<ConstructorDefinition>.Empty);
+                _propertyDefinitions = new Lazy<IEnumerable<PropertyDefinition>>(() => ImmutableArray<PropertyDefinition>.Empty);
+                _typeDefinitions = new Lazy<IEnumerable<TypeDefinition>>(() => ImmutableArray<TypeDefinition>.Empty);
+                _typeReferences = new Lazy<IEnumerable<TypeReference>>(() => ImmutableArray<TypeReference>.Empty);
+                _memberDefinitions = new Lazy<IEnumerable<IMemberInfo>>(() => ImmutableArray<IMemberInfo>.Empty);
             }
             if (MetadataState.HasDebugMetadata)
             {
                 HasDebugMetadata = true;
                 _customDebugInformation = MetadataState.GetLazyCodeElements<CustomDebugInformation>(MetadataState.PdbReader.CustomDebugInformation);
                 _documents = MetadataState.GetLazyCodeElements<Document>(MetadataState.PdbReader.Documents);
-                _languages = new Lazy<ImmutableArray<Language>>(() => Documents.Select(document => document.Language).Distinct().ToImmutableArray());
+                _languages = new Lazy<IEnumerable<Language>>(() => Documents.Select(document => document.Language).Distinct().ToImmutableArray());
                 _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(MetadataState.PdbReader.LocalConstants);
                 _localScopes = MetadataState.GetLazyCodeElements<LocalScope>(MetadataState.PdbReader.LocalScopes);
                 _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(MetadataState.PdbReader.LocalVariables);
+                _methodDebugInformation = new Lazy<IEnumerable<MethodDebugInformation>>(() =>
+                {
+                    // ReSharper disable once UnusedVariable -- We need to make sure all method definitions have been loaded before loading the method debug information. -- Jonathan Byrne 06/23/2017
+                    var methodDefinitions = MethodDefinitions;
+                    return MetadataState.GetCodeElements<MethodDebugInformation>(MetadataState.PdbReader.MethodDebugInformation);
+                });
             }
             else
             {
-                _customDebugInformation = new Lazy<ImmutableArray<CustomDebugInformation>>(() => ImmutableArray<CustomDebugInformation>.Empty);
-                _documents = new Lazy<ImmutableArray<Document>>(() => ImmutableArray<Document>.Empty);
-                _languages = new Lazy<ImmutableArray<Language>>(() => ImmutableArray<Language>.Empty);
-                _localConstants = new Lazy<ImmutableArray<LocalConstant>>(() => ImmutableArray<LocalConstant>.Empty);
-                _localScopes = new Lazy<ImmutableArray<LocalScope>>(() => ImmutableArray<LocalScope>.Empty);
-                _localVariables = new Lazy<ImmutableArray<LocalVariable>>(() => ImmutableArray<LocalVariable>.Empty);
+                _customDebugInformation = new Lazy<IEnumerable<CustomDebugInformation>>(() => ImmutableArray<CustomDebugInformation>.Empty);
+                _documents = new Lazy<IEnumerable<Document>>(() => ImmutableArray<Document>.Empty);
+                _languages = new Lazy<IEnumerable<Language>>(() => ImmutableArray<Language>.Empty);
+                _localConstants = new Lazy<IEnumerable<LocalConstant>>(() => ImmutableArray<LocalConstant>.Empty);
+                _localScopes = new Lazy<IEnumerable<LocalScope>>(() => ImmutableArray<LocalScope>.Empty);
+                _localVariables = new Lazy<IEnumerable<LocalVariable>>(() => ImmutableArray<LocalVariable>.Empty);
+                _methodDebugInformation = new Lazy<IEnumerable<MethodDebugInformation>>(() => ImmutableArray<MethodDebugInformation>.Empty);
             }
         }
 
@@ -109,6 +119,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public IEnumerable<AssemblyFile> AssemblyFiles => _assemblyFiles.Value;
 
         public IEnumerable<AssemblyReference> AssemblyReferences => MetadataState.AssemblyReferences;
+
+        public IEnumerable<ConstructorDefinition> ConstructorDefinitions => _constructorDefinitions.Value;
 
         public IEnumerable<CustomDebugInformation> CustomDebugInformation => _customDebugInformation.Value;
 
@@ -142,7 +154,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public MetadataKind MetadataKind { get; }
 
-        public IEnumerable<MethodBase> MethodDefinitions => _methodDefinitions.Value;
+        public IEnumerable<MethodDebugInformation> MethodDebugInformation => _methodDebugInformation.Value;
+
+        public IEnumerable<MethodDefinition> MethodDefinitions => _methodDefinitions.Value;
 
         public ModuleDefinition ModuleDefinition => MetadataState.ModuleDefinition;
 

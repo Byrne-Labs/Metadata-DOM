@@ -17,7 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore
         public static CheckState Check(FileInfo assemblyFile, FileInfo pdbFile = null)
         {
             var checker = new NetCoreChecker(null, assemblyFile, pdbFile);
-            return checker.Check();
+            return checker.Check(CheckTypes.Everything);
         }
 
         protected override System.Reflection.Assembly LoadAssembly() => AssemblyLoadContext.Default.LoadFromAssemblyPath(AssemblyFile.FullName);

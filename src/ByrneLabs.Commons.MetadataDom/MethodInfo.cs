@@ -16,6 +16,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract PropertyInfo RelatedProperty { get; }
 
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
+
+        public abstract string SourceCode { get; }
+
         public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
@@ -39,8 +43,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public override bool IsSecuritySafeCritical => throw NotSupportedHelper.NotValidForMetadata();
 
         public override bool IsSecurityTransparent => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override MemberTypes MemberType => MemberTypes.Method;
 
         public override System.Reflection.ParameterInfo[] GetParameters() => Parameters.ToArray();
 

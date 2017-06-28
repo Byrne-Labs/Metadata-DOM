@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class ExportedType : EmptyTypeBase<ExportedType, ExportedTypeHandle, System.Reflection.Metadata.ExportedType>
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<IManagedCodeElement> _implementation;
         private readonly Lazy<NamespaceDefinition> _namespaceDefinition;
 

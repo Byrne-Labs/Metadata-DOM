@@ -13,8 +13,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {Name}")]
     public class GenericParameter : EmptyTypeBase<GenericParameter, GenericParameterHandle, System.Reflection.Metadata.GenericParameter>
     {
-        private Lazy<ImmutableArray<GenericParameterConstraint>> _constraints;
-        private Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private Lazy<IEnumerable<GenericParameterConstraint>> _constraints;
+        private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private MethodBase _declaringMethod;
         private TypeBase _declaringType;
         private Lazy<IManagedCodeElement> _parent;

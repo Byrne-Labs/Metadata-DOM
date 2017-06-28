@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class ImportScope : MetadataDom.ImportScope, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<ImportDefinition>> _imports;
+        private readonly Lazy<IEnumerable<ImportDefinition>> _imports;
         private readonly Lazy<Blob> _importsBlob;
         private readonly Lazy<ImportScope> _parent;
 

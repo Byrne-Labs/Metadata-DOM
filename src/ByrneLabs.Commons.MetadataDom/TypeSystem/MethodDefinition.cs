@@ -14,15 +14,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public class MethodDefinition : MethodInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodDebugInformation> _debugInformation;
-        private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<string> _fullName;
         private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
-        private readonly Lazy<ImmutableArray<System.Reflection.ParameterInfo>> _parameters;
+        private readonly Lazy<IEnumerable<System.Reflection.ParameterInfo>> _parameters;
         private readonly Lazy<EventInfo> _relatedEvent;
         private readonly Lazy<PropertyInfo> _relatedProperty;
         private readonly Lazy<Parameter> _returnParameter;
@@ -41,7 +41,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _import = MetadataState.GetLazyCodeElement<MethodImport>(RawMetadata.GetImport());
             _methodBody = new Lazy<MethodBody>(() => RawMetadata.RelativeVirtualAddress == 0 ? null : MetadataState.GetCodeElement<MethodBody>(new CodeElementKey<MethodBody>(RawMetadata.RelativeVirtualAddress)));
-            _parameters = new Lazy<ImmutableArray<System.Reflection.ParameterInfo>>(LoadParameters);
+            _parameters = new Lazy<IEnumerable<System.Reflection.ParameterInfo>>(LoadParameters);
             _debugInformation = new Lazy<MethodDebugInformation>(() => !MetadataState.HasDebugMetadata ? null : MetadataState.GetCodeElement<MethodDebugInformation>(metadataHandle.ToDebugInformationHandle(), this, new GenericContext(this, _declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
             _signature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, _declaringType.Value.GenericTypeParameters, _genericParameters.Value)));
 
@@ -115,7 +115,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
 
-        public string SourceCode => DebugInformation?.SourceCode;
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => DebugInformation?.SequencePoints.Cast<MetadataDom.SequencePoint>().ToImmutableArray();
+
+        public override string SourceCode => DebugInformation?.SourceCode;
 
         public override string TextSignature => FullName;
 
@@ -153,7 +155,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsDefined(Type attributeType, bool inherit) => CustomAttributeData.IsDefined(this, attributeType, inherit);
 
-        private ImmutableArray<System.Reflection.ParameterInfo> LoadParameters()
+        private IEnumerable<System.Reflection.ParameterInfo> LoadParameters()
         {
             IEnumerable<ParameterInfo> parameters;
             var parameterHandles = RawMetadata.GetParameters();

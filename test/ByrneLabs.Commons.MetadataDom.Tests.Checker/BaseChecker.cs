@@ -71,13 +71,13 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
         private DirectoryInfo PassedAssemblyDirectory => new DirectoryInfo(Path.Combine(BaseDirectory.FullName, "Passed"));
 
-        public static CheckState CheckOnlyMetadata(FileInfo assemblyFile, FileInfo pdbFile = null)
+        public static CheckState Check(CheckTypes checkType, FileInfo assemblyFile, FileInfo pdbFile = null)
         {
             var checker = new BaseChecker(null, assemblyFile, pdbFile);
-            return checker.CheckOnlyMetadata();
+            return checker.Check(checkType);
         }
 
-        public CheckState Check()
+        public CheckState Check(CheckTypes checkType)
         {
             if (!AssemblyFile.Exists)
             {
@@ -86,17 +86,21 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             CheckPhaseMetadataLoad();
 
-            if (!_checkState.Faulted)
+            if (!_checkState.Faulted && (checkType & CheckTypes.Metadata) != 0)
             {
-                CheckPhaseMetadataCheck();
+                CheckPhaseMetadataCheck(checkType.HasFlag(CheckTypes.MetadataTypes), checkType.HasFlag(CheckTypes.MetadataSymbols));
             }
-            if (!_checkState.Faulted)
+
+            if (checkType.HasFlag(CheckTypes.ReflectionComparison))
             {
-                CheckPhaseAssemblyLoad();
-            }
-            if (!_checkState.Faulted)
-            {
-                CheckPhaseReflectionComparison();
+                if (!_checkState.Faulted)
+                {
+                    CheckPhaseAssemblyLoad();
+                }
+                if (!_checkState.Faulted)
+                {
+                    CheckPhaseReflectionComparison();
+                }
             }
 
             _checkState.FinishTime = DateTime.Now;
@@ -106,20 +110,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 CopyAssemblyToResultsFolder();
             }
             Console.WriteLine(_checkState.LogText);
-
-            return _checkState;
-        }
-
-        public CheckState CheckOnlyMetadata()
-        {
-            CheckPhaseMetadataLoad();
-
-            if (!_checkState.Faulted)
-            {
-                CheckPhaseMetadataCheck();
-            }
-
-            _checkState.FinishTime = DateTime.Now;
 
             return _checkState;
         }
@@ -163,12 +153,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             }
         }
 
-        private void CheckPhaseMetadataCheck()
+        private void CheckPhaseMetadataCheck(bool checkTypes, bool checkSymbols)
         {
             try
             {
                 var metadataChecker = new MetadataChecker(_checkState);
-                metadataChecker.Check();
+                metadataChecker.Check(checkTypes, checkSymbols);
             }
             catch (Exception exception)
             {

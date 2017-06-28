@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class ConstructorReference : ConstructorInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
         private readonly Lazy<IManagedCodeElement> _parent;
@@ -65,6 +65,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public Type ReturnType => MethodSignature?.ReturnType;
+
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => null;
+
+        public override string SourceCode => null;
 
         public override string TextSignature => Name;
 

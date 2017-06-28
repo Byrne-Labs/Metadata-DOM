@@ -12,6 +12,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IEnumerable<System.Reflection.ParameterInfo> Parameters { get; }
 
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
+
+        public abstract string SourceCode { get; }
+
         public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);

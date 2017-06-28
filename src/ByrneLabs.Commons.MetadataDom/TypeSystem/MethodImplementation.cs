@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class MethodImplementation : IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<MethodBase> _methodDeclaration;
         private readonly Lazy<MethodBase> _methodDefinition;

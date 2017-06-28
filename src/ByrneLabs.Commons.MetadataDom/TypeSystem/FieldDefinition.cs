@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullName}")]
     public class FieldDefinition : FieldInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<TypeBase> _fieldType;
@@ -62,6 +62,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
         public int RelativeVirtualAddress { get; }
+
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+
+        public override string SourceCode => throw new NotImplementedException();
 
         public override string TextSignature => FullName;
 

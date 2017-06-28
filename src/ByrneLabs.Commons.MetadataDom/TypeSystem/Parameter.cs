@@ -13,7 +13,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: \"{ParameterType.FullName,nq} {Name,nq}\"")]
     public class Parameter : ParameterInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<Constant> _defaultValue;
         private readonly bool _optional;
 
@@ -34,7 +34,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
             MetadataState = metadataState;
             Key = new CodeElementKey<Parameter>(member, position);
-            _customAttributes = new Lazy<ImmutableArray<CustomAttribute>>(() => ImmutableArray<CustomAttribute>.Empty);
+            _customAttributes = new Lazy<IEnumerable<CustomAttribute>>(() => ImmutableArray<CustomAttribute>.Empty);
             Position = position;
             _optional = optional;
             _defaultValue = new Lazy<Constant>(() => null);
@@ -98,6 +98,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override sealed int Position { get; }
 
         public System.Reflection.Metadata.Parameter RawMetadata { get; }
+
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+
+        public override string SourceCode => throw new NotImplementedException();
 
         internal CodeElementKey Key { get; }
 

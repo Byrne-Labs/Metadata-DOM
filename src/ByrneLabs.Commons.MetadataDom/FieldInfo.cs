@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 
@@ -9,6 +10,10 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public abstract string FullName { get; }
 
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
+
+        public abstract string SourceCode { get; }
+
         public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
@@ -16,10 +21,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
         public bool IsInherited => DeclaringType == ReflectedType;
-
-        public override MemberTypes MemberType => MemberTypes.Field;
-
-        public abstract object GetRawConstantValue();
 
         public override string ToString() => FullName;
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 
@@ -9,7 +10,9 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public abstract string FullName { get; }
 
-        public abstract bool IsSpecialName { get; }
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
+
+        public abstract string SourceCode { get; }
 
         public abstract string TextSignature { get; }
 
@@ -22,8 +25,6 @@ namespace ByrneLabs.Commons.MetadataDom
         public bool IsPublic => AddMethod?.IsPublic != false && RemoveMethod?.IsPublic != false && RaiseMethod?.IsPublic != false;
 
         public bool IsStatic => AddMethod?.IsStatic != false && RemoveMethod?.IsStatic != false && RaiseMethod?.IsStatic != false;
-
-        public override MemberTypes MemberType => MemberTypes.Event;
 
         public override string ToString() => FullName;
     }

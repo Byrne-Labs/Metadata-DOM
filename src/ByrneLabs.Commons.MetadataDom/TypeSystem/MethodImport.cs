@@ -55,6 +55,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
 
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => null;
+
+        public override string SourceCode => null;
+
         public override string TextSignature => Name;
 
         internal CodeElementKey Key { get; }

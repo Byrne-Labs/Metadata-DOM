@@ -33,9 +33,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract IEnumerable<Language> Languages { get; }
 
-        public abstract string TextSignature { get; }
+        public abstract IEnumerable<SequencePoint> SequencePoints { get; }
 
-        public abstract ConstructorInfo TypeInitializer { get; }
+        public abstract string SourceCode { get; }
+
+        public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
@@ -45,15 +47,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public virtual bool HasGenericTypeArguments => GetGenericArguments().Any();
 
-        public bool IsCOMObject => throw NotSupportedHelper.NotValidForMetadata();
-
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
         public override bool IsConstructedGenericType => throw NotSupportedHelper.FutureVersion();
 
         public bool IsInherited => DeclaringType == ReflectedType;
-
-        public bool IsPrimitive => IsPrimitiveImpl();
 
         public override bool IsSecurityCritical => throw NotSupportedHelper.NotValidForMetadata();
 

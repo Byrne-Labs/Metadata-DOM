@@ -102,11 +102,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => null;
 
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => null;
+
+        public override string SourceCode => null;
+
         public override StructLayoutAttribute StructLayoutAttribute => null;
 
         public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
-
-        public override ConstructorInfo TypeInitializer => null;
 
         internal override string MetadataNamespace => null;
 

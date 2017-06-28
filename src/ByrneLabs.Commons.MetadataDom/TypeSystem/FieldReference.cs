@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
@@ -8,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class FieldReference : FieldInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<IManagedCodeElement> _parent;
         private readonly Lazy<TypeBase> _signature;
 
@@ -60,6 +61,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public MemberReference RawMetadata { get; }
 
         public override Type ReflectedType => throw NotSupportedHelper.NotValidForMetadata();
+
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+
+        public override string SourceCode => throw new NotImplementedException();
 
         public override string TextSignature => $"{FullName}";
 

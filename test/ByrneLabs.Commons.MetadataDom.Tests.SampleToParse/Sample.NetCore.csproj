@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
     <PropertyGroup Label="Set Defaults">
-        <TargetFramework Condition="'$(TargetFramework)' == ''">netcoreapp1.0</TargetFramework>
+        <TargetFramework Condition="'$(TargetFramework)' == ''">netcoreapp2.0</TargetFramework>
         <OutputType Condition="'$(OutputType)' == ''">Library</OutputType>
     </PropertyGroup>
 
@@ -19,29 +19,38 @@
         <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.4'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1</FrameworkVersionConstant>
         <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.5'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;NETSTANDARD_1_5;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
         <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard1.6'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;NETSTANDARD_1_5;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netstandard2.0'">DOTNET_STANDARD;NETSTANDARD_1_0;NETSTANDARD_1_1;NETSTANDARD_1_2;NETSTANDARD_1_3;NETSTANDARD_1_4;NETSTANDARD_1_5;NETSTANDARD_1_6;NETSTANDARD_2_0;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
         <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netcoreapp1.0'">DOTNET_CORE;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
         <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netcoreapp1.1'">DOTNET_CORE;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
+        <FrameworkVersionConstant Condition="'$(TargetFramework)' == 'netcoreapp2.0'">DOTNET_CORE;NETSTANDARD_2_0;NETSTANDARD_1_6;DOTNET_V2_0;DOTNET_V3_0;DOTNET_V3_5;DOTNET_V4_0;DOTNET_V4_5;DOTNET_V4_5_1;DOTNET_V4_5_2;DOTNET_V4_6;DOTNET_V4_6_1;DOTNET_V4_6_2</FrameworkVersionConstant>
     </PropertyGroup>
 
     <PropertyGroup Label="Configuration">
-        <AssemblyName>ByrneLabs.Commons.MetadataDom.Tests.SampleToParse</AssemblyName>
+        <AssemblyName>Sample</AssemblyName>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <OutputType>library</OutputType>
         <WarningLevel>0</WarningLevel>
-        <BaseOutputPath>bin\$(BuildName)\</BaseOutputPath>
-        <BaseIntermediateOutputPath>obj\$(BuildName)\</BaseIntermediateOutputPath>
-        <OutputPath>bin\$(BuildName)\</OutputPath>
-        <IntermediateOutputPath>obj\$(BuildName)\</IntermediateOutputPath>
         <DefineConstants>$(FrameworkVersionConstant);$(LanguageVersionConstant);DOTNET_FRAMEWORK</DefineConstants>
         <RestorePackages>true</RestorePackages>
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="**\*.cs" />
-        <Compile Remove="Properties\AssemblyInfo.cs" />
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Condition="$(TargetFramework.StartsWith('netcoreapp1'))" Include="Microsoft.NETCore.App" Version="1.0.1" />
         <PackageReference Condition="$(TargetFramework.StartsWith('netstandard1'))" Include="NETStandard.Library" Version="1.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="bin\**" />
+        <Compile Remove="obj\**" />
+        <EmbeddedResource Remove="bin\**" />
+        <EmbeddedResource Remove="obj\**" />
+        <None Remove="bin\**" />
+        <None Remove="obj\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj.DotSettings" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Properties\**" />
     </ItemGroup>
 </Project>

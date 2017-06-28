@@ -10,10 +10,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class LocalScope : MetadataDom.LocalScope, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<LocalScope>> _children;
+        private readonly Lazy<IEnumerable<LocalScope>> _children;
         private readonly Lazy<ImportScope> _importScope;
-        private readonly Lazy<ImmutableArray<LocalConstant>> _localConstants;
-        private readonly Lazy<ImmutableArray<LocalVariable>> _localVariables;
+        private readonly Lazy<IEnumerable<LocalConstant>> _localConstants;
+        private readonly Lazy<IEnumerable<LocalVariable>> _localVariables;
         private readonly Lazy<MethodBase> _method;
 
         internal LocalScope(LocalScopeHandle metadataHandle, MetadataState metadataState)
@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             Length = RawMetadata.Length;
             _method = MetadataState.GetLazyCodeElement<MethodBase>(RawMetadata.Method);
             StartOffset = RawMetadata.StartOffset;
-            _children = new Lazy<ImmutableArray<LocalScope>>(LoadChildren);
+            _children = new Lazy<IEnumerable<LocalScope>>(LoadChildren);
             _localConstants = MetadataState.GetLazyCodeElements<LocalConstant>(RawMetadata.GetLocalConstants());
             _localVariables = MetadataState.GetLazyCodeElements<LocalVariable>(RawMetadata.GetLocalVariables());
         }
@@ -61,7 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         MetadataState IManagedCodeElement.MetadataState => MetadataState;
 
-        private ImmutableArray<LocalScope> LoadChildren()
+        private IEnumerable<LocalScope> LoadChildren()
         {
             var childrenHandles = new List<LocalScopeHandle>();
             var childrenEnumerator = RawMetadata.GetChildren();

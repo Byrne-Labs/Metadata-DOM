@@ -10,8 +10,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     public class MethodReference : MethodInfo, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private readonly Lazy<ImmutableArray<Type>> _genericTypeParameters;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<Type>> _genericTypeParameters;
         private readonly Lazy<MethodSignature<TypeBase>> _methodSignature;
         private readonly Lazy<IEnumerable<Parameter>> _parameters;
         private readonly Lazy<IManagedCodeElement> _parent;
@@ -43,7 +43,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 return parent;
             });
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
-            _genericTypeParameters = new Lazy<ImmutableArray<Type>>(() => MethodReferenceHelper.GetGenericTypeParameters(methodImplementationDeclaration));
+            _genericTypeParameters = new Lazy<IEnumerable<Type>>(() => MethodReferenceHelper.GetGenericTypeParameters(methodImplementationDeclaration));
             _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => MethodReferenceHelper.GetMethodSignature(this, RawMetadata, MetadataState));
             _parameters = new Lazy<IEnumerable<Parameter>>(() => MethodReferenceHelper.GetParameters(this, _methodSignature.Value, metadataState));
             _returnParameter = metadataState.GetLazyCodeElement<Parameter>(this, ReturnType, _methodSignature.Value.ParameterTypes.Length, false, metadataState);
@@ -80,6 +80,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public Type ReturnType => MethodSignature?.ReturnType;
 
         public override ICustomAttributeProvider ReturnTypeCustomAttributes => throw NotSupportedHelper.FutureVersion();
+
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => null;
+
+        public override string SourceCode => null;
 
         public override string TextSignature => Name;
 

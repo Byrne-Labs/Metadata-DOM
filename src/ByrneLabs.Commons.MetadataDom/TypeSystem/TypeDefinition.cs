@@ -13,23 +13,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class TypeDefinition : TypeBase<TypeDefinition, TypeDefinitionHandle, System.Reflection.Metadata.TypeDefinition>
     {
-        private Lazy<ImmutableArray<MethodBase>> _allMethods;
+        private Lazy<IEnumerable<MethodBase>> _allMethods;
         private Lazy<TypeBase> _baseType;
-        private Lazy<ImmutableArray<ConstructorInfo>> _constructors;
-        private Lazy<ImmutableArray<CustomAttributeData>> _customAttributes;
-        private Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private Lazy<IEnumerable<ConstructorInfo>> _constructors;
+        private Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
+        private Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private Lazy<TypeDefinition> _declaringType;
-        private Lazy<ImmutableArray<EventInfo>> _events;
-        private Lazy<ImmutableArray<FieldInfo>> _fields;
+        private Lazy<IEnumerable<EventInfo>> _events;
+        private Lazy<IEnumerable<FieldInfo>> _fields;
         private Lazy<Type[]> _genericParameters;
-        private Lazy<ImmutableArray<TypeInfo>> _interfaceImplementations;
-        private Lazy<ImmutableArray<MemberInfo>> _members;
-        private Lazy<ImmutableArray<MethodImplementation>> _methodImplementations;
-        private Lazy<ImmutableArray<MethodInfo>> _methods;
+        private Lazy<IEnumerable<TypeInfo>> _interfaceImplementations;
+        private Lazy<IEnumerable<MemberInfo>> _members;
+        private Lazy<IEnumerable<MethodImplementation>> _methodImplementations;
+        private Lazy<IEnumerable<MethodInfo>> _methods;
         private Lazy<string> _namespace;
         private Lazy<NamespaceDefinition> _namespaceDefinition;
-        private Lazy<ImmutableArray<TypeInfo>> _nestedTypes;
-        private Lazy<ImmutableArray<PropertyInfo>> _properties;
+        private Lazy<IEnumerable<TypeInfo>> _nestedTypes;
+        private Lazy<IEnumerable<PropertyInfo>> _properties;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
@@ -115,9 +115,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override StructLayoutAttribute StructLayoutAttribute => throw NotSupportedHelper.FutureVersion();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
 
-        public override ConstructorInfo TypeInitializer => (ConstructorInfo) DeclaredConstructors.SingleOrDefault(constructor => !constructor.GetParameters().Any());
+        public override string SourceCode => throw new NotImplementedException();
+
+        public override StructLayoutAttribute StructLayoutAttribute => throw NotSupportedHelper.FutureVersion();
 
         internal override string MetadataNamespace => RawMetadata.Namespace.IsNil ? null : MetadataState.AssemblyReader.GetString(RawMetadata.Namespace);
 
@@ -173,8 +175,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 return @namespace;
             });
             _allMethods = MetadataState.GetLazyCodeElements<MethodBase>(RawMetadata.GetMethods());
-            _methods = new Lazy<ImmutableArray<MethodInfo>>(() => _allMethods.Value.OfType<MethodInfo>().ToImmutableArray());
-            _constructors = new Lazy<ImmutableArray<ConstructorInfo>>(() => _allMethods.Value.OfType<ConstructorInfo>().ToImmutableArray());
+            _methods = new Lazy<IEnumerable<MethodInfo>>(() => _allMethods.Value.OfType<MethodInfo>().ToImmutableArray());
+            _constructors = new Lazy<IEnumerable<ConstructorInfo>>(() => _allMethods.Value.OfType<ConstructorInfo>().ToImmutableArray());
             _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(RawMetadata.GetMethodImplementations());
             _baseType = new Lazy<TypeBase>(() =>
             {
@@ -204,10 +206,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return genericParameters.Cast<Type>().ToArray();
             });
-            _interfaceImplementations = new Lazy<ImmutableArray<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo) MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
+            _interfaceImplementations = new Lazy<IEnumerable<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo) MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition, TypeInfo>(RawMetadata.GetNestedTypes());
             _properties = MetadataState.GetLazyCodeElements<PropertyDefinition, PropertyInfo>(RawMetadata.GetProperties());
-            _members = new Lazy<ImmutableArray<MemberInfo>>(() => DeclaredMethods.Union<MemberInfo>(DeclaredFields).Union(DeclaredConstructors).Union(DeclaredEvents).Union(DeclaredProperties).Union(DeclaredNestedTypes).ToImmutableArray());
+            _members = new Lazy<IEnumerable<MemberInfo>>(() => DeclaredMethods.Union<MemberInfo>(DeclaredFields).Union(DeclaredConstructors).Union(DeclaredEvents).Union(DeclaredProperties).Union(DeclaredNestedTypes).ToImmutableArray());
         }
     }
 }

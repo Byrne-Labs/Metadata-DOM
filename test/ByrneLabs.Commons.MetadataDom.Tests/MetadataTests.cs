@@ -21,15 +21,15 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnOwnAssembly() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
+        public void TestOnOwnAssembly() => CheckMetadata(CheckTypes.MetadataTypes, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")));
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnOwnAssemblyAndPdb() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+        public void TestOnOwnAssemblyAndPdb() => CheckMetadata(CheckTypes.Metadata, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.dll")), new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnOwnPdb() => CheckMetadata(null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
+        public void TestOnOwnPdb() => CheckMetadata(CheckTypes.MetadataSymbols, null, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.pdb")));
 
         [Fact]
         [Trait("Category", "Fast")]
@@ -38,7 +38,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var loadableFiles = ResourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles.Where(file => !file.Name.Equals("EmptyType.dll")))
             {
-                CheckMetadata(loadableFile);
+                CheckMetadata(CheckTypes.Metadata, loadableFile);
             }
         }
 
@@ -49,17 +49,30 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var loadableFiles = ResourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles)
             {
-                CheckMetadata(loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null);
+                CheckMetadata(CheckTypes.Metadata, loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null);
             }
         }
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnSampleAssembly() => CheckMetadata(new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+        public void TestOnSampleAssembly() => CheckMetadata(CheckTypes.Metadata, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
 
-        private bool CheckMetadata(FileInfo assemblyFile, FileInfo pdbFile = null, bool assertSuccess = true)
+        [Fact]
+        [Trait("Category", "Fast")]
+        public void TestOnSamplePdbBasicSymbolFormats()
         {
-            var checkState = BaseChecker.CheckOnlyMetadata(assemblyFile, pdbFile);
+            var basicSymbolFormats = SampleBuild.BuildBasicSymbolFormats();
+            var success = true;
+            foreach (var build in basicSymbolFormats)
+            {
+                success &= CheckMetadata(CheckTypes.MetadataSymbols, build.AssemblyFile, build.SymbolsFile, false);
+            }
+            Assert.True(success);
+        }
+
+        private bool CheckMetadata(CheckTypes checkType, FileInfo assemblyFile, FileInfo pdbFile = null, bool assertSuccess = true)
+        {
+            var checkState = BaseChecker.Check(checkType, assemblyFile, pdbFile);
             var outputMessage = new StringBuilder();
             outputMessage.Append('-', 120).AppendLine();
             outputMessage.AppendLine(assemblyFile?.FullName ?? pdbFile?.FullName).AppendLine();
@@ -81,23 +94,36 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
             outputMessage.AppendLine(checkState.ErrorLogText);
 
+            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
+            {
+                if (checkState.Metadata.AssemblyDefinition == null)
+                {
+                    checkState.AddError("Assembly definition null");
+                }
+                if (!checkState.Metadata.TypeDefinitions.Any())
+                {
+                    checkState.AddError("No type definitions loaded");
+                }
+            }
+            if (pdbFile != null)
+            {
+                if (!checkState.Metadata.Documents.Any())
+                {
+                    checkState.AddError("No documents loaded");
+                }
+                if (!checkState.Metadata.MethodDebugInformation.Any())
+                {
+                    checkState.AddError("No method debug information loaded");
+                }
+            }
+
             if (!success)
             {
                 _output.WriteLine(outputMessage.ToString());
             }
-
             if (assertSuccess)
             {
                 Assert.True(checkState.Success);
-                if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
-                {
-                    Assert.NotNull(checkState.Metadata.AssemblyDefinition);
-                    Assert.True(checkState.Metadata.TypeDefinitions.Any());
-                }
-                if (pdbFile != null)
-                {
-                    Assert.True(checkState.Metadata.Documents.Any());
-                }
             }
 
             return success;

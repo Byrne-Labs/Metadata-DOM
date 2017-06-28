@@ -11,7 +11,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore
         private static void Main(string[] args)
         {
             var checker = new NetCoreChecker(args);
-            var exitCode = checker.Check().Success ? 0 : 1;
+            var exitCode = checker.Check(CheckTypes.Everything).Success ? 0 : 1;
             Environment.Exit(exitCode);
         }
     }

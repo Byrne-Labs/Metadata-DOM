@@ -9,7 +9,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class GenericParameterConstraint : MetadataDom.GenericParameterConstraint, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private readonly Lazy<GenericParameter> _parameter;
         private readonly Lazy<TypeBase> _type;
 

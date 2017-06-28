@@ -10,7 +10,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [PublicAPI]
     public class MethodBody : System.Reflection.MethodBody, IManagedCodeElement
     {
-        private readonly Lazy<ImmutableArray<ExceptionRegion>> _exceptionRegions;
+        private readonly Lazy<IEnumerable<ExceptionRegion>> _exceptionRegions;
         private readonly Lazy<StandaloneSignature> _localSignature;
 
         internal MethodBody(int relativeVirtualAddress, MetadataState metadataState)

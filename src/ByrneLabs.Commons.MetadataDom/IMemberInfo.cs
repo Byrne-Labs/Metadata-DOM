@@ -25,6 +25,10 @@ namespace ByrneLabs.Commons.MetadataDom
 
         string Name { get; }
 
+        IEnumerable<SequencePoint> SequencePoints { get; }
+
+        string SourceCode { get; }
+
         string TextSignature { get; }
 
         IList<System.Reflection.CustomAttributeData> GetCustomAttributesData();

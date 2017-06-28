@@ -14,9 +14,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {GetName().FullName}")]
     public class AssemblyDefinition : AssemblyBase<AssemblyDefinition, AssemblyDefinitionHandle, System.Reflection.Metadata.AssemblyDefinition>
     {
-        private readonly Lazy<ImmutableArray<AssemblyReference>> _assemblyReferences;
-        private readonly Lazy<ImmutableArray<CustomAttribute>> _customAttributes;
-        private readonly Lazy<ImmutableArray<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
+        private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
+        private readonly Lazy<IEnumerable<CustomAttribute>> _customAttributes;
+        private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<MethodInfo> _entryPoint;
         private readonly Lazy<Module> _moduleDefinition;
         private readonly AssemblyName _name;
@@ -27,8 +27,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             {
                 Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name),
                 CultureName = MetadataState.AssemblyReader.GetString(RawMetadata.Culture) ?? string.Empty,
-                Flags = (RawMetadata.Flags.HasFlag(AssemblyFlags.PublicKey) ? AssemblyNameFlags.PublicKey : 0) | (RawMetadata.Flags.HasFlag(AssemblyFlags.Retargetable) ? AssemblyNameFlags.Retargetable : 0),
-                ContentType = RawMetadata.Flags.HasFlag(AssemblyFlags.WindowsRuntime) ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
+                Flags = ((RawMetadata.Flags & AssemblyFlags.PublicKey) != 0 ? AssemblyNameFlags.PublicKey : 0) | ((RawMetadata.Flags & AssemblyFlags.Retargetable) != 0 ? AssemblyNameFlags.Retargetable : 0),
+                ContentType = (RawMetadata.Flags & AssemblyFlags.WindowsRuntime) != 0 ? AssemblyContentType.WindowsRuntime : AssemblyContentType.Default,
                 Version = RawMetadata.Version
             };
             name.SetPublicKey(MetadataState.AssemblyReader.GetBlobBytes(RawMetadata.PublicKey));
