@@ -1,86 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12461A24-81BF-4983-8401-A7969E4F3186}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework</RootNamespace>
-    <AssemblyName>ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <StartupObject>ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard2.0|AnyCPU'">
-    <OutputPath>bin\netstandard2.0\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard1.6|AnyCPU'">
-    <OutputPath>bin\netstandard1.6\</OutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="NETStandard.Library">
-      <!-- This package reference is needed because of a bug in MSBuild.  It can be removed as soon as the bug is fixed. -->
-      <Version>2.0.0-preview1-25301-01</Version>
-    </PackageReference>
-    <PackageReference Include="NETStandard.Library.NETFramework">
-      <!-- This package reference is needed because of a bug in MSBuild.  It can be removed as soon as the bug is fixed. -->
-      <Version>2.0.0-preview1-25305-02</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reflection.Metadata">
-      <Version>1.5.0-preview1-25305-02</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="NetFrameworkChecker.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj">
-      <Project>{a07da73f-ea48-4ab1-b482-b5641f1a3d5c}</Project>
-      <Name>ByrneLabs.Commons.MetadataDom</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj">
-      <Project>{11aeee9f-99c5-4f46-89ec-51d1bcf6aa5b}</Project>
-      <Name>ByrneLabs.Commons.MetadataDom.Tests.Checker</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{12461A24-81BF-4983-8401-A7969E4F3186}</ProjectGuid>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework</RootNamespace>
+        <AssemblyName>ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework</AssemblyName>
+        <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <TargetFrameworkProfile />
+        <IsWebBootstrapper>false</IsWebBootstrapper>
+        <NuGetPackageImportStamp>
+        </NuGetPackageImportStamp>
+        <PublishUrl>publish\</PublishUrl>
+        <Install>true</Install>
+        <InstallFrom>Disk</InstallFrom>
+        <UpdateEnabled>false</UpdateEnabled>
+        <UpdateMode>Foreground</UpdateMode>
+        <UpdateInterval>7</UpdateInterval>
+        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+        <UpdatePeriodically>false</UpdatePeriodically>
+        <UpdateRequired>false</UpdateRequired>
+        <MapFileExtensions>true</MapFileExtensions>
+        <ApplicationRevision>0</ApplicationRevision>
+        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+        <UseApplicationTrust>false</UseApplicationTrust>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup>
+        <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+        <StartupObject>ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.Program</StartupObject>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard2.0|AnyCPU'">
+        <OutputPath>bin\netstandard2.0\</OutputPath>
+        <Features>IOperation</Features>
+        <CodeAnalysisRuleSet>..\..\basic.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard1.6|AnyCPU'">
+        <OutputPath>bin\netstandard1.6\</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Reflection.Metadata">
+            <Version>1.5.0-preview1-25305-02</Version>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="NetFrameworkChecker.cs" />
+        <Compile Include="Program.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="App.config" />
+        <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj">
+            <Project>{a07da73f-ea48-4ab1-b482-b5641f1a3d5c}</Project>
+            <Name>ByrneLabs.Commons.MetadataDom</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj">
+            <Project>{11aeee9f-99c5-4f46-89ec-51d1bcf6aa5b}</Project>
+            <Name>ByrneLabs.Commons.MetadataDom.Tests.Checker</Name>
+        </ProjectReference>
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

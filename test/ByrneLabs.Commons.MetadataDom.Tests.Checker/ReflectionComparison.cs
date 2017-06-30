@@ -15,7 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private static readonly string[] _ignoredMethodNames = { "GetHashCode", "GetType", "GetMethods", "GetInterfaces", "GetProperties", "GetMembers", "ToString" };
         private static readonly string[] _ignoredPropertyNames = { "DeclaredMembers" };
         private static readonly Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>> _membersToCompare = new Dictionary<Tuple<Type, Type>, IEnumerable<Tuple<MemberInfo, MemberInfo>>>();
-        public readonly CheckState _checkState;
+        private readonly CheckState _checkState;
 
         public ReflectionComparison(CheckState checkState)
         {
@@ -34,9 +34,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 var targetInvocationException = exception as TargetInvocationException;
                 var notSupportedException = targetInvocationException?.InnerException as NotSupportedException;
                 if (notSupportedException != null && (
-                        notSupportedException.Message.Equals(NotSupportedHelper.FutureVersion().Message) ||
-                        notSupportedException.Message.Equals(NotSupportedHelper.NotValidForMetadata().Message) ||
-                        notSupportedException.Message.Equals(NotSupportedHelper.NotValidForMetadataType(member.Item1.DeclaringType).Message)))
+                        notSupportedException.Message.Equals(NotSupportedHelper.FutureVersion().Message, StringComparison.Ordinal) ||
+                        notSupportedException.Message.Equals(NotSupportedHelper.NotValidForMetadata().Message, StringComparison.Ordinal) ||
+                        notSupportedException.Message.Equals(NotSupportedHelper.NotValidForMetadataType(member.Item1.DeclaringType).Message, StringComparison.Ordinal)))
                 {
                     _ignoredMembers.Add(member);
                 }
@@ -72,17 +72,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                     var allProperties = metadataTypeInfo.DeclaredProperties.Select(property => property.Name).Intersect(reflectionTypeInfo.DeclaredProperties.Select(property => property.Name)).Distinct().Except(_ignoredPropertyNames);
                     var properties = (
                         from propertyName in allProperties
-                        let metadataPropertyInfo = metadataTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
-                        let reflectionPropertyInfo = reflectionTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName))
+                        let metadataPropertyInfo = metadataTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName, StringComparison.Ordinal))
+                        let reflectionPropertyInfo = reflectionTypeInfo.DeclaredProperties.Single(property => property.Name.Equals(propertyName, StringComparison.Ordinal))
                         where metadataPropertyInfo.PropertyType == reflectionPropertyInfo.PropertyType || typeof(IManagedCodeElement).GetTypeInfo().IsAssignableFrom(metadataPropertyInfo.PropertyType) || typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(reflectionPropertyInfo.PropertyType)
                         select new Tuple<MemberInfo, MemberInfo>(metadataPropertyInfo, reflectionPropertyInfo)).ToList();
 
-                    var allMethods = metadataTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_"))).Select(method => method.Name)
-                        .Intersect(reflectionTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_"))).Select(method => method.Name)).Distinct().Except(_ignoredMethodNames);
+                    var allMethods = metadataTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_", StringComparison.Ordinal))).Select(method => method.Name)
+                        .Intersect(reflectionTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_", StringComparison.Ordinal))).Select(method => method.Name)).Distinct().Except(_ignoredMethodNames);
                     var methods = (
                         from methodName in allMethods
-                        let metadataMethodInfo = metadataTypeInfo.GetMethod(methodName, new Type[] { })
-                        let reflectionMethodInfo = reflectionTypeInfo.GetMethod(methodName, new Type[] { })
+                        let metadataMethodInfo = metadataTypeInfo.GetMethod(methodName,Array.Empty<Type>())
+                        let reflectionMethodInfo = reflectionTypeInfo.GetMethod(methodName, Array.Empty<Type>())
                         where
                         metadataMethodInfo.ReturnType == reflectionMethodInfo.ReturnType ||
                         metadataMethodInfo.ReturnType != typeof(object) && metadataMethodInfo.ReturnType != typeof(object) && (metadataMethodInfo.ReturnType.IsAssignableFrom(reflectionMethodInfo.ReturnType) || reflectionMethodInfo.ReturnType.IsAssignableFrom(metadataMethodInfo.ReturnType)) ||
@@ -105,7 +105,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 {
                     try
                     {
-                        var metadataType = _checkState.Metadata.TypeDefinitions.SingleOrDefault(codeElement => codeElement.MetadataToken == reflectionType.MetadataToken) ?? _checkState.Metadata.TypeDefinitions.SingleOrDefault(codeElement => codeElement.MemberType == reflectionType.MemberType && codeElement.FullName.Equals(reflectionType.FullName));
+                        var metadataType = _checkState.Metadata.TypeDefinitions.SingleOrDefault(codeElement => codeElement.MetadataToken == reflectionType.MetadataToken) ?? _checkState.Metadata.TypeDefinitions.SingleOrDefault(codeElement => codeElement.MemberType == reflectionType.MemberType && codeElement.FullName.Equals(reflectionType.FullName, StringComparison.Ordinal));
                         if (metadataType == null)
                         {
                             _checkState.AddError($"Could not find type {reflectionType.FullName} with metadata");
@@ -138,7 +138,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 _checkState.AddException(exception, _checkState.Assembly, CheckPhase.ReflectionComparison);
             }
 
-            _checkState.AddErrors(_checkState.Metadata.MemberDefinitions.Except(_checkState.ComparedMetadataMembers).Select(member => $"Could not find {member.MemberType.ToString().ToLower()} {member.TextSignature} with reflection"));
+            _checkState.AddErrors(_checkState.Metadata.MemberDefinitions.Except(_checkState.ComparedMetadataMembers).Select(member => $"Could not find {member.MemberType.ToString().ToLowerInvariant()} {member.TextSignature} with reflection"));
         }
 
         private void CompareCodeElementsToReflectionData(IManagedCodeElement metadataElement, object reflectionElement)
@@ -206,26 +206,26 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                 {
                     var byToken = metadataType.DeclaredMembers.Where(member => member.MetadataToken == reflectionMember.MetadataToken).ToArray();
                     var reflectionTextSignature = SignatureCreater.GetTextSignature(reflectionType, reflectionMember);
-                    var byName = metadataType.DeclaredMembers.Where(metadataMember => metadataMember.MemberType == reflectionMember.MemberType && ((IMemberInfo) metadataMember).TextSignature.Equals(reflectionTextSignature)).ToArray();
+                    var byName = metadataType.DeclaredMembers.Where(metadataMember => metadataMember.MemberType == reflectionMember.MemberType && ((IMemberInfo) metadataMember).TextSignature.Equals(reflectionTextSignature, StringComparison.Ordinal)).ToArray();
                     if (byToken.Length == 0 && byName.Length == 0)
                     {
-                        _checkState.AddError($"Could not find {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token or name");
+                        _checkState.AddError($"Could not find {reflectionMember.MemberType.ToString().ToLowerInvariant()} \"{reflectionTextSignature}\" with metadata by token or name");
                     }
                     else if (byToken.Length > 1)
                     {
-                        _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by token");
+                        _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLowerInvariant()} \"{reflectionTextSignature}\" with metadata by token");
                     }
                     else if (byName.Length > 1)
                     {
-                        _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" with metadata by name");
+                        _checkState.AddError($"Found multiple {reflectionMember.MemberType.ToString().ToLowerInvariant()} \"{reflectionTextSignature}\" with metadata by name");
                     }
                     else if (byToken.Length == 0)
                     {
-                        _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" in metadata with the metadata token {byName[0].MetadataToken} instead of {reflectionMember.MetadataToken}");
+                        _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLowerInvariant()} \"{reflectionTextSignature}\" in metadata with the metadata token {byName[0].MetadataToken} instead of {reflectionMember.MetadataToken}");
                     }
-                    else if (!reflectionTextSignature.Equals(byToken[0].GetTextSignature()))
+                    else if (!reflectionTextSignature.Equals(byToken[0].GetTextSignature(), StringComparison.Ordinal))
                     {
-                        _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLower()} \"{reflectionTextSignature}\" in metadata with the name \"{byToken[0].GetTextSignature()}\"");
+                        _checkState.AddError($"Found {reflectionMember.MemberType.ToString().ToLowerInvariant()} \"{reflectionTextSignature}\" in metadata with the name \"{byToken[0].GetTextSignature()}\"");
                     }
 
                     object metadataMemberToCompare = null;

@@ -50,9 +50,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override MethodAttributes Attributes => throw NotSupportedHelper.FutureVersion();
 
-        public override Type DeclaringType => Parent as Type;
-
         public override MetadataDom.MethodDebugInformation DebugInformation => throw NotSupportedHelper.NotValidForMetadataType(GetType());
+
+        public override Type DeclaringType => Parent as Type;
 
         public override string FullName => Name;
 

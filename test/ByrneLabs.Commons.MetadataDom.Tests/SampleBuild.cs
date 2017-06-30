@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             buildName.Append(DebugType).Append("-").Append(FileAlignment).Append("-").Append(OutputType);
             BuildName = buildName.ToString();
             var baseFileName = $"{_sampleProjectBuildDirectory.FullName}\\{BuildName}\\{(IsFramework ? string.Empty : targetFramework + "\\")}Sample";
-            AssemblyFile = new FileInfo($"{baseFileName}.{(OutputType.Equals("Exe") || OutputType.Equals("Winexe") ? "exe" : "dll")}");
+            AssemblyFile = new FileInfo($"{baseFileName}.{(OutputType.Equals("Exe", StringComparison.Ordinal) || OutputType.Equals("Winexe", StringComparison.Ordinal) ? "exe" : "dll")}");
             SymbolsFile = _debugTypesWithSymbolFiles.Contains(DebugType) ? new FileInfo($"{baseFileName}.pdb") : null;
         }
 
@@ -116,7 +117,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             while (sampleBuilds.Count < assembliesNeeded)
             {
                 var build = CreateRandomBuild();
-                if (!sampleBuilds.Contains(build) || builtDirectories.Any(directory => directory.Name.Equals(build.BuildName)))
+                if (!sampleBuilds.Contains(build) || builtDirectories.Any(directory => directory.Name.Equals(build.BuildName, StringComparison.Ordinal)))
                 {
                     sampleBuilds.Add(build);
                 }
@@ -187,12 +188,12 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         {
             var castObj = obj as SampleBuild;
             return ReferenceEquals(this, obj) || castObj != null &&
-                   string.Equals(castObj.OutputType, OutputType) &&
-                   string.Equals(castObj.TargetFramework, TargetFramework) &&
+                   string.Equals(castObj.OutputType, OutputType, StringComparison.Ordinal) &&
+                   string.Equals(castObj.TargetFramework, TargetFramework, StringComparison.Ordinal) &&
                    castObj.LanguageVersion == LanguageVersion &&
-                   string.Equals(castObj.Platform, Platform) &&
-                   string.Equals(castObj.DebugType, DebugType) &&
-                   string.Equals(castObj.FileAlignment, FileAlignment) &&
+                   string.Equals(castObj.Platform, Platform, StringComparison.Ordinal) &&
+                   string.Equals(castObj.DebugType, DebugType, StringComparison.Ordinal) &&
+                   string.Equals(castObj.FileAlignment, FileAlignment, StringComparison.Ordinal) &&
                    castObj.DebugSymbols == DebugSymbols &&
                    castObj.Optimize == Optimize;
         }
@@ -224,7 +225,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             arguments.Append("/property:FileAlignment=").Append(FileAlignment).Append(" ");
             arguments.Append("/property:LangVersion=").Append(LanguageVersion).Append(" ");
             arguments.Append("/property:Platform=").Append(Platform).Append(" ");
-            arguments.Append("/property:DebugSymbols=").Append(DebugSymbols.ToString().ToLower()).Append(" ");
+            arguments.Append("/property:DebugSymbols=").Append(DebugSymbols.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()).Append(" ");
             if (_dotNetFrameworkVersions.Contains(TargetFramework))
             {
                 arguments.Append("/property:TargetFrameworkVersion=").Append(TargetFramework).Append(" ");
@@ -233,7 +234,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             {
                 arguments.Append("/property:TargetFramework=").Append(TargetFramework).Append(" ");
             }
-            arguments.Append("/property:Optimize=").Append(Optimize.ToString().ToLower()).Append(" ");
+            arguments.Append("/property:Optimize=").Append(Optimize.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()).Append(" ");
 
             if (_dotNetFrameworkVersions.Contains(TargetFramework))
             {

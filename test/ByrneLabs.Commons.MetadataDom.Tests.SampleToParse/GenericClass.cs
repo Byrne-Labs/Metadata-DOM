@@ -7,16 +7,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
 
     internal class NonGenericClass
     {
-        int GenericCount<TEntity>(TEntity entity)
-        {
-            return 0;
-        }
-
-        int GenericCount<TEntity, TEntity2>(TEntity entity)
-        {
-            return 0;
-        }
-
         internal delegate int CountGetter<TEntity>(TEntity entity, out int count);
 
         internal delegate int CountGetter<TEntity, TEntity2>(TEntity entity, out int count);
@@ -29,6 +19,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         }
 
         internal static TItem[] GetItems<TEntity, TItem>(TEntity entity, CountGetter<TEntity> countGetter, ItemsGetter<TEntity, TItem> itemsGetter) => null;
+
+        private int GenericCount<TEntity>(TEntity entity) => 0;
+
+        private int GenericCount<TEntity, TEntity2>(TEntity entity) => 0;
     }
 
     public class GenericClass<TAnything1, TAnything2, TItemBase, TClass, TStruct, TNewable, TItem, TEnumerable> where TClass : class where TStruct : struct where TNewable : new() where TItem : TItemBase where TEnumerable : IEnumerable<TItem>

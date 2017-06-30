@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
 namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
 {
@@ -14,6 +13,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework
         {
         }
 
-        protected override System.Reflection.Assembly LoadAssembly() => Assembly.LoadFile(AssemblyFile.FullName);
+        protected override System.Reflection.Assembly LoadAssembly() => System.Reflection.Assembly.LoadFile(AssemblyFile.FullName);
     }
 }

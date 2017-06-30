@@ -375,7 +375,7 @@ namespace ByrneLabs.Commons.MetadataDom
         {
             if (members.Count() > 1)
             {
-                throw new AmbiguousMatchException($"Multiple {typeof(T).Name.ToLower()} instances match arguments provided");
+                throw new AmbiguousMatchException($"Multiple {typeof(T).Name.ToLowerInvariant()} instances match arguments provided");
             }
 
             return members.FirstOrDefault();

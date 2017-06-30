@@ -3,6 +3,8 @@
     <PropertyGroup>
         <OutputType>exe</OutputType>
         <TargetFramework>netcoreapp2.0</TargetFramework>
+        <Features>IOperation</Features>
+        <CodeAnalysisRuleSet>../../basic.ruleset</CodeAnalysisRuleSet>
         <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,7 +23,7 @@
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
-      <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
+        <ProjectReference Include="..\..\src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj" />
+        <ProjectReference Include="..\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj" />
     </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@
         <DebugType>full</DebugType>
         <DebugSymbols>True</DebugSymbols>
         <Configurations>Debug;Release;netstandard2.0;netstandard1.6</Configurations>
+        <Features>IOperation</Features>
+        <CodeAnalysisRuleSet>../../basic.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard2.0|AnyCPU'">
         <TargetFramework>netstandard2.0</TargetFramework>

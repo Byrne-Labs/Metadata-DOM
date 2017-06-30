@@ -15,6 +15,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
         private readonly Lazy<Constant> _defaultValue;
+        private readonly Lazy<IEnumerable<MetadataDom.SequencePoint>> _sequencePoints;
         private readonly MethodSignature<TypeBase> _signature;
 
         internal PropertyDefinition(PropertyDefinitionHandle metadataHandle, MetadataState metadataState)
@@ -36,6 +37,20 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _defaultValue = MetadataState.GetLazyCodeElement<Constant>(RawMetadata.GetDefaultValue());
             var declaringType = (TypeDefinition) (GetMethod?.DeclaringType ?? SetMethod?.DeclaringType);
             _signature = RawMetadata.DecodeSignature(MetadataState.TypeProvider, new GenericContext(this, declaringType.GenericTypeParameters, null));
+            _sequencePoints = new Lazy<IEnumerable<MetadataDom.SequencePoint>>(() =>
+            {
+                var sequencePoints = new List<MetadataDom.SequencePoint>();
+                if ((GetMethod as MethodDefinition)?.SequencePoints != null)
+                {
+                    sequencePoints.AddRange((GetMethod as MethodDefinition)?.SequencePoints);
+                }
+                if ((SetMethod as MethodDefinition)?.SequencePoints != null)
+                {
+                    sequencePoints.AddRange((SetMethod as MethodDefinition)?.SequencePoints);
+                }
+
+                return sequencePoints.OrderBy(sp => sp.Document.Name).ThenBy(sp => sp.StartLine).ThenBy(sp => sp.StartColumn).ToImmutableArray();
+            });
         }
 
         public override PropertyAttributes Attributes => RawMetadata.Attributes;
@@ -70,7 +85,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => null;
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => _sequencePoints.Value;
 
         public override sealed System.Reflection.MethodInfo SetMethod { get; }
 

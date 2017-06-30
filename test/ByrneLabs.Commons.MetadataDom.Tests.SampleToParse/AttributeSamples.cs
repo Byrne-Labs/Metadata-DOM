@@ -19,6 +19,8 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class ClassAttribute : Attribute
     {
+        public ByteEnum ByteEnumValueField;
+
         public ClassAttribute(string name)
         {
             Name = name;
@@ -37,8 +39,6 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.SampleToParse
         public ClassAttribute()
         {
         }
-
-        public ByteEnum ByteEnumValueField;
 
         public ByteEnum ByteEnumValueProperty { get; set; }
 

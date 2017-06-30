@@ -13,8 +13,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string FullName { get; }
 
-        public bool IsAbstract => GetMethod?.IsAbstract == true || SetMethod?.IsAbstract == true;
-
         public abstract bool IsIndexer { get; }
 
         public abstract IEnumerable<SequencePoint> SequencePoints { get; }
@@ -24,6 +22,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
+
+        public bool IsAbstract => GetMethod?.IsAbstract == true || SetMethod?.IsAbstract == true;
 
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 

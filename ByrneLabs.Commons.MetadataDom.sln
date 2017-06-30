@@ -1,19 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26608.5
+VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom", "src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj", "{A07DA73F-EA48-4AB1-B482-B5641F1A3D5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByrneLabs.Commons.MetadataDom", "src\ByrneLabs.Commons.MetadataDom\ByrneLabs.Commons.MetadataDom.csproj", "{A07DA73F-EA48-4AB1-B482-B5641F1A3D5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom.Tests", "test\ByrneLabs.Commons.MetadataDom.Tests\ByrneLabs.Commons.MetadataDom.Tests.csproj", "{B290CD10-DD9F-4152-AD7B-270B9CDE7BD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByrneLabs.Commons.MetadataDom.Tests", "test\ByrneLabs.Commons.MetadataDom.Tests\ByrneLabs.Commons.MetadataDom.Tests.csproj", "{B290CD10-DD9F-4152-AD7B-270B9CDE7BD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse", "test\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj", "{760FE571-4339-47C7-ADB1-173E585D7ABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse", "test\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse\ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.csproj", "{760FE571-4339-47C7-ADB1-173E585D7ABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom.Tests.Checker", "test\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj", "{11AEEE9F-99C5-4F46-89EC-51D1BCF6AA5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByrneLabs.Commons.MetadataDom.Tests.Checker", "test\ByrneLabs.Commons.MetadataDom.Tests.Checker\ByrneLabs.Commons.MetadataDom.Tests.Checker.csproj", "{11AEEE9F-99C5-4F46-89EC-51D1BCF6AA5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore", "test\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore.csproj", "{2FEB651D-9546-4434-BE6C-5548A913D897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore", "test\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetCore.csproj", "{2FEB651D-9546-4434-BE6C-5548A913D897}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework", "test\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework\ByrneLabs.Commons.MetadataDom.Tests.Checker.NetFramework.csproj", "{12461A24-81BF-4983-8401-A7969E4F3186}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80A40384-B27E-42A4-A0D3-548873F33CE4}"
+	ProjectSection(SolutionItems) = preProject
+		basic.ruleset = basic.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,5 +143,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {379D6864-EA39-4FF7-9968-366091D7D5F4}
 	EndGlobalSection
 EndGlobal

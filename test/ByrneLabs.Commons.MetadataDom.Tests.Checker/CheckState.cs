@@ -51,7 +51,9 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private string _unfilteredLogText;
         private bool _unfilteredLogTextDirty = true;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline -- This needs to be in a static initializer so that the field declarations are not dependent on order. -- Jonathan Byrne 06/30/2017
         static CheckState()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
             _allFilterRegex = _invalidErrorsRegex.Union(_ignoredErrorsRegex).Union(_likelyFrameworkBugErrorsRegex).ToArray();
         }

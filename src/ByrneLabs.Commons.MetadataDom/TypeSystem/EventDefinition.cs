@@ -14,6 +14,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     public class EventDefinition : EventInfo, IManagedCodeElement
     {
         private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
+        private readonly Lazy<IEnumerable<MetadataDom.SequencePoint>> _sequencePoints;
 
         internal EventDefinition(EventDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -35,6 +36,24 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 RemoveMethod = MetadataState.GetCodeElement<MethodInfo>(RawMetadata.GetAccessors().Remover);
             }
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
+            _sequencePoints = new Lazy<IEnumerable<MetadataDom.SequencePoint>>(() =>
+            {
+                var sequencePoints = new List<MetadataDom.SequencePoint>();
+                if ((AddMethod as MethodDefinition)?.SequencePoints != null)
+                {
+                    sequencePoints.AddRange((AddMethod as MethodDefinition)?.SequencePoints);
+                }
+                if ((RemoveMethod as MethodDefinition)?.SequencePoints != null)
+                {
+                    sequencePoints.AddRange((RemoveMethod as MethodDefinition)?.SequencePoints);
+                }
+                if ((RaiseMethod as MethodDefinition)?.SequencePoints != null)
+                {
+                    sequencePoints.AddRange((RaiseMethod as MethodDefinition)?.SequencePoints);
+                }
+
+                return sequencePoints.OrderBy(sp => sp.Document.Name).ThenBy(sp => sp.StartLine).ThenBy(sp => sp.StartColumn).ToImmutableArray();
+            });
         }
 
         public override System.Reflection.MethodInfo AddMethod { get; }
@@ -90,7 +109,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override System.Reflection.MethodInfo RemoveMethod { get; }
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => _sequencePoints.Value;
 
         public override string SourceCode => throw new NotImplementedException();
 

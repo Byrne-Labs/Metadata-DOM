@@ -36,7 +36,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         public void TestOnPrebuiltAssemblyResources()
         {
             var loadableFiles = ResourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
-            foreach (var loadableFile in loadableFiles.Where(file => !file.Name.Equals("EmptyType.dll")))
+            foreach (var loadableFile in loadableFiles.Where(file => !file.Name.Equals("EmptyType.dll", StringComparison.Ordinal)))
             {
                 CheckMetadata(CheckTypes.Metadata, loadableFile);
             }
@@ -49,7 +49,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var loadableFiles = ResourceDirectory.GetFiles("*", SearchOption.AllDirectories).Where(file => LoadableFileExtensions.Contains(file.Extension.Substring(1))).ToList();
             foreach (var loadableFile in loadableFiles)
             {
-                CheckMetadata(CheckTypes.Metadata, loadableFile.Extension.Equals(".pdb") ? null : loadableFile, loadableFile.Extension.Equals(".pdb") ? loadableFile : null);
+                CheckMetadata(CheckTypes.Metadata, loadableFile.Extension.Equals(".pdb", StringComparison.Ordinal) ? null : loadableFile, loadableFile.Extension.Equals(".pdb", StringComparison.Ordinal) ? loadableFile : null);
             }
         }
 
@@ -79,13 +79,10 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             outputMessage.AppendLine(assemblyFile?.FullName ?? pdbFile?.FullName).AppendLine();
             var success = checkState.Success;
 
-            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
+            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension, StringComparison.Ordinal) && checkState.Metadata?.TypeDefinitions.Any() != true)
             {
-                if (checkState.Metadata?.TypeDefinitions.Any() != true)
-                {
-                    outputMessage.AppendLine("No type definitions loaded from metadata");
-                    success = false;
-                }
+                outputMessage.AppendLine("No type definitions loaded from metadata");
+                success = false;
             }
             if (pdbFile != null && checkState.Metadata?.Documents.Any() != true)
             {
@@ -95,7 +92,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
             outputMessage.AppendLine(checkState.ErrorLogText);
 
-            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension))
+            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension, StringComparison.Ordinal))
             {
                 if (checkState.Metadata.AssemblyDefinition == null)
                 {

@@ -105,7 +105,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
 
             _checkState.FinishTime = DateTime.Now;
 
-            if (BaseDirectory != null && AssemblyFile.DirectoryName.StartsWith(BaseDirectory.FullName))
+            if (BaseDirectory != null && AssemblyFile.DirectoryName.StartsWith(BaseDirectory.FullName, StringComparison.Ordinal))
             {
                 CopyAssemblyToResultsFolder();
             }
@@ -122,7 +122,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             {
                 _checkState.Assembly = LoadAssembly();
 
-                if (!string.Equals(_checkState.Metadata.AssemblyDefinition.FullName.ToUpperInvariant(), _checkState.Assembly.FullName.ToUpperInvariant()))
+                if (!string.Equals(_checkState.Metadata.AssemblyDefinition.FullName, _checkState.Assembly.FullName, StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException($"The metadata assembly has the name \"{_checkState.Metadata.AssemblyDefinition.FullName}\", but the reflection assembly has the name \"{_checkState.Assembly.FullName}\"");
                 }

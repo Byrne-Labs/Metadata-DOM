@@ -1,1 +1,3 @@
-﻿[assembly: System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows = true)]
+﻿using System.Runtime.CompilerServices;
+
+[assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]

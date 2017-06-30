@@ -120,7 +120,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             return textSignature;
         }
 
-        private static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.PropertyInfo propertyInfo) => $"{reflectedType.FullName}.{propertyInfo.Name}" + ("Item".Equals(propertyInfo.Name) && propertyInfo.GetMethod?.GetParameters().Any() == true ? $"[{string.Join(", ", propertyInfo.GetMethod?.GetParameters().Select(parameter => GetTextSignature(parameter.ParameterType.GetTypeInfo())))}]" : string.Empty);
+        private static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.PropertyInfo propertyInfo) => $"{reflectedType.FullName}.{propertyInfo.Name}" + ("Item".Equals(propertyInfo.Name, StringComparison.Ordinal) && propertyInfo.GetMethod?.GetParameters().Any() == true ? $"[{string.Join(", ", propertyInfo.GetMethod?.GetParameters().Select(parameter => GetTextSignature(parameter.ParameterType.GetTypeInfo())))}]" : string.Empty);
 
         private static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.FieldInfo fieldInfo) => $"{reflectedType.FullName}.{fieldInfo.Name}";
 
@@ -129,7 +129,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
         private static string GetTextSignature(System.Reflection.TypeInfo reflectedType, System.Reflection.MethodInfo methodInfo)
         {
             var basicName = $"{GetTextSignature(reflectedType)}.{methodInfo.Name}";
-            var nonIndexProperty = methodInfo.IsSpecialName && (methodInfo.Name.StartsWith("get_") || methodInfo.Name.StartsWith("set_") || methodInfo.Name.StartsWith("remove_") || methodInfo.Name.StartsWith("add_") || methodInfo.Name.StartsWith("raise_") || methodInfo.Name.Contains(".get_") || methodInfo.Name.Contains(".set_") || methodInfo.Name.Contains(".remove_") || methodInfo.Name.Contains(".add_") || methodInfo.Name.Contains(".raise_")) && !("get_Item".Equals(methodInfo.Name) && methodInfo.GetParameters().Length > 0 || "set_Item".Equals(methodInfo.Name) && methodInfo.GetParameters().Length > 1);
+            var nonIndexProperty = methodInfo.IsSpecialName && (methodInfo.Name.StartsWith("get_", StringComparison.Ordinal) || methodInfo.Name.StartsWith("set_", StringComparison.Ordinal) || methodInfo.Name.StartsWith("remove_", StringComparison.Ordinal) || methodInfo.Name.StartsWith("add_", StringComparison.Ordinal) || methodInfo.Name.StartsWith("raise_", StringComparison.Ordinal) || methodInfo.Name.Contains(".get_") || methodInfo.Name.Contains(".set_") || methodInfo.Name.Contains(".remove_") || methodInfo.Name.Contains(".add_") || methodInfo.Name.Contains(".raise_")) && !("get_Item".Equals(methodInfo.Name, StringComparison.Ordinal) && methodInfo.GetParameters().Length > 0 || "set_Item".Equals(methodInfo.Name, StringComparison.Ordinal) && methodInfo.GetParameters().Length > 1);
             var genericParameters = nonIndexProperty || !methodInfo.IsGenericMethod ? string.Empty : $"`{methodInfo.GetGenericArguments().Length}";
             var parameters = nonIndexProperty ? string.Empty : $"({string.Join(", ", methodInfo.GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : parameter.ParameterType.ToString()))})";
             var textSignature = basicName + genericParameters + parameters;

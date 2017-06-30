@@ -55,7 +55,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 });
             }
 
-            return TestsNotRunDirectory.EnumerateFiles("*", SearchOption.AllDirectories).Where(file => file.Extension.Equals(".dll") || file.Extension.Equals(".exe")).ToList();
+            return TestsNotRunDirectory.EnumerateFiles("*", SearchOption.AllDirectories).Where(file => file.Extension.Equals(".dll", StringComparison.Ordinal) || file.Extension.Equals(".exe", StringComparison.Ordinal)).ToList();
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter", Justification = "These must be files, not directories")]
@@ -93,7 +93,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
         [Trait("Category", "Fast")]
         public void TestReflectionComparisonOnPrebuiltAssemblies()
         {
-            var assemblyFiles = ResourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
+            var assemblyFiles = ResourceDirectory.GetFiles("*.dll", SearchOption.AllDirectories).Where(file => !"EmptyType.dll".Equals(file.Name, StringComparison.Ordinal)).Where(file => !file.Name.Contains("Interop.Mock01")).ToList();
             var pass = true;
             // ReSharper disable once LoopCanBeConvertedToQuery -- This is much easier to read as a loop. -- Jonathan Byrne 01/21/2017
             foreach (var assemblyFile in assemblyFiles)
@@ -182,7 +182,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
                 try
                 {
-                    if (assemblyFile.FullName.ToLower().StartsWith(BaseTestsDirectory.FullName.ToLower()))
+                    if (assemblyFile.FullName.StartsWith(BaseTestsDirectory.FullName, StringComparison.OrdinalIgnoreCase))
                     {
                         assemblyFile.Directory.Delete(true);
                         var assemblyDirectory = assemblyFile.Directory.Parent;
