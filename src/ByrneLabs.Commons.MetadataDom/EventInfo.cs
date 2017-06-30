@@ -18,6 +18,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
+        public bool IsAbstract => AddMethod?.IsAbstract == true || RemoveMethod?.IsAbstract == true || RaiseMethod?.IsAbstract == true;
+
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
         public bool IsInherited => DeclaringType == ReflectedType;

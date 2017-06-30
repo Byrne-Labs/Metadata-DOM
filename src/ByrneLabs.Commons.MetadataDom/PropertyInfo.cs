@@ -13,6 +13,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string FullName { get; }
 
+        public bool IsAbstract => GetMethod?.IsAbstract == true || SetMethod?.IsAbstract == true;
+
         public abstract bool IsIndexer { get; }
 
         public abstract IEnumerable<SequencePoint> SequencePoints { get; }
