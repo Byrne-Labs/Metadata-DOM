@@ -81,7 +81,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
                         .Intersect(reflectionTypeInfo.GetMethods().Where(method => method.GetParameters().Length == 0 && (!method.IsSpecialName || !method.Name.StartsWith("get_", StringComparison.Ordinal))).Select(method => method.Name)).Distinct().Except(_ignoredMethodNames);
                     var methods = (
                         from methodName in allMethods
-                        let metadataMethodInfo = metadataTypeInfo.GetMethod(methodName,Array.Empty<Type>())
+                        let metadataMethodInfo = metadataTypeInfo.GetMethod(methodName, Array.Empty<Type>())
                         let reflectionMethodInfo = reflectionTypeInfo.GetMethod(methodName, Array.Empty<Type>())
                         where
                         metadataMethodInfo.ReturnType == reflectionMethodInfo.ReturnType ||
