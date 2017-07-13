@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 else
                 {
-                    localSignature = MetadataState.GetCodeElement<StandaloneSignature>(RawMetadata.LocalSignature, GenericContext);
+                    localSignature = MetadataState.GetCodeElementWithConstructorArguments<StandaloneSignature>(new object[] { RawMetadata.LocalSignature }, new object[] { GenericContext });
                 }
                 return localSignature;
             });

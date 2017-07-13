@@ -19,6 +19,10 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         internal MethodDebugInformation(MethodDebugInformationHandle metadataHandle, MetadataState metadataState) : this(metadataHandle, null, null, metadataState)
         {
+            if (!RawMetadata.LocalSignature.IsNil)
+            {
+                throw new ArgumentException("A generic context must be passed if the method debug information contains a local signature");
+            }
         }
 
         internal MethodDebugInformation(MethodDebugInformationHandle metadataHandle, MethodBase methodBase, GenericContext genericContext, MetadataState metadataState)

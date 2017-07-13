@@ -18,12 +18,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<MethodDebugInformation> _debugInformation;
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
-        private readonly Lazy<string> _fullName;
+        private readonly Lazy<string> _fullTextSignature;
         private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
         private readonly Lazy<IEnumerable<ParameterInfo>> _parameters;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
+        private readonly Lazy<string> _textSignature;
 
         internal ConstructorDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -31,13 +32,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataHandle = metadataHandle;
             Key = new CodeElementKey<ConstructorDefinition>(metadataHandle);
             RawMetadata = MetadataState.AssemblyReader.GetMethodDefinition(metadataHandle);
-            _fullName = new Lazy<string>(() =>
+            _fullTextSignature = new Lazy<string>(() => $"{DeclaringType.FullName}.{TextSignature}");
+            _textSignature = new Lazy<string>(() =>
             {
-                var basicName = $"{DeclaringType.FullName}{Name}";
                 var genericParameters = GenericTypeParameters.Any() ? $"<{string.Join(", ", GenericTypeParameters.Select(genericTypeParameter => genericTypeParameter.Name))}>" : string.Empty;
                 var parameters = $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase) parameter.ParameterType).FullNameWithoutAssemblies))})";
 
-                return basicName + genericParameters + parameters;
+                return Name.Substring(1) + genericParameters + parameters;
             });
             Name = MetadataState.AssemblyReader.GetString(RawMetadata.Name);
             _genericParameters = new Lazy<IEnumerable<GenericParameter>>(() =>
@@ -82,7 +83,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type DeclaringType => _declaringType.Value;
 
-        public override string FullName => _fullName.Value;
+        public override string FullName => FullTextSignature;
+
+        public override string FullTextSignature => _fullTextSignature.Value;
 
         public IEnumerable<TypeInfo> GenericTypeParameters { get; } = ImmutableArray<TypeInfo>.Empty;
 
@@ -110,11 +113,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => null;
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => (DebugInformation?.SequencePoints).ToImmutableArray();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => DebugInformation?.SequencePoints?.ToImmutableArray();
 
         public override string SourceCode => DebugInformation?.SourceCode;
 
-        public override string TextSignature => FullName;
+        public override string TextSignature => _textSignature.Value;
 
         internal CodeElementKey Key { get; }
 

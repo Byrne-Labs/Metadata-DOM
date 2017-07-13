@@ -10,17 +10,19 @@ namespace ByrneLabs.Commons.MetadataDom
     {
         public abstract string FullName { get; }
 
+        public abstract string FullTextSignature { get; }
+
         public abstract IEnumerable<SequencePoint> SequencePoints { get; }
 
         public abstract string SourceCode { get; }
-
-        public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => TypeInfo.CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
         public virtual bool IsCompilerGenerated => CustomAttributes.Any(customAttribute => "System.Runtime.CompilerServices.CompilerGeneratedAttribute".Equals(customAttribute.Constructor.DeclaringType.Name));
 
         public bool IsInherited => DeclaringType == ReflectedType;
+
+        public virtual string TextSignature => Name;
 
         public override string ToString() => FullName;
     }

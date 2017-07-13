@@ -17,6 +17,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<Constant> _defaultValue;
         private readonly Lazy<IEnumerable<MetadataDom.SequencePoint>> _sequencePoints;
         private readonly MethodSignature<TypeBase> _signature;
+        private readonly Lazy<string> _textSignature;
 
         internal PropertyDefinition(PropertyDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -51,6 +52,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return sequencePoints.OrderBy(sp => sp.Document.Name).ThenBy(sp => sp.StartLine).ThenBy(sp => sp.StartColumn).ToImmutableArray();
             });
+            _textSignature = new Lazy<string>(() => $"{Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty));
         }
 
         public override PropertyAttributes Attributes => RawMetadata.Attributes;
@@ -63,9 +65,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override ConstantInfo DefaultValue => _defaultValue.Value;
 
-        public override string FullName => $"{PropertyType} {Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
+        public override string FullName => $"{PropertyType} {TextSignature}";
 
-        public override sealed System.Reflection.MethodInfo GetMethod { get; }
+        public override string FullTextSignature => $"{DeclaringType.FullName}.{TextSignature}";
+
+        public sealed override System.Reflection.MethodInfo GetMethod { get; }
 
         public override bool IsIndexer => _signature.ParameterTypes.Any() && "Item".Equals(Name);
 
@@ -87,11 +91,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => _sequencePoints.Value;
 
-        public override sealed System.Reflection.MethodInfo SetMethod { get; }
+        public sealed override System.Reflection.MethodInfo SetMethod { get; }
 
-        public override string SourceCode => throw new NotImplementedException();
+        public override string SourceCode => throw NotSupportedHelper.FutureVersion();
 
-        public override string TextSignature => $"{DeclaringType.FullName}.{Name}" + (IsIndexer ? $"[{string.Join(", ", _signature.ParameterTypes.Select(parameterType => parameterType.FullName))}]" : string.Empty);
+        public override string TextSignature => _textSignature.Value;
 
         internal CodeElementKey Key { get; }
 

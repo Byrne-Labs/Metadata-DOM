@@ -39,7 +39,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             UndecoratedName = $"{elementType.Name}[{new string(',', ArrayRank - 1)}]";
         }
 
-        public override sealed int ArrayRank { get; }
+        public sealed override int ArrayRank { get; }
 
         public override Type BaseType { get; }
 

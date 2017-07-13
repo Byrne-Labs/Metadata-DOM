@@ -18,15 +18,14 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             MetadataState = metadataState;
             MetadataHandle = metadataHandle;
             RawMetadata = MetadataState.AssemblyReader.GetStandaloneSignature(metadataHandle);
-            GenericContext = genericContext;
             Kind = RawMetadata.GetKind();
             if (Kind == StandaloneSignatureKind.LocalVariables)
             {
-                _localSignature = new Lazy<IEnumerable<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, GenericContext));
+                _localSignature = new Lazy<IEnumerable<TypeBase>>(() => RawMetadata.DecodeLocalSignature(MetadataState.TypeProvider, genericContext));
             }
             else
             {
-                _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeMethodSignature(MetadataState.TypeProvider, GenericContext));
+                _methodSignature = new Lazy<MethodSignature<TypeBase>>(() => RawMetadata.DecodeMethodSignature(MetadataState.TypeProvider, genericContext));
             }
             _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
         }
@@ -48,8 +47,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public System.Reflection.Metadata.StandaloneSignature RawMetadata { get; }
 
         public string TextSignature => throw NotSupportedHelper.FutureVersion();
-
-        internal GenericContext GenericContext { get; }
 
         internal CodeElementKey Key { get; }
 

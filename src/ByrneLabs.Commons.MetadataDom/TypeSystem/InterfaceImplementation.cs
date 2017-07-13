@@ -44,7 +44,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public System.Reflection.Metadata.InterfaceImplementation RawMetadata { get; }
 
-        public string TextSignature => Interface.TextSignature;
+        public string TextSignature => Interface.FullTextSignature;
 
         internal CodeElementKey Key { get; }
 

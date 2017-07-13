@@ -13,6 +13,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         string FullName { get; }
 
+        string FullTextSignature { get; }
+
         bool IsCompilerGenerated { get; }
 
         bool IsSpecialName { get; }

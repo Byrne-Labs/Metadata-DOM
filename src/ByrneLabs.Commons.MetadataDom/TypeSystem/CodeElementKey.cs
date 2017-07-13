@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -11,12 +12,18 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     [DebuggerDisplay("\\{CodeElementKey\\}: {KeysToString()}")]
     internal class CodeElementKey
     {
-        public CodeElementKey(Type codeElementType, params object[] keyValues)
+        public CodeElementKey(Type codeElementType, params object[] keyValues) : this(codeElementType, keyValues, Enumerable.Empty<object>())
         {
-            if (keyValues.Length == 0 && codeElementType != typeof(SystemValueType) && codeElementType != typeof(SystemType) && codeElementType != typeof(SystemArray))
+        }
+
+        public CodeElementKey(Type codeElementType, IEnumerable<object> keyValues, IEnumerable<object> extraConstructorArguments)
+        {
+            if (!keyValues.Any() && codeElementType != typeof(SystemValueType) && codeElementType != typeof(SystemType) && codeElementType != typeof(SystemArray))
             {
                 throw new ArgumentException("At least one key value must be provided", nameof(keyValues));
             }
+
+            ExtraConstructorArguments = extraConstructorArguments.ToImmutableArray();
 
             var rawKeyValues = keyValues.Where(keyValue => keyValue != null).ToArray();
             for (var index = 0; index < rawKeyValues.Length; index++)
@@ -63,7 +70,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             PrimitiveTypeCode = primitiveTypeCode == 0 ? (PrimitiveTypeCode?) null : primitiveTypeCode;
         }
 
-        public CodeElementKey(Handle handle) : this(MetadataState.GetCodeElementTypeForHandle(handle), handle)
+        public CodeElementKey(Handle handle, params object[] extraConstructorArguments) : this(MetadataState.GetCodeElementTypeForHandle(handle), new object[] { handle }, extraConstructorArguments)
         {
         }
 
@@ -72,6 +79,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         }
 
         public Type CodeElementType { get; }
+
+        public ImmutableArray<object> ExtraConstructorArguments { get; }
 
         public Handle? Handle { get; }
 
@@ -138,7 +147,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
     internal sealed class CodeElementKey<T> : CodeElementKey where T : IManagedCodeElement
     {
-        public CodeElementKey(params object[] keyValues) : base(typeof(T), keyValues)
+        public CodeElementKey(params object[] keyValues) : base(typeof(T), keyValues, Enumerable.Empty<object>())
+        {
+        }
+
+        public CodeElementKey(IEnumerable<object> keyValues, IEnumerable<object> extraConstructorArguments) : base(typeof(T), keyValues, extraConstructorArguments)
         {
         }
     }

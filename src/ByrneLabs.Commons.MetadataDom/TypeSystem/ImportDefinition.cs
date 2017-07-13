@@ -28,7 +28,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     _alias = MetadataState.GetLazyCodeElement<Blob>(importDefinition.Alias, true);
                     break;
                 default:
-                    _alias = new Lazy<Blob>(() => throw new InvalidOperationException());
+                    _alias = new Lazy<Blob>(() => throw new InvalidOperationException($"Not valid for import definition kind {importDefinition.Kind}"));
                     break;
             }
             switch (importDefinition.Kind)
@@ -39,7 +39,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     _targetAssembly = MetadataState.GetLazyCodeElement<AssemblyReference>(importDefinition.TargetAssembly);
                     break;
                 default:
-                    _targetAssembly = new Lazy<AssemblyReference>(() => throw new InvalidOperationException());
+                    _targetAssembly = new Lazy<AssemblyReference>(() => throw new InvalidOperationException($"Not valid for import definition kind {importDefinition.Kind}"));
                     break;
             }
             switch (importDefinition.Kind)
@@ -51,7 +51,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     _targetNamespace = MetadataState.GetLazyCodeElement<Blob>(importDefinition.TargetNamespace, true);
                     break;
                 default:
-                    _targetNamespace = new Lazy<Blob>(() => throw new InvalidOperationException());
+                    _targetNamespace = new Lazy<Blob>(() => throw new InvalidOperationException($"Not valid for import definition kind {importDefinition.Kind}"));
                     break;
             }
             switch (importDefinition.Kind)
@@ -61,7 +61,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     _targetType = MetadataState.GetLazyCodeElement<TypeBase>(importDefinition.TargetType);
                     break;
                 default:
-                    _targetType = new Lazy<TypeBase>(() => throw new InvalidOperationException());
+                    _targetType = new Lazy<TypeBase>(() => throw new InvalidOperationException($"Not valid for import definition kind {importDefinition.Kind}"));
                     break;
             }
         }

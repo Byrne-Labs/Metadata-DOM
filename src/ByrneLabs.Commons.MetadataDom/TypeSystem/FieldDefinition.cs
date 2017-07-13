@@ -45,6 +45,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
+        public override string FullTextSignature => FullName;
+
         public override MemberTypes MemberType => MemberTypes.Field;
 
         public FieldDefinitionHandle MetadataHandle { get; }
@@ -63,11 +65,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public int RelativeVirtualAddress { get; }
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw NotSupportedHelper.FutureVersion();
 
-        public override string SourceCode => throw new NotImplementedException();
-
-        public override string TextSignature => FullName;
+        public override string SourceCode => throw NotSupportedHelper.FutureVersion();
 
         internal CodeElementKey Key { get; }
 

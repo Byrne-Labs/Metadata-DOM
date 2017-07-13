@@ -15,21 +15,21 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
     {
         private Lazy<IEnumerable<MethodBase>> _allMethods;
         private Lazy<TypeBase> _baseType;
-        private Lazy<IEnumerable<ConstructorInfo>> _constructors;
-        private Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
+        private Lazy<IEnumerable<ConstructorDefinition>> _constructors;
+        private Lazy<IEnumerable<CustomAttribute>> _customAttributes;
         private Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private Lazy<TypeDefinition> _declaringType;
-        private Lazy<IEnumerable<EventInfo>> _events;
-        private Lazy<IEnumerable<FieldInfo>> _fields;
+        private Lazy<IEnumerable<EventDefinition>> _events;
+        private Lazy<IEnumerable<FieldDefinition>> _fields;
         private Lazy<Type[]> _genericParameters;
         private Lazy<IEnumerable<TypeInfo>> _interfaceImplementations;
         private Lazy<IEnumerable<MemberInfo>> _members;
         private Lazy<IEnumerable<MethodImplementation>> _methodImplementations;
-        private Lazy<IEnumerable<MethodInfo>> _methods;
+        private Lazy<IEnumerable<MethodDefinition>> _methods;
         private Lazy<string> _namespace;
         private Lazy<NamespaceDefinition> _namespaceDefinition;
         private Lazy<IEnumerable<TypeInfo>> _nestedTypes;
-        private Lazy<IEnumerable<PropertyInfo>> _properties;
+        private Lazy<IEnumerable<PropertyDefinition>> _properties;
 
         [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Invoked using reflection")]
         internal TypeDefinition(TypeDefinition baseType, TypeElementModifier typeElementModifier, MetadataState metadataState) : base(baseType, typeElementModifier, metadataState)
@@ -99,7 +99,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsSerializable => (Attributes & TypeAttributes.Serializable) != 0 || IsEnum || IsDelegate;
 
-        public override IEnumerable<Language> Languages { get; } = ImmutableArray<Language>.Empty;
+        public override Language? Language => MetadataState.Language;
 
         public TypeLayout Layout => RawMetadata.GetLayout();
 
@@ -115,9 +115,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type ReflectedType => throw NotSupportedHelper.FutureVersion();
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw NotSupportedHelper.FutureVersion();
 
-        public override string SourceCode => throw new NotImplementedException();
+        public override string SourceCode => throw NotSupportedHelper.FutureVersion();
 
         public override StructLayoutAttribute StructLayoutAttribute => throw NotSupportedHelper.FutureVersion();
 
@@ -175,8 +175,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 return @namespace;
             });
             _allMethods = MetadataState.GetLazyCodeElements<MethodBase>(RawMetadata.GetMethods());
-            _methods = new Lazy<IEnumerable<MethodInfo>>(() => _allMethods.Value.OfType<MethodInfo>().ToImmutableArray());
-            _constructors = new Lazy<IEnumerable<ConstructorInfo>>(() => _allMethods.Value.OfType<ConstructorInfo>().ToImmutableArray());
+            _methods = new Lazy<IEnumerable<MethodDefinition>>(() => _allMethods.Value.OfType<MethodDefinition>().ToImmutableArray());
+            _constructors = new Lazy<IEnumerable<ConstructorDefinition>>(() => _allMethods.Value.OfType<ConstructorDefinition>().ToImmutableArray());
             _methodImplementations = MetadataState.GetLazyCodeElements<MethodImplementation>(RawMetadata.GetMethodImplementations());
             _baseType = new Lazy<TypeBase>(() =>
             {
@@ -191,11 +191,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
                 return baseType;
             });
-            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttributeData>(RawMetadata.GetCustomAttributes());
+            _customAttributes = MetadataState.GetLazyCodeElements<CustomAttribute>(RawMetadata.GetCustomAttributes());
             _declarativeSecurityAttributes = MetadataState.GetLazyCodeElements<DeclarativeSecurityAttribute>(RawMetadata.GetDeclarativeSecurityAttributes());
             _declaringType = MetadataState.GetLazyCodeElement<TypeDefinition>(RawMetadata.GetDeclaringType());
-            _events = MetadataState.GetLazyCodeElements<EventDefinition, EventInfo>(RawMetadata.GetEvents());
-            _fields = MetadataState.GetLazyCodeElements<FieldDefinition, FieldInfo>(RawMetadata.GetFields());
+            _events = MetadataState.GetLazyCodeElements<EventDefinition>(RawMetadata.GetEvents());
+            _fields = MetadataState.GetLazyCodeElements<FieldDefinition>(RawMetadata.GetFields());
             _genericParameters = new Lazy<Type[]>(() =>
             {
                 var genericParameters = MetadataState.GetCodeElements<GenericParameter>(RawMetadata.GetGenericParameters());
@@ -208,7 +208,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             });
             _interfaceImplementations = new Lazy<IEnumerable<TypeInfo>>(() => RawMetadata.GetInterfaceImplementations().Select(interfaceImplementationMetadata => (TypeInfo) MetadataState.GetCodeElement<InterfaceImplementation>(interfaceImplementationMetadata, this).Interface).ToImmutableArray());
             _nestedTypes = MetadataState.GetLazyCodeElements<TypeDefinition, TypeInfo>(RawMetadata.GetNestedTypes());
-            _properties = MetadataState.GetLazyCodeElements<PropertyDefinition, PropertyInfo>(RawMetadata.GetProperties());
+            _properties = MetadataState.GetLazyCodeElements<PropertyDefinition>(RawMetadata.GetProperties());
             _members = new Lazy<IEnumerable<MemberInfo>>(() => DeclaredMethods.Union<MemberInfo>(DeclaredFields).Union(DeclaredConstructors).Union(DeclaredEvents).Union(DeclaredProperties).Union(DeclaredNestedTypes).ToImmutableArray());
         }
     }

@@ -57,6 +57,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<IEnumerable<AssemblyReference>> _assemblyReferences;
         private readonly IDictionary<CodeElementKey, IManagedCodeElement> _codeElementCache = new Dictionary<CodeElementKey, IManagedCodeElement>();
         private readonly Lazy<IEnumerable<TypeInfo>> _definedTypes;
+        private readonly Lazy<Language?> _language;
         private readonly Lazy<ModuleDefinition> _moduleDefinition;
 
         public MetadataState(bool prefetchMetadata, FileInfo assemblyFile, FileInfo pdbFile)
@@ -91,6 +92,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _assemblyDefinition = new Lazy<AssemblyDefinition>(() => AssemblyReader?.IsAssembly == true ? GetCodeElement<AssemblyDefinition>(Handle.AssemblyDefinition) : null);
             _moduleDefinition = GetLazyCodeElement<ModuleDefinition>(Handle.ModuleDefinition);
             _definedTypes = new Lazy<IEnumerable<TypeInfo>>(() => AssemblyReader == null ? ImmutableArray<TypeInfo>.Empty : AssemblyReader.TypeDefinitions.Select(typeDefinition => GetCodeElement(typeDefinition)).Cast<TypeInfo>().Where(type => !"<Module>".Equals(type.FullName)).ToImmutableArray());
+            _language = new Lazy<Language?>(() =>
+            {
+                var languageGuid = PdbReader?.Documents.Select(documentHandle => PdbReader.GetDocument(documentHandle)).Where(document => !document.Language.IsNil).Select(document => PdbReader.GetGuid(document.Language)).FirstOrDefault();
+                return languageGuid.HasValue ? (Language?) KnownLanguageGuids.MapFromGuid[languageGuid.Value] : null;
+            });
         }
 
         public AssemblyDefinition AssemblyDefinition => _assemblyDefinition.Value;
@@ -104,6 +110,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public bool HasDebugMetadata => PdbFileWrapper?.HasMetadata == true;
 
         public bool HasMetadata => AssemblyFileWrapper?.HasMetadata == true;
+
+        public Language? Language => _language.Value;
 
         public ModuleDefinition ModuleDefinition => !HasMetadata ? null : _moduleDefinition.Value;
 
@@ -434,8 +442,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             return matchingConstructor;
         }
 
-        public void CacheCodeElement(IManagedCodeElement codeElement, CodeElementKey key) => _codeElementCache.Add(key, codeElement);
-
         public void Dispose()
         {
             Dispose(true);
@@ -496,7 +502,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 {
                     codeElementType = key.CodeElementType;
                 }
-                var constructorParameterValues = key.KeyValues.Select(keyValue => keyValue is Handle ? UpcastHandle((Handle) keyValue) : keyValue).Union(new object[] { this }).ToArray();
+                var constructorParameterValues = key.KeyValues.Select(keyValue => keyValue is Handle ? UpcastHandle((Handle) keyValue) : keyValue).Union(key.ExtraConstructorArguments).Append(this).ToArray();
                 var constructor = GetConstructor(codeElementType, constructorParameterValues);
                 if (constructor == null)
                 {
@@ -504,8 +510,22 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 }
 
                 codeElement = (IManagedCodeElement) constructor.Invoke(constructorParameterValues);
-                if (!_codeElementCache.ContainsKey(key))
+                if (_codeElementCache.ContainsKey(codeElement.Key))
                 {
+                    throw new InvalidOperationException("The code element was already added with a different key");
+                }
+
+                _codeElementCache.Add(codeElement.Key, codeElement);
+                /*
+                 * Elements should create the same key for themselves as we create here but there is no issue with indexing on both keys just to be certain. -- Jonathan Byrne 07/10/2017
+                 */
+                if (!codeElement.Key.Equals(key))
+                {
+                    if (_codeElementCache.ContainsKey(key))
+                    {
+                        throw new InvalidOperationException("The code element was already added with a different key");
+                    }
+
                     _codeElementCache.Add(key, codeElement);
                 }
             }
@@ -520,6 +540,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public IEnumerable<IManagedCodeElement> GetCodeElements(IEnumerable handles) => handles.Cast<object>().Select(GetCodeElement).ToImmutableArray();
 
         public IEnumerable<T> GetCodeElements<T>(IEnumerable handles) => handles.Cast<object>().Select(handle => GetCodeElement<T>(handle)).ToImmutableArray();
+
+        public T GetCodeElementWithConstructorArguments<T>(IEnumerable<object> keyValues, IEnumerable<object> extraConstructorArguments) => (T) GetCodeElement(new CodeElementKey(typeof(T), keyValues, extraConstructorArguments));
 
         public Lazy<IManagedCodeElement> GetLazyCodeElement(object handle) => new Lazy<IManagedCodeElement>(() => GetCodeElement(handle));
 

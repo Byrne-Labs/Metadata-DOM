@@ -29,9 +29,11 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullName => Name;
 
+        public override string FullTextSignature => Name;
+
         public override bool IsCompilerGenerated => throw NotSupportedHelper.FutureVersion();
 
-        public override int MetadataToken => Key.Handle.Value.GetHashCode();
+        public override int MetadataToken => 0;
 
         public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.FutureVersion();
 

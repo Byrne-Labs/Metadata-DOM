@@ -55,7 +55,17 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
 
         [Fact]
         [Trait("Category", "Fast")]
-        public void TestOnSampleAssembly() => CheckMetadata(CheckTypes.Metadata, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+        public void TestOnSampleAssembly()
+        {
+            var checkState = CheckMetadata(CheckTypes.Metadata, new FileInfo(Path.Combine(AppContext.BaseDirectory, "ByrneLabs.Commons.MetadataDom.Tests.SampleToParse.dll")));
+            Assert.Equal(450, checkState.Metadata.TypeDefinitions.Count());
+            Assert.Equal(382, checkState.Metadata.PropertyDefinitions.Count());
+            Assert.Equal(5, checkState.Metadata.EventDefinitions.Count());
+            Assert.Equal(1610, checkState.Metadata.MethodDefinitions.Count() + checkState.Metadata.ConstructorDefinitions.Count());
+            Assert.Equal(412, checkState.Metadata.MethodDefinitions.Count(method => method.SequencePoints.Any() && !(method.IsEventAdder || method.IsEventRaiser || method.IsEventRemover || method.IsPropertyGetter || method.IsPropertySetter)));
+            Assert.Equal(12, checkState.Metadata.ConstructorDefinitions.Count(constructor => constructor.SequencePoints.Any()));
+            Assert.Equal(33, checkState.Metadata.Documents.Count());
+        }
 
         [Fact]
         [Trait("Category", "Fast")]
@@ -65,58 +75,61 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
             var success = true;
             foreach (var build in basicSymbolFormats)
             {
-                success &= CheckMetadata(CheckTypes.MetadataSymbols, build.AssemblyFile, build.SymbolsFile, false);
+                success &= CheckMetadata(CheckTypes.MetadataSymbols, build.AssemblyFile, build.SymbolsFile, false).Success;
             }
 
             Assert.True(success);
         }
 
-        private bool CheckMetadata(CheckTypes checkType, FileInfo assemblyFile, FileInfo pdbFile = null, bool assertSuccess = true)
+        private CheckState CheckMetadata(CheckTypes checkType, FileInfo assemblyFile, FileInfo pdbFile = null, bool assertSuccess = true)
         {
             var checkState = BaseChecker.Check(checkType, assemblyFile, pdbFile);
-            var outputMessage = new StringBuilder();
-            outputMessage.Append('-', 120).AppendLine();
-            outputMessage.AppendLine(assemblyFile?.FullName ?? pdbFile?.FullName).AppendLine();
-            var success = checkState.Success;
 
-            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension, StringComparison.Ordinal) && checkState.Metadata?.TypeDefinitions.Any() != true)
+            if (checkState.Metadata == null)
             {
-                outputMessage.AppendLine("No type definitions loaded from metadata");
-                success = false;
+                checkState.AddError("No type definitions loaded from metadata");
             }
-            if (pdbFile != null && checkState.Metadata?.Documents.Any() != true)
+            else
             {
-                outputMessage.AppendLine("No type documents loaded from metadata");
-                success = false;
+                if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension, StringComparison.Ordinal) && checkState.Metadata?.TypeDefinitions.Any() != true)
+                {
+                    checkState.AddError("No type definitions loaded from metadata");
+                }
+                if (pdbFile != null && checkState.Metadata?.Documents.Any() != true)
+                {
+                    checkState.AddError("No type documents loaded from metadata");
+                }
+
+                if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension, StringComparison.Ordinal))
+                {
+                    if (checkState.Metadata.AssemblyDefinition == null)
+                    {
+                        checkState.AddError("Assembly definition null");
+                    }
+                    if (!checkState.Metadata.TypeDefinitions.Any())
+                    {
+                        checkState.AddError("No type definitions loaded");
+                    }
+                }
+                if (pdbFile != null)
+                {
+                    if (!checkState.Metadata.Documents.Any())
+                    {
+                        checkState.AddError("No documents loaded");
+                    }
+                    if (!checkState.Metadata.MethodDebugInformation.Any())
+                    {
+                        checkState.AddError("No method debug information loaded");
+                    }
+                }
             }
 
-            outputMessage.AppendLine(checkState.ErrorLogText);
-
-            if (assemblyFile != null && ".dll".Equals(assemblyFile.Extension, StringComparison.Ordinal))
+            if (!checkState.Success)
             {
-                if (checkState.Metadata.AssemblyDefinition == null)
-                {
-                    checkState.AddError("Assembly definition null");
-                }
-                if (!checkState.Metadata.TypeDefinitions.Any())
-                {
-                    checkState.AddError("No type definitions loaded");
-                }
-            }
-            if (pdbFile != null)
-            {
-                if (!checkState.Metadata.Documents.Any())
-                {
-                    checkState.AddError("No documents loaded");
-                }
-                if (!checkState.Metadata.MethodDebugInformation.Any())
-                {
-                    checkState.AddError("No method debug information loaded");
-                }
-            }
-
-            if (!success)
-            {
+                var outputMessage = new StringBuilder();
+                outputMessage.Append('-', 120).AppendLine();
+                outputMessage.AppendLine(assemblyFile?.FullName ?? pdbFile?.FullName).AppendLine();
+                outputMessage.AppendLine(checkState.ErrorLogText);
                 _output.WriteLine(outputMessage.ToString());
             }
             if (assertSuccess)
@@ -124,7 +137,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests
                 Assert.True(checkState.Success);
             }
 
-            return success;
+            return checkState;
         }
     }
 }

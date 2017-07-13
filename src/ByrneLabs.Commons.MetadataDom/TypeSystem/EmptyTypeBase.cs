@@ -92,7 +92,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsGenericTypeDefinition => false;
 
-        public override IEnumerable<Language> Languages => ImmutableArray<Language>.Empty;
+        public override Language? Language => null;
 
         public override MemberTypes MemberType => MemberTypes.TypeInfo;
 

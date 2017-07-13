@@ -19,6 +19,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract TypeInfo ElementType { get; }
 
+        public abstract string FullTextSignature { get; }
+
         public abstract TypeInfo GenericTypeDefinition { get; }
 
         public abstract bool IsBoxed { get; }
@@ -31,13 +33,11 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract bool IsVolatile { get; }
 
-        public abstract IEnumerable<Language> Languages { get; }
+        public abstract Language? Language { get; }
 
         public abstract IEnumerable<SequencePoint> SequencePoints { get; }
 
         public abstract string SourceCode { get; }
-
-        public abstract string TextSignature { get; }
 
         public BindingFlags BindingFlags => CalculateBindingFlags(IsPublic, IsInherited, IsStatic);
 
@@ -64,6 +64,8 @@ namespace ByrneLabs.Commons.MetadataDom
         public override MemberTypes MemberType => IsNested ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
         public override Type ReflectedType => DeclaringType;
+
+        public virtual string TextSignature => Name;
 
         public override RuntimeTypeHandle TypeHandle => throw NotSupportedHelper.NotValidForMetadata();
 
@@ -166,7 +168,7 @@ namespace ByrneLabs.Commons.MetadataDom
 
         protected override bool IsContextfulImpl() => throw NotSupportedHelper.NotValidForMetadata();
 
-        protected override bool IsPrimitiveImpl() => throw new NotImplementedException();
+        protected override bool IsPrimitiveImpl() => throw NotSupportedHelper.FutureVersion();
 
         private IEnumerable<System.Reflection.EventInfo> GetEvents(string name, BindingFlags bindingFlags, bool allowPrefixLookup)
         {
@@ -230,43 +232,46 @@ namespace ByrneLabs.Commons.MetadataDom
             }
 
             // filter by arguments
-            if (argumentTypes != null && argumentTypes.Length > 0)
+            if (argumentTypes != null)
             {
                 if ((bindingFlags & (BindingFlags.GetProperty | BindingFlags.SetProperty)) == 0)
                 {
                     candidateMethods = candidateMethods.Where(method => method.GetParameters().Length == argumentTypes.Length);
                 }
-                candidateMethods = candidateMethods.Where(method =>
+                if (argumentTypes.Length > 0)
                 {
-                    var includeMethod = true;
-                    var parameters = method.GetParameters();
-                    var checkForVarArgs = false;
-
-                    if (argumentTypes.Length > parameters.Length)
+                    candidateMethods = candidateMethods.Where(method =>
                     {
-                        if ((method.CallingConvention & CallingConventions.VarArgs) == 0)
+                        var includeMethod = true;
+                        var parameters = method.GetParameters();
+                        var checkForVarArgs = false;
+
+                        if (argumentTypes.Length > parameters.Length)
+                        {
+                            if ((method.CallingConvention & CallingConventions.VarArgs) == 0)
+                            {
+                                checkForVarArgs = true;
+                            }
+                        }
+                        else if ((bindingFlags & BindingFlags.OptionalParamBinding) == 0 || !parameters[argumentTypes.Length].IsOptional)
                         {
                             checkForVarArgs = true;
                         }
-                    }
-                    else if ((bindingFlags & BindingFlags.OptionalParamBinding) == 0 || !parameters[argumentTypes.Length].IsOptional)
-                    {
-                        checkForVarArgs = true;
-                    }
 
-                    if (checkForVarArgs)
-                    {
-                        if (parameters.Length == 0 ||
-                            argumentTypes.Length < parameters.Length - 1 ||
-                            !parameters.Last().ParameterType.IsArray ||
-                            !parameters.Last().IsDefined(typeof(ParamArrayAttribute), false))
+                        if (checkForVarArgs)
                         {
-                            includeMethod = false;
+                            if (parameters.Length == 0 ||
+                                argumentTypes.Length < parameters.Length - 1 ||
+                                !parameters.Last().ParameterType.IsArray ||
+                                !parameters.Last().IsDefined(typeof(ParamArrayAttribute), false))
+                            {
+                                includeMethod = false;
+                            }
                         }
-                    }
 
-                    return includeMethod;
-                });
+                        return includeMethod;
+                    });
+                }
             }
 
             return candidateMethods;
@@ -378,7 +383,7 @@ namespace ByrneLabs.Commons.MetadataDom
                 throw new AmbiguousMatchException($"Multiple {typeof(T).Name.ToLowerInvariant()} instances match arguments provided");
             }
 
-            return members.FirstOrDefault();
+            return members.SingleOrDefault();
         }
     }
 }

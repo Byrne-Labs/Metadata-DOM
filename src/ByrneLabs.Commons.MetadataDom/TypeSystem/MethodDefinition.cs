@@ -18,7 +18,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<MethodDebugInformation> _debugInformation;
         private readonly Lazy<IEnumerable<DeclarativeSecurityAttribute>> _declarativeSecurityAttributes;
         private readonly Lazy<TypeDefinition> _declaringType;
-        private readonly Lazy<string> _fullName;
+        private readonly Lazy<string> _fullTextSignature;
         private readonly Lazy<IEnumerable<GenericParameter>> _genericParameters;
         private readonly Lazy<MethodImport> _import;
         private readonly Lazy<MethodBody> _methodBody;
@@ -27,6 +27,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         private readonly Lazy<PropertyInfo> _relatedProperty;
         private readonly Lazy<Parameter> _returnParameter;
         private readonly Lazy<MethodSignature<TypeBase>> _signature;
+        private readonly Lazy<string> _textSignature;
 
         internal MethodDefinition(MethodDefinitionHandle metadataHandle, MetadataState metadataState)
         {
@@ -56,13 +57,13 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
                 return genericParameters;
             });
-            _fullName = new Lazy<string>(() =>
+            _fullTextSignature = new Lazy<string>(() => $"{DeclaringType.FullName}.{TextSignature}");
+            _textSignature = new Lazy<string>(() =>
             {
-                var basicName = $"{DeclaringType.FullName}.{Name}";
                 var genericParameters = _genericParameters.Value.Any() ? $"`{_genericParameters.Value.Count()}" : string.Empty;
                 var parameters = !_relatedProperty.Value?.IsIndexer == true || RelatedEvent != null ? string.Empty : $"({string.Join(", ", GetParameters().Select(parameter => parameter.ParameterType.IsGenericParameter ? parameter.ParameterType.Name : ((TypeBase) parameter.ParameterType).FullNameWithoutAssemblies))})";
 
-                return basicName + genericParameters + parameters;
+                return Name + genericParameters + parameters;
             });
             // ReSharper disable once RedundantEnumerableCastCall
             _relatedEvent = new Lazy<EventInfo>(() => ((TypeBase) DeclaringType).DeclaredEvents.Cast<EventInfo>().SingleOrDefault(@event => @event.AddMethod == this || @event.RemoveMethod == this || @event.RemoveMethod == this));
@@ -83,7 +84,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override Type DeclaringType => _declaringType.Value;
 
-        public override string FullName => _fullName.Value;
+        public override string FullName => FullTextSignature;
+
+        public override string FullTextSignature => _fullTextSignature.Value;
 
         public MethodImport Import => _import.Value;
 
@@ -117,7 +120,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string SourceCode => DebugInformation?.SourceCode;
 
-        public override string TextSignature => FullName;
+        public override string TextSignature => _textSignature.Value;
 
         internal CodeElementKey Key { get; }
 

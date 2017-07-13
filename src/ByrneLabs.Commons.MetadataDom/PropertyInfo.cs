@@ -13,6 +13,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string FullName { get; }
 
+        public abstract string FullTextSignature { get; }
+
         public abstract bool IsIndexer { get; }
 
         public abstract IEnumerable<SequencePoint> SequencePoints { get; }

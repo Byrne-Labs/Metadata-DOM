@@ -12,6 +12,8 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public abstract string FullName { get; }
 
+        public abstract string FullTextSignature { get; }
+
         public abstract IEnumerable<System.Reflection.ParameterInfo> Parameters { get; }
 
         public abstract IEnumerable<SequencePoint> SequencePoints { get; }
@@ -34,6 +36,6 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public override System.Reflection.ParameterInfo[] GetParameters() => Parameters.ToArray();
 
-        public override string ToString() => TextSignature;
+        public override string ToString() => FullTextSignature;
     }
 }

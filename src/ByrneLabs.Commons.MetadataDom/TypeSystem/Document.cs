@@ -32,17 +32,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
             _sourceCodeLines = new Lazy<string[]>(() => SourceCode == null ? null : Regex.Split(SourceCode, "\r\n|\r|\n"));
         }
 
-        public string FullName => Name;
-
         public override byte[] Hash => _hash.Value;
 
         public override AssemblyHashAlgorithm? HashAlgorithm { get; }
 
-        public override sealed Guid HashAlgorithmGuid { get; }
+        public sealed override Guid HashAlgorithmGuid { get; }
 
         public override Language Language { get; }
 
-        public override sealed Guid LanguageGuid { get; }
+        public sealed override Guid LanguageGuid { get; }
 
         public DocumentHandle MetadataHandle { get; }
 
@@ -55,8 +53,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         public override string SourceCode => _sourceCode.Value;
 
         public override string[] SourceCodeLines => _sourceCodeLines.Value;
-
-        public string TextSignature => Name;
 
         internal CodeElementKey Key { get; }
 

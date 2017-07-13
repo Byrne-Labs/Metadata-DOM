@@ -41,7 +41,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
             var parameterIndex = 0;
 
-            var parameters = methodSignature.ParameterTypes.Select(parameterType => metadataState.GetCodeElement<Parameter>(methodBase, parameterType, parameterIndex, parameterIndex++ < methodSignature.RequiredParameterCount, metadataState)).ToImmutableArray();
+            var parameters = methodSignature.ParameterTypes.Select(parameterType => metadataState.GetCodeElement<Parameter>(methodBase, parameterType, parameterIndex, parameterIndex++ < methodSignature.RequiredParameterCount)).ToImmutableArray();
 
             return parameters;
         }

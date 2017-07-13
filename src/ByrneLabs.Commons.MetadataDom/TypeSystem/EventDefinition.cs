@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 {
     [PublicAPI]
-    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {TextSignature}")]
+    [DebuggerDisplay("\\{{GetType().Name,nq}\\}: {FullTextSignature}")]
     public class EventDefinition : EventInfo, IManagedCodeElement
     {
         private readonly Lazy<IEnumerable<CustomAttributeData>> _customAttributes;
@@ -69,6 +69,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullName => $"{DeclaringType.FullName}.{Name}";
 
+        public override string FullTextSignature => FullName;
+
         public override bool IsMulticast
         {
             get
@@ -111,9 +113,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => _sequencePoints.Value;
 
-        public override string SourceCode => throw new NotImplementedException();
+        public override string SourceCode => throw NotSupportedHelper.FutureVersion();
 
-        public override string TextSignature => FullName;
+        public override string TextSignature => Name;
 
         internal CodeElementKey Key { get; }
 

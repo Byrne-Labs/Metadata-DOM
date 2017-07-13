@@ -83,7 +83,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override bool IsSpecialName { get; }
 
-        public override sealed MemberInfo Member { get; }
+        public sealed override MemberInfo Member { get; }
 
         public ParameterHandle MetadataHandle { get; }
 
@@ -93,15 +93,15 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string Name { get; }
 
-        public override sealed Type ParameterType { get; }
+        public sealed override Type ParameterType { get; }
 
-        public override sealed int Position { get; }
+        public sealed override int Position { get; }
 
         public System.Reflection.Metadata.Parameter RawMetadata { get; }
 
-        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw new NotImplementedException();
+        public override IEnumerable<MetadataDom.SequencePoint> SequencePoints => throw NotSupportedHelper.FutureVersion();
 
-        public override string SourceCode => throw new NotImplementedException();
+        public override string SourceCode => throw NotSupportedHelper.FutureVersion();
 
         internal CodeElementKey Key { get; }
 

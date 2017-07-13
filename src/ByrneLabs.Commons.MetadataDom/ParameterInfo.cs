@@ -21,11 +21,13 @@ namespace ByrneLabs.Commons.MetadataDom
 
         public BindingFlags BindingFlags => throw NotSupportedHelper.NotValidForMetadataType(GetType());
 
+        public virtual string FullTextSignature => TextSignatureImpl();
+
         public MemberTypes MemberType => MemberTypes.Custom;
 
         public override object RawDefaultValue => throw NotSupportedHelper.FutureVersion();
 
-        public virtual string TextSignature => TextSignatureImpl();
+        public virtual string TextSignature => FullTextSignature;
 
         public override string ToString() => $"{ParameterType} {Name}";
 

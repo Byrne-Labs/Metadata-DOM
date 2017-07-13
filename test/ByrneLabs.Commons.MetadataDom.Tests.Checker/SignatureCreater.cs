@@ -19,7 +19,7 @@ namespace ByrneLabs.Commons.MetadataDom.Tests.Checker
             string textSignature;
             if (memberInfo is IMemberInfo)
             {
-                textSignature = ((IMemberInfo) memberInfo).TextSignature;
+                textSignature = ((IMemberInfo) memberInfo).FullTextSignature;
             }
             else
             {

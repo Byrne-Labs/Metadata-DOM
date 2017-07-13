@@ -23,9 +23,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
         }
 
-        public override string Namespace { get; } = "System";
+        public override string FullTextSignature => FullName;
 
-        public override string TextSignature => FullName;
+        public override string Namespace { get; } = "System";
 
         internal override string UndecoratedName { get; } = "Type";
 

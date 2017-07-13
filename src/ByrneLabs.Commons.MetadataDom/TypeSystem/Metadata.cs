@@ -96,7 +96,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                 _methodDebugInformation = new Lazy<IEnumerable<MethodDebugInformation>>(() =>
                 {
                     // ReSharper disable once UnusedVariable -- We need to make sure all method definitions have been loaded before loading the method debug information. -- Jonathan Byrne 06/23/2017
-                    var methodDefinitions = MethodDefinitions;
+                    var debugInformation = MethodDefinitions.Select(methodDefinition => methodDefinition.DebugInformation).ToArray();
                     return MetadataState.GetCodeElements<MethodDebugInformation>(MetadataState.PdbReader.MethodDebugInformation);
                 });
             }
@@ -140,7 +140,7 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public IEnumerable<ImportScope> ImportScopes => _importScopes.Value;
 
-        public IEnumerable<Language> Languages => _languages.Value;
+        public Language? Language => MetadataState.Language;
 
         public IEnumerable<LocalConstant> LocalConstants => _localConstants.Value;
 

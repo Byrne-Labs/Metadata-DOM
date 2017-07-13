@@ -104,23 +104,23 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullName => _fullName.Value;
 
-        public override sealed TypeInfo GenericTypeDefinition { get; }
+        public override string FullTextSignature => FullNameWithoutAssemblies;
 
-        public override sealed bool IsBoxed => UnmodifiedType?.IsBoxed == true || IsThisBoxed;
+        public sealed override TypeInfo GenericTypeDefinition { get; }
 
-        public override sealed bool IsByValue => UnmodifiedType?.IsByValue == true || IsThisByValue;
+        public sealed override bool IsBoxed => UnmodifiedType?.IsBoxed == true || IsThisBoxed;
 
-        public override sealed bool IsConstant => UnmodifiedType?.IsConstant == true || IsThisConstant;
+        public sealed override bool IsByValue => UnmodifiedType?.IsByValue == true || IsThisByValue;
+
+        public sealed override bool IsConstant => UnmodifiedType?.IsConstant == true || IsThisConstant;
 
         public override bool IsGenericType => UnmodifiedType?.IsGenericType == true || IsThisGenericType;
 
-        public override sealed bool IsVolatile => UnmodifiedType?.IsVolatile == true || IsThisVolatile;
+        public sealed override bool IsVolatile => UnmodifiedType?.IsVolatile == true || IsThisVolatile;
 
         public override int MetadataToken => DowncastMetadataHandle.HasValue ? DowncastMetadataHandle.Value.GetHashCode() : 0;
 
         public override string Name => _name.Value;
-
-        public override string TextSignature => FullNameWithoutAssemblies;
 
         internal abstract string MetadataNamespace { get; }
 
@@ -166,25 +166,25 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override int GetArrayRank() => ArrayRank;
 
-        public override sealed Type GetElementType() => ElementType;
+        public sealed override Type GetElementType() => ElementType;
 
         public override Type[] GetGenericArguments() => _genericTypeArguments.Value.Any() ? _genericTypeArguments.Value : GenericTypeParameters;
 
-        public override sealed Type GetGenericTypeDefinition() => GenericTypeDefinition;
+        public sealed override Type GetGenericTypeDefinition() => GenericTypeDefinition;
 
         public override int GetHashCode() => MetadataToken | 12345;
 
-        protected override sealed bool HasElementTypeImpl() => ElementType != null;
+        protected sealed override bool HasElementTypeImpl() => ElementType != null;
 
-        protected override sealed bool IsArrayImpl() => UnmodifiedType?.IsArray == true || IsThisArray;
+        protected sealed override bool IsArrayImpl() => UnmodifiedType?.IsArray == true || IsThisArray;
 
-        protected override sealed bool IsByRefImpl() => UnmodifiedType?.IsByRef == true || IsThisByRef;
+        protected sealed override bool IsByRefImpl() => UnmodifiedType?.IsByRef == true || IsThisByRef;
 
-        protected override sealed bool IsPointerImpl() => UnmodifiedType?.IsPointer == true || IsThisPointer;
+        protected sealed override bool IsPointerImpl() => UnmodifiedType?.IsPointer == true || IsThisPointer;
 
         protected override bool IsPrimitiveImpl() => false;
 
-        protected override sealed bool IsValueTypeImpl() => UnmodifiedType?.IsValueType == true || IsThisValueType || IsEnum;
+        protected sealed override bool IsValueTypeImpl() => UnmodifiedType?.IsValueType == true || IsThisValueType || IsEnum;
 
         private void Initialize()
         {

@@ -29,6 +29,9 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
                     case HandleKind.TypeDefinition:
                         constrainedType = MetadataState.GetCodeElement<TypeDefinition>(RawMetadata.Type);
                         break;
+                    case HandleKind.TypeReference:
+                        constrainedType = MetadataState.GetCodeElement<TypeReference>(RawMetadata.Type);
+                        break;
                     default:
                         throw new InvalidOperationException($"Unexpected constrained type {RawMetadata.Type.Kind}");
                 }

@@ -11,7 +11,6 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
         {
             Key = key;
             MetadataState = metadataState;
-            metadataState.CacheCodeElement(this, key);
         }
 
         public override SecurityRuleSet SecurityRuleSet => throw NotSupportedHelper.FutureVersion();

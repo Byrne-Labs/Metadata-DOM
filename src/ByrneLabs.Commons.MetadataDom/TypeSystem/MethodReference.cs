@@ -56,6 +56,8 @@ namespace ByrneLabs.Commons.MetadataDom.TypeSystem
 
         public override string FullName => Name;
 
+        public override string FullTextSignature => Name;
+
         public MemberReferenceHandle MetadataHandle { get; }
 
         public override RuntimeMethodHandle MethodHandle => throw NotSupportedHelper.FutureVersion();
